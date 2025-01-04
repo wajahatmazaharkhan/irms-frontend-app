@@ -56,7 +56,7 @@ const SideNav = () => {
   };
 
   const handleLogOut = () => {
-    navigate("/logout"); 
+    navigate("/logout");
   };
 
   return (
@@ -80,10 +80,12 @@ const SideNav = () => {
                   activeItem === item.name ? "bg-blue-600" : "hover:bg-blue-500"
                 }`}
               >
-                <i className={`bi ${item.icon} text-lg`}></i>
-                <span className="ml-4 text-sm whitespace-nowrap hidden md:inline">
-                  {item.name}
-                </span>
+                <div className="flex items-center pl-2"> 
+                  <i className={`bi ${item.icon} text-lg`}></i>
+                  <span className="ml-2 text-sm whitespace-nowrap hidden md:inline">
+                    {item.name}
+                  </span>
+                </div>
               </li>
             ))}
           </ul>

@@ -6,19 +6,16 @@ import { faFacebook, faLinkedin, faInstagram } from "@fortawesome/free-brands-sv
 const Footer = () => {
   return (
     <footer className="text-gray-800 bg-white border-t border-gray-200 mt-60">
-      <div className="max-w-screen-xl px-4 py-5 mx-auto sm:px-6 lg:px-28">
-        {" "}
-        {/* Updated lg:px-16 for desktop */}
-        {/* Flexbox container for "Company", "Help", "Legal", and Social Media sections */}
-        <div className="grid grid-cols-1 mt-12 text-sm sm:grid-cols-2 lg:grid-cols-4 gap-x-8 sm:text-base">
-          {/* Company Section */}
+     <div className="max-w-screen-xl px-4 py-5 mx-auto sm:px-6 lg:px-40">
+        <div className="grid grid-cols-1 mt-12 text-sm sm:grid-cols-2 lg:grid-cols-4 gap-x-12 gap-y-8 sm:text-base">
+
           <div>
             <p className="text-lg font-semibold text-gray-900">Company</p>
-            <ul className="mt-6 space-y-4">
+            <ul className="mt-4 space-y-3">
               <li>
                 <Link
                   to="/aboutus"
-                  className="text-gray-700 transition-colors hover:text-blue-600 sm:mt-4 "
+                  className="text-gray-700 transition-colors hover:text-blue-600"
                 >
                   About Us
                 </Link>
@@ -26,7 +23,7 @@ const Footer = () => {
               <li>
                 <Link
                   to="/team"
-                  className="text-gray-700 transition-colors hover:text-blue-600 "
+                  className="text-gray-700 transition-colors hover:text-blue-600"
                 >
                   Team
                 </Link>
@@ -42,10 +39,9 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Help Section */}
           <div>
             <p className="text-lg font-semibold text-gray-900">Help</p>
-            <ul className="mt-6 space-y-4">
+            <ul className="mt-4 space-y-3">
               <li>
                 <Link
                   to="/contact-support"
@@ -65,10 +61,9 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Legal Section */}
           <div>
             <p className="text-lg font-semibold text-gray-900">Legal</p>
-            <ul className="mt-6 space-y-4">
+            <ul className="mt-4 space-y-3">
               <li>
                 <Link
                   to="/termsandconditions"
@@ -96,29 +91,30 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Social Media Section */}
+
           <div>
             <p className="text-lg font-semibold text-gray-900">Follow Us</p>
-            <ul className="mt-6 space-y-4">
-              <li className="flex items-center space-x-2">
+            <ul className="mt-4 space-y-3">
+              <li className="flex items-center space-x-2 pt-2">
                 <FontAwesomeIcon icon={faFacebook} className="w-5 h-5 text-blue-600" />
                 <span>Facebook</span>
               </li>
-              <li className="flex items-center space-x-2">
+              <li className="flex items-center space-x-2 pt-2">
                 <FontAwesomeIcon icon={faLinkedin} className="w-5 h-5 text-blue-700" />
                 <span>LinkedIn</span>
               </li>
-              <li className="flex items-center space-x-2">
+              <li className="flex items-center space-x-2 pt-2">
                 <FontAwesomeIcon icon={faInstagram} className="w-5 h-5 text-pink-500" />
                 <span>Instagram</span>
               </li>
             </ul>
           </div>
         </div>
-        {/* Footer Bottom Section */}
+
+
         <div className="pt-4 mt-4 border-t border-gray-200 sm:text-center">
           <div className="sm:flex sm:justify-between">
-            <p className="text-xs text-gray-600 sm:text-sm ">
+            <p className="text-xs text-gray-600 sm:text-sm">
               &copy; 2024 Intern Management System. All rights reserved.
             </p>
             <ul className="flex flex-wrap justify-start gap-6 mt-2 text-xs sm:mt-0 sm:text-sm lg:justify-end">

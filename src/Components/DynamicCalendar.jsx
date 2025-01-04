@@ -15,12 +15,10 @@ const DynamicCalendar = () => {
 
     const calendarArray = [];
 
-    // Add empty spaces for days before the first day of the month
     for (let i = 0; i < startingDay; i++) {
       calendarArray.push(null);
     }
 
-    // Add all days of the month
     for (let i = 1; i <= daysInMonth; i++) {
       calendarArray.push(i);
     }
@@ -45,7 +43,12 @@ const DynamicCalendar = () => {
         <CardContent className="p-6">
           <div className="grid grid-cols-7 gap-2 text-center">
             {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
-              <div key={day} className="font-medium text-gray-500 py-2">
+              <div
+                key={day}
+                className={`font-medium text-gray-500 py-2 ${
+                  window.innerWidth <= 768 && "text-xs" 
+                }`}
+              >
                 {day}
               </div>
             ))}
@@ -60,6 +63,9 @@ const DynamicCalendar = () => {
                       new Date().getFullYear() === currentDate.getFullYear()
                     ? "bg-blue-500 text-white font-semibold"
                     : "hover:bg-gray-100 cursor-pointer"
+                } ${
+
+                  window.innerWidth <= 768 && "flex justify-center items-center" 
                 }`}
               >
                 {date}

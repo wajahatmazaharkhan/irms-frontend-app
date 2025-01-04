@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Menu, X, GraduationCap } from 'lucide-react';
 
 const Navbar = () => {
@@ -12,11 +13,12 @@ const Navbar = () => {
             <GraduationCap className="h-8 w-8 text-blue-600" />
             <span className="ml-2 text-xl font-bold text-gray-900">I I S P P R</span>
           </div>
-          
+
           <div className="hidden md:block">
             <div className="ml-10 flex items-center space-x-4">
-              <a href="about" className="text-gray-700 hover:text-blue-600 px-3 py-2">About</a>
-              <a href="Notfound" className="text-gray-700 hover:text-blue-600 px-3 py-2">Contact</a>
+              <Link to="/Home" className="text-gray-700 hover:text-blue-600 px-3 py-2">Home</Link>
+              <Link to="/about" className="text-gray-700 hover:text-blue-600 px-3 py-2">About</Link>
+              <Link to="/contact" className="text-gray-700 hover:text-blue-600 px-3 py-2">Contact</Link>
             </div>
           </div>
 
@@ -34,8 +36,9 @@ const Navbar = () => {
       {isMenuOpen && (
         <div className="md:hidden">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            <a href="about" className="block text-gray-700 hover:text-blue-600 px-3 py-2">About</a>
-            <a href="contact" className="block text-gray-700 hover:text-blue-600 px-3 py-2">Contact</a>
+            <Link to="/Home" className="block text-gray-700 hover:text-blue-600 px-3 py-2">Home</Link>
+            <Link to="/about" className="block text-gray-700 hover:text-blue-600 px-3 py-2">About</Link>
+            <Link to="/contact" className="block text-gray-700 hover:text-blue-600 px-3 py-2">Contact</Link>
           </div>
         </div>
       )}

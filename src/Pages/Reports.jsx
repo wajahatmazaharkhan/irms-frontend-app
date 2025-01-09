@@ -70,11 +70,11 @@ const Reports = () => {
       <Navbar />
 
       <Wrapper>
-        <div className="min-h-screen p-4 bg-gradient-to-b from-blue-50 to-white md:p-8">
+        <div className="min-h-screen p-4 bg-gradient-to-b bg-white md:p-8">
           <Card className="max-w-4xl mx-auto transition-all duration-300 border shadow-xl hover:shadow-2xl">
             <CardHeader className="space-y-4 text-white rounded-t-lg bg-gradient-to-r from-blue-600 to-blue-700">
               <CardTitle className="text-3xl font-bold tracking-tight text-center">
-                Internship  Report
+                Progress Report Form
               </CardTitle>
               <p className="text-center text-blue-100">
                 Track your progress and plan ahead
@@ -85,7 +85,7 @@ const Reports = () => {
               <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
                 {[
                   { name: "Intern", label: "Intern Name", type: "text" },
-                  { name: "department", label: "Department", type: "text" },
+                  // { name: "department", label: "Department", type: "text" },
                   { name: "date", label: "Report Date", type: "date" },
                 ].map(({ name, label, type }) => (
                   <div key={name} className="space-y-2 group">
@@ -101,6 +101,24 @@ const Reports = () => {
                     />
                   </div>
                 ))}
+
+<div key="department" className="space-y-2 group">
+  <Label className="text-sm font-medium text-gray-700">Department</Label>
+  <select
+    name="department"
+    value={formData.department}
+    onChange={handleInputChange}
+    className="w-full p-2 transition-all duration-200 border-2 border-gray-200 rounded-md focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 group-hover:border-blue-300"
+  >
+    <option value="" disabled>
+      Select Department
+    </option>
+    <option value="HR">HR</option>
+    <option value="Marketing">Marketing</option>
+    <option value="Development">Development</option>
+  </select>
+</div>
+
               </div>
             </div>
 

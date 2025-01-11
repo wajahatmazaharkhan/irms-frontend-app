@@ -1,5 +1,4 @@
 import { Routes, Route, useActionData } from "react-router-dom";
-import AskHR from "./pages/AskHR";
 import {
   Aboutus,
   FAQ,
@@ -152,14 +151,6 @@ const App = () => {
         element={
           <PrivateRoute>
             <Home />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/AskHR"
-        element={
-          <PrivateRoute>
-            <AskHR />
           </PrivateRoute>
         }
       />

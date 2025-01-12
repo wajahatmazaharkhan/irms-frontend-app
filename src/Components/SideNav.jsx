@@ -39,12 +39,11 @@ const SideNav = () => {
     { id: 1, name: "Projects", icon: "bi-people" },
     { id: 2, name: "Report", icon: "bi-bar-chart" },
     { id: 3, name: "Setting", icon: "bi-gear" },
-    { id: 4, name: "FAQ", icon: "bi-question-circle" },
-    { id: 5, name: "Help", icon: "bi-question-circle" },
-    { id: 6, name: "AskHR", icon: "bi-question-circle" },
+    { id: 4, name: "Help", icon: "bi-question-circle" },
+    { id: 5, name: "AskHR", icon: "bi-question-circle" },
   ];
 
-  const redirectURLs = ["", "projects", "reports", "Setting", "frequently-asked-questions", "help", "AskHR"];
+  const redirectURLs = ["", "projects", "reports", "Setting", "help", "AskHR"];
 
   const footerItems = [{ name: "Log Out", icon: "bi bi-box-arrow-left" }];
 

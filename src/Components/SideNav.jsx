@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { useState, useEffect } from "react";
 import { useAppContext } from "../context/AppContext";
@@ -42,9 +41,10 @@ const SideNav = () => {
     { id: 3, name: "Setting", icon: "bi-gear" },
     { id: 4, name: "FAQ", icon: "bi-question-circle" },
     { id: 5, name: "Help", icon: "bi-question-circle" },
+    { id: 6, name: "AskHR", icon: "bi-question-circle" },
   ];
 
-  const redirectURLs = ["", "projects", "reports", "Setting", "frequently-asked-questions", "help"];
+  const redirectURLs = ["", "projects", "reports", "Setting", "frequently-asked-questions", "help", "AskHR"];
 
   const footerItems = [{ name: "Log Out", icon: "bi bi-box-arrow-left" }];
 

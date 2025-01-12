@@ -16,8 +16,8 @@ import {
   Building2,
   Target
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/Components/ui/button";
+import { Card, CardContent } from "@/Components/ui/card";
 
 const IntroPage = () => {
   const navigate = useNavigate();
@@ -162,6 +162,40 @@ const IntroPage = () => {
           ))}
         </div>
       </div>
+{/* Video Section */}
+<div className="bg-card py-16">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 2.0 }}
+      className="text-center mb-16"
+    >
+      <h2 className="text-3xl font-bold mb-4">How to Apply and Get Your ID Card</h2>
+      <p className="text-muted-foreground max-w-2xl mx-auto">
+        Watch the video below to learn how to apply for internships and receive your ID card.
+      </p>
+    </motion.div>
+
+    <div className="flex justify-center">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 2.5 }}
+        className="rounded-lg overflow-hidden shadow-lg"
+      >
+        <video
+          controls
+          className="w-full max-w-3xl rounded-lg"
+        >
+          <source src="/Registration-and-Receiving-of-ID-Card-and-LOA.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      </motion.div>
+    </div>
+  </div>
+</div>
+
 
       {/* CTA Section */}
       <div className="bg-card">
@@ -189,6 +223,7 @@ const IntroPage = () => {
         </div>
       </div>
     </div>
+    
   );
 };
 

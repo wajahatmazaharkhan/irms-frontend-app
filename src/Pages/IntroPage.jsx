@@ -168,7 +168,7 @@ const IntroPage = () => {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 2.0 }}
+      transition={{ duration: 0.0 }}
       className="text-center mb-16"
     >
       <h2 className="text-3xl font-bold mb-4">How to Apply and Get Your ID Card</h2>
@@ -181,7 +181,7 @@ const IntroPage = () => {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 2.5 }}
+        transition={{ duration: 0.5 }}
         className="rounded-lg overflow-hidden shadow-lg"
       >
         <video

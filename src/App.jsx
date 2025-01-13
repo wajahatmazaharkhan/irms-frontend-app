@@ -30,6 +30,7 @@ import {
   Internleaveapplication,
   IntroPage,
   AdminNotify,
+  HarassmentEmailForm,
 } from "./Pages/pageIndex";
 import {
   AdminTask,
@@ -267,6 +268,15 @@ const App = () => {
           </PrivateRoute>
         }
       />
+      <Route
+        path="/help-request"
+        element={
+          <PrivateRoute>
+            <HarassmentEmailForm/>
+          </PrivateRoute>
+        }
+      />
+
     </Routes>
   );
 };

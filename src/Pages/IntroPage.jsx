@@ -29,45 +29,61 @@ const IntroPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Hero Section with Animated Background */}
-      <div className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-purple-600/20 animate-gradient" />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-32">
-          <motion.div 
-            className="text-center relative z-10"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">
-              IISPPR Internship Portal
-            </h1>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
-              Transforming Research & Development through Structured Internships
-            </p>
-            <div className="flex gap-4 justify-center">
-              <Button 
-                size="lg" 
-                className="rounded-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700"
-                onClick={() => navigate("/login")}
-              >
-                Get Started
-                <GraduationCap className="ml-2 h-5 w-5" />
-              </Button>
-              <Button 
-                size="lg" 
-                variant="outline" 
-                className="rounded-full"
-                onClick={() => navigate("/aboutus")}
-              >
-                Learn More
-                <BookOpen className="ml-2 h-5 w-5" />
-              </Button>
-            </div>
-          </motion.div>
-        </div>
-      </div>
+<div className="min-h-screen bg-gradient-to-b from-blue-50 to-purple-50">
+{/* Hero Section */}
+<header className="relative bg-gradient-to-br from-blue-500 to-indigo-600 text-white overflow-hidden">
+  {/* Logo */}
+  <div className="absolute top-4 left-4">
+    <img
+      src="/logo-removebg-preview_06272023080455.png"
+      alt="IISPPR Logo"
+      className="h-40 w-auto"
+    />
+  </div>
+  {/* Logo */}
+  <div className="absolute top-4 right-4">
+    <img
+      src="/logo-removebg-preview_06272023080455.png"
+      alt="IISPPR Logo"
+      className="h-40 w-auto"
+    />
+  </div>
+  <div className="container mx-auto px-6 py-24 text-center relative z-10">
+    <motion.h1
+      initial={{ opacity: 0, y: -50 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 1 }}
+      className="text-6xl font-extrabold tracking-tight mb-6"
+    >
+      Empower Your Future with <br /> 
+      <span className="text-yellow-400 text-7xl md:text-8xl font-bold">IISPPR Internships</span>
+    </motion.h1>
+    <motion.p
+      initial={{ opacity: 0, y: -30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 1, delay: 0.3 }}
+      className="text-lg md:text-2xl text-gray-200 mb-8 leading-relaxed"
+    >
+      Pioneering Excellence in Research & Development <br /> 
+      Through Impactful, Structured Internships.
+    </motion.p>
+    <motion.div
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 1, delay: 0.6 }}
+      className="flex flex-wrap justify-center gap-4"
+    >
+      <button
+        className="bg-yellow-400 text-blue-900 px-8 py-3 rounded-full hover:bg-yellow-300 transition-colors flex items-center gap-2 shadow-lg transform hover:scale-105"
+      >
+        <GraduationCap className="w-6 h-6" />
+        <li>
+          <a href="/login" className="hover:text-white transition-colors">Get Started</a>
+        </li>
+      </button>
+    </motion.div>
+  </div>
+</header>
 
       {/* Stats Section */}
       <div className="bg-card py-16">

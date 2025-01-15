@@ -225,6 +225,7 @@ const IntroPage = () => {
           { name: "Shivam", role: "Front End Developer" },
           { name: "Lakshmi", role: "Front End Developer" },
           { name:"Arya",role:"Front End Developer" },
+          { name:"Khushi ",role:"Front End Developer" },
           { name:"Ashish ",role:"Back End Developer" },
           { name:"Pravin ",role:"Back End Developer" },
           { name:"Nadeem",role:"Back End Developer" },

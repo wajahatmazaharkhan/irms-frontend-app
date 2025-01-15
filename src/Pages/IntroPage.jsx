@@ -85,33 +85,52 @@ const IntroPage = () => {
   </div>
 </header>
 
-      {/* Stats Section */}
-      <div className="bg-card py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            {[
-              { icon: Users, label: "Active Interns", value: "500+" },
-              { icon: Building2, label: "Research Labs", value: "15+" },
-              { icon: Target, label: "Projects", value: "50+" },
-              { icon: Award, label: "Success Rate", value: "95%" }
-            ].map((stat, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className="text-center"
-              >
-                <div className="mx-auto w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-                  <stat.icon className="w-6 h-6 text-primary" />
-                </div>
-                <h3 className="text-3xl font-bold text-primary">{stat.value}</h3>
-                <p className="text-muted-foreground">{stat.label}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </div>
+ {/* Stats Section */}
+ <section className="bg-gradient-to-br from-[#1A1F2C] to-[#242937] text-white py-20">
+  <div className="container mx-auto px-6">
+    <div className="text-center mb-12">
+      <span className="bg-blue-600/50 text-blue-300 px-5 py-2 rounded-full text-sm tracking-wide shadow-md">
+        Our Achievements
+      </span>
+      <h2 className="text-5xl font-extrabold mt-4 mb-6">
+        Trusted by <span className="text-yellow-400">1000+ Students</span>
+      </h2>
+      <p className="text-gray-300 max-w-3xl mx-auto text-lg">
+        Join 1000+ of learners around the globe who trust our platform to achieve their educational goals and build their future.
+      </p>
+    </div>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+      <motion.div
+        whileHover={{ scale: 1.1 }}
+        className="bg-[#2D3345] p-10 rounded-lg shadow-lg text-center"
+      >
+        <h2 className="text-6xl font-bold text-yellow-400 mb-4">2,800</h2>
+        <p className="text-gray-400 text-lg">Students Enrolled</p>
+      </motion.div>
+      <motion.div
+        whileHover={{ scale: 1.1 }}
+        className="bg-[#2D3345] p-10 rounded-lg shadow-lg text-center"
+      >
+        <h2 className="text-6xl font-bold text-yellow-400 mb-4">4M+</h2>
+        <p className="text-gray-400 text-lg">Views on YouTube</p>
+      </motion.div>
+      <motion.div
+        whileHover={{ scale: 1.1 }}
+        className="bg-[#2D3345] p-10 rounded-lg shadow-lg text-center"
+      >
+        <h2 className="text-6xl font-bold text-yellow-400 mb-4">1,200+</h2>
+        <p className="text-gray-400 text-lg">Hours of Content</p>
+      </motion.div>
+      <motion.div
+        whileHover={{ scale: 1.1 }}
+        className="bg-[#2D3345] p-10 rounded-lg shadow-lg text-center"
+      >
+        <h2 className="text-6xl font-bold text-yellow-400 mb-4">95%</h2>
+        <p className="text-gray-400 text-lg">Satisfaction Rate</p>
+      </motion.div>
+    </div>
+  </div>
+</section>
 
       {/* Features Grid */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">

@@ -45,6 +45,7 @@ const TopNavbar = () => {
     { path: "/stores", label: "Stores", public: false },
     { path: "/leave-application", label: "Leave Application", public: false },
     { path: "/setting", label: "Settings", public: false },
+    { path: "/help-request", label: "Harassment Form", public: false},
 
     // Admin Routes
     { path: "/adminhomepage", label: "Admin Dashboard", adminOnly: true },
@@ -86,6 +87,7 @@ const TopNavbar = () => {
     { label: "Your Profile", path: "/your-profile" },
     { label: "Your Attendance", path: "/my-attendance" },
     { label: "Have a Query", path: "/frequently-asked-questions" },
+    { label: "Harassment Form", path: "/help-request"},
     { label: "Leave Application", path: "/leave-application" },
     { label: "Settings", path: "/setting" },
     ...(isAdmin ? [{ label: "Admin Panel", path: "/adminhomepage" }] : []),

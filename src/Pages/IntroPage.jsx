@@ -19,21 +19,14 @@ const IntroPage = () => {
 {/* Hero Section */}
 <header className="relative bg-gradient-to-br from-blue-500 to-indigo-600 text-white overflow-hidden">
   {/* Logo */}
-  <div className="absolute top-4 left-4">
-    <img
-      src="/logo-removebg-preview_06272023080455.png"
-      alt="IISPPR Logo"
-      className="h-40 w-auto"
-    />
-  </div>
-  {/* Logo */}
-  <div className="absolute top-4 right-4">
-    <img
-      src="/logo-removebg-preview_06272023080455.png"
-      alt="IISPPR Logo"
-      className="h-40 w-auto"
-    />
-  </div>
+ <div className="absolute top-4 left-4 md:top-6 md:left-6">
+    <img
+      src="/logo-removebg-preview_06272023080455.png"
+      alt="IISPPR Logo"
+      className="h-20 w-auto md:h-32 lg:h-40" 
+    />
+  </div>
+  
   <div className="container mx-auto px-6 py-24 text-center relative z-10">
     <motion.h1
       initial={{ opacity: 0, y: -50 }}
@@ -60,13 +53,13 @@ const IntroPage = () => {
       className="flex flex-wrap justify-center gap-4"
     >
       <button
-        className="bg-yellow-400 text-blue-900 px-8 py-3 rounded-full hover:bg-yellow-300 transition-colors flex items-center gap-2 shadow-lg transform hover:scale-105"
-      >
-        <GraduationCap className="w-6 h-6" />
-        <li>
-          <a href="/login" className="hover:text-white transition-colors">Get Started</a>
-        </li>
-      </button>
+      className="bg-yellow-400 text-blue-900 px-8 py-3 rounded-full hover:bg-yellow-300 transition-colors flex items-center gap-2 shadow-lg transform hover:scale-105"
+      onClick={() => (window.location.href = "/login")}
+    >
+      <GraduationCap className="w-6 h-6" />
+      <span>Get Started</span>
+    </button>
+    
     </motion.div>
   </div>
 </header>
@@ -207,70 +200,7 @@ const IntroPage = () => {
 </button>
   </div>
 </section>
-{/* Website Designed by Interns Section */}
-<section className="bg-gradient-to-br from-gray-100 to-gray-200 py-20 overflow-hidden">
-  <div className="container mx-auto px-6">
-    {/* Section Title */}
-    <h2 className="text-4xl font-bold text-center mb-10 text-gray-800">
-      Website Designed by the Below Interns
-    </h2>
 
-    {/* Floating Profiles */}
-    <div className="relative">
-      <div className="flex gap-8 animate-marquee">
-        {[
-          { name: "Viral🕵 ", role: "Team Lead" },
-          { name: "Bhaskar", role: "Front End Developer" },
-          { name: "Bhavish", role: "Front End Developer" },
-          { name: "Shivam", role: "Front End Developer" },
-          { name: "Lakshmi", role: "Front End Developer" },
-          { name:"Arya",role:"Front End Developer" },
-          { name:"Khushi ",role:"Front End Developer" },
-          { name:"Ashish ",role:"Back End Developer" },
-          { name:"Pravin ",role:"Back End Developer" },
-          { name:"Nadeem",role:"Back End Developer" },
-          { name:"Sanjula ",role:"Back End Developer" },
-          { name:"Sri Haripriyan ",role:"Back End Developer" },
-          { name:"Ishika  ",role:"Back End Developer" },
-          { name:"UJJWAL ",role:"Back End Developer" },
-          { name:"Anil ",role:"Back End Developer" },
-        ].map((intern, index) => (
-          <div
-            key={index}
-            className="bg-white p-6 rounded-lg shadow-lg text-center hover:shadow-2xl transition-shadow w-64"
-          >
-            <div className="w-16 h-16 mx-auto bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full flex items-center justify-center mb-4">
-              <span className="text-2xl font-bold text-white">
-                {intern.name.charAt(0)}
-              </span>
-            </div>
-            <h3 className="text-2xl font-bold mb-2 text-gray-800">
-              {intern.name}
-            </h3>
-            <p className="text-gray-600">{intern.role}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  </div>
-  {/* Add Animation for Floating Effect */}
-  {/* Add Animation for Floating Effect */}
-  <style jsx>{`
-    @keyframes marquee {
-      0% {
-        transform: translateX(100%);
-      }
-      100% {
-        transform: translateX(-100%);
-      }
-    }
-    .animate-marquee {
-      display: flex;
-      gap: 2rem;
-      animation: marquee 15s linear infinite;
-    }
-  `}</style>
-</section>
       {/* Footer */}
       <footer className="bg-[#0A0F1A] text-gray-400 py-16">
         <div className="container mx-auto px-4">

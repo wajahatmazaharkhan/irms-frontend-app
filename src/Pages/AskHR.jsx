@@ -92,20 +92,25 @@ const AskHR = () => {
     <div>
       <Navbar />
       <div className="flex">
-        <SideNav />
-        <div className="flex-1">
-          <div className="min-h-screen bg-gray-50 p-4 md:p-8">
-            <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
-              {/* Question Form */}
-              <div className="bg-white rounded-lg shadow-sm p-6">
-          <div className="flex items-center gap-2 mb-6">
+  {/* Sidebar */}
+  <div className="w-60 hidden md:block">
+    <SideNav />
+  </div>
+
+  {/* Main Content */}
+  <div className="flex-1 md:ml-3">
+    <div className="min-h-screen bg-gray-50 p-4 md:p-8">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+        {/* Question Form */}
+        <div className="bg-white rounded-lg shadow-sm p-6">
+          <div className="flex items-center gap-1 mb-6">
             <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
               <span className="text-blue-600 text-xl">?</span>
             </div>
             <h1 className="text-xl font-semibold">Ask HR</h1>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Question Title
@@ -170,10 +175,10 @@ const AskHR = () => {
               Submit Question
             </Button>
           </form>
-              </div>
+        </div>
 
-              {/* Question History */}
-              <div className="bg-white rounded-lg shadow-sm p-6">
+        {/* Question History */}
+        <div className="bg-white rounded-lg shadow-sm p-6">
           <h2 className="text-xl font-semibold mb-6">Question History</h2>
           <div className="space-y-4">
             {questions.map((question) => (
@@ -216,12 +221,14 @@ const AskHR = () => {
               </div>
             ))}
           </div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>
+  </div>
+</div>
+
+                </div>
+        
   );
 };
 

@@ -271,3 +271,4 @@ const whyJoinReasons = [
 ];
 
 export default IntroPage;
+// fix styling

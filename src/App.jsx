@@ -42,6 +42,11 @@ import { NotFound } from "./Components/Notfound";
 import { useAuthContext } from "./context/AuthContext";
 import AllAttendance from "./Admin/AllAttendance";
 
+
+import HrHomepage from "./HrHeadAndIntern/HrHomePage";
+
+import { HrProgressReport,HrTaskAssignment,HrTasksubmissions,HrAllUsersInterns, HrInterns ,Hrprofile ,HrSideInternAttendance} from "./HrHeadAndIntern/HrIndex";
+
 const AdminRoute = ({ children }) => {
   const isAdmin = localStorage.getItem("isAdmin") === "true";
   return isAdmin ? children : <NotAuthorized />;
@@ -55,7 +60,6 @@ const PrivateRoute = ({ children }) => {
 const App = () => {
   return (
     <Routes>
-      {/* Public Routes */}
       <Route path="/login" element={<Signin />} />
       <Route path="/signup" element={<SignUp />} />
       <Route path="/reset-account-password" element={<ResetPassword />} />
@@ -64,7 +68,6 @@ const App = () => {
       <Route path="/frequently-asked-questions" element={<FAQ />} />
       <Route path="*" element={<NotFound />} />
 
-      {/* Admin Routes - Already Protected */}
       <Route
         path="/Adminhomepage"
         element={
@@ -267,6 +270,52 @@ const App = () => {
           </PrivateRoute>
         }
       />
+
+      {/* hrhead and hr interns routes  */}
+
+      <Route
+      path="/hrhomepage"
+      element={
+        <HrHomepage/>
+      }
+      />
+
+<Route
+path="/hrprogressreport"
+element={<HrProgressReport/>}
+
+/>
+<Route
+path="/hrtaskassignment"
+element={<HrTaskAssignment/>}
+/>
+
+<Route
+path="/hrtasksubmissions"
+element={<HrTasksubmissions/>}
+/>
+
+<Route
+path="/hrallusersinterns"
+element={<HrAllUsersInterns/>}
+/>
+
+<Route
+path="/hrinterns"
+element={<HrInterns/>}
+/>
+
+<Route
+path="/hrprofile"
+element={<Hrprofile/>}
+/>
+
+      <Route
+      path="/hrinternsattendance"
+      element={<HrSideInternAttendance/>}
+      
+      />
+   
     </Routes>
   );
 };

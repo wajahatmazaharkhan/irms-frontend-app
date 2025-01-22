@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { TopNavbar, Footer } from "@/Components/compIndex";
-import { Mail, Lock, UserPlus, Phone } from "lucide-react";
+import { Mail, Lock, UserPlus, Phone, Laptop, Calendar } from "lucide-react";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -10,7 +10,10 @@ const SignUp = ({ onSwitchToSignin }) => {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState();
+  const [department, setDepartment] = useState("");
   const [password, setPassword] = useState("");
+  const [startDate] = useState(new Date().toISOString().split("T")[0]);
+  const [endDate, setEndDate] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -21,8 +24,12 @@ const SignUp = ({ onSwitchToSignin }) => {
   const signUpUser = async () => {
     const signupURL = `${import.meta.env.VITE_BASE_URL}/api/auth/signup`;
     setIsLoading(true);
-    const num = parseInt(phone);
+    
+    
+    const num = (phone);
+  
     try {
+      
       const response = await axios.post(signupURL, {
         name: fullName,
         email: email,
@@ -30,8 +37,15 @@ const SignUp = ({ onSwitchToSignin }) => {
         rpassword: confirmPassword,
         mnumber: num,
         role: "intern",
-        startDate: new Date().toISOString().split("T")[0],
+        department: department,
+        startDate:startDate,
+        EndDate: endDate,  
       });
+
+      const data  = await response.json;
+
+      console.log(data);
+      
       toast.success("Account created successfully");
       navigate("/login");
     } catch (error) {
@@ -59,7 +73,7 @@ const SignUp = ({ onSwitchToSignin }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!fullName || !email || !phone || !password || !confirmPassword) {
+    if (!fullName || !email || !phone || !password || !confirmPassword || !endDate) {
       toast.error("Please fill in all fields.");
       return;
     }
@@ -89,13 +103,13 @@ const SignUp = ({ onSwitchToSignin }) => {
       <div className="flex items-center justify-center min-h-screen px-4 bg-gradient-to-br from-blue-50 to-purple-50">
         <div className="w-full max-w-md p-8 transition-all duration-300 bg-white border border-gray-100 shadow-2xl rounded-xl hover:shadow-3xl">
           <div className="mb-6 text-center">
-          <div className="mx-auto mb-4 w-28 h-28">
-            <img
-              src={iispprLogo}
-              alt="IISPPR Logo"
-              className="object-contain w-full h-full"
-            />
-          </div>
+            <div className="mx-auto mb-4 w-28 h-28">
+              <img
+                src={iispprLogo}
+                alt="IISPPR Logo"
+                className="object-contain w-full h-full"
+              />
+            </div>
             <h1 className="mb-2 text-3xl font-bold text-blue-800">
               Create Your Account
             </h1>
@@ -167,13 +181,79 @@ const SignUp = ({ onSwitchToSignin }) => {
                   size={20}
                 />
                 <input
-                  type="number"
+                  type="text"
                   id="phone"
                   value={phone}
                   onChange={(e) => {
                     setPhone(e.target.value);
                   }}
                   placeholder="Enter your Phone"
+                  className="w-full p-3 pl-10 text-sm transition-all duration-300 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+                />
+              </div>
+            </div>
+
+            <div className="relative">
+              <label
+                htmlFor="branch"
+                className="block mb-1 text-sm text-gray-600"
+              >
+                Internship Department
+              </label>
+              <div className="relative">
+                <Laptop
+                  className="absolute text-gray-400 transform -translate-y-1/2 left-3 top-1/2"
+                  size={20}
+                />
+
+                <select
+                  id="Department"
+                  onChange={(e) => setDepartment(e.target.value)}
+                  className="w-full p-3 pl-10 text-sm transition-all duration-300 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+                >
+                  <option value="">Select your internship type </option>
+                  <option value="development"> Development internship </option>
+                  <option value="research">Research internship</option>
+                  <option value="hr">Hr internship</option>
+                </select>
+              </div>
+            </div>
+
+
+            {/* Start Date */}
+      <div className="relative">
+        <label htmlFor="startDate" className="block mb-1 text-sm text-gray-600">
+          Start Date
+        </label>
+        <input
+          type="date"
+          id="startDate"
+          value={startDate}
+          readOnly
+          className="w-full p-3 text-sm bg-gray-100 border border-gray-200 rounded-lg"
+        />
+      </div>
+
+            {/* End date*/}
+            <div className="relative">
+              <label
+                htmlFor="EndDate"
+                className="block mb-1 text-sm text-gray-600"
+              >
+                End Date
+              </label>
+              <div className="relative">
+                <Calendar
+                  className="absolute text-gray-400 transform -translate-y-1/2 left-3 top-1/2"
+                  size={20}
+                />
+                <input
+                  type="date"
+                  id="enddate"
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                  placeholder="Enter the End Date of Internship"
+                  min={new Date().toISOString().split("T")[0]}
                   className="w-full p-3 pl-10 text-sm transition-all duration-300 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
                 />
               </div>

@@ -1,19 +1,86 @@
 import React, { useState, useEffect } from "react";
+import axios from 'axios';
 import CustomNavbar from "./CustomNavbar";
 import { Loader } from "@/Components/compIndex";
 import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription } from "@/Components/ui/alert";
 import toast from "react-hot-toast";
-
+import { HrAllUsersInterns } from "@/HrHeadAndIntern/HrIndex";
 function AllUsers() {
   const [users, setUsers] = useState([]);
+  const [hrusernames, sethrusernames] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedUserId, setSelectedUserId] = useState("");
+  const [selectedHrInternId, setSelectedHrInternId] = useState("");
+  const [ assignedStatus,setassignedStatus] = useState("");
+
   const [sortConfig, setSortConfig] = useState({
     key: null,
     direction: "ascending",
   });
+
+  const [ismodalopen, setModalopen] = useState(false);
+
+  const togglemodal = () => {
+    setModalopen(!ismodalopen);
+  };
+
+  const handleassignedto = async(userid) => {
+    setSelectedUserId(userid)
+    // console.log("setSelectedUserId", userid);
+    togglemodal();
+    
+    
+  };
+
+  const checkAssigned= async()=>{
+    try{
+      const assignedStatus = await axios.post(`${import.meta.env.VITE_BASE_URL}/interns/assigned `,users);
+      if(assignedStatus.status ===200){
+        setassignedStatus(assignedStatus.data);
+        console.log("assignedStatus", assignedStatus);
+      }
+
+    }
+    catch(err){alert(err.message)}
+  }
+  const handleUserAssignedToHr=async(userid) => {
+    setSelectedHrInternId(userid)
+    console.log("checking user id ", userid);
+    handleassingment();
+  }
+
+  <HrAllUsersInterns hrId={selectedHrInternId || ""} />
+
+  const handleassingment = async() => {
+  
+
+    console.log("setSelectedHrInternId", selectedHrInternId);
+   
+
+   try{
+    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/assign-intern`,{hrId:selectedHrInternId,internId:selectedUserId});
+    if(response.status ===400) toast.error(response.message);
+
+    if(response.status === 200){
+    
+    console.log(response.message);
+    alert("Successfully assigned hr");
+   
+    togglemodal();
+    }
+    // toast.success("Successfully assigned hr");
+    }
+   
+   
+   catch(error){
+    //  toast.error("Failed to assign user to HR intern");
+    console.log(error.message);
+
+   }
+  };
 
   const fetchUsers = async () => {
     try {
@@ -25,6 +92,16 @@ function AllUsers() {
       }
       const result = await response.json();
       setUsers(result.data || []);
+      
+      const hrUsernames = result.data
+        .filter((user) => user.department === "hr")
+        .map((user) => ({id:user._id,hrname:user.name}));
+
+      
+      sethrusernames(hrUsernames);
+      console.log(hrUsernames);
+      // console.log(selectedHrInternId);
+    
     } catch (err) {
       setError(err.message);
     } finally {
@@ -111,6 +188,11 @@ function AllUsers() {
     fetchUsers();
   }, []);
 
+
+//   useEffect(() => {
+//   checkAssigned();
+// }, []);
+
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",
@@ -139,6 +221,8 @@ function AllUsers() {
               />
             </div>
           </div>
+
+         
 
           {error && (
             <Alert variant="destructive" className="mb-4">
@@ -187,6 +271,9 @@ function AllUsers() {
                       Start Date
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Assigning
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Actions
                     </th>
                   </tr>
@@ -197,6 +284,7 @@ function AllUsers() {
                       <td className="px-4 py-3 text-sm text-gray-900">
                         {user._id}
                       </td>
+                      
                       <td className="px-4 py-3 text-sm text-gray-900">
                         {user.name}
                       </td>
@@ -254,6 +342,71 @@ function AllUsers() {
                       <td className="px-4 py-3 text-sm text-gray-900">
                         {formatDate(user.startDate)}
                       </td>
+
+                      <td className="px-4 py-3 text-sm text-gray-900">
+                      {assignedStatus[user.id] ? (
+          <button disabled style={{ backgroundColor: "#ccc" }}>
+            Already Assigned
+          </button>
+        ) : (
+          <button  className="bg-blue-900 text-white px-4 py-2 rounded-md" onClick={() => handleassignedto(user._id)}>
+            Assign To
+          </button>
+        )}
+                        {ismodalopen && (
+                          <>
+                            <div
+                              className="fixed inset-0 shadow-slate-800 border-2 opacity-50 z-10"
+                              onClick={togglemodal}
+                            ></div>
+
+                            <div className="fixed inset-0 flex items-center justify-center z-20">
+                              <div className="bg-white p-6 rounded-lg  border-2 max-w-md w-full">
+                                <h2 className="text-xl font-semibold text-center mb-4">
+                                  HR List
+                                </h2>
+
+                                <ul className="mt-4 space-y-4">
+                                  <div className="hr-all-row-container">
+                                    {hrusernames.map((hrnames, index) => {
+                                      // console.log(hrnames)
+                                      return (
+                                        <div
+                                          key={index}
+                                          className="hr-row-container flex justify-between items-center border-b pb-3"
+                                        >
+                                          <li className="flex-1">{hrnames.hrname}</li>
+                                          <button
+                                            onClick={() =>
+                                             
+                                              {
+                                                handleUserAssignedToHr(hrnames.id)
+                                              }
+                                            } 
+                                            className="bg-blue-900 text-white px-4 py-2 rounded-md"
+                                          >
+                                            Assign
+                                          </button>
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                </ul>
+
+                                <div className="assign-btn top-2 right-2">
+                                  <button
+                                    onClick={togglemodal}
+                                    className="mt-4 bg-red-500 text-white px-4 py-2 rounded-md "
+                                  >
+                                    X
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </>
+                        )}
+                      </td>
+
                       <td className="px-4 py-3 text-sm text-gray-900">
                         <button
                           onClick={() => deleteUser(user._id, user.name)}

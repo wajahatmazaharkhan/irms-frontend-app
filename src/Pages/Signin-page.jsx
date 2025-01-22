@@ -67,6 +67,11 @@ const Signin = ({ onSwitchToSignup }) => {
     }
   };
 
+
+
+  
+
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!email || !password) {
@@ -212,7 +217,7 @@ const Signin = ({ onSwitchToSignup }) => {
               <a
                 href="/signup"
                 onClick={onSwitchToSignup}
-                className="font-semibold text-purple-700 hover:underline"
+                className="font-semibold text-blue-700 hover:underline"
               >
                 Sign Up
               </a>

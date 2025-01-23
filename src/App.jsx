@@ -276,6 +276,14 @@ const App = () => {
           </PrivateRoute>
         }
       />
+      <Route
+        path="/home-page"
+        element={
+          <PrivateRoute>
+            <IntroPage/>
+          </PrivateRoute>
+        }
+      />
 
     </Routes>
   );

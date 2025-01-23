@@ -239,7 +239,10 @@ const Notifications = () => {
   //                            //
   ////////////////////////////////
 
-  const deleteNoti = async (noteId) => {
+  const deleteNoti = async (noteId,e) => {
+    if (e) {
+      e.stopPropagation();
+    }
     const token = localStorage.getItem("token");
     const userId = localStorage.getItem("userId");
     try {
@@ -259,6 +262,7 @@ const Notifications = () => {
         );
         setNotifications(updatedNotifications);
         setNotiCounter(updatedNotifications.length);
+        
       }
     } catch (error) {
       console.error("Error deleting notification:", error);
@@ -331,11 +335,13 @@ const Notifications = () => {
                     {notifications.map((notification) => (
                       <div
                         key={notification._id}
-                        onClick={() => handleNotificationClick(notification)}
-                        className="group p-4 border rounded-lg hover:border-blue-200 bg-white hover:bg-blue-50/50 transition-all duration-200 cursor-pointer transform hover:-translate-y-1"
+                        
+                        className="group p-4 border rounded-lg hover:border-blue-200 bg-white hover:bg-blue-50/50
+                         transition-all duration-200 cursor-pointer transform hover:-translate-y-1"
                       >
-                        <div className="flex justify-between items-start gap-4">
-                          <div className="flex-1">
+                        <div className="flex item-center gap-4">
+                          <div className="flex-1 cursor-pointer" 
+                          onClick={() => handleNotificationClick(notification)}>
                             <div className="flex items-center gap-3 mb-2">
                               <Badge
                                 className={`${getNotificationTypeStyles(
@@ -361,8 +367,17 @@ const Notifications = () => {
                               {formatDate(notification.createdAt)}
                             </p>
                           </div>
+                          <button
+                              onClick={(e) => deleteNoti(notification._id, e)}
+                              className="opacity-0 group-hover:opacity-100 transition-opacity duration-200
+                               p-2 hover:bg-red-50 rounded-full flex-shrink-0 self-center"
+                              title="Delete notification"
+                          >
+                              <Trash className="h-5 w-5 text-red-500" />
+                          </button>
                         </div>
                       </div>
+                      
                     ))}
                   </div>
                 )}
@@ -408,6 +423,7 @@ const Notifications = () => {
               </span>
             </button>
           </div>
+          
         </DialogContent>
       </Dialog>
 

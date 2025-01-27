@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { TopNavbar, Footer } from "@/Components/compIndex";
 import { Mail, Lock, UserPlus, Phone } from "lucide-react";
 import toast from "react-hot-toast";
 import axios from "axios";
@@ -85,7 +84,6 @@ const SignUp = ({ onSwitchToSignin }) => {
   // verify redirect issue
   return (
     <>
-      <TopNavbar />
       <div className="flex items-center justify-center min-h-screen px-4 bg-gradient-to-br from-blue-50 to-purple-50">
         <div className="w-full max-w-md p-8 transition-all duration-300 bg-white border border-gray-100 shadow-2xl rounded-xl hover:shadow-3xl">
           <div className="mb-6 text-center">

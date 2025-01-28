@@ -6,13 +6,15 @@ const FAQ = () => {
   return (
     <>
       <Navbar />
-      <div className="flex">
+      {/* <SideNav />
+      <TopNavbar /> */}
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
         {/* Side Navigation */}
 
         {/* Main Content */}
         <div
           id="mainContent"
-          className="p-6 lg:ml-32 ml-10 duration-300 w-full"
+          className= "p-4 w-full max-w-sm sm:max-w-lg lg:max-w-4xl rounded-lg"
         >
           <h1 className="text-4xl capitalize font-bold mb-6 text-center text-blue-600">
             How can we help?
@@ -45,4 +47,4 @@ const FAQ = () => {
   );
 };
 
-export default FAQ;
+export default FAQ; 

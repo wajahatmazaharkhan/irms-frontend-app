@@ -46,8 +46,19 @@ const Signin = ({ onSwitchToSignup }) => {
       await storeTokenInLocalStorage(token);
       await storeUserId(user.id);
       await storeUsername(user.name);
+      console.log(`response :- ${response.data.user}`);
+      console.log(`response :- ${JSON.stringify(response.data.user)}`);
+   
+
+
+
+      if(user.role ==='hr'){
+        navigate("/hrhomepage");
+      }
+      
       const isAdminValue = Boolean(user.isAdmin);
       console.log("Converting isAdmin to boolean:", isAdminValue);
+    
       await storeIsAdminState(isAdminValue);
       setIsLoggedIn(true);
       setIsLoading(false);

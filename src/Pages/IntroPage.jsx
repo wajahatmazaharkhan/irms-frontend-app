@@ -19,7 +19,7 @@ const IntroPage = () => {
   return (
     <div className="min-h-screen bg-[#F8F9FD]">
       {/* Hero Section */}
-      <header className="relative bg-[#4F46E5] text-white overflow-hidden">
+      <header className="relative bg-[#2463EB] text-white overflow-hidden">
         {/* Logo */}
         <div className="absolute top-4 left-4 md:top-6 md:left-6">
           <img
@@ -57,7 +57,7 @@ const IntroPage = () => {
             className="flex flex-wrap justify-center gap-4"
           >
             <button
-              className="bg-white text-[#4F46E5] px-8 py-3 rounded-lg hover:bg-[#F8F9FD] transition-colors flex items-center gap-2 shadow-md font-semibold"
+              className="bg-white text-[#2463EB] px-8 py-3 rounded-lg hover:bg-[#F8F9FD] transition-colors flex items-center gap-2 shadow-md font-semibold"
               onClick={() => (window.location.href = "/login")}
             >
               <GraduationCap className="w-5 h-5" />
@@ -71,11 +71,11 @@ const IntroPage = () => {
       <section className="bg-white py-16">
         <div className="container mx-auto px-6">
           <div className="text-center mb-12">
-            <span className="bg-[#EEF2FF] text-[#4F46E5] px-4 py-1.5 rounded-full text-sm font-medium">
+            <span className="bg-[#EEF2FF] text-[#2463EB] px-4 py-1.5 rounded-full text-sm font-medium">
               Our Achievements
             </span>
             <h2 className="text-4xl font-bold mt-4 mb-6 text-[#1E293B]">
-              Trusted by <span className="text-[#4F46E5]">1000+ Students</span>
+              Trusted by <span className="text-[#2463EB]">1000+ Students</span>
             </h2>
             <p className="text-[#64748B] max-w-3xl mx-auto text-lg">
               Join 1000+ of learners around the globe who trust our platform to
@@ -94,7 +94,7 @@ const IntroPage = () => {
                 whileHover={{ scale: 1.05 }}
                 className="bg-[#F8F9FD] p-8 rounded-xl shadow-sm text-center"
               >
-                <h2 className="text-5xl font-bold text-[#4F46E5] mb-3">
+                <h2 className="text-5xl font-bold text-[#2463EB] mb-3">
                   {stat.number}
                 </h2>
                 <p className="text-[#64748B] font-medium">{stat.label}</p>
@@ -109,10 +109,10 @@ const IntroPage = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <div className="inline-flex items-center gap-2 bg-[#EEF2FF] p-2 rounded-full mb-4">
-              <span className="bg-[#4F46E5] p-2 rounded-full">
+              <span className="bg-[#2463EB] p-2 rounded-full">
                 <Award className="w-5 h-5 text-white" />
               </span>
-              <span className="text-[#4F46E5] pr-2 font-medium">
+              <span className="text-[#2463EB] pr-2 font-medium">
                 Research Excellence
               </span>
             </div>
@@ -134,7 +134,7 @@ const IntroPage = () => {
               >
                 <div className="bg-[#EEF2FF] w-12 h-12 rounded-lg flex items-center justify-center mb-4">
                   {React.cloneElement(feature.icon, {
-                    className: "w-6 h-6 text-[#4F46E5]",
+                    className: "w-6 h-6 text-[#2463EB]",
                   })}
                 </div>
                 <h3 className="text-xl font-semibold text-[#1E293B] mb-2">
@@ -163,7 +163,7 @@ const IntroPage = () => {
                 <h3 className="text-2xl font-bold mb-4 text-[#1E293B]">
                   {reason.title}
                 </h3>
-                <div className="h-1 w-16 bg-[#4F46E5] mb-6"></div>
+                <div className="h-1 w-16 bg-[#2463EB] mb-6"></div>
                 <p className="text-[#64748B] leading-relaxed">
                   {reason.description}
                 </p>
@@ -179,7 +179,7 @@ const IntroPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center gap-2 text-white mb-4">
-                <div className="bg-[#4F46E5] p-2 rounded">II</div>
+                <div className="bg-[#2463EB] p-2 rounded">II</div>
                 <span className="font-bold">IISPPR</span>
               </div>
               <p className="text-sm">

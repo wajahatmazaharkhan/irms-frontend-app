@@ -220,7 +220,7 @@ const SignUp = ({ onSwitchToSignin }) => {
             </div>
 
 
-            {/* Start Date */}
+            {/*  */}
       <div className="relative">
         <label htmlFor="startDate" className="block mb-1 text-sm text-gray-600">
           Start Date

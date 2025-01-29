@@ -67,8 +67,83 @@ const IntroPage = () => {
         </div>
       </header>
 
+      {/* Bio/Introduction Section */}
+      <section className="bg-white py-16 px-6 md:px-12 lg:px-20">
+        <div className="container mx-auto">
+          <motion.h2 
+            initial={{ opacity: 0, y: -20 }} 
+            animate={{ opacity: 1, y: 0 }} 
+            transition={{ duration: 0.8 }}
+            className="text-3xl md:text-4xl font-bold text-center text-[#1E293B] mb-6"
+          >
+            About IISPPR
+          </motion.h2>
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }} 
+            animate={{ opacity: 1, y: 0 }} 
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="text-lg text-[#64748B] leading-relaxed text-justify"
+          >
+            International Institute of SDGs and Public Policy Research specializes in Research and Development.
+            Our major work includes comprehensive baselines studies concerning Education and Development. Our
+            dedicated experts include researchers, policy analysts, educationists, and professionals from varied
+            backgrounds. With their combined knowledge and experience, we aim to bring innovation and provide
+            evidence-based recommendations to governments, NGOs, and all other stakeholders. As an institute
+            dedicated to SDGs and public policy and affiliated with the Niti Ayog NGO Darpan portal, we prioritize
+            capacity building and knowledge sharing.
+          </motion.p>
+          
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }} 
+            animate={{ opacity: 1, y: 0 }} 
+            transition={{ duration: 0.8, delay: 0.5 }}
+            className="text-lg text-[#64748B] leading-relaxed mt-4 text-justify"
+          >
+            By fostering collaboration and partnerships, we strive to create a network of change agents who can drive
+            sustainable development and make a lasting impact on society. We engage in activities such as writing articles,
+            publishing journals, and translating important research, all aimed at inspiring and pushing governments and
+            individuals toward developing policies beneficial for everyone. Our research spans across fields such as
+            biotechnology, content writing, graphic designing, human resources, journalism, and psychology.
+          </motion.p>
+
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }} 
+            animate={{ opacity: 1, y: 0 }} 
+            transition={{ duration: 0.8, delay: 0.7 }}
+            className="text-lg text-[#64748B] leading-relaxed mt-4 text-justify"
+          >
+            We also emphasize building within the framework of SDG Goal 4 - Quality Education. Our agenda is to provide
+            quality education to students, helping them develop essential skills and secure better employment opportunities.
+            Additionally, we focus on reconnecting children who lost access to education due to the pandemic, ensuring their
+            right to learn and grow.
+          </motion.p>
+
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }} 
+            animate={{ opacity: 1, y: 0 }} 
+            transition={{ duration: 0.8, delay: 0.9 }}
+            className="text-lg text-[#64748B] leading-relaxed mt-4 text-justify"
+          >
+            We believe in holistic development, including sustainability, gender equality, and humanitarian assistance.
+            Our efforts in gender equality focus on SDG Goal 5, where we provide training and work opportunities for women
+            to help them achieve financial independence and eradicate detrimental practices. Our research initiatives include
+            topics such as gender pay gaps, political shifts, and sustainable industrial policies.
+          </motion.p>
+          
+          <div className="flex justify-center mt-8">
+            <button
+              className="bg-[#2463EB] text-white px-8 py-3 rounded-lg hover:bg-[#1E4DB7] transition-colors flex items-center gap-2 shadow-lg font-semibold"
+              onClick={() => (window.location.href = "/aboutus")}
+            >
+              <span>Read More</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+
       {/* Stats Section */}
-      <section className="bg-white py-16">
+      <section className="bg-[#F8F9FD] py-16">
         <div className="container mx-auto px-6">
           <div className="text-center mb-12">
             <span className="bg-[#EEF2FF] text-[#2463EB] px-4 py-1.5 rounded-full text-sm font-medium">

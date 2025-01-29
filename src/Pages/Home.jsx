@@ -5,25 +5,21 @@ import { useAuthContext } from "@/context/AuthContext";
 import { IntroPage } from "./pageIndex";
 
 const Home = () => {
-  const { loggedIn } = useAuthContext(); // Get the logged-in status from AuthContext
+  const { loggedIn } = useAuthContext();
 
   return (
     <>
-      <TopNavbar />
-
       {loggedIn ? (
-        <div className="flex">
-          {/* Sidebar */}
+        <>
+          <TopNavbar />
           <SideNav />
-          {/* Dashboard */}
-          <div className="flex-1">
-            <Dashboard />
-          </div>
-        </div>
+          <Dashboard />
+        </>
       ) : (
-        <IntroPage />
+        <>
+          <IntroPage />
+        </>
       )}
-      <Footer />
     </>
   );
 };

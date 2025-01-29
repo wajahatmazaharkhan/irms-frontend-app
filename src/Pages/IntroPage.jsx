@@ -1,435 +1,339 @@
-import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/Components/ui/card";
-import { Skeleton } from "@/Components/ui/skeleton";
-import { AlertCircle, Bell, Calendar, Trash, Clock, Info } from "lucide-react";
-import { Alert, AlertDescription } from "@/Components/ui/alert";
-import { Navbar, SideNav, Footer } from "@/Components/compIndex";
+import React from "react";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/Components/ui/dialog";
-import { Badge } from "@/Components/ui/badge";
-import { useAuthContext } from "@/context/AuthContext";
-import axios from "axios";
-import toast from "react-hot-toast";
-import { useAppContext } from "@/context/AppContext";
+  GraduationCap,
+  Users,
+  Target,
+  BookOpen,
+  TrendingUp,
+  Award,
+  Linkedin,
+  Twitter,
+  Facebook,
+  Instagram,
+  Youtube,
+} from "lucide-react";
+import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
-const Notifications = () => {
-  const [notifications, setNotifications] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [selectedNotification, setSelectedNotification] = useState(null);
-  const [taskDetails, setTaskDetails] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const { loggedIn } = useAuthContext();
-  const { setNotiCounter } = useAppContext();
-
-  useEffect(() => {
-    const fetchNotifications = async () => {
-      const userId = localStorage.getItem("userId");
-      try {
-        const response = await fetch(
-          `${import.meta.env.VITE_BASE_URL}/get-notifications?userId=${userId}`
-        );
-        if (!response.ok) throw new Error("Failed to fetch notifications");
-        const data = await response.json();
-        if (data?.notifications?.notifications) {
-          const sortedNotifications = data.notifications.notifications.sort(
-            (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-          );
-          setNotifications(sortedNotifications);
-        } else {
-          setError("No notifications found");
-        }
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (loggedIn) fetchNotifications();
-    else setLoading(false);
-  }, [loggedIn]);
-
-  const fetchTaskDetails = async (taskId) => {
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_BASE_URL}/task/get-task/${taskId}`
-      );
-      if (!response.ok) throw new Error("Failed to fetch task details");
-      const data = await response.json();
-      if (data.taskDetails) {
-        setTaskDetails(data.taskDetails);
-      }
-    } catch (error) {
-      console.error("Error fetching task details:", error);
-      setTaskDetails(null);
-    }
-  };
-
-  const formatDate = (dateString) => {
-    if (!dateString) return "";
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat("en-US", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "numeric",
-      minute: "numeric",
-    }).format(date);
-  };
-
-  ////////////////////////////////
-  //                            //
-  //        TIMINGS AGO         //
-  //                            //
-  ////////////////////////////////
-
-  const getTimeAgo = (dateString) => {
-    const now = new Date();
-    const past = new Date(dateString);
-    const diffInSeconds = Math.floor((now - past) / 1000);
-
-    if (diffInSeconds < 60) return "Just now";
-    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`;
-    if (diffInSeconds < 86400)
-      return `${Math.floor(diffInSeconds / 3600)}h ago`;
-    return `${Math.floor(diffInSeconds / 86400)}d ago`;
-  };
-
-  const handleNotificationClick = async (notification) => {
-    setSelectedNotification(notification);
-    setIsModalOpen(true);
-
-    // Only fetch task details if task exists
-    if (notification.task) {
-      setTaskDetails(null); // Reset previous details
-      await fetchTaskDetails(notification.task);
-    }
-  };
-
-  const getNotificationTypeStyles = (type) => {
-    const types = {
-      update: "bg-blue-100 text-blue-800",
-      alert: "bg-red-100 text-red-800",
-      reminder: "bg-yellow-100 text-yellow-800",
-      success: "bg-green-100 text-green-800",
-      default: "bg-gray-100 text-gray-800",
-    };
-    return types[type?.toLowerCase()] || types.default;
-  };
-
-  const renderNotificationSkeleton = () => (
-    <div className="space-y-6">
-      {[1, 2, 3].map((index) => (
-        <div key={index} className="p-4 border rounded-lg bg-white shadow-sm">
-          <div className="flex items-start space-x-4">
-            <Skeleton className="h-10 w-10 rounded-full" />
-            <div className="space-y-3 flex-1">
-              <Skeleton className="h-5 w-1/4" />
-              <Skeleton className="h-4 w-3/4" />
-              <Skeleton className="h-4 w-1/2" />
-            </div>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-
-  ////////////////////////////////
-  //                            //
-  //  Notification with tasks   //
-  //                            //
-  ////////////////////////////////
-
-  const renderTaskDetails = () => (
-    <div className="space-y-6">
-      <div className="space-y-4">
-        <div className="flex justify-between items-start gap-4">
-          <h3 className="text-xl font-semibold text-gray-900">
-            {taskDetails.title}
-          </h3>
-          <Badge
-            className={`${getNotificationTypeStyles(
-              taskDetails.status
-            )} capitalize px-3 py-1`}
-          >
-            {taskDetails.status}
-          </Badge>
-        </div>
-
-        <p className="text-gray-600">
-          {taskDetails.description || "No description available."}
-        </p>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-blue-100 rounded-lg">
-                <Calendar className="h-5 w-5 text-blue-600" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">Start Date</p>
-                <p className="text-sm font-medium text-gray-900">
-                  {formatDate(taskDetails.startDate)}
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-red-100 rounded-lg">
-                <Calendar className="h-5 w-5 text-red-600" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">End Date</p>
-                <p className="text-sm font-medium text-gray-900">
-                  {formatDate(taskDetails.endDate)}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
-  ////////////////////////////////
-  //                            //
-  // Notification without tasks //
-  //                            //
-  ////////////////////////////////
-
-  const renderSimpleNotification = () => (
-    <div className="space-y-4">
-      <div className="flex items-center gap-3 mb-2">
-        <Badge
-          className={`${getNotificationTypeStyles(
-            selectedNotification?.type
-          )} px-3 py-1`}
-        >
-          {selectedNotification?.type || "Update"}
-        </Badge>
-        <div className="flex items-center gap-2 text-sm text-gray-500">
-          <Clock className="h-4 w-4" />
-          {getTimeAgo(selectedNotification?.createdAt)}
-        </div>
-      </div>
-      <p className="text-gray-900 font-medium">
-        {selectedNotification?.message}
-      </p>
-      {selectedNotification?.description && (
-        <p className="text-sm text-gray-600 mt-2">
-          {selectedNotification.description}
-        </p>
-      )}
-      <p className="text-xs text-gray-400 mt-2">
-        {formatDate(selectedNotification?.createdAt)}
-      </p>
-    </div>
-  );
-
-  ////////////////////////////////
-  //                            //
-  //    DELETE NOTIFICATION     //
-  //                            //
-  ////////////////////////////////
-
-  const deleteNoti = async (noteId,e) => {
-    if (e) {
-      e.stopPropagation();
-    }
-    const token = localStorage.getItem("token");
-    const userId = localStorage.getItem("userId");
-    try {
-      const repsonse = await axios.delete(
-        `${import.meta.env.VITE_BASE_URL}/delete-notification/?notificationId=${noteId}&userId=${userId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (repsonse.status === 200) {
-        toast.success("Notification deleted");
-        setIsModalOpen(false);
-        const updatedNotifications = notifications.filter(
-          (note) => note._id !== noteId
-        );
-        setNotifications(updatedNotifications);
-        setNotiCounter(updatedNotifications.length);
-        
-      }
-    } catch (error) {
-      console.error("Error deleting notification:", error);
-      toast.error("Failed to delete notification");
-    }
-  };
-
+const IntroPage = () => {
   return (
-    <>
-      <Navbar />
-      <SideNav />
-      <div className="relative bg-gray-50 min-h-screen ml-0 md:ml-32">
-        <div className="p-6">
-          <div className="max-w-5xl mx-auto">
-            <Card className="shadow-lg">
-              <CardHeader className="border-b bg-white">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-2xl font-bold flex items-center gap-3">
-                    <div className="p-2 bg-blue-100 rounded-lg">
-                      <Bell className="h-6 w-6 text-blue-600" />
-                    </div>
-                    Notifications Center
-                  </CardTitle>
-                  {notifications.length > 0 && (
-                    <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-200">
-                      {notifications.length} New
-                    </Badge>
-                  )}
-                </div>
-              </CardHeader>
-              <CardContent className="p-6">
-                {!loggedIn && (
-                  <Alert className="bg-yellow-50 border-yellow-200 mb-6">
-                    <AlertCircle className="h-5 w-5 text-yellow-600" />
-                    <AlertDescription className="text-yellow-700 ml-2">
-                      Please log in to view your notifications
-                    </AlertDescription>
-                  </Alert>
-                )}
+    <div className="min-h-screen bg-[#F8F9FD]">
+      {/* Hero Section */}
+      <header className="relative bg-[#4F46E5] text-white overflow-hidden">
+        {/* Logo */}
+        <div className="absolute top-4 left-4 md:top-6 md:left-6">
+          <img
+            src="/logo-removebg-preview_06272023080455.png"
+            alt="IISPPR Logo"
+            className="h-16 w-auto md:h-24 lg:h-28"
+          />
+        </div>
 
-                {loading && renderNotificationSkeleton()}
+        <div className="container mx-auto px-6 py-20 text-center relative z-10">
+          <motion.h1
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1 }}
+            className="text-5xl md:text-6xl font-bold tracking-tight mb-6"
+          >
+            Empower Your Future with <br />
+            <span className="text-[#F8F9FD] text-6xl md:text-7xl font-extrabold mt-2 block">
+              IISPPR Internships
+            </span>
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: -30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.3 }}
+            className="text-lg md:text-xl text-[#E2E8F0] mb-8 leading-relaxed"
+          >
+            Pioneering Excellence in Research & Development <br />
+            Through Impactful, Structured Internships.
+          </motion.p>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1, delay: 0.6 }}
+            className="flex flex-wrap justify-center gap-4"
+          >
+            <button
+              className="bg-white text-[#4F46E5] px-8 py-3 rounded-lg hover:bg-[#F8F9FD] transition-colors flex items-center gap-2 shadow-md font-semibold"
+              onClick={() => (window.location.href = "/login")}
+            >
+              <GraduationCap className="w-5 h-5" />
+              <span>Get Started</span>
+            </button>
+          </motion.div>
+        </div>
+      </header>
 
-                {error && (
-                  <Alert variant="destructive" className="mb-6">
-                    <AlertCircle className="h-5 w-5" />
-                    <AlertDescription className="ml-2">
-                      {error}
-                    </AlertDescription>
-                  </Alert>
-                )}
-
-                {!loading && !error && notifications.length === 0 && (
-                  <div className="text-center py-12">
-                    <div className="flex justify-center mb-4">
-                      <div className="p-3 bg-gray-100 rounded-full">
-                        <Info className="h-8 w-8 text-gray-400" />
-                      </div>
-                    </div>
-                    <p className="text-gray-600 font-medium">
-                      No notifications available
-                    </p>
-                    <p className="text-gray-400 text-sm mt-1">
-                      Check back later for updates
-                    </p>
-                  </div>
-                )}
-
-                {!loading && !error && notifications.length > 0 && (
-                  <div className="space-y-4">
-                    {notifications.map((notification) => (
-                      <div
-                        key={notification._id}
-                        
-                        className="group p-4 border rounded-lg hover:border-blue-200 bg-white hover:bg-blue-50/50
-                         transition-all duration-200 cursor-pointer transform hover:-translate-y-1"
-                      >
-                        <div className="flex item-center gap-4">
-                          <div className="flex-1 cursor-pointer" 
-                          onClick={() => handleNotificationClick(notification)}>
-                            <div className="flex items-center gap-3 mb-2">
-                              <Badge
-                                className={`${getNotificationTypeStyles(
-                                  notification.type
-                                )} px-3 py-1`}
-                              >
-                                {notification.type || "Update"}
-                              </Badge>
-                              <div className="flex items-center gap-2 text-sm text-gray-500">
-                                <Clock className="h-4 w-4" />
-                                {getTimeAgo(notification.createdAt)}
-                              </div>
-                            </div>
-                            <p className="text-gray-900 font-medium group-hover:text-blue-600 transition-colors duration-200">
-                              {notification.message}
-                            </p>
-                            {notification.description && (
-                              <p className="text-sm text-gray-600 mt-2 line-clamp-2">
-                                {notification.description}
-                              </p>
-                            )}
-                            <p className="text-xs text-gray-400 mt-2">
-                              {formatDate(notification.createdAt)}
-                            </p>
-                          </div>
-                          <button
-                              onClick={(e) => deleteNoti(notification._id, e)}
-                              className="opacity-0 group-hover:opacity-100 transition-opacity duration-200
-                               p-2 hover:bg-red-50 rounded-full flex-shrink-0 self-center"
-                              title="Delete notification"
-                          >
-                              <Trash className="h-5 w-5 text-red-500" />
-                          </button>
-                        </div>
-                      </div>
-                      
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+      {/* Stats Section */}
+      <section className="bg-white py-16">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-12">
+            <span className="bg-[#EEF2FF] text-[#4F46E5] px-4 py-1.5 rounded-full text-sm font-medium">
+              Our Achievements
+            </span>
+            <h2 className="text-4xl font-bold mt-4 mb-6 text-[#1E293B]">
+              Trusted by <span className="text-[#4F46E5]">1000+ Students</span>
+            </h2>
+            <p className="text-[#64748B] max-w-3xl mx-auto text-lg">
+              Join 1000+ of learners around the globe who trust our platform to
+              achieve their educational goals and build their future.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {[
+              { number: "2,800", label: "Students Enrolled" },
+              { number: "4M+", label: "Views on YouTube" },
+              { number: "1,200+", label: "Hours of Content" },
+              { number: "95%", label: "Satisfaction Rate" },
+            ].map((stat, index) => (
+              <motion.div
+                key={index}
+                whileHover={{ scale: 1.05 }}
+                className="bg-[#F8F9FD] p-8 rounded-xl shadow-sm text-center"
+              >
+                <h2 className="text-5xl font-bold text-[#4F46E5] mb-3">
+                  {stat.number}
+                </h2>
+                <p className="text-[#64748B] font-medium">{stat.label}</p>
+              </motion.div>
+            ))}
           </div>
         </div>
-      </div>
+      </section>
 
-      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-2xl">
-          <DialogHeader>
-            <DialogTitle className="text-2xl font-semibold">
-              {selectedNotification?.task
-                ? "Notification Details"
-                : "Notification Details"}
-            </DialogTitle>
-          </DialogHeader>
-
-          <div className="mt-6">
-            {selectedNotification?.task ? (
-              taskDetails ? (
-                renderTaskDetails()
-              ) : (
-                <div className="flex capitalize justify-center items-center py-8">
-                  <p className="text-gray-500">
-                    No additional details available.
-                  </p>
-                </div>
-              )
-            ) : (
-              renderSimpleNotification()
-            )}
-          </div>
-          <div className="flex justify-center mt-6">
-            <button
-              onClick={() => deleteNoti(selectedNotification._id)}
-              className="flex items-center space-x-2 text-red-500 outline-none"
-            >
-              delete
-              <span className="ml-2">
-                <Trash size={17} />
+      {/* Features Grid */}
+      <section className="py-20 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 bg-[#EEF2FF] p-2 rounded-full mb-4">
+              <span className="bg-[#4F46E5] p-2 rounded-full">
+                <Award className="w-5 h-5 text-white" />
               </span>
-            </button>
+              <span className="text-[#4F46E5] pr-2 font-medium">
+                Research Excellence
+              </span>
+            </div>
+            <h2 className="text-4xl font-bold text-[#1E293B] mb-4">
+              Become a Research Leader
+            </h2>
+            <p className="text-[#64748B] max-w-2xl mx-auto">
+              Connect with fellow researchers, share insights, and participate
+              in groundbreaking studies. Enjoy comprehensive training and the
+              opportunity to make real impact!
+            </p>
           </div>
-          
-        </DialogContent>
-      </Dialog>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {features.map((feature, index) => (
+              <motion.div
+                key={index}
+                whileHover={{ scale: 1.03 }}
+                className="bg-[#F8F9FD] p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow"
+              >
+                <div className="bg-[#EEF2FF] w-12 h-12 rounded-lg flex items-center justify-center mb-4">
+                  {React.cloneElement(feature.icon, {
+                    className: "w-6 h-6 text-[#4F46E5]",
+                  })}
+                </div>
+                <h3 className="text-xl font-semibold text-[#1E293B] mb-2">
+                  {feature.title}
+                </h3>
+                <p className="text-[#64748B]">{feature.description}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-      <Footer />
-    </>
+      {/* Why Join Section */}
+      <section className="py-20 bg-[#F8F9FD]">
+        <div className="container mx-auto px-4">
+          <h2 className="text-4xl font-bold text-center mb-16 text-[#1E293B]">
+            WHY YOU SHOULD JOIN IISPPR?
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {whyJoinReasons.map((reason, index) => (
+              <motion.div
+                key={index}
+                whileHover={{ scale: 1.02 }}
+                className="bg-white p-8 rounded-xl shadow-sm"
+              >
+                <h3 className="text-2xl font-bold mb-4 text-[#1E293B]">
+                  {reason.title}
+                </h3>
+                <div className="h-1 w-16 bg-[#4F46E5] mb-6"></div>
+                <p className="text-[#64748B] leading-relaxed">
+                  {reason.description}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-[#1E293B] text-[#94A3B8] py-16">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+              <div className="flex items-center gap-2 text-white mb-4">
+                <div className="bg-[#4F46E5] p-2 rounded">II</div>
+                <span className="font-bold">IISPPR</span>
+              </div>
+              <p className="text-sm">
+                International Institute of SDGs and Public Policy Research
+                specializes in Research and Development. Our major work includes
+                comprehensive baselines and impactful research initiatives.
+              </p>
+              <div className="flex gap-4 mt-4">
+                {[
+                  {
+                    icon: <Linkedin />,
+                    href: "https://www.linkedin.com/company/international-institute-of-sdg-s-and-public-policy-research/",
+                    hoverColor: "hover:text-[#0077B5]",
+                  },
+                  {
+                    icon: <Twitter />,
+                    href: "https://twitter.com/iispp_research",
+                    hoverColor: "hover:text-[#1DA1F2]",
+                  },
+                  {
+                    icon: <Facebook />,
+                    href: "https://www.facebook.com",
+                    hoverColor: "hover:text-[#4267B2]",
+                  },
+                  {
+                    icon: <Instagram />,
+                    href: "https://www.instagram.com/iisppr/?hl=en",
+                    hoverColor: "hover:text-[#E4405F]",
+                  },
+                  {
+                    icon: <Youtube />,
+                    href: "https://www.youtube.com/@iisppr",
+                    hoverColor: "hover:text-[#FF0000]",
+                  },
+                ].map((social, index) => (
+                  <a
+                    key={index}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`w-6 h-6 text-[#94A3B8] ${social.hoverColor} transition-colors`}
+                  >
+                    {social.icon}
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-white font-semibold mb-4">Contact Us</h3>
+              <address className="not-italic">
+                <p>Office No. 30 Nihad Plaza, Opposite</p>
+                <p>Zakir Hussain School, Civil lines, Near</p>
+                <p>AMU, Aligarh 202001</p>
+                <p className="mt-4">+918279616047</p>
+                <p>iisspresearch@gmail.com</p>
+              </address>
+            </div>
+            <div>
+              <h3 className="text-white font-semibold mb-4">Quick Links</h3>
+              <ul className="space-y-2">
+                {["Home", "About Us", "Contact", "Internships"].map((link) => (
+                  <li key={link}>
+                    <a href="#" className="hover:text-white transition-colors">
+                      {link}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-white font-semibold mb-4">Legal</h3>
+              <ul className="space-y-2">
+                {[
+                  "Terms & Conditions",
+                  "Privacy Policy",
+                  "Disclaimer",
+                  "Refund Policy",
+                ].map((link) => (
+                  <li key={link}>
+                    <a href="#" className="hover:text-white transition-colors">
+                      {link}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+          <div className="border-t border-[#2D3748] mt-12 pt-8 text-center">
+            <p>
+              ©️ 2025 International Institute Of SDGS & Public Policy Research.
+              All rights reserved.
+            </p>
+          </div>
+        </div>
+      </footer>
+    </div>
   );
 };
 
-export default Notifications;
+const features = [
+  {
+    icon: <Award className="w-6 h-6" />,
+    title: "Research Excellence",
+    description: "Participate in groundbreaking research and win recognition",
+  },
+  {
+    icon: <Users className="w-6 h-6" />,
+    title: "Build Community",
+    description: "Connect with fellow researchers and expand your network",
+  },
+  {
+    icon: <Target className="w-6 h-6" />,
+    title: "Focused Learning",
+    description: "Access specialized training and mentorship programs",
+  },
+  {
+    icon: <BookOpen className="w-6 h-6" />,
+    title: "Knowledge Sharing",
+    description: "Share insights and learn from industry experts",
+  },
+  {
+    icon: <TrendingUp className="w-6 h-6" />,
+    title: "Career Growth",
+    description: "Develop skills that advance your professional journey",
+  },
+  {
+    icon: <GraduationCap className="w-6 h-6" />,
+    title: "Leadership Development",
+    description: "Build leadership capabilities through hands-on experience",
+  },
+];
+
+const whyJoinReasons = [
+  {
+    title: "Potential Growth",
+    description:
+      "IISPPR contributes to an individual's potential growth by providing access to innovative research studies, comprehensive knowledge, and networking opportunities. It focuses on evidence-based research and policy analysis which helps in the development and execution of policies that promote social, economic, and environmental well-being.",
+  },
+  {
+    title: "Enhancing Career Opportunities in Research",
+    description:
+      "Through its comprehensive and multidisciplinary public policy training, the International Institute of SDGs and Public Policy Research provides a unique platform for boosting career opportunities in research. New approaches to data analysis techniques, policy creation frameworks, and research methodologies are made available to participants.",
+  },
+  {
+    title: "Flexible learning environment",
+    description:
+      "IISPPR has a flexible learning environment for fostering creativity and adaptability. It offers a variety of internships, fieldwork, research development courses, and publication opportunities to promote a dynamic learning environment.",
+  },
+  {
+    title: "Learn the Policy Issue",
+    description:
+      "IISPPR provides a comprehensive framework for public policy and sustainable development goals SDGs that address complex global policy issues. Discussions on public policies, international policies, and treaties are conducted to emphasize a thorough understanding of the policy issues.",
+  },
+];
+
+export default IntroPage;

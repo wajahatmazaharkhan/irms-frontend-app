@@ -204,14 +204,14 @@ const App = () => {
           </PrivateRoute>
         }
       />
-      <Route
+      {/* <Route
         path="/AskHR"
         element={
           <PrivateRoute>
             <AskHR />
           </PrivateRoute>
         }
-      />
+      /> */}
       <Route
         path="/my-attendance"
         element={

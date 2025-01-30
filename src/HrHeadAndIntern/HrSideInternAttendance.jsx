@@ -26,9 +26,12 @@ import {
   AlertDialogTitle,
 } from "@/Components/ui/alert-dialog";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const HrSideInternAttendance = () => {
+  const location = useLocation();
+  const { hrid } = location.state || {};
+  console.log("got hr id in hr intern attendance " , hrid);
   const [loading, setLoading] = useState(false);
   const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -43,9 +46,9 @@ const HrSideInternAttendance = () => {
       setLoading(true);
       try {
         const response = await axios.get(
-          `${import.meta.env.VITE_BASE_URL}/allusers`
+          `${import.meta.env.VITE_BASE_URL}/hr/interns/${hrid}`
         );
-        setUsers(response.data.data);
+        setUsers(response.data.interns);
       } catch (error) {
         console.error("Error fetching users:", error);
         toast.error("Failed to fetch users");
@@ -55,7 +58,7 @@ const HrSideInternAttendance = () => {
     };
 
     fetchUser();
-  }, []);
+  }, [hrid]);
 
   const date = new Date();
   const formattedDate = date.toISOString().split(".")[0] + "Z";

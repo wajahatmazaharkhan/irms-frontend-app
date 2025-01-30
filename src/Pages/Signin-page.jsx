@@ -10,6 +10,8 @@ import { useAuthContext } from "@/context/AuthContext";
 import { useAppContext } from "@/context/AppContext";
 import iispprLogo from "../assets/Images/iisprlogo.png";
 
+// import { HrAllUsersInterns } from "@/HrHeadAndIntern/HrIndex";
+
 
 const Signin = ({ onSwitchToSignup }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -45,15 +47,28 @@ const Signin = ({ onSwitchToSignup }) => {
 
       await storeTokenInLocalStorage(token);
       await storeUserId(user.id);
+    
       await storeUsername(user.name);
       const isAdminValue = Boolean(user.isAdmin);
-      console.log("Converting isAdmin to boolean:", isAdminValue);
+     
       await storeIsAdminState(isAdminValue);
       setIsLoggedIn(true);
       setIsLoading(false);
       toast.success("Login successful");
-      console.log(token);
+     
+    if(user.role === 'hr'){
+      navigate("/hrhomepage",{state:{hrid:response.data.user.id}});
+      alert("redirecting to hr home")
+      toast.success("Login successful");
+    }
+    else{
       navigate("/");
+      toast.success("Login successful");
+    }
+     
+      
+      console.log(`response for checking role :- ${JSON.stringify(response.data.user)}
+}`)
     } catch (error) {
       console.error("Login error:", error);
       console.error("Error response:", error.response?.data);
@@ -80,7 +95,7 @@ const Signin = ({ onSwitchToSignup }) => {
       setError("");
       Login();
     }
-    console.log(`LoggedIn: ${loggedIn}`);
+    console.log("LoggedIn", `${loggedIn}`);
   };
 
   return (

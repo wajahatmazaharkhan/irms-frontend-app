@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-
-function HrSideBar() {
+import PropTypes from "prop-types";
+function HrSideBar({hrid}) {
   const [activeItem, setActiveItem] = useState("home");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -42,7 +42,7 @@ function HrSideBar() {
             Home
           </Link>
 
-          <Link
+          {/* <Link
             to="/hrinterns"
             className={`block px-4 py-2 text-white ${
               activeItem === "hrinterns" ? "font-bold" : "font-normal"
@@ -50,13 +50,19 @@ function HrSideBar() {
             onClick={() => handleItemClick("hrinterns")}
           >
             HR Interns
-          </Link>
+          </Link> */}
 
           <Link
+          state= {{hrid}}
           to="/hrinternsattendance"
           className={`block px-4 py-2 text-white   ${activeItem==="hrinternsattendance" ? "font-bold" : "font-normal"}`}
           onClick={()=>handleItemClick("hrinternsattendance")}
           >Interns attendance</Link>
+
+          <Link
+          to="/internsleaveapplications"
+          className={`block px-4 py-2 text-white ${activeItem==="internsleaveapplications" ? "font-bold" : "font-normal"}`}
+          >Leave applications</Link>
           <Link
             to="/hrhelp"
             className={`block px-4 py-2 text-white ${
@@ -71,5 +77,8 @@ function HrSideBar() {
     </>
   );
 }
+HrSideBar.propTypes = {
+  hrid: PropTypes.string.isRequired, // Ensures hrid is a required string
+};
 
 export default HrSideBar;

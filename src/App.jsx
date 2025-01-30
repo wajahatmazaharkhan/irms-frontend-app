@@ -45,7 +45,7 @@ import AllAttendance from "./Admin/AllAttendance";
 
 import HrHomepage from "./HrHeadAndIntern/HrHomePage";
 
-import { HrProgressReport,HrTaskAssignment,HrTasksubmissions,HrAllUsersInterns, HrInterns ,Hrprofile ,HrSideInternAttendance} from "./HrHeadAndIntern/HrIndex";
+import { HrProgressReport,HrTaskAssignment,HrTasksubmissions,HrAllUsersInterns, HrInterns ,Hrprofile ,HrSideInternAttendance,Hrhelp,InternsLeaveApplication} from "./HrHeadAndIntern/HrIndex";
 
 const AdminRoute = ({ children }) => {
   const isAdmin = localStorage.getItem("isAdmin") === "true";
@@ -314,6 +314,15 @@ element={<Hrprofile/>}
       path="/hrinternsattendance"
       element={<HrSideInternAttendance/>}
       
+      />
+      <Route
+      path="/hrhelp"
+      element={<Hrhelp/>}
+      ></Route>
+
+      <Route
+      path="/internsleaveapplications"
+      element={<InternsLeaveApplication/>}
       />
    
     </Routes>

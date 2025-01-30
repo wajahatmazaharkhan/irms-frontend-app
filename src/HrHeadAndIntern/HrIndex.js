@@ -7,9 +7,12 @@ import Hrprofile from "./Hrprofile";
 import HrInterns from "./HrInterns";
 import HrSideBar from "./HrSideBar";
 import HrSideInternAttendance from "./hrSideInternAttendance";
+import Hrhelp from "./Hrhelp";
+
+import InternsLeaveApplication from "./InternsLeaveApplication";
 
 
 
 export{
-HrTopNavBar,HrProgressReport,HrTaskAssignment,HrTasksubmissions,HrSideBar,HrAllUsersInterns,HrInterns,Hrprofile,HrSideInternAttendance
+HrTopNavBar,HrProgressReport,HrTaskAssignment,HrTasksubmissions,HrSideBar,HrAllUsersInterns,HrInterns,Hrprofile,HrSideInternAttendance, Hrhelp,InternsLeaveApplication
 }

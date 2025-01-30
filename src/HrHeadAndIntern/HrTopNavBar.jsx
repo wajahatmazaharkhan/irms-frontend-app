@@ -2,9 +2,11 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import iisprLogo from "../assets/Images/iisprlogo.png";
+import PropTypes from "prop-types";
 import { Logout } from "@/Pages/pageIndex";
- function HrTopNavBar() {
+ function HrTopNavBar({hrid}) {
   const navigate = useNavigate();
+
   const [menuOpen, setMenuOpen] = useState(false);
 
   const handleLogout = () => {
@@ -13,6 +15,8 @@ import { Logout } from "@/Pages/pageIndex";
     sessionStorage.clear(); 
     navigate("/login");
   };
+  
+  
   
 
   return (
@@ -60,7 +64,9 @@ import { Logout } from "@/Pages/pageIndex";
               >
                 Home
               </Link>
+            
               <Link
+              state= {{hrid}}
                 to="/hrallusersinterns"
                 className="font-medium text-black hover:text-red-500"
               >
@@ -72,7 +78,10 @@ import { Logout } from "@/Pages/pageIndex";
               >
                 Progress Report
               </Link>
+              {console.log(hrid)}
               <Link
+              
+               state= {{hrid}}
                 to="/hrtaskassignment"
                 className="font-medium text-black hover:text-red-500"
               >
@@ -145,5 +154,9 @@ import { Logout } from "@/Pages/pageIndex";
     </nav>
   );
 }
+
+HrTopNavBar.propTypes = {
+  hrid: PropTypes.string.isRequired, // Ensures hrid is a required string
+};
 
 export default HrTopNavBar;

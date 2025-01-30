@@ -15,6 +15,7 @@ function AllUsers() {
   const [selectedUserId, setSelectedUserId] = useState("");
   const [selectedHrInternId, setSelectedHrInternId] = useState("");
   const [ assignedStatus,setassignedStatus] = useState("");
+  const [ internIds,setinternIds] = useState([]);
 
   const [sortConfig, setSortConfig] = useState({
     key: null,
@@ -29,7 +30,7 @@ function AllUsers() {
 
   const handleassignedto = async(userid) => {
     setSelectedUserId(userid)
-    // console.log("setSelectedUserId", userid);
+    
     togglemodal();
     
     
@@ -37,18 +38,55 @@ function AllUsers() {
 
   const checkAssigned= async()=>{
     try{
-      const assignedStatus = await axios.post(`${import.meta.env.VITE_BASE_URL}/interns/assigned `,users);
-      if(assignedStatus.status ===200){
+      const assignedStatus = await axios.post(`${import.meta.env.VITE_BASE_URL}/interns/assigned `,internIds);
+      if(assignedStatus.status ==200){
         setassignedStatus(assignedStatus.data);
         console.log("assignedStatus", assignedStatus);
       }
 
     }
     catch(err){alert(err.message)}
+
+
   }
+
+
+  const checkAssignedStatus = async () => {
+    try {
+
+      console.log("internIds inside useEffect:", internIds);
+      console.log("Sending the following internIds:", internIds);
+      if (internIds.length > 0) {
+        console.log("Calling checkAssignedStatus...");
+        const response = await axios.post(
+          `${import.meta.env.VITE_BASE_URL}/interns/assigned`,
+           internIds 
+        );
+  
+        console.log("intern_ids", internIds);
+  
+        if (response.status === 200) {
+          console.log("Response received:", response.data);
+        }
+      } else {
+        console.log("No intern IDs available to check.");
+      }
+    } catch (error) {
+      console.error("Error checking assigned status:", error.message);
+    }
+  };
+  
+  // UseEffect hook to call checkAssignedStatus when internIds changes
+  useEffect(() => {
+    if (internIds.length > 0) {
+      checkAssignedStatus();
+    }
+  }, [internIds]); // This will trigger when internIds changes
+  
+  
   const handleUserAssignedToHr=async(userid) => {
     setSelectedHrInternId(userid)
-    console.log("checking user id ", userid);
+    // console.log("checking user id ", userid);
     handleassingment();
   }
 
@@ -57,31 +95,30 @@ function AllUsers() {
   const handleassingment = async() => {
   
 
-    console.log("setSelectedHrInternId", selectedHrInternId);
-   
-
+    // console.log("setSelectedHrInternId", selectedHrInternId);
    try{
     const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/assign-intern`,{hrId:selectedHrInternId,internId:selectedUserId});
     if(response.status ===400) toast.error(response.message);
 
     if(response.status === 200){
     
-    console.log(response.message);
     alert("Successfully assigned hr");
+    toast.success("user successfully assigned to hr ")
    
     togglemodal();
     }
-    // toast.success("Successfully assigned hr");
+   
     }
    
    
    catch(error){
-    //  toast.error("Failed to assign user to HR intern");
+
     console.log(error.message);
 
    }
   };
 
+  
   const fetchUsers = async () => {
     try {
       setLoading(true);
@@ -92,22 +129,26 @@ function AllUsers() {
       }
       const result = await response.json();
       setUsers(result.data || []);
-      
+  
       const hrUsernames = result.data
         .filter((user) => user.department === "hr")
-        .map((user) => ({id:user._id,hrname:user.name}));
-
-      
+        .map((user) => ({ id: user._id, hrname: user.name }));
+  
+      const userIds = result.data.map((user) => user._id);
+      setinternIds(userIds);
+  
       sethrusernames(hrUsernames);
-      console.log(hrUsernames);
-      // console.log(selectedHrInternId);
-    
+      
+      console.log("userIds inside fetch:", userIds); // <-- Log the userIds here
+  
     } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);
     }
   };
+  
+
 
   const deleteUser = async (userId, userName) => {
     const message =

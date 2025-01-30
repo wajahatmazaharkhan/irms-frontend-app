@@ -15,52 +15,65 @@ const InternTasksSubmissions = () => {
   const [error, setError] = useState(null);
   const [modal, setModal] = useState(false);
 
+  
+
   useEffect(() => {
+    const token = localStorage.getItem("token");
+  
     const fetchAllData = async () => {
       try {
-        const submissionsResponse = await fetch(
-          `${import.meta.env.VITE_BASE_URL}/getsubmitedtasks`
+        const response = await axios.get(
+          `${import.meta.env.VITE_BASE_URL}/interns/getTask`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
         );
-        if (!submissionsResponse.ok) {
-          throw new Error("Failed to fetch task submissions");
-        }
-        const submissionsData = await submissionsResponse.json();
-
-        const userIds = [
-          ...new Set(
-            submissionsData.map((sub) => sub.user?._id).filter(Boolean)
-          ),
-        ];
-
+  
+        console.log("Full API Response:", response.data);
+  
+        const taskCompletion = response.data?.taskCompletions || [];
+        console.log("Extracted Task Completions:", taskCompletion);
+  
+        setTaskSubmissions(taskCompletion); // ✅ Store data in state
+  
+        const userIds = [...new Set(taskCompletion.map((sub) => sub.user?._id).filter(Boolean))];
+  
+        console.log("Unique User IDs:", userIds);
+  
         const tasksMapping = {};
         await Promise.all(
           userIds.map(async (userId) => {
             try {
-              const tasksResponse = await axios.get(
+              const { data: tasksResponse } = await axios.get(
                 `${import.meta.env.VITE_BASE_URL}/task/get-tasks/${userId}`
               );
-              const tasksData = tasksResponse.data.tasksData;
-              tasksData.forEach((task) => {
+  
+              if (!tasksResponse?.tasksData) {
+                console.warn(`No tasks found for user ${userId}`);
+                return;
+              }
+  
+              tasksResponse.tasksData.forEach((task) => {
                 tasksMapping[task._id] = task.title;
               });
             } catch (error) {
-              console.error(`Error fetching tasks for user ${userId}:`, error);
+              console.error(`Error fetching tasks for user ${userId}:`, error.message);
             }
           })
         );
-
+  
         setTasksMap(tasksMapping);
-        setTaskSubmissions(submissionsData);
       } catch (err) {
+        console.error("Error fetching data:", err.message);
         setError(err.message);
       } finally {
         setLoading(false);
       }
     };
-
+  
     fetchAllData();
   }, []);
-
+  
   const redirectToImage = (image) => {
     window.open(image, "_blank");
   };
@@ -267,9 +280,20 @@ const InternTasksSubmissions = () => {
         >
           Intern Task Submissions
         </h2>
-        <div className="overflow-x-auto mt-10 sm:hidden">
+        {taskSubmissions.length > 0 ? (
+  <div className="overflow-x-auto mt-10 sm:hidden">
+    {taskSubmissions.map((completion) => (
+      <div key={completion._id} className="p-4 border-b border-gray-300">
+        <h2 className="text-lg font-semibold">{completion.task?.title || "No Title"}</h2>
+      </div>
+    ))}
+  </div>
+) : (
+  <p>No task submissions found.</p>
+)}
+
           {/* Mobile View: Vertical Layout */}
-          {taskSubmissions.length > 0 ? (
+          {/* {taskSubmissions.length > 0 ? (
             taskSubmissions.map((submission) => (
               <div
                 key={submission._id}
@@ -334,8 +358,11 @@ const InternTasksSubmissions = () => {
             ))
           ) : (
             <div>No task submissions available.</div>
-          )}
-        </div>
+          )} */}
+
+          
+           
+      
 
         <div className="overflow-x-auto mt-10 hidden sm:block">
           {/* Desktop View: Horizontal Table Layout */}

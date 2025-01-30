@@ -1,16 +1,23 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
+import { useLocation } from "react-router-dom";
 import axios from "axios";
 
-function HrAllUsersInterns({ hrId }) {
-    const [interns, setInterns] = useState([]); // State to store interns data
-    const [loading, setLoading] = useState(true); // Loading state
-    const [error, setError] = useState(null); // Error state
+
+function HrAllUsersInterns() {
+
+
+    const location = useLocation();
+    const [interns, setInterns] = useState([]); 
+    const [loading, setLoading] = useState(true); 
+    const [error, setError] = useState(null); 
+    const { hrid } = location.state || {};
+    console.log("got hr id in all users intern " , hrid);
 
     useEffect(() => {
         const fetchInterns = async () => {
             try {
-                const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/hr/interns/${hrId}`);
+                const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/hr/interns/${hrid}`);
                 setInterns(response.data.interns); // Set interns data
                 setLoading(false);
             } catch (error) {
@@ -19,17 +26,17 @@ function HrAllUsersInterns({ hrId }) {
             }
         };
 
-        if (hrId) {
+        if (hrid) {
             fetchInterns(); // Fetch interns only if hrId is provided
         }
-    }, [hrId]);
+    }, [hrid]);
 
     if (loading) return <p>Loading interns...</p>;
     if (error) return <p>{error}</p>;
 
     return (
         <div>
-            <h2>Interns List for HR ID: {hrId}</h2>
+            <h2>Interns List for HR ID: {hrid}</h2>
             {interns.length > 0 ? (
                 <table border="1" style={{ width: "100%", textAlign: "left", marginTop: "10px" }}>
                     <thead>
@@ -58,7 +65,7 @@ function HrAllUsersInterns({ hrId }) {
     );
 }
 HrAllUsersInterns.propTypes = {
-    hrId: PropTypes.string.isRequired, 
+    hrid: PropTypes.string.isRequired, 
 };
 
 export default HrAllUsersInterns;

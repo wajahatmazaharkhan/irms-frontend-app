@@ -6,6 +6,8 @@ import CustomNavbar from "./HrTopNavBar";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { Loader } from "@/Components/compIndex";
+import { useLocation } from "react-router-dom";
+import PropTypes from "prop-types";
 
 const API_BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -18,7 +20,12 @@ const INITIAL_TASK_STATE = {
   status: "pending",
 };
 
-export default function AdminTask() {
+function AdminTask() {
+
+  const location = useLocation();
+  const { hrid } = location.state || {};
+
+   
   const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState([]);
   const [task, setTask] = useState(INITIAL_TASK_STATE);
@@ -29,8 +36,9 @@ export default function AdminTask() {
     const initializeData = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`${API_BASE_URL}/allusers`);
-        const usersList = response.data.data;
+        const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/hr/interns/${hrid}`);
+        const usersList = response.data.interns;
+        console.log(response.data.interns);
 
         if (!Array.isArray(usersList)) {
           throw new Error("Invalid users data format received");
@@ -46,7 +54,7 @@ export default function AdminTask() {
     };
 
     initializeData();
-  }, []);
+  }, [hrid]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -221,6 +229,16 @@ export default function AdminTask() {
           </Card>
         </div>
       </div>
+
+      
     </>
   );
+
+  
 }
+
+AdminTask.propTypes = {
+  hrid: PropTypes.string.isRequired, 
+};
+
+export default AdminTask;

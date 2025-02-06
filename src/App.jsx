@@ -1,4 +1,5 @@
-import { Routes, Route, useActionData } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { HrProvider } from "./context/HrContext.jsx";
 import AskHR from "./Pages/AskHR";
 import {
   Aboutus,
@@ -59,7 +60,12 @@ const PrivateRoute = ({ children }) => {
 
 const App = () => {
   return (
-    <Routes>
+  
+    
+    
+   
+      <HrProvider>
+       <Routes>
       <Route path="/login" element={<Signin />} />
       <Route path="/signup" element={<SignUp />} />
       <Route path="/reset-account-password" element={<ResetPassword />} />
@@ -273,12 +279,14 @@ const App = () => {
 
       {/* hrhead and hr interns routes  */}
 
-      <Route
-      path="/hrhomepage"
-      element={
-        <HrHomepage/>
-      }
-      />
+      
+    
+     
+          <Route path="/hrhomepage" element={<HrHomepage />} />
+
+      
+    
+  
 
 <Route
 path="/hrprogressreport"
@@ -324,8 +332,10 @@ element={<Hrprofile/>}
       path="/internsleaveapplications"
       element={<InternsLeaveApplication/>}
       />
-   
-    </Routes>
+      </Routes>
+   </HrProvider>
+    
+    
   );
 };
 

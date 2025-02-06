@@ -3,10 +3,12 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import iisprLogo from "../assets/Images/iisprlogo.png";
 import PropTypes from "prop-types";
+import { useHrContext } from "@/context/HrContext.jsx";
 import { Logout } from "@/Pages/pageIndex";
- function HrTopNavBar({hrid}) {
+ function HrTopNavBar() {
   const navigate = useNavigate();
-
+  const {hrid } = useHrContext();
+  console.log("Sidebar HR ID:", hrid);
   const [menuOpen, setMenuOpen] = useState(false);
 
   const handleLogout = () => {
@@ -65,8 +67,10 @@ import { Logout } from "@/Pages/pageIndex";
                 Home
               </Link>
             
+            {console.log("hrid aagyi",hrid)}
               <Link
               state= {{hrid}}
+              
                 to="/hrallusersinterns"
                 className="font-medium text-black hover:text-red-500"
               >

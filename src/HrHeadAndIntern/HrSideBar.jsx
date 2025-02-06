@@ -1,9 +1,13 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
-function HrSideBar({hrid}) {
+import { useHrContext } from "@/context/HrContext.jsx";
+function HrSideBar() {
   const [activeItem, setActiveItem] = useState("home");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const {hrid} = useHrContext();
+  console.log("got hr id in ",hrid);
 
   const handleItemClick = (item) => {
     setActiveItem(item);
@@ -53,7 +57,7 @@ function HrSideBar({hrid}) {
           </Link> */}
 
           <Link
-          state= {{hrid}}
+          // state= {{hrid}}
           to="/hrinternsattendance"
           className={`block px-4 py-2 text-white   ${activeItem==="hrinternsattendance" ? "font-bold" : "font-normal"}`}
           onClick={()=>handleItemClick("hrinternsattendance")}

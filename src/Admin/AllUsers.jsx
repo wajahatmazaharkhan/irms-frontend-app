@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from 'axios';
+import axios from "axios";
 import CustomNavbar from "./CustomNavbar";
 import { Loader } from "@/Components/compIndex";
 import { AlertCircle } from "lucide-react";
@@ -14,59 +14,33 @@ function AllUsers() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedUserId, setSelectedUserId] = useState("");
   const [selectedHrInternId, setSelectedHrInternId] = useState("");
-  const [ assignedStatus,setassignedStatus] = useState("");
-  const [ internIds,setinternIds] = useState([]);
-
+  const [assignedStatus, setAssignedStatus] = useState({});
+  const [isAssigned, setIsAssigned] = useState(false);
+  const [internIds, setinternIds] = useState([]);
   const [sortConfig, setSortConfig] = useState({
     key: null,
     direction: "ascending",
   });
-
   const [ismodalopen, setModalopen] = useState(false);
-
   const togglemodal = () => {
     setModalopen(!ismodalopen);
   };
-
-  const handleassignedto = async(userid) => {
-    setSelectedUserId(userid)
-    
+  const handleassignedto = async (userid) => {
+    setSelectedUserId(userid);
     togglemodal();
-    
-    
   };
-
-  const checkAssigned= async()=>{
-    try{
-      const assignedStatus = await axios.post(`${import.meta.env.VITE_BASE_URL}/interns/assigned `,internIds);
-      if(assignedStatus.status ==200){
-        setassignedStatus(assignedStatus.data);
-        console.log("assignedStatus", assignedStatus);
-      }
-
-    }
-    catch(err){alert(err.message)}
-
-
-  }
-
-
   const checkAssignedStatus = async () => {
     try {
-
-      console.log("internIds inside useEffect:", internIds);
-      console.log("Sending the following internIds:", internIds);
       if (internIds.length > 0) {
-        console.log("Calling checkAssignedStatus...");
+        
         const response = await axios.post(
           `${import.meta.env.VITE_BASE_URL}/interns/assigned`,
-           internIds 
+          { internIds } 
         );
-  
-        console.log("intern_ids", internIds);
-  
+        console.log("Response received:", response.data);
         if (response.status === 200) {
-          console.log("Response received:", response.data);
+          setAssignedStatus(response.data.assignedStatus); 
+        
         }
       } else {
         console.log("No intern IDs available to check.");
@@ -75,50 +49,37 @@ function AllUsers() {
       console.error("Error checking assigned status:", error.message);
     }
   };
-  
   // UseEffect hook to call checkAssignedStatus when internIds changes
-  useEffect(() => {
-    if (internIds.length > 0) {
-      checkAssignedStatus();
-    }
-  }, [internIds]); // This will trigger when internIds changes
-  
-  
-  const handleUserAssignedToHr=async(userid) => {
-    setSelectedHrInternId(userid)
+  const handleUserAssignedToHr = async (userid) => {
+    toast.success("assigning Intern to HR");
+    togglemodal();
+    setSelectedHrInternId(userid);
     // console.log("checking user id ", userid);
     handleassingment();
-  }
-
-  <HrAllUsersInterns hrId={selectedHrInternId || ""} />
-
-  const handleassingment = async() => {
-  
-
-    // console.log("setSelectedHrInternId", selectedHrInternId);
-   try{
-    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/assign-intern`,{hrId:selectedHrInternId,internId:selectedUserId});
-    if(response.status ===400) toast.error(response.message);
-
-    if(response.status === 200){
-    
-    alert("Successfully assigned hr");
-    toast.success("user successfully assigned to hr ")
-   
-    togglemodal();
-    }
-   
-    }
-   
-   
-   catch(error){
-
-    console.log(error.message);
-
-   }
   };
-
-  
+  <HrAllUsersInterns hrId={selectedHrInternId || ""} />;
+  const handleassingment = async () => {
+    console.log("setSelectedHrInternId", selectedHrInternId);
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/assign-intern`,
+        { hrId: selectedHrInternId, internId: selectedUserId }
+      );
+      if (response.status === 400) toast.error(response.message);
+      if (response.status === 200) {
+       
+        toast.success("user successfully assigned to hr ");
+        togglemodal();
+        setIsAssigned(prev => !prev);
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+  useEffect(() => {
+    checkAssignedStatus();
+  }, [internIds, isAssigned]);  // Runs when either of them updates
+   // This will trigger when internIds changes
   const fetchUsers = async () => {
     try {
       setLoading(true);
@@ -129,27 +90,21 @@ function AllUsers() {
       }
       const result = await response.json();
       setUsers(result.data || []);
-  
       const hrUsernames = result.data
         .filter((user) => user.department === "hr")
         .map((user) => ({ id: user._id, hrname: user.name }));
-  
       const userIds = result.data.map((user) => user._id);
       setinternIds(userIds);
-  
       sethrusernames(hrUsernames);
-      
-      console.log("userIds inside fetch:", userIds); // <-- Log the userIds here
-  
+      console.log("userIds inside fetch:", userIds); 
+      console.log("intern inside fetch:", internIds);
     } catch (err) {
       setError(err.message);
     } finally {
+      // toast.info("HR is assigned to intern")
       setLoading(false);
     }
   };
-  
-
-
   const deleteUser = async (userId, userName) => {
     const message =
       `Are you sure you want to delete user ${userName.toUpperCase()}?` +
@@ -177,7 +132,6 @@ function AllUsers() {
               `Failed to delete user (Status: ${response.status})`
           );
         }
-
         setUsers((prevUsers) =>
           prevUsers.filter((user) => user._id !== userId)
         );
@@ -188,7 +142,6 @@ function AllUsers() {
       }
     }
   };
-
   const requestSort = (key) => {
     let direction = "ascending";
     if (sortConfig.key === key && sortConfig.direction === "ascending") {
@@ -196,10 +149,8 @@ function AllUsers() {
     }
     setSortConfig({ key, direction });
   };
-
   const getSortedUsers = () => {
     let filteredUsers = [...users];
-
     if (searchTerm) {
       filteredUsers = filteredUsers.filter(
         (user) =>
@@ -209,7 +160,6 @@ function AllUsers() {
           user.department?.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
-
     if (sortConfig.key) {
       filteredUsers.sort((a, b) => {
         if (a[sortConfig.key] < b[sortConfig.key]) {
@@ -221,19 +171,14 @@ function AllUsers() {
         return 0;
       });
     }
-
     return filteredUsers;
   };
-
   useEffect(() => {
     fetchUsers();
   }, []);
-
-
-//   useEffect(() => {
-//   checkAssigned();
-// }, []);
-
+  //   useEffect(() => {
+  //   checkAssigned();
+  // }, []);
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",
@@ -241,7 +186,6 @@ function AllUsers() {
       day: "numeric",
     });
   };
-
   return (
     <div className="min-h-screen bg-gray-50">
       <CustomNavbar />
@@ -262,16 +206,12 @@ function AllUsers() {
               />
             </div>
           </div>
-
-         
-
           {error && (
             <Alert variant="destructive" className="mb-4">
               <AlertCircle className="h-4 w-4" />
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
-
           {loading ? (
             <div className="flex justify-center items-center h-32">
               <Loader />
@@ -325,7 +265,6 @@ function AllUsers() {
                       <td className="px-4 py-3 text-sm text-gray-900">
                         {user._id}
                       </td>
-                      
                       <td className="px-4 py-3 text-sm text-gray-900">
                         {user.name}
                       </td>
@@ -383,30 +322,30 @@ function AllUsers() {
                       <td className="px-4 py-3 text-sm text-gray-900">
                         {formatDate(user.startDate)}
                       </td>
-
                       <td className="px-4 py-3 text-sm text-gray-900">
-                      {assignedStatus[user.id] ? (
-          <button disabled style={{ backgroundColor: "#ccc" }}>
-            Already Assigned
-          </button>
-        ) : (
-          <button  className="bg-blue-900 text-white px-4 py-2 rounded-md" onClick={() => handleassignedto(user._id)}>
-            Assign To
-          </button>
-        )}
+                        {assignedStatus[user._id] ? ( 
+                          <button disabled style={{ backgroundColor: "#ccc" }}>
+                            Already Assigned
+                          </button>
+                        ) : (
+                          <button
+                            className="bg-blue-900 text-white px-4 py-2 rounded-md"
+                            onClick={() => handleassignedto(user._id)}
+                          >
+                            Assign To
+                          </button>
+                        )}
                         {ismodalopen && (
                           <>
                             <div
                               className="fixed inset-0 shadow-slate-800 border-2 opacity-50 z-10"
                               onClick={togglemodal}
                             ></div>
-
                             <div className="fixed inset-0 flex items-center justify-center z-20">
                               <div className="bg-white p-6 rounded-lg  border-2 max-w-md w-full">
                                 <h2 className="text-xl font-semibold text-center mb-4">
                                   HR List
                                 </h2>
-
                                 <ul className="mt-4 space-y-4">
                                   <div className="hr-all-row-container">
                                     {hrusernames.map((hrnames, index) => {
@@ -416,14 +355,15 @@ function AllUsers() {
                                           key={index}
                                           className="hr-row-container flex justify-between items-center border-b pb-3"
                                         >
-                                          <li className="flex-1">{hrnames.hrname}</li>
+                                          <li className="flex-1">
+                                            {hrnames.hrname}
+                                          </li>
                                           <button
-                                            onClick={() =>
-                                             
-                                              {
-                                                handleUserAssignedToHr(hrnames.id)
-                                              }
-                                            } 
+                                            onClick={() => {
+                                              handleUserAssignedToHr(
+                                                hrnames.id
+                                              );
+                                            }}
                                             className="bg-blue-900 text-white px-4 py-2 rounded-md"
                                           >
                                             Assign
@@ -433,7 +373,6 @@ function AllUsers() {
                                     })}
                                   </div>
                                 </ul>
-
                                 <div className="assign-btn top-2 right-2">
                                   <button
                                     onClick={togglemodal}
@@ -447,7 +386,6 @@ function AllUsers() {
                           </>
                         )}
                       </td>
-
                       <td className="px-4 py-3 text-sm text-gray-900">
                         <button
                           onClick={() => deleteUser(user._id, user.name)}
@@ -460,7 +398,6 @@ function AllUsers() {
                   ))}
                 </tbody>
               </table>
-
               {getSortedUsers().length === 0 && (
                 <div className="text-center py-8 text-gray-500">
                   No users found.
@@ -473,5 +410,4 @@ function AllUsers() {
     </div>
   );
 }
-
 export default AllUsers;

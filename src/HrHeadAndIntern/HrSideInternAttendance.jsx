@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import CustomNavbar from "./HrTopNavBar";
+import { useHrContext } from "@/context/HrContext";
 import {
   Table,
   TableBody,
@@ -29,15 +30,14 @@ import toast from "react-hot-toast";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const HrSideInternAttendance = () => {
-  const location = useLocation();
-  const { hrid } = location.state || {};
-  console.log("got hr id in hr intern attendance " , hrid);
+  
   const [loading, setLoading] = useState(false);
   const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [bulkAction, setBulkAction] = useState(null);
   const [processing, setProcessing] = useState(false);
+  const {hrid} = useHrContext();
 
   const navigate = useNavigate();
 

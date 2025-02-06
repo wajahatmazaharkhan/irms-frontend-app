@@ -7,6 +7,7 @@ import axios from "axios";
 import { toast } from "react-hot-toast";
 import { Loader } from "@/Components/compIndex";
 import { useLocation } from "react-router-dom";
+import { useHrContext } from "@/context/HrContext.jsx";
 import PropTypes from "prop-types";
 
 const API_BASE_URL = import.meta.env.VITE_BASE_URL;
@@ -21,11 +22,9 @@ const INITIAL_TASK_STATE = {
 };
 
 function AdminTask() {
+  const { hrid } = useHrContext();
+  console.log("Hr task submissions:", hrid);
 
-  const location = useLocation();
-  const { hrid } = location.state || {};
-
-   
   const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState([]);
   const [task, setTask] = useState(INITIAL_TASK_STATE);
@@ -36,7 +35,9 @@ function AdminTask() {
     const initializeData = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/hr/interns/${hrid}`);
+        const response = await axios.get(
+          `${import.meta.env.VITE_BASE_URL}/hr/interns/${hrid}`
+        );
         const usersList = response.data.interns;
         console.log(response.data.interns);
 
@@ -118,7 +119,7 @@ function AdminTask() {
               )}
 
               <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="space-y-2">
+                <div className="space-y-2 relative">
                   <label
                     htmlFor="assignedTo"
                     className="text-gray-700 font-medium block"
@@ -130,7 +131,7 @@ function AdminTask() {
                     name="assignedTo"
                     value={task.assignedTo}
                     onChange={handleChange}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white overflow-hidden"
                     required
                   >
                     <option value="">Select a user</option>
@@ -141,7 +142,6 @@ function AdminTask() {
                     ))}
                   </select>
                 </div>
-
                 <div className="space-y-2">
                   <label
                     htmlFor="title"
@@ -229,16 +229,12 @@ function AdminTask() {
           </Card>
         </div>
       </div>
-
-      
     </>
   );
-
-  
 }
 
 AdminTask.propTypes = {
-  hrid: PropTypes.string.isRequired, 
+  hrid: PropTypes.string.isRequired,
 };
 
 export default AdminTask;

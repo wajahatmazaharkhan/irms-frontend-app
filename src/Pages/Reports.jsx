@@ -9,7 +9,7 @@ const Reports = () => {
   const [message, setMessage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    intern: "",
+    employeeName: "",
     department: "",
     date: "",
     tasksCompleted: "",
@@ -34,6 +34,8 @@ const Reports = () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            "Authorization" : `Bearer ${localStorage.getItem('token')}`
+            
           },
           body: JSON.stringify(formData),
         }
@@ -43,7 +45,7 @@ const Reports = () => {
         const data = await response.json();
         setMessage({ type: "success", text: data.message });
         setFormData({
-          intern: "",
+          employeeName: "",
           department: "",
           date: "",
           tasksCompleted: "",
@@ -84,7 +86,7 @@ const Reports = () => {
             <div className="p-6 mb-6 space-y-6">
               <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
                 {[
-                  { name: "Intern", label: "Intern Name", type: "text" },
+                  { name: "employeeName", label: "employeeName", type: "employeeName" },
                   // { name: "department", label: "Department", type: "text" },
                   { name: "date", label: "Report Date", type: "date" },
                 ].map(({ name, label, type }) => (

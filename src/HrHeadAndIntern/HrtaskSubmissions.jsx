@@ -10,7 +10,7 @@ import Swal from "sweetalert2";
 
 const InternTasksSubmissions = () => {
   const [taskSubmissions, setTaskSubmissions] = useState([]);
-  const [tasksMap, setTasksMap] = useState({}); // Map to store task ID -> task title
+  const [tasksMap, setTasksMap] = useState({}); 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [modal, setModal] = useState(false);
@@ -290,220 +290,108 @@ const InternTasksSubmissions = () => {
   </div>
 ) : (
   <p>No task submissions found.</p>
-)}
-
-          {/* Mobile View: Vertical Layout */}
-          {/* {taskSubmissions.length > 0 ? (
-            taskSubmissions.map((submission) => (
-              <div
-                key={submission._id}
-                className="mb-4 p-4 border border-gray-300 rounded-lg"
+)}<div className="overflow-x-auto mt-10 px-4">
+<table className="min-w-full border-collapse border border-gray-300">
+  <thead>
+    <tr className="bg-gray-100">
+      <th className="border-b p-3 text-left text-sm sm:text-base">Intern</th>
+      <th className="border-b p-3 text-left text-sm sm:text-base">Task</th>
+      <th className="border-b p-3 text-left text-sm hidden sm:table-cell">
+        Comments
+      </th>
+      <th className="border-b p-3 text-left text-sm sm:text-base">File</th>
+      <th className="border-b p-3 text-left text-sm hidden sm:table-cell">
+        Image
+      </th>
+      <th className="border-b p-3 text-left text-sm hidden lg:table-cell">
+        Created At
+      </th>
+      <th className="border-b p-3 text-left text-sm sm:text-base">Approve</th>
+      <th className="border-b p-3 text-left text-sm sm:text-base">Resubmit</th>
+      <th className="border-b p-3 text-left text-sm sm:text-base">Delete</th>
+    </tr>
+  </thead>
+  <tbody>
+    {taskSubmissions.length > 0 ? (
+      taskSubmissions.map((submission) => (
+        <tr key={submission._id} className="hover:bg-gray-50">
+          <td className="border-b p-3 text-sm">{submission.user?.name || "N/A"}</td>
+          <td className="border-b p-3 text-sm">
+            {tasksMap[submission.task] ? (
+              tasksMap[submission.task]
+            ) : (
+              <p className="text-red-500 uppercase">Approved</p>
+            )}
+          </td>
+          <td className="border-b p-3 text-sm hidden sm:table-cell capitalize">
+            {submission.comments || "No Comments"}
+          </td>
+          <td className="border-b p-3 text-sm">
+            {submission.file ? (
+              <a
+                href={submission.file}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-500 hover:underline"
               >
-                <h3 className="font-semibold text-lg">
-                  {submission.user?.name}
-                </h3>
-                <p>
-                  <strong>Task:</strong>{" "}
-                  {tasksMap[submission.task] || submission.task || "N/A"}
-                </p>
-                <p>
-                  <strong>Comments:</strong>{" "}
-                  {submission.comments || "No Comments"}
-                </p>
-                <p>
-                  <strong>Created At:</strong>{" "}
-                  {new Date(submission.createdAt).toLocaleString()}
-                </p>
-                {submission.file && (
-                  <a
-                    href={submission.file}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-500 hover:underline"
-                  >
-                    View File
-                  </a>
-                )}
-                {submission.image && (
-                  <div
-                    className="mt-2"
-                    onClick={() => redirectToImage(submission.image)}
-                  >
-                    <img
-                      src={submission.image}
-                      alt="Task Submission"
-                      className="w-16 h-16 cursor-pointer object-cover rounded"
-                    />
-                  </div>
-                )}
-                <div className="mt-2 space-x-2">
-                  <button
-                    onClick={() =>
-                      markAsComplete(submission.task, submission.user?._id)
-                    }
-                    className="bg-green-500 text-white px-2 py-1 rounded"
-                  >
-                    Accept
-                  </button>
-                  <button
-                    onClick={() =>
-                      markAsIncomplete(submission.task, submission.user?._id)
-                    }
-                    className="bg-red-500 text-white px-2 py-1 rounded"
-                  >
-                    Reject
-                  </button>
-                </div>
-              </div>
-            ))
-          ) : (
-            <div>No task submissions available.</div>
-          )} */}
+                View File
+              </a>
+            ) : (
+              "No File"
+            )}
+          </td>
+          <td className="border-b p-3 text-sm hidden sm:table-cell">
+            {submission.image ? (
+              <img
+                onClick={() => redirectToImage(submission.image)}
+                src={submission.image}
+                alt="Task Submission"
+                className="w-12 h-12 object-cover rounded cursor-pointer"
+              />
+            ) : (
+              "No Image"
+            )}
+          </td>
+          <td className="border-b p-3 text-sm hidden lg:table-cell">
+            {new Date(submission.createdAt).toLocaleString()}
+          </td>
+          <td className="border-b p-3 text-sm">
+            <button
+              onClick={() => markAsComplete(submission.task, submission.user?._id)}
+              className="bg-green-500 text-white px-3 py-1 rounded text-xs sm:text-sm"
+            >
+              Accept
+            </button>
+          </td>
+          <td className="border-b p-3 text-sm">
+            <button
+              onClick={() => markAsIncomplete(submission.task, submission.user?._id)}
+              className="bg-red-500 text-white px-3 py-1 rounded text-xs sm:text-sm"
+            >
+              Reject
+            </button>
+          </td>
+          <td className="border-b p-3 text-sm">
+            <button
+              onClick={() => deleteTask(submission.task)}
+              className="bg-blue-500 text-white px-3 py-1 rounded text-xs sm:text-sm"
+            >
+              Delete
+            </button>
+          </td>
+        </tr>
+      ))
+    ) : (
+      <tr>
+        <td colSpan="9" className="p-3 text-center">
+          No task submissions available.
+        </td>
+      </tr>
+    )}
+  </tbody>
+</table>
+</div>
 
-          
-           
-      
-
-        <div className="overflow-x-auto mt-10 hidden sm:block">
-          {/* Desktop View: Horizontal Table Layout */}
-          <table className="min-w-full table-auto border-collapse border border-gray-300">
-            <thead>
-              <tr>
-                <th className="border-b p-3 text-left text-sm sm:text-base">
-                  Intern Name
-                </th>
-                <th className="border-b p-3 text-left text-sm sm:text-base">
-                  Task
-                </th>
-                <th className="border-b p-3 text-left text-sm sm:text-base">
-                  Comments
-                </th>
-                <th className="border-b p-3 text-left text-sm sm:text-base">
-                  File
-                </th>
-                <th className="border-b p-3 text-left text-sm sm:text-base">
-                  Image
-                </th>
-                <th className="border-b p-3 text-left text-sm sm:text-base">
-                  Created At
-                </th>
-                <th className="border-b p-3 text-left text-sm sm:text-base">
-                  Approve
-                </th>
-                <th className="border-b p-3 text-left text-sm sm:text-base">
-                  Resubmit
-                </th>
-                <th className="border-b p-3 text-left text-sm sm:text-base">
-                  Delete
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {taskSubmissions.length > 0 ? (
-                taskSubmissions.map((submission) => (
-                  <tr key={submission._id}>
-                    {/* Intern Name */}
-                    <td className="border-b p-3 text-sm sm:text-base">
-                      {submission.user?.name || "N/A"}
-                    </td>
-
-                    {/* Task Title */}
-                    <td className="border-b p-3 text-sm sm:text-base">
-                      {tasksMap[submission.task] ? (
-                        tasksMap[submission.task]
-                      ) : (
-                        <p className="text-red-500 uppercase">approved</p>
-                      )}
-                    </td>
-
-                    {/* Comments */}
-                    <td className="border-b capitalize p-3 text-sm sm:text-base">
-                      {submission.comments || "No Comments"}
-                    </td>
-
-                    {/* File */}
-                    <td className="border-b p-3 text-sm sm:text-base">
-                      {submission.file ? (
-                        <a
-                          href={submission.file}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-500 hover:underline"
-                        >
-                          View File
-                        </a>
-                      ) : (
-                        "No File"
-                      )}
-                    </td>
-
-                    {/* Image */}
-                    <td className="border-b p-3 text-sm sm:text-base">
-                      {submission.image ? (
-                        <img
-                          onClick={() => redirectToImage(submission.image)}
-                          src={submission.image}
-                          alt="Task Submission"
-                          className="w-16 h-16 cursor-pointer object-cover rounded"
-                        />
-                      ) : (
-                        "No Image"
-                      )}
-                    </td>
-
-                    {/* Created At */}
-                    <td className="border-b p-3 text-sm sm:text-base">
-                      {new Date(submission.createdAt).toLocaleString()}
-                    </td>
-
-                    {/* Approve */}
-                    <td className="border-b p-3 text-sm sm:text-base">
-                      <button
-                        onClick={() =>
-                          markAsComplete(submission.task, submission.user?._id)
-                        }
-                        className="bg-green-500 text-white px-2 py-1 rounded"
-                      >
-                        Accept
-                      </button>
-                    </td>
-
-                    {/* Reject */}
-                    <td className="border-b p-3 text-sm sm:text-base">
-                      <button
-                        onClick={() =>
-                          markAsIncomplete(
-                            submission.task,
-                            submission.user?._id
-                          )
-                        }
-                        className="bg-red-500 text-white px-2 py-1 rounded"
-                      >
-                        Reject
-                      </button>
-                    </td>
-
-                    {/* Delete */}
-                    <td className="border-b p-3 text-sm sm:text-base">
-                      <button
-                        onClick={() => deleteTask(submission.task)}
-                        className="bg-blue-500 text-white px-2 py-1 rounded"
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="8" className="p-3 text-center">
-                    No task submissions available.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
       </div>
     </>
   );

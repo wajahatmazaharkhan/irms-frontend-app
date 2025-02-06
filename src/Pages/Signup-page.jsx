@@ -1,10 +1,7 @@
 import { useState } from "react";
-<<<<<<< HEAD
-import { Mail, Lock, UserPlus, Phone } from "lucide-react";
-=======
-import { TopNavbar, Footer } from "@/Components/compIndex";
+
 import { Mail, Lock, UserPlus, Phone, Laptop, Calendar } from "lucide-react";
->>>>>>> BhaveshBranch
+import { TopNavbar, Footer } from "@/Components/compIndex";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";

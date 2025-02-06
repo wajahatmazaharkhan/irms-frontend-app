@@ -277,7 +277,6 @@ const App = () => {
           </PrivateRoute>
         }
       />
-<<<<<<< HEAD
       <Route
         path="/help-request"
         element={
@@ -294,9 +293,6 @@ const App = () => {
           </PrivateRoute>
         }
       />
-
-    </Routes>
-=======
 
       {/* hrhead and hr interns routes  */}
 
@@ -357,7 +353,6 @@ element={<Hrprofile/>}
    </HrProvider>
     
     
->>>>>>> BhaveshBranch
   );
 };
 

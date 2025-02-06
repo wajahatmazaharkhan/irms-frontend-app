@@ -59,12 +59,9 @@ const Signin = ({ onSwitchToSignup }) => {
       }
       
       const isAdminValue = Boolean(user.isAdmin);
-<<<<<<< HEAD
       console.log("Converting isAdmin to boolean:", isAdminValue);
     
-=======
      
->>>>>>> BhaveshBranch
       await storeIsAdminState(isAdminValue);
       setIsLoggedIn(true);
       setIsLoading(false);

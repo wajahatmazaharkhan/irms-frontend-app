@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { motion } from "framer-motion"
 import { Camera } from 'lucide-react'
-import TopNavBar from "../Components/TopNavBar";
+import TopNavBar from "../Components/TopNavbar"
 
 function Hrprofile() {
   

@@ -6,7 +6,7 @@ import HrAllUsersInterns from "./HrAllUsersInterns";
 import Hrprofile from "./Hrprofile";
 import HrInterns from "./HrInterns";
 import HrSideBar from "./HrSideBar";
-import HrSideInternAttendance from "./hrSideInternAttendance";
+import HrSideInternAttendance from "./HrSideInternAttendance"
 import Hrhelp from "./Hrhelp";
 
 import InternsLeaveApplication from "./InternsLeaveApplication";

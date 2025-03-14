@@ -69,12 +69,10 @@ const Signin = ({ onSwitchToSignup }) => {
      
     if(user.role === 'hr'){
       navigate("/hrhomepage",{state:{hrid:response.data.user.id}});
-      alert("redirecting to hr home")
-      toast.success("Login successful");
+      alert("You will be redirected to HR Panel.")
     }
     else{
       navigate("/");
-      toast.success("Login successful");
     }
      
       

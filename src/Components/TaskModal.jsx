@@ -239,13 +239,21 @@ export default function TaskModal({ taskId }) {
                   </label>
 
                   {/* Input Field */}
-                  <input
-                    type="text"
-                    onChange={(e) => setStatus(e.target.value)}
-                    maxLength={20}
-                    placeholder="Eg. completed or pending ..."
-                    className="block w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-700 focus:border-blue-500 focus:ring-blue-500"
-                  />
+                  <div className="relative group w-full">
+                    <input
+                      type="text"
+                      onChange={(e) => setStatus(e.target.value)}
+                      maxLength={20}
+                      placeholder="Eg. completed or pending ..."
+                      className="block w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-700 focus:border-blue-500 focus:ring-blue-500"
+                    />
+                    {/* Tooltip */}
+                    <div className="absolute left-1/2 bottom-full mb-2 w-64 -translate-x-1/2 rounded bg-gray-700 px-3 py-2 text-xs text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100 pointer-events-none">
+                      Make sure to write <b>completed</b> in lowercase to mark
+                      the task as completed. However, HR and admin will verify
+                      the task before it is finalized.
+                    </div>
+                  </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700">
                       Task Description

@@ -11,6 +11,9 @@ import {
   CheckCircle,
   Clock,
   AlertCircle,
+  ChevronRight,
+  Info,
+  HelpCircle,
 } from "lucide-react";
 import axios from "axios";
 import { useAppContext } from "@/context/AppContext";
@@ -23,6 +26,8 @@ import {
   DialogClose,
 } from "@/Components/ui/dialog";
 import { DynamicCalendar } from "./compIndex";
+import { motion } from "framer-motion";
+import toast from "react-hot-toast";
 
 const CoreDashboard = () => {
   const [tasks, setTasks] = useState([]);
@@ -32,11 +37,10 @@ const CoreDashboard = () => {
   const navigate = useNavigate();
   const { setDashboard } = useAppContext();
   const currentDate = new Date();
-  const currentDay = currentDate.getDate();
-  const currentYear = currentDate.getFullYear();
-  const weekStart = currentDate.getDate() - currentDate.getDay();
-  const dates = Array.from({ length: 7 }, (_, index) => weekStart + index);
   const { modalView, setModalView } = useAppContext();
+  const username = localStorage.getItem("userName") || "Login to Continue";
+
+  const isAdmin = localStorage.getItem("isAdmin") === "true";
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -63,15 +67,15 @@ const CoreDashboard = () => {
     const statusConfig = {
       completed: {
         icon: CheckCircle,
-        className: "bg-green-100 text-green-700",
+        className: "bg-green-100 text-green-700 border border-green-200",
       },
       pending: {
         icon: Clock,
-        className: "bg-yellow-100 text-yellow-700",
+        className: "bg-yellow-100 text-yellow-700 border border-yellow-200",
       },
       overdue: {
         icon: AlertCircle,
-        className: "bg-red-100 text-red-700",
+        className: "bg-red-100 text-red-700 border border-red-200",
       },
     };
 
@@ -80,7 +84,7 @@ const CoreDashboard = () => {
 
     return (
       <div
-        className={`flex items-center gap-1 px-3 py-1 rounded-full text-sm capitalize ${config.className}`}
+        className={`flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium capitalize ${config.className}`}
       >
         <Icon className="w-4 h-4" />
         <span>{status}</span>
@@ -92,60 +96,141 @@ const CoreDashboard = () => {
     const displayTasks = limit ? tasks.slice(0, limit) : tasks;
 
     return (
-      <div className="space-y-6">
+      <div className="space-y-4">
         {displayTasks
           .slice()
           .reverse()
           .map((task, index) => (
-            <Card
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: index * 0.1 }}
               key={task._id || index}
-              className="hover:shadow-md transition-shadow"
             >
-              <CardContent className="p-6">
-                <div className="flex flex-col lg:flex-row items-start lg:items-center gap-6">
-                  <div className="flex-1 space-y-3">
-                    <div className="flex items-start justify-between">
-                      <h3 className="font-semibold text-lg text-gray-900">
-                        {task.title}
-                      </h3>
-                      <TaskStatusBadge status={task.status} />
+              <Card className="hover:shadow-md transition-all duration-200 border border-gray-200">
+                <CardContent className="p-5">
+                  <div className="flex flex-col lg:flex-row items-start lg:items-center gap-4">
+                    <div className="flex-1 space-y-3">
+                      <div className="flex items-start justify-between">
+                        <h3 className="font-semibold text-lg text-gray-900">
+                          {task.title}
+                        </h3>
+                        <TaskStatusBadge status={task.status} />
+                      </div>
+                      <p className="text-gray-600 text-sm">
+                        {task.description}
+                      </p>
+                      <div className="flex flex-wrap gap-4 text-xs text-gray-500">
+                        <div className="flex items-center gap-1.5 bg-gray-50 px-2.5 py-1 rounded-full">
+                          <Calendar className="w-3.5 h-3.5" />
+                          <span>
+                            Start:{" "}
+                            {new Date(task.startDate).toLocaleDateString()}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-1.5 bg-gray-50 px-2.5 py-1 rounded-full">
+                          <Calendar className="w-3.5 h-3.5" />
+                          <span>
+                            End: {new Date(task.endDate).toLocaleDateString()}
+                          </span>
+                        </div>
+                      </div>
                     </div>
-                    <p className="text-gray-600">{task.description}</p>
-                    <div className="flex flex-wrap gap-4 text-sm text-gray-500">
-                      <div className="flex items-center gap-2">
-                        <Calendar className="w-4 h-4" />
-                        <span>
-                          Start: {new Date(task.startDate).toLocaleDateString()}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Calendar className="w-4 h-4" />
-                        <span>
-                          End: {new Date(task.endDate).toLocaleDateString()}
-                        </span>
-                      </div>
+                    <div className="flex flex-col gap-3 min-w-[120px] w-full lg:w-auto mt-4 lg:mt-0">
+                      {isAdmin ? (
+                        <>
+                          <div className="relative group">
+                            <Button
+                              className={`w-full ${
+                                task.status === "completed"
+                                  ? "bg-green-50 text-green-700 hover:bg-green-100 border border-green-200"
+                                  : "bg-blue-500 text-white hover:bg-blue-600"
+                              }`}
+                              variant={
+                                task.status === "completed"
+                                  ? "outline"
+                                  : "default"
+                              }
+                            >
+                              {task.status === "completed"
+                                ? "Resubmit"
+                                : "Submit"}
+                            </Button>
+                            {/* Tooltip */}
+                            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap">
+                              Admins restricted
+                            </div>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <Button
+                            onClick={() => {
+                              setSelectedTaskId(task._id);
+                              setModalView(true);
+                              setShowAllTasks(false);
+                            }}
+                            className={`w-full ${
+                              task.status === "completed"
+                                ? "bg-green-50 text-green-700 hover:bg-green-100 border border-green-200"
+                                : "bg-blue-500 text-white hover:bg-blue-600"
+                            }`}
+                            variant={
+                              task.status === "completed"
+                                ? "outline"
+                                : "default"
+                            }
+                          >
+                            {task.status === "completed"
+                              ? "Resubmit"
+                              : "Submit"}
+                          </Button>
+                        </>
+                      )}
                     </div>
                   </div>
-                  <div className="flex flex-col gap-3 min-w-[120px]">
-                    <Button
-                      onClick={() => {
-                        setSelectedTaskId(task._id);
-                        setModalView(true);
-                        setShowAllTasks(false);
-                      }}
-                      variant="outline"
-                      className="w-full"
-                    >
-                      {task.status === "completed" ? "Resubmit" : "Submit"}
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            </motion.div>
           ))}
       </div>
     );
   };
+
+  const TasksSkeleton = () => (
+    <div className="space-y-4">
+      {[1, 2, 3].map((index) => (
+        <Card key={index} className="w-full border border-gray-200">
+          <CardContent className="p-5">
+            <div className="flex flex-col space-y-4 animate-pulse">
+              {/* Header - Title and Status */}
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                <div className="h-6 bg-gray-200 rounded-md w-2/3 sm:w-1/3"></div>
+                <div className="h-6 bg-gray-200 rounded-full w-24"></div>
+              </div>
+
+              {/* Description */}
+              <div className="space-y-2">
+                <div className="h-4 bg-gray-200 rounded-md w-full"></div>
+                <div className="h-4 bg-gray-200 rounded-md w-5/6"></div>
+              </div>
+
+              {/* Dates */}
+              <div className="flex flex-wrap gap-3">
+                <div className="h-6 bg-gray-200 rounded-full w-32"></div>
+                <div className="h-6 bg-gray-200 rounded-full w-32"></div>
+              </div>
+
+              {/* Submit Button */}
+              <div className="flex justify-start sm:justify-end mt-2">
+                <div className="h-9 bg-gray-200 rounded-md w-full sm:w-28"></div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  );
 
   return (
     <>
@@ -174,14 +259,18 @@ const CoreDashboard = () => {
         </DialogContent>
       </Dialog>
 
-      <div className="p-6 max-w-7xl mx-auto space-y-8 sm:pl-8 md:pl-10 lg:pl-[10rem]">
+      <div className="p-4 md:p-6 max-w-7xl mx-auto space-y-6 sm:pl-8 md:pl-10 lg:pl-[10rem]">
         {/* Header */}
-        <div className="bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg p-8 text-white">
-          <div className="flex justify-between items-center">
+        <div className="bg-gradient-to-r from-blue-600 to-blue-800 rounded-xl p-6 md:p-8 text-white shadow-lg">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div className="space-y-2">
-              <h1 className="text-3xl font-bold">
-                Welcome,{" "}
-                {localStorage.getItem("userName") || "Login to Continue"}!
+              <h1 className="text-2xl md:text-3xl font-bold flex items-center gap-3">
+                <span>Welcome, {username}</span>
+                {username !== "Login to Continue" && (
+                  <span className="inline-flex items-center justify-center rounded-full bg-blue-500/30 px-2 py-1 text-xs">
+                    Dashboard
+                  </span>
+                )}
               </h1>
               <p className="text-blue-100">
                 Track your progress and expand your knowledge journey.
@@ -189,7 +278,7 @@ const CoreDashboard = () => {
             </div>
             <Button
               variant="outline"
-              className="bg-white text-blue-600 hover:bg-blue-50 hidden lg:flex items-center gap-2"
+              className="bg-white/95 text-blue-700 hover:bg-white md:w-auto w-full mt-2 md:mt-0 shadow-sm flex items-center gap-2"
               onClick={() => {
                 setDashboard("Settings");
                 navigate("/setting");
@@ -199,90 +288,116 @@ const CoreDashboard = () => {
               Settings
             </Button>
           </div>
+
+          {/* Quick Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-8">
+            <div className="bg-white/10 rounded-lg p-3 backdrop-blur-sm">
+              <div className="text-xs text-blue-100">Total Tasks</div>
+              <div className="text-xl font-semibold">{tasks.length}</div>
+            </div>
+            <div className="bg-white/10 rounded-lg p-3 backdrop-blur-sm">
+              <div className="text-xs text-blue-100">Completed</div>
+              <div className="text-xl font-semibold">
+                {tasks.filter((t) => t.status === "completed").length}
+              </div>
+            </div>
+            <div className="bg-white/10 rounded-lg p-3 backdrop-blur-sm">
+              <div className="text-xs text-blue-100">Pending</div>
+              <div className="text-xl font-semibold">
+                {tasks.filter((t) => t.status === "pending").length}
+              </div>
+            </div>
+            <div className="bg-white/10 rounded-lg p-3 backdrop-blur-sm">
+              <div className="text-xs text-blue-100">Overdue</div>
+              <div className="text-xl font-semibold">
+                {tasks.filter((t) => t.status === "overdue").length}
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Main Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
           {/* Tasks Section */}
-          <div>
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">My Tasks</h2>
-              <span className="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-sm">
-                {tasks.length} active
-              </span>
+          <div className="lg:col-span-3 space-y-5">
+            <div className="flex justify-between items-center">
+              <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                {isAdmin ? "Assigned Tasks" : "My Tasks"}
+                <span className="bg-blue-100 text-blue-700 px-2.5 py-0.5 rounded-full text-xs font-medium">
+                  {tasks.length} active
+                </span>
+              </h2>
+              <Button
+                variant="outline"
+                size="sm"
+                className="text-gray-600 hover:text-gray-700"
+                onClick={() => setShowAllTasks(true)}
+              >
+                <span className="text-sm">View all</span>
+                <ChevronRight className="h-4 w-4 ml-1" />
+              </Button>
             </div>
+
             {loading ? (
-              <>
-                <div>
-                  <div className="space-y-4">
-                    {[1, 2, 3].map((index) => (
-                      <Card key={index} className="w-full">
-                        <CardContent className="p-4">
-                          <div className="flex flex-col space-y-4 animate-pulse">
-                            {/* Header - Title and Status */}
-                            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-                              <div className="h-6 bg-gray-200 rounded w-2/3 sm:w-1/3"></div>
-                              <div className="h-6 bg-gray-200 rounded w-24"></div>
-                            </div>
-
-                            {/* Description */}
-                            <div className="space-y-2">
-                              <div className="h-4 bg-gray-200 rounded w-full"></div>
-                              <div className="h-4 bg-gray-200 rounded w-5/6"></div>
-                            </div>
-
-                            {/* Dates */}
-                            <div className="flex flex-col sm:flex-row gap-3">
-                              <div className="h-4 bg-gray-200 rounded w-32"></div>
-                              <div className="h-4 bg-gray-200 rounded w-32"></div>
-                            </div>
-
-                            {/* Submit Button */}
-                            <div className="flex justify-start sm:justify-end mt-2">
-                              <div className="h-9 bg-gray-200 rounded w-full sm:w-28"></div>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                </div>
-              </>
+              <TasksSkeleton />
+            ) : tasks.length > 0 ? (
+              <TaskList tasks={tasks} limit={3} />
             ) : (
-              <div className="space-y-4">
-                <TaskList tasks={tasks} limit={3} />
-                <Button
-                  variant="outline"
-                  className="w-full mt-4 py-6 text-base hover:bg-gray-50"
-                  onClick={() => setShowAllTasks(true)}
-                >
-                  View all tasks
-                  <ExternalLink className="h-4 w-4 ml-2" />
-                </Button>
-              </div>
+              <Card className="border border-dashed border-gray-300 bg-gray-50">
+                <CardContent className="p-6 flex flex-col items-center justify-center text-center">
+                  <Info className="h-10 w-10 text-gray-400 mb-2" />
+                  <h3 className="text-lg font-medium text-gray-700">
+                    No tasks found
+                  </h3>
+                  <p className="text-gray-500 text-sm mt-1">
+                    You {`don't `}have any tasks assigned yet.
+                  </p>
+                </CardContent>
+              </Card>
+            )}
+
+            {tasks.length > 3 && (
+              <Button
+                variant="outline"
+                className="w-full py-4 text-base hover:bg-gray-50 border border-gray-200 text-gray-700"
+                onClick={() => setShowAllTasks(true)}
+              >
+                View all tasks
+                <ExternalLink className="h-4 w-4 ml-2" />
+              </Button>
             )}
           </div>
 
           {/* Calendar and Quick Actions Section */}
-          <div className="space-y-8">
-            <div>
-              <DynamicCalendar />
-            </div>
+          <div className="lg:col-span-2 space-y-6">
+            <Card className="border border-gray-200 overflow-hidden shadow-sm">
+              <CardContent className="p-0">
+                <div className="bg-blue-50 p-4 border-b border-blue-100">
+                  <h3 className="font-medium text-blue-800 flex items-center">
+                    <Calendar className="h-4 w-4 mr-2" />
+                    Calendar
+                  </h3>
+                </div>
+                <div className="p-4">
+                  <DynamicCalendar />
+                </div>
+              </CardContent>
+            </Card>
 
             {/* Quick Actions */}
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">
+              <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
                 Quick Actions
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Card
-                  className="group cursor-pointer overflow-hidden transition-all hover:shadow-lg"
+                  className="group cursor-pointer overflow-hidden transition-all hover:shadow-lg border-0"
                   onClick={() => navigate("/frequently-asked-questions")}
                 >
-                  <CardContent className="p-6 bg-gradient-to-br from-blue-500 to-blue-600 text-white h-full">
-                    <div className="flex flex-col items-center text-center space-y-4">
-                      <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <Settings className="h-8 w-8" />
+                  <CardContent className="p-5 bg-gradient-to-br from-blue-500 to-blue-700 text-white h-full">
+                    <div className="flex flex-row items-center space-x-4">
+                      <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <HelpCircle className="h-6 w-6" />
                       </div>
                       <div>
                         <h3 className="font-semibold text-lg">FAQs</h3>
@@ -295,13 +410,13 @@ const CoreDashboard = () => {
                 </Card>
 
                 <Card
-                  className="group cursor-pointer overflow-hidden transition-all hover:shadow-lg"
+                  className="group cursor-pointer overflow-hidden transition-all hover:shadow-lg border-0"
                   onClick={() => navigate("/help")}
                 >
-                  <CardContent className="p-6 bg-gradient-to-br from-blue-500 to-blue-600 text-white h-full">
-                    <div className="flex flex-col items-center text-center space-y-4">
-                      <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <Headset className="h-8 w-8" />
+                  <CardContent className="p-5 bg-gradient-to-br from-blue-600 to-blue-800 text-white h-full">
+                    <div className="flex flex-row items-center space-x-4">
+                      <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <Headset className="h-6 w-6" />
                       </div>
                       <div>
                         <h3 className="font-semibold text-lg">Contact Us</h3>

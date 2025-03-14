@@ -186,53 +186,6 @@ export default function TaskModal({ taskId }) {
                 </p>
 
                 <div className="mt-6 space-y-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Upload Document
-                    </label>
-                    <div
-                      onDragEnter={handleDrag}
-                      onDragLeave={handleDrag}
-                      onDragOver={handleDrag}
-                      onDrop={(e) => handleDrop(e, "file")}
-                      className={`mt-2 flex justify-center rounded-lg border-2 border-dashed p-6 ${
-                        dragActive
-                          ? "border-blue-500 bg-blue-50"
-                          : "border-gray-300"
-                      }`}
-                    >
-                      <div className="text-center">
-                        <FileText className="mx-auto h-12 w-12 text-gray-400" />
-                        <div className="mt-4 flex text-sm leading-6 text-gray-600">
-                          <label className="relative cursor-pointer rounded-md bg-white font-semibold text-blue-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-600 focus-within:ring-offset-2 hover:text-blue-500">
-                            <span>Upload a file</span>
-                            <input
-                              type="file"
-                              accept=".pdf,.doc,.docx"
-                              onChange={(e) => setFile(e.target.files[0])}
-                              className="sr-only"
-                            />
-                          </label>
-                          <p className="pl-1">or drag and drop</p>
-                        </div>
-                        <p className="text-xs leading-5 text-gray-600">
-                          PDF or DOC up to 10MB
-                        </p>
-                        {file && (
-                          <div className="mt-2 flex items-center gap-2 text-sm text-gray-500">
-                            <FileText className="h-4 w-4" />
-                            {file.name}
-                            <button
-                              onClick={() => setFile(null)}
-                              className="text-red-500 hover:text-red-600"
-                            >
-                              <X className="h-4 w-4" />
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
                   {/* Label */}
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Status

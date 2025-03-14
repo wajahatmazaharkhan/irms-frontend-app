@@ -137,56 +137,23 @@ const CoreDashboard = () => {
                       </div>
                     </div>
                     <div className="flex flex-col gap-3 min-w-[120px] w-full lg:w-auto mt-4 lg:mt-0">
-                      {isAdmin ? (
-                        <>
-                          <div className="relative group">
-                            <Button
-                              className={`w-full ${
-                                task.status === "completed"
-                                  ? "bg-green-50 text-green-700 hover:bg-green-100 border border-green-200"
-                                  : "bg-blue-500 text-white hover:bg-blue-600"
-                              }`}
-                              variant={
-                                task.status === "completed"
-                                  ? "outline"
-                                  : "default"
-                              }
-                            >
-                              {task.status === "completed"
-                                ? "Resubmit"
-                                : "Submit"}
-                            </Button>
-                            {/* Tooltip */}
-                            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap">
-                              Admins restricted
-                            </div>
-                          </div>
-                        </>
-                      ) : (
-                        <>
-                          <Button
-                            onClick={() => {
-                              setSelectedTaskId(task._id);
-                              setModalView(true);
-                              setShowAllTasks(false);
-                            }}
-                            className={`w-full ${
-                              task.status === "completed"
-                                ? "bg-green-50 text-green-700 hover:bg-green-100 border border-green-200"
-                                : "bg-blue-500 text-white hover:bg-blue-600"
-                            }`}
-                            variant={
-                              task.status === "completed"
-                                ? "outline"
-                                : "default"
-                            }
-                          >
-                            {task.status === "completed"
-                              ? "Resubmit"
-                              : "Submit"}
-                          </Button>
-                        </>
-                      )}
+                      <Button
+                        onClick={() => {
+                          setSelectedTaskId(task._id);
+                          setModalView(true);
+                          setShowAllTasks(false);
+                        }}
+                        className={`w-full ${
+                          task.status === "completed"
+                            ? "bg-green-50 text-green-700 hover:bg-green-100 border border-green-200"
+                            : "bg-blue-500 text-white hover:bg-blue-600"
+                        }`}
+                        variant={
+                          task.status === "completed" ? "outline" : "default"
+                        }
+                      >
+                        {task.status === "completed" ? "Resubmit" : "Submit"}
+                      </Button>
                     </div>
                   </div>
                 </CardContent>

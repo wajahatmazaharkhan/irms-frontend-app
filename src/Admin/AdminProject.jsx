@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import CustomNavbar from "./CustomNavbar";
+import useTitle from "@/Components/useTitle";
 
 const AdminProject = () => {
+  useTitle('Project Management')
   const [project, setProject] = useState({
     title: "",
     subTitle: "",

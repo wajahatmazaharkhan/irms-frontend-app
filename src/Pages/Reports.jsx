@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { Navbar, SideNav, Wrapper, Footer } from "@/Components/compIndex";
+import { Navbar, SideNav, Wrapper, Footer, useTitle } from "@/Components/compIndex";
 import { Card, CardContent, CardHeader, CardTitle } from "@/Components/ui/card";
 import { Label } from "@/Components/ui/label";
 import { Textarea } from "@/Components/ui/textarea";
 import { AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
 
 const Reports = () => {
+  useTitle('Reports')
   const [message, setMessage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({

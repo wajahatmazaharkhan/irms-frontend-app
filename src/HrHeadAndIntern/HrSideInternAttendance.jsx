@@ -28,8 +28,10 @@ import {
 } from "@/Components/ui/alert-dialog";
 import toast from "react-hot-toast";
 import { useLocation, useNavigate } from "react-router-dom";
+import useTitle from "@/Components/useTitle";
 
 const HrSideInternAttendance = () => {
+  useTitle('HR Intern Attendance')
   
   const [loading, setLoading] = useState(false);
   const [users, setUsers] = useState([]);

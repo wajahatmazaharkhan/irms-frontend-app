@@ -14,8 +14,10 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import useTitle from "@/Components/useTitle";
 
 const IntroPage = () => {
+  useTitle('Home')
   return (
     <div className="min-h-screen bg-[#F8F9FD]">
       {/* Hero Section */}

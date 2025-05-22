@@ -1,8 +1,9 @@
 /* eslint-disable no-unused-vars */
 import React from "react";
 import CustomNavbar from "./CustomNavbar";
+import useTitle from "@/Components/useTitle";
 function AdminHelpPage() {
-
+  useTitle('Admin Help')
 
 const cards = [
     {

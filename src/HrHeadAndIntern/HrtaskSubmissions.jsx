@@ -3,12 +3,13 @@ import CustomNavbar from "./HrTopNavBar";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { Alert, AlertDescription } from "@/Components/ui/alert";
-import { Loader } from "@/Components/compIndex";
+import { Loader, useTitle } from "@/Components/compIndex";
 import { Card, CardContent, CardHeader, CardTitle } from "@/Components/ui/card";
 import { InfoIcon, CheckCircle2, XCircle, X } from "lucide-react";
 import Swal from "sweetalert2";
 
 const InternTasksSubmissions = () => {
+  useTitle('HR Task Submissions')
   const [taskSubmissions, setTaskSubmissions] = useState([]);
   const [tasksMap, setTasksMap] = useState({}); 
   const [loading, setLoading] = useState(true);

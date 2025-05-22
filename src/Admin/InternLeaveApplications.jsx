@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import CustomNavbar from "./CustomNavbar";
+import useTitle from "@/Components/useTitle";
 
 const Internleaveapplication = () => {
+  useTitle('Leave Management')
   const [leaves, setLeaves] = useState([]);
   const [selectedLeave, setSelectedLeave] = useState(null);
   const [status, setStatus] = useState("");

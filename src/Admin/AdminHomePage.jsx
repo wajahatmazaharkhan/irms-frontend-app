@@ -1,109 +1,209 @@
 import CustomNavbar from "./CustomNavbar";
 import { Link } from "react-router-dom";
-import { Line } from "react-chartjs-2";
+import useTitle from "@/Components/useTitle";
 import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  LineElement,
-  PointElement,
-  Title,
-  Tooltip,
-  Legend,
-} from "chart.js";
-
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  LineElement,
-  PointElement,
-  Title,
-  Tooltip,
-  Legend
-);
+  Users,
+  Calendar,
+  FileText,
+  HelpCircle,
+  CheckSquare,
+  FolderOpen,
+  Bell,
+  Settings,
+  TrendingUp,
+  Activity,
+  Clock,
+  CalendarCheck2,
+  UserCheck,
+} from "lucide-react";
 
 function AdminHomePage() {
-  const chartData = {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-    datasets: [
-      {
-        label: "interns",
-        data: [65, 59, 80, 81, 56, 55],
-        borderColor: "rgba(75,192,192,1)",
-        backgroundColor: "rgba(75,192,192,0.2)",
-        fill: true,
-      },
-    ],
-  };
+  useTitle("Admin Dashboard");
 
+  const dashboardStats = [
+    {
+      icon: TrendingUp,
+      label: "Performance",
+      value: "Excellent",
+      color: "text-green-600",
+    },
+    {
+      icon: Activity,
+      label: "System Status",
+      value: "Active",
+      color: "text-blue-600",
+    },
+    { icon: Clock, label: "Uptime", value: "99.9%", color: "text-purple-600" },
+    {
+      icon: UserCheck,
+      label: "Active Users",
+      value: "Online",
+      color: "text-orange-600",
+    },
+  ];
+
+  const navigationCards = [
+    {
+      title: "All Users",
+      route: "/allusers",
+      icon: Users,
+      description: "Manage all system users",
+      gradient: "from-blue-500 to-blue-700",
+    },
+    {
+      title: "Intern Attendance",
+      route: "/intern-attendance",
+      icon: Calendar,
+      description: "Track intern attendance",
+      gradient: "from-green-500 to-green-700",
+    },
+    {
+      title: "Leave Applications",
+      route: "/internleaveapplication",
+      icon: FileText,
+      description: "Review leave requests",
+      gradient: "from-purple-500 to-purple-700",
+    },
+    {
+      title: "Help",
+      route: "/adminhelppage",
+      icon: HelpCircle,
+      description: "Admin support center",
+      gradient: "from-indigo-500 to-indigo-700",
+    },
+    {
+      title: "Task Submissions",
+      route: "/interntasksubmissions",
+      icon: CheckSquare,
+      description: "Review task submissions",
+      gradient: "from-teal-500 to-teal-700",
+    },
+    {
+      title: "Projects",
+      route: "/Projectmanagement",
+      icon: FolderOpen,
+      description: "Manage projects",
+      gradient: "from-orange-500 to-orange-700",
+    },
+    {
+      title: "Send Notifications",
+      route: "/notify-all",
+      icon: Bell,
+      description: "Broadcast notifications",
+      gradient: "from-red-500 to-red-700",
+    },
+    {
+      title: "Admin & HR System",
+      route: "/admin-hr-management",
+      icon: Settings,
+      description: "System administration",
+      gradient: "from-gray-500 to-gray-700",
+    },
+    {
+      title: "Batch Management",
+      route: "/batch-management",
+      icon: CalendarCheck2,
+      description: "System administration",
+      gradient: "from-yellow-500 to-yellow-700",
+    },
+  ];
 
   return (
     <>
       <CustomNavbar />
-      <div className="main-container ">
-        <div className="container mx-auto p-4 overflow-x-hidden ">
-          <div className="flex flex-col" style={{ paddingLeft: "1rem" }}>
-            <div className="mb-2">
-              <h1 className="text-3xl font-semibold text-center">
-                Welcome Admin
-              </h1>
-            </div>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+        <div className="container mx-auto p-6">
+          {/* Header Section */}
+          <div className="text-center mb-8">
+            <h1 className="text-4xl font-bold text-gray-800 mb-2">
+              Welcome Admin
+            </h1>
+            <p className="text-gray-600 text-lg">
+              Manage your system efficiently with our comprehensive dashboard
+            </p>
+          </div>
 
-            <div className="grid grid-cols-4 gap-6">
-              <div className="space-y-6">
-                <Link to="/allusers">
-                  <div className="bg-blue-950 text-white p-12 rounded-lg shadow-lg hover:bg-blue-900 transition w-80 h-32 text-center ">
-                    All users
+          {/* Stats Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            {dashboardStats.map((stat, index) => {
+              const IconComponent = stat.icon;
+              return (
+                <div
+                  key={index}
+                  className="bg-white rounded-xl shadow-md p-6 border border-gray-200 hover:shadow-lg transition-shadow duration-300"
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-gray-600 mb-1">
+                        {stat.label}
+                      </p>
+                      <p className={`text-2xl font-bold ${stat.color}`}>
+                        {stat.value}
+                      </p>
+                    </div>
+                    <div className={`p-3 rounded-full bg-gray-100`}>
+                      <IconComponent className={`w-6 h-6 ${stat.color}`} />
+                    </div>
                   </div>
-                </Link>
-
-                <Link to="/intern-attendance">
-                  <div className="bg-blue-950 text-white p-12 rounded-lg shadow-lg hover:bg-blue-900 transition w-80 h-32 mt-5 text-center">
-                    Intern Attendance
-                  </div>
-                </Link>
-                <Link to="/internleaveapplication">
-                  <div className="bg-blue-950 text-white p-12 rounded-lg shadow-lg hover:bg-blue-900 transition w-80 h-32 mt-5 text-center">
-                    Leave Applications
-                  </div>
-                </Link>
-              </div>
-
-              <div className="space-y-6 col-span-2 hidden sm:hidden md:block">
-                <div className="bg-white p-12 rounded-lg shadow-lg h-[400px] w-[880px] ml-6">
-                  <h2 className="text-xl font-semibold mb-2">Interns Chart</h2>
-                  <Line
-                    data={chartData}
-                    options={{ maintainAspectRatio: false }}
-                  />
                 </div>
+              );
+            })}
+          </div>
+
+          {/* Navigation Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {navigationCards.map((card, index) => {
+              const IconComponent = card.icon;
+              return (
+                <Link key={index} to={card.route} className="group">
+                  <div
+                    className={`bg-gradient-to-br ${card.gradient} rounded-xl shadow-lg p-6 text-white hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300`}
+                  >
+                    <div className="flex items-center justify-between mb-4">
+                      <IconComponent className="w-8 h-8" />
+                      <div className="w-2 h-2 bg-white rounded-full opacity-70"></div>
+                    </div>
+                    <h3 className="text-xl font-semibold mb-2">{card.title}</h3>
+                    <p className="text-sm opacity-90">{card.description}</p>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+
+          {/* Quick Actions Section */}
+          <div className="mt-12 bg-white rounded-xl shadow-md p-8 border border-gray-200">
+            <h2 className="text-2xl font-bold text-gray-800 mb-6">
+              Quick Actions
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="text-center p-6 rounded-lg bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200">
+                <Users className="w-12 h-12 text-blue-600 mx-auto mb-3" />
+                <h3 className="font-semibold text-gray-800 mb-2">
+                  User Management
+                </h3>
+                <p className="text-sm text-gray-600">
+                  Efficiently manage all system users and their permissions
+                </p>
               </div>
-            </div>
-            <div className="mt-6 flex flex-col sm:flex-row gap-y-8 sm:gap-x-8">
-              <Link
-                to="/adminhelppage"
-                className="bg-blue-950 text-white p-12 rounded-lg shadow-lg hover:bg-blue-900 transition block w-80 h-32 text-center"
-              >
-                Help
-              </Link>
-              <Link
-                to="/interntasksubmissions"
-                className="bg-blue-950 text-white p-12 rounded-lg shadow-lg hover:bg-blue-900 transition block w-80 h-32 text-center"
-              >
-                Task Submissions
-              </Link>
-              <Link
-                to="/Projectmanagement"
-                className="bg-blue-950 text-white p-12 rounded-lg shadow-lg hover:bg-blue-900 transition block w-80 h-32 text-center"
-              >
-                Projects
-              </Link>
-              <Link
-                to="/notify-all"
-                className="bg-blue-950 text-white p-12 rounded-lg shadow-lg hover:bg-blue-900 transition block w-80 h-32 text-center"
-              >
-                Send Notifications
-              </Link>
+              <div className="text-center p-6 rounded-lg bg-gradient-to-br from-green-50 to-green-100 border border-green-200">
+                <Activity className="w-12 h-12 text-green-600 mx-auto mb-3" />
+                <h3 className="font-semibold text-gray-800 mb-2">
+                  System Monitoring
+                </h3>
+                <p className="text-sm text-gray-600">
+                  Monitor system performance and user activities
+                </p>
+              </div>
+              <div className="text-center p-6 rounded-lg bg-gradient-to-br from-purple-50 to-purple-100 border border-purple-200">
+                <Bell className="w-12 h-12 text-purple-600 mx-auto mb-3" />
+                <h3 className="font-semibold text-gray-800 mb-2">
+                  Communications
+                </h3>
+                <p className="text-sm text-gray-600">
+                  Send notifications and manage communications
+                </p>
+              </div>
             </div>
           </div>
         </div>

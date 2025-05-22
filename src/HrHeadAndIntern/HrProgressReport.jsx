@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { HrTopNavBar } from "./HrIndex";
 import axios from "axios";
+import useTitle from "@/Components/useTitle";
 
 function HrProgressReport() {
+    useTitle('HR Progress Report')
     const [reports, setReports] = useState([]);
 
     const handleProgressReports = async () => {

@@ -7,9 +7,9 @@ import Wrapper from "./Wrapper";
 import NotiBadge from "./NotiBadge";
 import FilterOption from "./FilterOption";
 import Filter from "./Filter";
-import AdminTask from "../Admin/AdminTask"
+import AdminTask from "../Admin/AdminTask";
 import AdminSideNav from "./AdminSideNav";
-import AdminPanelMain from "../Admin/AdminHomePage"
+import AdminPanelMain from "../Admin/AdminHomePage";
 import AdminTopNav from "./AdminTopNav";
 import Footer from "./footer";
 import FAQsData from "./FAQsData";
@@ -17,7 +17,9 @@ import TaskModal from "./TaskModal";
 import DynamicCalendar from "./DynamicCalendar";
 import Loader from "./Loader";
 import SkeletonLoader from "./SkeletonLoader";
+import useTitle from "./useTitle";
 export {
+  useTitle,
   Navbar,
   Loader,
   SkeletonLoader,
@@ -36,5 +38,5 @@ export {
   AdminSideNav,
   AdminTopNav,
   FAQsData,
-  Footer
+  Footer,
 };

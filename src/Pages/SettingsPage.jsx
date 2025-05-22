@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Card, CardContent } from "@/Components/ui/card";
-import { Navbar } from "@/Components/compIndex";
+import { Navbar, useTitle } from "@/Components/compIndex";
 import { Switch } from "@/Components/ui/switch";
 import {
   Settings,
@@ -15,6 +15,7 @@ import { useAppContext } from "@/context/AppContext";
 import toast from "react-hot-toast";
 
 const SettingsPage = () => {
+  useTitle('Settings')
   const navigate = useNavigate();
   const { setDashboard } = useAppContext();
   const [notifications] = useState(true);

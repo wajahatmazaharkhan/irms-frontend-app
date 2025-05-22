@@ -1,7 +1,9 @@
 /* eslint-disable no-unused-vars */
 import React from "react";
 import { HrTopNavBar } from "./HrIndex";
+import useTitle from "@/Components/useTitle";
 function Hrhelp() {
+  useTitle('HR Help')
 
 
 const cards = [

@@ -1,13 +1,14 @@
 import { useState } from "react";
 
 import { Mail, Lock, UserPlus, Phone, Laptop, Calendar } from "lucide-react";
-import { TopNavbar, Footer } from "@/Components/compIndex";
+import { TopNavbar, Footer, useTitle } from "@/Components/compIndex";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import iispprLogo from "../assets/Images/iisprlogo.png";
 
 const SignUp = ({ onSwitchToSignin }) => {
+  useTitle('Register')
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState();
@@ -214,7 +215,7 @@ const SignUp = ({ onSwitchToSignin }) => {
                   <option value="">Select your internship type </option>
                   <option value="development"> Development internship </option>
                   <option value="research">Research internship</option>
-                  <option value="hr">Hr internship</option>
+                  {/* <option value="hr">Hr internship</option> */}
                 </select>
               </div>
             </div>

@@ -1,5 +1,5 @@
 import React from "react";
-import { Navbar, SideNav, Wrapper, Footer } from "@/Components/compIndex";
+import { Navbar, SideNav, Wrapper, Footer, useTitle } from "@/Components/compIndex";
 import { Store, ShoppingBag, TrendingUp, Package } from "lucide-react";
 
 const Stores = () => {
@@ -9,7 +9,7 @@ const Stores = () => {
     "Supply Chain Integration",
     "Multi-location Support",
   ];
-
+  useTitle('stores')
   return (
     <>
       <SideNav />

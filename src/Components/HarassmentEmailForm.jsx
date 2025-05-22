@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { Mail, Send, AlertCircle, CheckCircle2, Menu } from 'lucide-react';
-import { TopNavbar, SideNav } from "./compIndex.js";
+import { TopNavbar, SideNav, useTitle } from "./compIndex.js";
 
 const HarassmentEmailForm = () => {
+  useTitle('Harassment Complaint')
   const [email, setEmail] = useState("");
   const [subject, setSubject] = useState("Harassment Complaint");
   const [message, setMessage] = useState("");

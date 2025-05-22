@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { Navbar, SideNav, Wrapper, Footer } from "@/Components/compIndex";
+import { Navbar, SideNav, Wrapper, Footer, useTitle } from "@/Components/compIndex";
 
 const Projects = () => {
+  useTitle('Projects')
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
 

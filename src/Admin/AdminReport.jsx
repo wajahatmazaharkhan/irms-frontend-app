@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { Loader, Wrapper } from "@/Components/compIndex";
+import { Loader, useTitle, Wrapper } from "@/Components/compIndex";
 import CustomNavbar from "./CustomNavbar";
 
 const AdminReport = () => {
+  useTitle('Weekly Report')
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

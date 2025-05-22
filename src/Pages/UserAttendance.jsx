@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Navbar, SideNav } from "@/Components/compIndex";
+import { Navbar, SideNav, useTitle } from "@/Components/compIndex";
 import axios from "axios";
 import { Card, CardContent, CardHeader, CardTitle } from "@/Components/ui/card";
 import {
@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 
 const UserAttendance = () => {
+  useTitle('User Attendance')
   const [attendanceData, setAttendanceData] = useState([]);
   const [attendancePercentage, setAttendancePercentage] = useState(0);
   const [loading, setLoading] = useState(true);

@@ -1,8 +1,9 @@
 /* eslint-disable no-unused-vars */
 import React from "react";
-import { FAQsData, Navbar, SideNav, TopNavbar } from "../Components/compIndex";
+import { FAQsData, Navbar, SideNav, TopNavbar, useTitle } from "../Components/compIndex";
 
 const FAQ = () => {
+  useTitle('FAQ')
   return (
     <>
       <Navbar />

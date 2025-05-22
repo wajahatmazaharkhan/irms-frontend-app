@@ -4,9 +4,11 @@ import { useLocation } from "react-router-dom";
 import { HrTopNavBar,HrSideBar } from "./HrIndex";
 import { useHrContext } from "@/context/HrContext.jsx";
 import axios from "axios";
+import useTitle from "@/Components/useTitle";
 
 function HrAllUsersInterns() {
     // const location = useLocation();
+    useTitle('HR All Interns')
     const [interns, setInterns] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);

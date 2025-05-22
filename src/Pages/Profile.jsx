@@ -11,11 +11,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/Components/ui/select";
-import { SideNav, Navbar } from "../Components/compIndex";
+import { SideNav, Navbar, useTitle } from "../Components/compIndex";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 export default function AccountDetails() {
+  useTitle('Your Account')
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saveStatus, setSaveStatus] = useState("");

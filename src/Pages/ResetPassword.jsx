@@ -1,296 +1,95 @@
-import React, { useState } from "react";
-import {
-  Eye,
-  EyeOff,
-  Lock,
-  ArrowRight,
-  Mail,
-  KeyRound,
-  Key,
-} from "lucide-react";
-import axios from "axios";
-import toast, { Toaster } from "react-hot-toast";
-import iispprLogo from "../assets/Images/iisprlogo.png";
+import React from "react";
+import { Lock, ArrowLeft, Clock, Wrench, AlertCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import useTitle from "@/Components/useTitle";
 
 const PasswordResetPage = () => {
+  useTitle("Reset Password");
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    email: "",
-    oldPassword: "",
-    newPassword: "",
-    cnewPassword: "",
-  });
-  const [showOldPassword, setShowOldPassword] = useState(false);
-  const [showNewPassword, setShowNewPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-
-    if (
-      !formData.email ||
-      !formData.oldPassword ||
-      !formData.newPassword ||
-      !formData.cnewPassword
-    ) {
-      toast.error("All fields are required");
-      setIsLoading(false);
-      return;
-    }
-
-    if (!formData.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
-      toast.error("Please enter a valid email address");
-      setIsLoading(false);
-      return;
-    }
-
-    if (formData.newPassword !== formData.cnewPassword) {
-      toast.error("New passwords do not match");
-      setIsLoading(false);
-      return;
-    }
-
-    if (formData.newPassword.length < 8) {
-      toast.error("Password must be at least 8 characters long");
-      setIsLoading(false);
-      return;
-    }
-
-    try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/user/updatepassword`,
-        {
-          email: formData.email,
-          oldPassword: formData.oldPassword,
-          newPassword: formData.newPassword,
-          cnewPassword: formData.cnewPassword,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (response.status === 200) {
-        toast.success("Password updated successfully!");
-        setFormData({
-          email: "",
-          oldPassword: "",
-          newPassword: "",
-          cnewPassword: "",
-        });
-        navigate("/login");
-      }
-    } catch (error) {
-      toast.error(
-        error.response?.data?.message ||
-          "Failed to update password. Please try again."
-      );
-    } finally {
-      setIsLoading(false);
-    }
+  const handleGoBack = () => {
+    navigate("/login");
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-blue-100 flex items-center justify-center p-4">
       <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg">
-        {/* Logo and Header */}
+        {/* Header */}
         <div className="text-center">
-          <div className="mx-auto w-28 h-28 mb-4">
-            <img
-              src={iispprLogo}
-              alt="IISPPR Logo"
-              className="w-full h-full object-contain"
-            />
+          <div className="mx-auto w-20 h-20 mb-4 bg-orange-100 rounded-full flex items-center justify-center">
+            <Wrench className="w-10 h-10 text-orange-600" />
           </div>
           <h2 className="text-3xl font-bold text-gray-900 mb-2">
             Reset Password
           </h2>
-          <p className="text-gray-600">
-            Change your IISPPR InternHub account password
+          <p className="text-gray-600">IISPPR InternHub Account</p>
+        </div>
+
+        {/* Under Development Notice */}
+        <div className="bg-orange-50 border border-orange-200 rounded-lg p-6 text-center">
+          <div className="flex justify-center mb-4">
+            <div className="bg-orange-200 rounded-full p-3">
+              <Clock className="w-8 h-8 text-orange-600" />
+            </div>
+          </div>
+
+          <h3 className="text-lg font-semibold text-orange-800 mb-2">
+            Feature Under Development
+          </h3>
+
+          <p className="text-orange-700 mb-4">
+            The password reset functionality is currently being developed and
+            will be available soon.
+          </p>
+
+          <div className="bg-white rounded-lg p-4 mb-4">
+            <div className="flex items-center justify-center gap-2 text-orange-600 mb-2">
+              <AlertCircle className="w-5 h-5" />
+              <span className="font-medium">Coming Soon</span>
+            </div>
+            <ul className="text-sm text-gray-600 space-y-1">
+              <li>• Secure password reset via email</li>
+              <li>• Enhanced security validation</li>
+              <li>• Multi-factor authentication support</li>
+              <li>• Improved user experience</li>
+            </ul>
+          </div>
+
+          <p className="text-sm text-orange-600 font-medium">
+            Expected Release: Coming Soon
           </p>
         </div>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="mt-8 space-y-6">
-          {/* Email Field */}
-          <div className="relative">
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
-              Email Address
-            </label>
-            <div className="relative">
-              <input
-                type="email"
-                id="email"
-                className="w-full px-4 py-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                value={formData.email}
-                onChange={(e) =>
-                  setFormData({ ...formData, email: e.target.value })
-                }
-                placeholder="Enter your registered email"
-              />
-              <Mail className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
-            </div>
+        {/* Alternative Options */}
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <h4 className="font-medium text-blue-800 mb-2">Need Help Now?</h4>
+          <p className="text-sm text-blue-700 mb-3">
+            If you've forgotten your password, please contact the system
+            administrator for assistance.
+          </p>
+          <div className="text-sm text-blue-600">
+            <p>📧 Email: support@iisppr.edu</p>
+            <p>📞 Phone: Contact your institution</p>
           </div>
+        </div>
 
-          {/* Old Password Field */}
-          <div className="relative">
-            <label
-              htmlFor="oldPassword"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
-              Current Password
-            </label>
-            <div className="relative">
-              <input
-                type={showOldPassword ? "text" : "password"}
-                id="oldPassword"
-                className="w-full px-4 py-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                value={formData.oldPassword}
-                onChange={(e) =>
-                  setFormData({ ...formData, oldPassword: e.target.value })
-                }
-                placeholder="Enter your current password"
-              />
-              <KeyRound className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
-              <button
-                type="button"
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                onClick={() => setShowOldPassword(!showOldPassword)}
-              >
-                {showOldPassword ? (
-                  <EyeOff className="w-5 h-5" />
-                ) : (
-                  <Eye className="w-5 h-5" />
-                )}
-              </button>
-            </div>
+        {/* Back to Login Button */}
+        <button
+          onClick={handleGoBack}
+          className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition duration-200 flex items-center justify-center gap-2 font-medium"
+        >
+          <ArrowLeft className="w-5 h-5" />
+          Back to Login
+        </button>
+
+        {/* Development Status */}
+        <div className="text-center">
+          <div className="inline-flex items-center gap-2 text-sm text-gray-500">
+            <div className="w-2 h-2 bg-orange-400 rounded-full animate-pulse"></div>
+            <span>Development in Progress</span>
           </div>
-
-          {/* New Password Field */}
-          <div>
-            <label
-              htmlFor="newPassword"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
-              New Password
-            </label>
-            <div className="relative">
-              <input
-                type={showNewPassword ? "text" : "password"}
-                id="newPassword"
-                className="w-full px-4 py-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                value={formData.newPassword}
-                onChange={(e) =>
-                  setFormData({ ...formData, newPassword: e.target.value })
-                }
-                placeholder="Enter new password"
-              />
-              <Key className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
-              <button
-                type="button"
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                onClick={() => setShowNewPassword(!showNewPassword)}
-              >
-                {showNewPassword ? (
-                  <EyeOff className="w-5 h-5" />
-                ) : (
-                  <Eye className="w-5 h-5" />
-                )}
-              </button>
-            </div>
-          </div>
-
-          {/* Confirm Password Field */}
-          <div>
-            <label
-              htmlFor="cnewPassword"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
-              Confirm New Password
-            </label>
-            <div className="relative">
-              <input
-                type={showConfirmPassword ? "text" : "password"}
-                id="cnewPassword"
-                className="w-full px-4 py-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                value={formData.cnewPassword}
-                onChange={(e) =>
-                  setFormData({ ...formData, cnewPassword: e.target.value })
-                }
-                placeholder="Confirm your new password"
-              />
-              <Key className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
-              <button
-                type="button"
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              >
-                {showConfirmPassword ? (
-                  <EyeOff className="w-5 h-5" />
-                ) : (
-                  <Eye className="w-5 h-5" />
-                )}
-              </button>
-            </div>
-          </div>
-
-          {/* Submit Button */}
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition duration-200 flex items-center justify-center gap-2 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isLoading ? (
-              <span>Updating...</span>
-            ) : (
-              <>
-                Update Password
-                <ArrowRight className="w-5 h-5" />
-              </>
-            )}
-          </button>
-        </form>
-
-        {/* Password Requirements */}
-        <div className="mt-4 p-4 bg-blue-50 rounded-lg">
-          <h3 className="text-sm font-medium text-blue-800 mb-2">
-            Password Requirements:
-          </h3>
-          <ul className="text-sm text-blue-700 space-y-1">
-            <li>• Minimum 8 characters long</li>
-            <li>• Include at least one uppercase letter</li>
-            <li>• Include at least one number</li>
-            <li>• Include at least one special character</li>
-          </ul>
         </div>
       </div>
-      <Toaster
-        toastOptions={{
-          duration: 3000,
-          style: {
-            background: "#333",
-            color: "#fff",
-          },
-          success: {
-            style: {
-              background: "green",
-            },
-          },
-          error: {
-            style: {
-              background: "red",
-            },
-          },
-        }}
-      />
     </div>
   );
 };

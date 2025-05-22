@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/Components/ui/card";
 import { Skeleton } from "@/Components/ui/skeleton";
 import { AlertCircle, Bell, Calendar, Trash, Clock, Info } from "lucide-react";
 import { Alert, AlertDescription } from "@/Components/ui/alert";
-import { Navbar, SideNav, Footer } from "@/Components/compIndex";
+import { Navbar, SideNav, Footer, useTitle } from "@/Components/compIndex";
 import {
   Dialog,
   DialogContent,
@@ -17,6 +17,7 @@ import toast from "react-hot-toast";
 import { useAppContext } from "@/context/AppContext";
 
 const Notifications = () => {
+  useTitle('Notifications')
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

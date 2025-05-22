@@ -1,7 +1,8 @@
 import React, { useEffect, useRef } from "react";
-import { TopNavbar, Navbar } from "../Components/compIndex";
+import { TopNavbar, Navbar, useTitle } from "../Components/compIndex";
 
 const Aboutus = () => {
+  useTitle('About Us')
   const aboutusRef = useRef(null);
 
   // for animation

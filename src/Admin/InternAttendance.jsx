@@ -27,8 +27,10 @@ import {
 } from "@/Components/ui/alert-dialog";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import useTitle from "@/Components/useTitle";
 
 const InternAttendance = () => {
+  useTitle('Attendance Management')
   const [loading, setLoading] = useState(false);
   const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");

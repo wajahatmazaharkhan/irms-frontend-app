@@ -5,7 +5,7 @@ import { Alert, AlertDescription } from "@/Components/ui/alert";
 import CustomNavbar from "./CustomNavbar";
 import axios from "axios";
 import { toast } from "react-hot-toast";
-import { Loader } from "@/Components/compIndex";
+import { Loader, useTitle } from "@/Components/compIndex";
 
 const API_BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -19,6 +19,7 @@ const INITIAL_TASK_STATE = {
 };
 
 export default function AdminTask() {
+  useTitle('Task Management')
   const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState([]);
   const [task, setTask] = useState(INITIAL_TASK_STATE);

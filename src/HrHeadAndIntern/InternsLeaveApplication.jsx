@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { HrTopNavBar } from "./HrIndex";
+import useTitle from "@/Components/useTitle";
 
 const InternsLeaveApplication = () => {
+  useTitle('Leave Applications')
   const [leaves, setLeaves] = useState([]);
   const [selectedLeave, setSelectedLeave] = useState(null);
   const [status, setStatus] = useState("");

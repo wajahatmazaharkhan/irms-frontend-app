@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import CustomNavbar from "./CustomNavbar";
-import { Loader } from "@/Components/compIndex";
+import { Loader, useTitle } from "@/Components/compIndex";
 import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription } from "@/Components/ui/alert";
 import toast from "react-hot-toast";
 import { HrAllUsersInterns } from "@/HrHeadAndIntern/HrIndex";
 function AllUsers() {
+  useTitle('User Management')
   const [users, setUsers] = useState([]);
   const [hrusernames, sethrusernames] = useState([]);
   const [error, setError] = useState("");

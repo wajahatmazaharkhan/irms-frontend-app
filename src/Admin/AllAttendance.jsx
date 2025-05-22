@@ -3,8 +3,10 @@ import axios from "axios";
 import { Card, CardContent, CardHeader, CardTitle } from "@/Components/ui/card";
 import { Loader2, ArrowUpDown } from "lucide-react";
 import CustomNavbar from "./CustomNavbar";
+import useTitle from "@/Components/useTitle";
 
 const AllAttendance = () => {
+  useTitle('View Attendance')
   const [users, setUsers] = useState([]);
   const [attendanceData, setAttendanceData] = useState({});
   const [loading, setLoading] = useState(true);

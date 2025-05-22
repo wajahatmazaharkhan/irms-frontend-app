@@ -1,7 +1,8 @@
 /* eslint-disable no-unused-vars */
 import React from 'react';
-import { SideNav,Navbar } from '../Components/compIndex';
+import { SideNav,Navbar, useTitle } from '../Components/compIndex';
 function Privacypolicy() {
+  useTitle('Privacy Policy')
   return (
     <>
     <SideNav></SideNav>

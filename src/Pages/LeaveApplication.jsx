@@ -10,7 +10,7 @@ import {
   XCircle,
   Clock3,
 } from "lucide-react";
-import { Navbar, SideNav, Footer } from "@/Components/compIndex";
+import { Navbar, SideNav, Footer, useTitle } from "@/Components/compIndex";
 import {
   Select,
   SelectContent,
@@ -24,6 +24,7 @@ import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
 
 const LeaveApplication = () => {
+  useTitle('Leave Application')
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [leaveHistory, setLeaveHistory] = useState([]);

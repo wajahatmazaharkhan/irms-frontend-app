@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { SideNav, Navbar } from "../Components/compIndex";
+import { SideNav, Navbar, useTitle } from "../Components/compIndex";
 import { Search } from "lucide-react";
 
 const Help = () => {
   const [searchQuery, setSearchQuery] = useState("");
-
+  useTitle('Help')
   const cards = [
     {
       title: "Submit a Query",

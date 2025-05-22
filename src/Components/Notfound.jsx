@@ -1,9 +1,10 @@
 import { FileQuestion, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import useTitle from "./useTitle";
 
 export function NotFound() {
   const navigate = useNavigate();
-
+  useTitle('Not Found')
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 flex items-center justify-center px-4">
       <div className="max-w-lg w-full text-center">

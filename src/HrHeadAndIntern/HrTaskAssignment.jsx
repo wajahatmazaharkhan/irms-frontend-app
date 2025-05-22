@@ -5,7 +5,7 @@ import { Alert, AlertDescription } from "@/Components/ui/alert";
 import CustomNavbar from "./HrTopNavBar";
 import axios from "axios";
 import { toast } from "react-hot-toast";
-import { Loader } from "@/Components/compIndex";
+import { Loader, useTitle } from "@/Components/compIndex";
 import { useLocation } from "react-router-dom";
 import { useHrContext } from "@/context/HrContext.jsx";
 import PropTypes from "prop-types";
@@ -22,6 +22,7 @@ const INITIAL_TASK_STATE = {
 };
 
 function AdminTask() {
+  useTitle('HR Task Assignment')
   const { hrid } = useHrContext();
   console.log("Hr task submissions:", hrid);
 

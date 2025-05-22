@@ -49,7 +49,7 @@ const TopNavbar = () => {
     { path: "/help-request", label: "Harassment Form", public: false },
 
     // Admin Routes
-    { path: "/adminhomepage", label: "Admin Dashboard", adminOnly: true },
+    { path: "/admin-access", label: "Admin Dashboard", adminOnly: true },
     {
       path: "/projectmanagement",
       label: "Project Management",
@@ -200,7 +200,7 @@ const TopNavbar = () => {
       ? [
           {
             label: "Admin Panel",
-            path: "/adminhomepage",
+            path: "/admin-access",
             icon: <Building2 className="w-4 h-4" />,
           },
         ]

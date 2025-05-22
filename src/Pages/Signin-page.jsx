@@ -8,6 +8,7 @@ import axios from "axios";
 import { useAuthContext } from "@/context/AuthContext";
 import { useAppContext } from "@/context/AppContext";
 import iispprLogo from "../assets/Images/iisprlogo.png";
+import useTitle from "@/Components/useTitle";
 
 // import { HrAllUsersInterns } from "@/HrHeadAndIntern/HrIndex";
 
@@ -20,6 +21,7 @@ const Signin = ({ onSwitchToSignup }) => {
   const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
+  useTitle('Login')
   const {
     loggedIn,
     setIsLoggedIn,

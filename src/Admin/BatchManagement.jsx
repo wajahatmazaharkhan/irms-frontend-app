@@ -42,6 +42,9 @@ function BatchManagement() {
   const [availableHR, setAvailableHR] = useState([]);
   const [deleteLoading, setDeleteLoading] = useState(null);
   const [usersLoading, setUsersLoading] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editBatchId, setEditBatchId] = useState(null);
+
 
   // Form state
   const [formData, setFormData] = useState({
@@ -359,6 +362,67 @@ function BatchManagement() {
     }
   };
 
+  const handleEditClick = async (batch) => {
+    try {
+      const baseUrl = import.meta.env.VITE_BASE_URL;
+      const res = await fetch(`${baseUrl}/batches/${batch.id}`); // assuming batch has _id
+      if (!res.ok) throw new Error("Failed to fetch batch details");
+
+      const fullBatch = await res.json();
+
+      setFormData({
+        name: fullBatch.name || "",
+        startDate: fullBatch.startDate?.split("T")[0] || "",
+        EndDate: fullBatch.EndDate?.split("T")[0] || "",
+        interns: fullBatch.interns?.map((i) => i._id || i) || [],
+        hr: fullBatch.hr?.map((h) => h._id || h) || [],
+      });
+
+      setIsEditing(true);
+      setEditBatchId(fullBatch._id);
+      setShowCreateForm(true);
+    } catch (error) {
+      console.error("Error loading batch for edit:", error);
+      alert("Could not load batch details. Please try again.");
+    }
+  };
+
+
+
+  const handleUpdateBatch = async (e) => {
+    e.preventDefault();
+    setFormLoading(true);
+
+    try {
+      const baseUrl = import.meta.env.VITE_BASE_URL;
+      const res = await fetch(`${baseUrl}/batches/${editBatchId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "Update failed");
+      }
+
+      alert("Batch updated successfully!");
+      setShowCreateForm(false);
+      setIsEditing(false);
+      setEditBatchId(null);
+    } catch (err) {
+      alert(err.message || "Update failed");
+      console.error(err);
+    } finally {
+      setFormLoading(false);
+    }
+  };
+
+
+
   // Handle form input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -441,7 +505,7 @@ function BatchManagement() {
       description: "Download batch performance reports",
       icon: Download,
       color: "from-purple-500 to-purple-700",
-      action: "export",
+      action: " ",
     },
     {
       title: "Batch Settings",
@@ -673,7 +737,7 @@ function BatchManagement() {
                     <button className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
                       <Eye className="w-4 h-4" />
                     </button>
-                    <button className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors">
+                    <button className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors" onClick={() => handleEditClick(batch)}>
                       <Edit3 className="w-4 h-4" />
                     </button>
                     <button
@@ -780,10 +844,22 @@ function BatchManagement() {
               <div className="p-6">
                 <div className="flex justify-between items-center mb-6">
                   <h2 className="text-2xl font-bold text-gray-800">
-                    Create New Batch
+                    {isEditing ? "Edit Batch" : "Create New Batch"}
                   </h2>
                   <button
-                    onClick={() => setShowCreateForm(false)}
+                    onClick={() => {
+                      setShowCreateForm(false);
+                      setIsEditing(false);
+                      setEditBatchId(null);
+                      // Reset form and close modal
+                      setFormData({
+                        name: "",
+                        startDate: "",
+                        EndDate: "",
+                        interns: [],
+                        hr: [],
+                      });
+                    }}
                     className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
                   >
                     <X className="w-5 h-5" />
@@ -796,7 +872,7 @@ function BatchManagement() {
                     <p className="text-gray-600">Loading users...</p>
                   </div>
                 ) : (
-                  <form onSubmit={handleCreateBatch} className="space-y-6">
+                  <form onSubmit={isEditing ? handleUpdateBatch : handleCreateBatch} className="space-y-6">
                     {/* Batch Name */}
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -940,7 +1016,19 @@ function BatchManagement() {
                     <div className="flex gap-4 pt-4">
                       <button
                         type="button"
-                        onClick={() => setShowCreateForm(false)}
+                        onClick={() => {
+                          setShowCreateForm(false);
+                          setIsEditing(false);
+                          setEditBatchId(null);
+                          // Reset form and close modal
+                          setFormData({
+                            name: "",
+                            startDate: "",
+                            EndDate: "",
+                            interns: [],
+                            hr: [],
+                          });
+                        }}
                         className="flex-1 px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
                       >
                         Cancel
@@ -959,7 +1047,7 @@ function BatchManagement() {
                         ) : (
                           <Save className="w-4 h-4" />
                         )}
-                        {formLoading ? "Creating..." : "Create Batch"}
+                        {isEditing ? formLoading ? "Updating...." : "Update Batch" : formLoading ? "Creating..." : "Create Batch"}
                       </button>
                     </div>
                   </form>

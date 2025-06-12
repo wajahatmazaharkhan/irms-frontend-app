@@ -28,6 +28,8 @@ export default function TaskModal({ taskId }) {
   const [dragActive, setDragActive] = useState(false);
   const { modalView, setModalView } = useAppContext();
 
+  const baseUrl = import.meta.env.VITE_BASE_URL;
+
   const handleSubmit = async () => {
     const result = await Swal.fire({
       title: "Are you sure?",
@@ -56,7 +58,7 @@ export default function TaskModal({ taskId }) {
         formData.append("taskId", taskId);
 
         const response = await axios.post(
-          "https://iisppr-backend.vercel.app/submitTask",
+          `${baseUrl}/submitTask`,
           formData,
           {
             headers: {
@@ -72,7 +74,7 @@ export default function TaskModal({ taskId }) {
           toast.success("Task submitted successfully!");
           axios
             .put(
-              `https://iisppr-backend.vercel.app/task/update-task/${taskId}`,
+              `${baseUrl}/task/update-task/${taskId}`,
               taskComplete,
               {
                 headers: { Authorization: `Bearer ${token}` },
@@ -139,7 +141,7 @@ export default function TaskModal({ taskId }) {
 
   if (loading) {
     return (
-      <Dialog open={true} onClose={() => {}} className="relative z-50">
+      <Dialog open={true} onClose={() => { }} className="relative z-50">
         <DialogBackdrop className="fixed inset-0 bg-gray-500/75" />
         <div className="fixed inset-0 z-50 overflow-y-auto">
           <div className="flex min-h-full items-center justify-center p-4">
@@ -236,11 +238,10 @@ export default function TaskModal({ taskId }) {
                       onDragLeave={handleDrag}
                       onDragOver={handleDrag}
                       onDrop={(e) => handleDrop(e, "image")}
-                      className={`mt-2 flex justify-center rounded-lg border-2 border-dashed p-6 ${
-                        dragActive
-                          ? "border-blue-500 bg-blue-50"
-                          : "border-gray-300"
-                      }`}
+                      className={`mt-2 flex justify-center rounded-lg border-2 border-dashed p-6 ${dragActive
+                        ? "border-blue-500 bg-blue-50"
+                        : "border-gray-300"
+                        }`}
                     >
                       <div className="text-center">
                         <ImageIcon className="mx-auto h-12 w-12 text-gray-400" />

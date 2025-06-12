@@ -2,6 +2,7 @@ import CustomNavbar from "./CustomNavbar";
 import { Link } from "react-router-dom";
 import useTitle from "@/Components/useTitle";
 import { useState, useEffect } from "react";
+
 import {
   Users,
   Calendar,
@@ -44,7 +45,8 @@ function BatchManagement() {
   const [usersLoading, setUsersLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editBatchId, setEditBatchId] = useState(null);
-
+  const [selectedBatch, setSelectedBatch] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -68,23 +70,53 @@ function BatchManagement() {
         }
 
         const data = await response.json();
+        const progressResponse = await fetch(`${baseUrl}/batches/progress`);
+        const progressData = await progressResponse.json();
 
         // Transform API data to match component structure
-        const transformedData = data.map((batch) => ({
-          id: batch._id,
-          batchName: batch.name,
-          month: formatMonth(batch.startDate),
-          startDate: formatDate(batch.startDate),
-          endDate: formatDate(batch.EndDate),
-          totalInterns: batch.totalInterns,
-          activeInterns: batch.totalInterns, // Assuming all are active for now
-          completedInterns: 0, // API doesn't provide this, set to 0
-          totalHR: batch.totalHR,
-          status: getStatusFromDates(batch.startDate, batch.EndDate),
-          coordinator: "TBD", // API doesn't provide this
-          technologies: [], // API doesn't provide this
-          progress: calculateProgress(batch.startDate, batch.EndDate),
-        }));
+        const transformedData = data.map((batch) => {
+          const safeDate = (date) => {
+            if (!date) return "";
+            const d = new Date(date);
+            return isNaN(d.getTime()) ? "" : d.toISOString().split("T")[0];
+          };
+
+          const formatMonth = (date) => {
+            if (!date) return "";
+            const d = new Date(date);
+            return isNaN(d.getTime()) ? "" : d.toLocaleString("default", { month: "long", year: "numeric" });
+          };
+
+          const getStatusFromDates = (start, end) => {
+            const now = new Date();
+            const s = new Date(start);
+            const e = new Date(end);
+            if (isNaN(s.getTime()) || isNaN(e.getTime())) return "Invalid";
+            if (now < s) return "Upcoming";
+            if (now > e) return "Completed";
+            return "Ongoing";
+          };
+
+          const batchProgress = progressData.find(p => p._id === batch._id);
+
+          return {
+            id: batch._id,
+            batchName: batch.name,
+            month: formatMonth(batch.startDate),
+            startDate: safeDate(batch.startDate),
+            endDate: safeDate(batch.EndDate),
+            totalInterns: batch.totalInterns,
+            activeInterns: batch.totalInterns, // Assuming all are active for now
+            completedInterns: `${batchProgress?.completedTasks ?? 0}/${batchProgress?.allTasks ?? 0}`,
+            totalHR: batch.totalHR,
+            status: getStatusFromDates(batch.startDate, batch.EndDate),
+            coordinator: "TBD", // API doesn't provide this
+            technologies: [], // API doesn't provide this
+            progress: batchProgress?.progress ?? 0, // fallback to 0 if not found
+          };
+        });
+
+
 
         setBatchData(transformedData);
         setError(null);
@@ -257,6 +289,30 @@ function BatchManagement() {
     return Math.round((elapsed / totalDuration) * 100);
   };
 
+  const handleView = async (batchId) => {
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_BASE_URL}/batches/${batchId}`
+      );
+      if (!response.ok)
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      const data = await response.json();
+      console.log("Full batch object:", data); // ✅ You can verify what's coming
+      setSelectedBatch(data);
+      setIsModalOpen(true);
+    } catch (error) {
+      console.error("Failed to fetch batch details:", error.message);
+      alert("Failed to load batch details.");
+    }
+  };
+
+  const formatDatee = (isoString) => {
+    if (!isoString) return "N/A";
+    const date = new Date(isoString);
+    if (isNaN(date.getTime())) return "N/A";
+    return date.toLocaleDateString(); // e.g. 22/5/2025
+  };
+
   // Handle delete batch
   const handleDeleteBatch = async (batchId, batchName) => {
     // Confirm deletion
@@ -387,8 +443,6 @@ function BatchManagement() {
     }
   };
 
-
-
   const handleUpdateBatch = async (e) => {
     e.preventDefault();
     setFormLoading(true);
@@ -420,8 +474,6 @@ function BatchManagement() {
       setFormLoading(false);
     }
   };
-
-
 
   // Handle form input changes
   const handleInputChange = (e) => {
@@ -717,7 +769,7 @@ function BatchManagement() {
             {filteredBatches.map((batch) => (
               <div
                 key={batch.id}
-                className="bg-white rounded-xl shadow-md p-6 border border-gray-200 hover:shadow-lg transition-shadow duration-300"
+                className="bg-white rounded-xl shadow-md p-6 border  border-gray-200 hover:shadow-lg transition-shadow duration-300"
               >
                 <div className="flex justify-between items-start mb-4">
                   <div className="flex-1">
@@ -734,12 +786,19 @@ function BatchManagement() {
                     </div>
                   </div>
                   <div className="flex gap-2">
-                    <button className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                    <button
+                      className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                      onClick={() => handleView(batch.id)}
+                    >
                       <Eye className="w-4 h-4" />
                     </button>
-                    <button className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors" onClick={() => handleEditClick(batch)}>
+                    <button
+                      className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                      onClick={() => handleEditClick(batch)}
+                    >
                       <Edit3 className="w-4 h-4" />
                     </button>
+
                     <button
                       onClick={() =>
                         handleDeleteBatch(batch.id, batch.batchName)
@@ -821,242 +880,303 @@ function BatchManagement() {
               </div>
             ))}
           </div>
+          {isModalOpen && selectedBatch && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+              <div className="bg-white rounded-xl p-6 max-w-lg w-full shadow-xl border border-gray-200 relative">
+                <button
+                  onClick={() => setIsModalOpen(false)}
+                  className="absolute top-2 right-2 text-gray-400 hover:text-gray-600"
+                >
+                  ✕
+                </button>
 
-          {filteredBatches.length === 0 && !loading && (
-            <div className="text-center py-12">
-              <AlertCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-700 mb-2">
-                No batches found
-              </h3>
-              <p className="text-gray-500">
-                {batchData.length === 0
-                  ? "No batch data available. Create your first batch to get started."
-                  : "Try adjusting your search or filter criteria"}
-              </p>
+                <h2 className="text-2xl font-semibold text-blue-600 mb-4">
+                  {selectedBatch?.batchName ?? "Batch Details"}
+                </h2>
+
+                <div className="text-gray-600 text-sm space-y-2">
+                  <p>
+                    <strong>Name:</strong> {selectedBatch?.name ?? "N/A"}
+                  </p>
+                  <p>
+                    <strong>Status:</strong>{" "}
+                    {getStatusFromDates(
+                      selectedBatch?.startDate,
+                      selectedBatch?.EndDate
+                    )}
+                  </p>
+                  <p>
+                    <strong>Start Date:</strong>{" "}
+                    {formatDatee(selectedBatch?.startDate)}
+                  </p>
+                  <p>
+                    <strong>End Date:</strong>{" "}
+                    {formatDatee(selectedBatch?.EndDate)}
+                  </p>
+
+                  <p>
+                    <strong>Interns:</strong>{" "}
+                    {Array.isArray(selectedBatch?.interns)
+                      ? selectedBatch.interns.map((intern, idx) => (
+                        <span key={intern._id || idx}>
+                          {intern.name}
+                          {idx < selectedBatch.interns.length - 1 ? ", " : ""}
+                        </span>
+                      ))
+                      : "N/A"}
+                  </p>
+
+                  <p>
+                    <strong>HR Personnel:</strong>{" "}
+                    {selectedBatch?.hr?.length ?? 0}
+                  </p>
+                </div>
+              </div>
             </div>
           )}
         </div>
 
-        {/* Create Batch Modal */}
-        {showCreateForm && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-screen overflow-y-auto">
-              <div className="p-6">
-                <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-2xl font-bold text-gray-800">
-                    {isEditing ? "Edit Batch" : "Create New Batch"}
-                  </h2>
-                  <button
-                    onClick={() => {
-                      setShowCreateForm(false);
-                      setIsEditing(false);
-                      setEditBatchId(null);
-                      // Reset form and close modal
-                      setFormData({
-                        name: "",
-                        startDate: "",
-                        EndDate: "",
-                        interns: [],
-                        hr: [],
-                      });
-                    }}
-                    className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                  >
-                    <X className="w-5 h-5" />
-                  </button>
-                </div>
+        {filteredBatches.length === 0 && !loading && (
+          <div className="text-center py-12">
+            <AlertCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-700 mb-2">
+              No batches found
+            </h3>
+            <p className="text-gray-500">
+              {batchData.length === 0
+                ? "No batch data available. Create your first batch to get started."
+                : "Try adjusting your search or filter criteria"}
+            </p>
+          </div>
+        )}
+      </div>
 
-                {usersLoading ? (
-                  <div className="text-center py-8">
-                    <Loader className="w-8 h-8 text-blue-600 mx-auto mb-4 animate-spin" />
-                    <p className="text-gray-600">Loading users...</p>
+      {/* Create Batch Modal */}
+      {showCreateForm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-screen overflow-y-auto">
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold text-gray-800">
+                  {isEditing ? "Edit Batch" : "Create New Batch"}
+                </h2>
+                <button
+                  onClick={() => {
+                    setShowCreateForm(false);
+                    setIsEditing(false);
+                    setEditBatchId(null);
+                    // Reset form and close modal
+                    setFormData({
+                      name: "",
+                      startDate: "",
+                      EndDate: "",
+                      interns: [],
+                      hr: [],
+                    });
+                  }}
+                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {usersLoading ? (
+                <div className="text-center py-8">
+                  <Loader className="w-8 h-8 text-blue-600 mx-auto mb-4 animate-spin" />
+                  <p className="text-gray-600">Loading users...</p>
+                </div>
+              ) : (
+                <form
+                  onSubmit={isEditing ? handleUpdateBatch : handleCreateBatch}
+                  className="space-y-6"
+                >
+                  {/* Batch Name */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Batch Name *
+                    </label>
+                    <input
+                      type="text"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      placeholder="e.g., Web Dev Internship Batch 2025"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      required
+                    />
                   </div>
-                ) : (
-                  <form onSubmit={isEditing ? handleUpdateBatch : handleCreateBatch} className="space-y-6">
-                    {/* Batch Name */}
+
+                  {/* Date Range */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Batch Name *
+                        Start Date *
                       </label>
                       <input
-                        type="text"
-                        name="name"
-                        value={formData.name}
+                        type="date"
+                        name="startDate"
+                        value={formData.startDate}
                         onChange={handleInputChange}
-                        placeholder="e.g., Web Dev Internship Batch 2025"
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         required
                       />
                     </div>
-
-                    {/* Date Range */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Start Date *
-                        </label>
-                        <input
-                          type="date"
-                          name="startDate"
-                          value={formData.startDate}
-                          onChange={handleInputChange}
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          End Date *
-                        </label>
-                        <input
-                          type="date"
-                          name="EndDate"
-                          value={formData.EndDate}
-                          onChange={handleInputChange}
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                          required
-                        />
-                      </div>
-                    </div>
-
-                    {/* Interns Selection */}
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Select Interns *
+                        End Date *
                       </label>
-                      {availableInterns.length === 0 ? (
-                        <div className="border border-gray-300 rounded-lg p-4 text-center text-gray-500">
-                          No interns available. Make sure users with "intern"
-                          role exist in the system.
-                        </div>
-                      ) : (
-                        <div className="border border-gray-300 rounded-lg p-4 max-h-40 overflow-y-auto">
-                          {availableInterns.map((intern) => (
-                            <div
-                              key={intern.id}
-                              className="flex items-center mb-2"
+                      <input
+                        type="date"
+                        name="EndDate"
+                        value={formData.EndDate}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  {/* Interns Selection */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Select Interns *
+                    </label>
+                    {availableInterns.length === 0 ? (
+                      <div className="border border-gray-300 rounded-lg p-4 text-center text-gray-500">
+                        No interns available. Make sure users with "intern" role
+                        exist in the system.
+                      </div>
+                    ) : (
+                      <div className="border border-gray-300 rounded-lg p-4 max-h-40 overflow-y-auto">
+                        {availableInterns.map((intern) => (
+                          <div
+                            key={intern.id}
+                            className="flex items-center mb-2"
+                          >
+                            <input
+                              type="checkbox"
+                              id={`intern-${intern.id}`}
+                              checked={formData.interns.includes(intern.id)}
+                              onChange={() =>
+                                handleMultiSelectChange("interns", intern.id)
+                              }
+                              className="mr-3 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                            />
+                            <label
+                              htmlFor={`intern-${intern.id}`}
+                              className="text-sm text-gray-700 flex-1"
                             >
-                              <input
-                                type="checkbox"
-                                id={`intern-${intern.id}`}
-                                checked={formData.interns.includes(intern.id)}
-                                onChange={() =>
-                                  handleMultiSelectChange("interns", intern.id)
-                                }
-                                className="mr-3 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                              />
-                              <label
-                                htmlFor={`intern-${intern.id}`}
-                                className="text-sm text-gray-700 flex-1"
-                              >
-                                <span className="font-medium">
-                                  {intern.name}
-                                </span>
-                                <span className="text-gray-500 ml-2">
-                                  ({intern.email})
-                                </span>
-                                <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded ml-2">
-                                  {intern.role}
-                                </span>
-                              </label>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                      <p className="text-xs text-gray-500 mt-1">
-                        Selected: {formData.interns.length} intern(s)
-                      </p>
-                    </div>
+                              <span className="font-medium">{intern.name}</span>
+                              <span className="text-gray-500 ml-2">
+                                ({intern.email})
+                              </span>
+                              <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded ml-2">
+                                {intern.role}
+                              </span>
+                            </label>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    <p className="text-xs text-gray-500 mt-1">
+                      Selected: {formData.interns.length} intern(s)
+                    </p>
+                  </div>
 
-                    {/* HR Selection */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Select HR Personnel *
-                      </label>
-                      {availableHR.length === 0 ? (
-                        <div className="border border-gray-300 rounded-lg p-4 text-center text-gray-500">
-                          No HR personnel available. Make sure users with "hr"
-                          role exist in the system.
-                        </div>
+                  {/* HR Selection */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Select HR Personnel *
+                    </label>
+                    {availableHR.length === 0 ? (
+                      <div className="border border-gray-300 rounded-lg p-4 text-center text-gray-500">
+                        No HR personnel available. Make sure users with "hr"
+                        role exist in the system.
+                      </div>
+                    ) : (
+                      <div className="border border-gray-300 rounded-lg p-4 max-h-40 overflow-y-auto">
+                        {availableHR.map((hr) => (
+                          <div key={hr.id} className="flex items-center mb-2">
+                            <input
+                              type="checkbox"
+                              id={`hr-${hr.id}`}
+                              checked={formData.hr.includes(hr.id)}
+                              onChange={() =>
+                                handleMultiSelectChange("hr", hr.id)
+                              }
+                              className="mr-3 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                            />
+                            <label
+                              htmlFor={`hr-${hr.id}`}
+                              className="text-sm text-gray-700 flex-1"
+                            >
+                              <span className="font-medium">{hr.name}</span>
+                              <span className="text-gray-500 ml-2">
+                                ({hr.email})
+                              </span>
+                              <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded ml-2">
+                                {hr.role}
+                              </span>
+                            </label>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    <p className="text-xs text-gray-500 mt-1">
+                      Selected: {formData.hr.length} HR personnel
+                    </p>
+                  </div>
+
+                  {/* Form Actions */}
+                  <div className="flex gap-4 pt-4">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowCreateForm(false);
+                        setIsEditing(false);
+                        setEditBatchId(null);
+                        // Reset form and close modal
+                        setFormData({
+                          name: "",
+                          startDate: "",
+                          EndDate: "",
+                          interns: [],
+                          hr: [],
+                        });
+                      }}
+                      className="flex-1 px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={
+                        formLoading ||
+                        availableInterns.length === 0 ||
+                        availableHR.length === 0
+                      }
+                      className="flex-1 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {formLoading ? (
+                        <Loader className="w-4 h-4 animate-spin" />
                       ) : (
-                        <div className="border border-gray-300 rounded-lg p-4 max-h-40 overflow-y-auto">
-                          {availableHR.map((hr) => (
-                            <div key={hr.id} className="flex items-center mb-2">
-                              <input
-                                type="checkbox"
-                                id={`hr-${hr.id}`}
-                                checked={formData.hr.includes(hr.id)}
-                                onChange={() =>
-                                  handleMultiSelectChange("hr", hr.id)
-                                }
-                                className="mr-3 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                              />
-                              <label
-                                htmlFor={`hr-${hr.id}`}
-                                className="text-sm text-gray-700 flex-1"
-                              >
-                                <span className="font-medium">{hr.name}</span>
-                                <span className="text-gray-500 ml-2">
-                                  ({hr.email})
-                                </span>
-                                <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded ml-2">
-                                  {hr.role}
-                                </span>
-                              </label>
-                            </div>
-                          ))}
-                        </div>
+                        <Save className="w-4 h-4" />
                       )}
-                      <p className="text-xs text-gray-500 mt-1">
-                        Selected: {formData.hr.length} HR personnel
-                      </p>
-                    </div>
-
-                    {/* Form Actions */}
-                    <div className="flex gap-4 pt-4">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setShowCreateForm(false);
-                          setIsEditing(false);
-                          setEditBatchId(null);
-                          // Reset form and close modal
-                          setFormData({
-                            name: "",
-                            startDate: "",
-                            EndDate: "",
-                            interns: [],
-                            hr: [],
-                          });
-                        }}
-                        className="flex-1 px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        type="submit"
-                        disabled={
-                          formLoading ||
-                          availableInterns.length === 0 ||
-                          availableHR.length === 0
-                        }
-                        className="flex-1 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                      >
-                        {formLoading ? (
-                          <Loader className="w-4 h-4 animate-spin" />
-                        ) : (
-                          <Save className="w-4 h-4" />
-                        )}
-                        {isEditing ? formLoading ? "Updating...." : "Update Batch" : formLoading ? "Creating..." : "Create Batch"}
-                      </button>
-                    </div>
-                  </form>
-                )}
-              </div>
+                      {isEditing
+                        ? formLoading
+                          ? "Updating...."
+                          : "Update Batch"
+                        : formLoading
+                          ? "Creating..."
+                          : "Create Batch"}
+                    </button>
+                  </div>
+                </form>
+              )}
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </>
   );
 }

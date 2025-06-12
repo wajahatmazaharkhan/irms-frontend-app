@@ -70,23 +70,53 @@ function BatchManagement() {
         }
 
         const data = await response.json();
+        const progressResponse = await fetch(`${baseUrl}/batches/progress`);
+        const progressData = await progressResponse.json();
 
         // Transform API data to match component structure
-        const transformedData = data.map((batch) => ({
-          id: batch._id,
-          batchName: batch.name,
-          month: formatMonth(batch.startDate),
-          startDate: formatDate(batch.startDate),
-          endDate: formatDate(batch.EndDate),
-          totalInterns: batch.totalInterns,
-          activeInterns: batch.totalInterns, // Assuming all are active for now
-          completedInterns: 0, // API doesn't provide this, set to 0
-          totalHR: batch.totalHR,
-          status: getStatusFromDates(batch.startDate, batch.EndDate),
-          coordinator: "TBD", // API doesn't provide this
-          technologies: [], // API doesn't provide this
-          progress: calculateProgress(batch.startDate, batch.EndDate),
-        }));
+        const transformedData = data.map((batch) => {
+          const safeDate = (date) => {
+            if (!date) return "";
+            const d = new Date(date);
+            return isNaN(d.getTime()) ? "" : d.toISOString().split("T")[0];
+          };
+
+          const formatMonth = (date) => {
+            if (!date) return "";
+            const d = new Date(date);
+            return isNaN(d.getTime()) ? "" : d.toLocaleString("default", { month: "long", year: "numeric" });
+          };
+
+          const getStatusFromDates = (start, end) => {
+            const now = new Date();
+            const s = new Date(start);
+            const e = new Date(end);
+            if (isNaN(s.getTime()) || isNaN(e.getTime())) return "Invalid";
+            if (now < s) return "Upcoming";
+            if (now > e) return "Completed";
+            return "Ongoing";
+          };
+
+          const batchProgress = progressData.find(p => p._id === batch._id);
+
+          return {
+            id: batch._id,
+            batchName: batch.name,
+            month: formatMonth(batch.startDate),
+            startDate: safeDate(batch.startDate),
+            endDate: safeDate(batch.EndDate),
+            totalInterns: batch.totalInterns,
+            activeInterns: batch.totalInterns, // Assuming all are active for now
+            completedInterns: `${batchProgress?.completedTasks ?? 0}/${batchProgress?.allTasks ?? 0}`,
+            totalHR: batch.totalHR,
+            status: getStatusFromDates(batch.startDate, batch.EndDate),
+            coordinator: "TBD", // API doesn't provide this
+            technologies: [], // API doesn't provide this
+            progress: batchProgress?.progress ?? 0, // fallback to 0 if not found
+          };
+        });
+
+
 
         setBatchData(transformedData);
         setError(null);
@@ -888,11 +918,11 @@ function BatchManagement() {
                     <strong>Interns:</strong>{" "}
                     {Array.isArray(selectedBatch?.interns)
                       ? selectedBatch.interns.map((intern, idx) => (
-                          <span key={intern._id || idx}>
-                            {intern.name}
-                            {idx < selectedBatch.interns.length - 1 ? ", " : ""}
-                          </span>
-                        ))
+                        <span key={intern._id || idx}>
+                          {intern.name}
+                          {idx < selectedBatch.interns.length - 1 ? ", " : ""}
+                        </span>
+                      ))
                       : "N/A"}
                   </p>
 
@@ -949,7 +979,6 @@ function BatchManagement() {
                   <X className="w-5 h-5" />
                 </button>
               </div>
-
               {usersLoading ? (
                 <div className="text-center py-8">
                   <Loader className="w-8 h-8 text-blue-600 mx-auto mb-4 animate-spin" />
@@ -1137,8 +1166,9 @@ function BatchManagement() {
                           ? "Updating...."
                           : "Update Batch"
                         : formLoading
-                        ? "Creating..."
-                        : "Create Batch"}
+                          ? "Creating..."
+                          : "Create Batch"}
+
                     </button>
                   </div>
                 </form>

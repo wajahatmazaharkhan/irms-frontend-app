@@ -979,7 +979,6 @@ function BatchManagement() {
                   <X className="w-5 h-5" />
                 </button>
               </div>
-
               {usersLoading ? (
                 <div className="text-center py-8">
                   <Loader className="w-8 h-8 text-blue-600 mx-auto mb-4 animate-spin" />
@@ -1169,6 +1168,7 @@ function BatchManagement() {
                         : formLoading
                           ? "Creating..."
                           : "Create Batch"}
+
                     </button>
                   </div>
                 </form>

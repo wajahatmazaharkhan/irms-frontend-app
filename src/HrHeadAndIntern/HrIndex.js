@@ -10,7 +10,7 @@ import Hrprofile from "./Hrprofile";
 import HrTasksubmissions from "./InternTasksSubmissions";
 import HrAllAttendance from "./InternAttendance";
 import InternManagement from "./InternManagement";
-import InternsHrLeaveApplication from "./Internleaveapplications";
+import InternsHrLeaveApplication from "./InternLeaveApplications";
 
 
 

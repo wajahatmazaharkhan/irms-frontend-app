@@ -63,7 +63,7 @@ function BatchManagement() {
       try {
         setLoading(true);
         const baseUrl = import.meta.env.VITE_BASE_URL;
-        const response = await fetch(`${baseUrl}/api/batches/summary`);
+        const response = await fetch(`${baseUrl}/get-batch-summary`);
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);

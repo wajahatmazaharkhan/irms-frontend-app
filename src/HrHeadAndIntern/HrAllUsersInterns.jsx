@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { useLocation } from "react-router-dom";
-import { HrTopNavBar,HrSideBar } from "./HrIndex";
 import { useHrContext } from "@/context/HrContext.jsx";
 import axios from "axios";
 import useTitle from "@/Components/useTitle";

@@ -26,6 +26,7 @@ const Signin = ({ onSwitchToSignup }) => {
     loggedIn,
     setIsLoggedIn,
     storeIsAdminState,
+	storeIsHrState,
     storeTokenInLocalStorage,
     storeUserId,
   } = useAuthContext();
@@ -57,7 +58,7 @@ const Signin = ({ onSwitchToSignup }) => {
 
 
       if(user.role ==='hr'){
-        navigate("/hrhomepage");
+        await storeIsHrState(true);
       }
       
       const isAdminValue = Boolean(user.isAdmin);
@@ -69,13 +70,7 @@ const Signin = ({ onSwitchToSignup }) => {
       setIsLoading(false);
       toast.success("Login successful");
      
-    if(user.role === 'hr'){
-      navigate("/hrhomepage",{state:{hrid:response.data.user.id}});
-      alert("You will be redirected to HR Panel.")
-    }
-    else{
       navigate("/");
-    }
      
       
       console.log(`response for checking role :- ${JSON.stringify(response.data.user)}

@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import CustomNavbar from "./HrTopNavBar";
-import { useHrContext } from "@/context/HrContext";
+import CustomNavbar from "./CustomHrNavbar";
 import {
   Table,
   TableBody,
@@ -27,19 +26,17 @@ import {
   AlertDialogTitle,
 } from "@/Components/ui/alert-dialog";
 import toast from "react-hot-toast";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import useTitle from "@/Components/useTitle";
 
-const HrSideInternAttendance = () => {
-  useTitle('HR Intern Attendance')
-  
+const InternAttendance = () => {
+  useTitle('Attendance Management')
   const [loading, setLoading] = useState(false);
   const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [bulkAction, setBulkAction] = useState(null);
   const [processing, setProcessing] = useState(false);
-  const {hrid} = useHrContext();
 
   const navigate = useNavigate();
 
@@ -48,9 +45,9 @@ const HrSideInternAttendance = () => {
       setLoading(true);
       try {
         const response = await axios.get(
-          `${import.meta.env.VITE_BASE_URL}/hr/interns/${hrid}`
+          `${import.meta.env.VITE_BASE_URL}/allusers`
         );
-        setUsers(response.data.interns);
+        setUsers(response.data.data);
       } catch (error) {
         console.error("Error fetching users:", error);
         toast.error("Failed to fetch users");
@@ -60,7 +57,7 @@ const HrSideInternAttendance = () => {
     };
 
     fetchUser();
-  }, [hrid]);
+  }, []);
 
   const date = new Date();
   const formattedDate = date.toISOString().split(".")[0] + "Z";
@@ -376,4 +373,4 @@ const HrSideInternAttendance = () => {
   );
 };
 
-export default HrSideInternAttendance;
+export default InternAttendance;

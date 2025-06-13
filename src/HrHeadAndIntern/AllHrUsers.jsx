@@ -1,0 +1,414 @@
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import CustomHrNavbar from "./CustomHrNavbar";
+import { Loader, useTitle } from "@/Components/compIndex";
+import { AlertCircle } from "lucide-react";
+import { Alert, AlertDescription } from "@/Components/ui/alert";
+import toast from "react-hot-toast";
+import { HrAllUsersInterns } from "@/HrHeadAndIntern/HrIndex";
+function AllUsers() {
+  useTitle('User Management')
+  const [users, setUsers] = useState([]);
+  const [hrusernames, sethrusernames] = useState([]);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedUserId, setSelectedUserId] = useState("");
+  const [selectedHrInternId, setSelectedHrInternId] = useState("");
+  const [assignedStatus, setAssignedStatus] = useState({});
+  const [isAssigned, setIsAssigned] = useState(false);
+  const [internIds, setinternIds] = useState([]);
+  const [sortConfig, setSortConfig] = useState({
+    key: null,
+    direction: "ascending",
+  });
+  const [ismodalopen, setModalopen] = useState(false);
+  const togglemodal = () => {
+    setModalopen(!ismodalopen);
+  };
+  const handleassignedto = async (userid) => {
+    setSelectedUserId(userid);
+    togglemodal();
+  };
+  const checkAssignedStatus = async () => {
+    try {
+      if (internIds.length > 0) {
+        
+        const response = await axios.post(
+          `${import.meta.env.VITE_BASE_URL}/interns/assigned`,
+          { internIds } 
+        );
+        console.log("Response received:", response.data);
+        if (response.status === 200) {
+          setAssignedStatus(response.data.assignedStatus); 
+        
+        }
+      } else {
+        console.log("No intern IDs available to check.");
+      }
+    } catch (error) {
+      console.error("Error checking assigned status:", error.message);
+    }
+  };
+  // UseEffect hook to call checkAssignedStatus when internIds changes
+  const handleUserAssignedToHr = async (userid) => {
+    toast.success("assigning Intern to HR");
+    togglemodal();
+    setSelectedHrInternId(userid);
+    // console.log("checking user id ", userid);
+    handleassingment();
+  };
+  <HrAllUsersInterns hrId={selectedHrInternId || ""} />;
+  const handleassingment = async () => {
+    console.log("setSelectedHrInternId", selectedHrInternId);
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/assign-intern`,
+        { hrId: selectedHrInternId, internId: selectedUserId }
+      );
+      if (response.status === 400) toast.error(response.message);
+      if (response.status === 200) {
+       
+        toast.success("user successfully assigned to hr ");
+        togglemodal();
+        setIsAssigned(prev => !prev);
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+  useEffect(() => {
+    checkAssignedStatus();
+  }, [internIds, isAssigned]);  // Runs when either of them updates
+   // This will trigger when internIds changes
+  const fetchUsers = async () => {
+    try {
+      setLoading(true);
+      setError("");
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/allusers`);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch users (Status: ${response.status})`);
+      }
+      const result = await response.json();
+      setUsers(result.data || []);
+      const hrUsernames = result.data
+        .filter((user) => user.department === "hr")
+        .map((user) => ({ id: user._id, hrname: user.name }));
+      const userIds = result.data.map((user) => user._id);
+      setinternIds(userIds);
+      sethrusernames(hrUsernames);
+      console.log("userIds inside fetch:", userIds); 
+      console.log("intern inside fetch:", internIds);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      // toast.info("HR is assigned to intern")
+      setLoading(false);
+    }
+  };
+  const deleteUser = async (userId, userName) => {
+    const message =
+      `Are you sure you want to delete user ${userName.toUpperCase()}?` +
+      ` This action cannot be undone.` +
+      ` Do you want to proceed?`;
+    if (window.confirm(message)) {
+      try {
+        setLoading(true);
+        const response = await fetch(
+          `${import.meta.env.VITE_BASE_URL}/delete/${userId}`,
+          {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        toast.success(
+          `User ${userName.toUpperCase()} has been successfully deleted.`
+        );
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(
+            errorData.message ||
+              `Failed to delete user (Status: ${response.status})`
+          );
+        }
+        setUsers((prevUsers) =>
+          prevUsers.filter((user) => user._id !== userId)
+        );
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+  const requestSort = (key) => {
+    let direction = "ascending";
+    if (sortConfig.key === key && sortConfig.direction === "ascending") {
+      direction = "descending";
+    }
+    setSortConfig({ key, direction });
+  };
+  const getSortedUsers = () => {
+    let filteredUsers = [...users];
+    if (searchTerm) {
+      filteredUsers = filteredUsers.filter(
+        (user) =>
+          user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          user.role?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          user.department?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+    if (sortConfig.key) {
+      filteredUsers.sort((a, b) => {
+        if (a[sortConfig.key] < b[sortConfig.key]) {
+          return sortConfig.direction === "ascending" ? -1 : 1;
+        }
+        if (a[sortConfig.key] > b[sortConfig.key]) {
+          return sortConfig.direction === "ascending" ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+    return filteredUsers;
+  };
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+  //   useEffect(() => {
+  //   checkAssigned();
+  // }, []);
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <CustomHrNavbar />
+      <div className="max-w-full mx-auto p-4">
+        <div className="bg-white shadow-md rounded-lg p-6">
+          {/* Header Section */}
+          <div className="flex flex-col md:flex-row justify-between items-center mb-6">
+            <h1 className="text-2xl font-bold text-blue-600 mb-4 md:mb-0">
+              IISPPR InternHub User Directory
+            </h1>
+            <div className="w-full md:w-64">
+              <input
+                type="text"
+                placeholder="Search users..."
+                className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+          </div>
+          {error && (
+            <Alert variant="destructive" className="mb-4">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+          {loading ? (
+            <div className="flex justify-center items-center h-32">
+              <Loader />
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      ID
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Name
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Phone
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Email
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Role
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Admin
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Department
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      GitHub
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      LinkedIn
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Start Date
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Assigning
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {getSortedUsers().map((user) => (
+                    <tr key={user._id} className="hover:bg-gray-50">
+                      <td className="px-4 py-3 text-sm text-gray-900">
+                        {user._id}
+                      </td>
+                      <td className="px-4 py-3 text-sm text-gray-900">
+                        {user.name}
+                      </td>
+                      <td className="px-4 py-3 text-sm text-gray-900">
+                        {user.mnumber}
+                      </td>
+                      <td className="px-4 py-3 text-sm text-gray-900">
+                        {user.email}
+                      </td>
+                      <td className="px-4 capitalize py-3 text-sm text-gray-900">
+                        {user.role}
+                      </td>
+                      <td className="px-4 py-3 text-sm text-gray-900">
+                        {user.isAdmin ? (
+                          <span className="px-2 py-1 text-xs font-semibold text-green-800 bg-green-100 rounded-full">
+                            Yes
+                          </span>
+                        ) : (
+                          <span className="px-2 py-1 text-xs font-semibold text-red-800 bg-red-100 rounded-full">
+                            No
+                          </span>
+                        )}
+                      </td>
+                      <td className="px-4 py-3 text-sm text-gray-900">
+                        {user.department}
+                      </td>
+                      <td className="px-4 py-3 text-sm text-gray-900">
+                        {user.githubURL ? (
+                          <a
+                            href={user.githubURL}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 hover:text-blue-800"
+                          >
+                            Link
+                          </a>
+                        ) : (
+                          "-"
+                        )}
+                      </td>
+                      <td className="px-4 py-3 text-sm text-gray-900">
+                        {user.linkedInURL ? (
+                          <a
+                            href={user.linkedInURL}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 hover:text-blue-800"
+                          >
+                            Link
+                          </a>
+                        ) : (
+                          "-"
+                        )}
+                      </td>
+                      <td className="px-4 py-3 text-sm text-gray-900">
+                        {formatDate(user.startDate)}
+                      </td>
+                      <td className="px-4 py-3 text-sm text-gray-900">
+                        {assignedStatus[user._id] ? ( 
+                          <button disabled style={{ backgroundColor: "#ccc" }}>
+                            Already Assigned
+                          </button>
+                        ) : (
+                          <button
+                            className="bg-blue-900 text-white px-4 py-2 rounded-md"
+                            onClick={() => handleassignedto(user._id)}
+                          >
+                            Assign To
+                          </button>
+                        )}
+                        {ismodalopen && (
+                          <>
+                            <div
+                              className="fixed inset-0 shadow-slate-800 border-2 opacity-50 z-10"
+                              onClick={togglemodal}
+                            ></div>
+                            <div className="fixed inset-0 flex items-center justify-center z-20">
+                              <div className="bg-white p-6 rounded-lg  border-2 max-w-md w-full">
+                                <h2 className="text-xl font-semibold text-center mb-4">
+                                  HR List
+                                </h2>
+                                <ul className="mt-4 space-y-4">
+                                  <div className="hr-all-row-container">
+                                    {hrusernames.map((hrnames, index) => {
+                                      // console.log(hrnames)
+                                      return (
+                                        <div
+                                          key={index}
+                                          className="hr-row-container flex justify-between items-center border-b pb-3"
+                                        >
+                                          <li className="flex-1">
+                                            {hrnames.hrname}
+                                          </li>
+                                          <button
+                                            onClick={() => {
+                                              handleUserAssignedToHr(
+                                                hrnames.id
+                                              );
+                                            }}
+                                            className="bg-blue-900 text-white px-4 py-2 rounded-md"
+                                          >
+                                            Assign
+                                          </button>
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                </ul>
+                                <div className="assign-btn top-2 right-2">
+                                  <button
+                                    onClick={togglemodal}
+                                    className="mt-4 bg-red-500 text-white px-4 py-2 rounded-md "
+                                  >
+                                    X
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </>
+                        )}
+                      </td>
+                      <td className="px-4 py-3 text-sm text-gray-900">
+                        <button
+                          onClick={() => deleteUser(user._id, user.name)}
+                          className="text-white bg-red-500 hover:bg-red-600 px-3 py-1 rounded-md transition-colors duration-200"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {getSortedUsers().length === 0 && (
+                <div className="text-center py-8 text-gray-500">
+                  No users found.
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+export default AllUsers;

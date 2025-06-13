@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { HrTopNavBar } from "./HrIndex";
+import CustomNavbar from "./CustomHrNavbar";
 import useTitle from "@/Components/useTitle";
 
-const InternsLeaveApplication = () => {
-  useTitle('Leave Applications')
+const Internleaveapplication = () => {
+  useTitle('Leave Management')
   const [leaves, setLeaves] = useState([]);
   const [selectedLeave, setSelectedLeave] = useState(null);
   const [status, setStatus] = useState("");
@@ -49,7 +49,7 @@ const InternsLeaveApplication = () => {
   
   return (
     <>
-    <HrTopNavBar/>
+    <CustomNavbar/>
     
     <div className="p-6 bg-white min-h-screen">
       <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">Intern Leave Applications</h1>
@@ -178,4 +178,4 @@ const InternsLeaveApplication = () => {
   );
 };
 
-export default InternsLeaveApplication;
+export default Internleaveapplication;

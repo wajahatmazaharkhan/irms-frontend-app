@@ -1,10 +1,9 @@
 /* eslint-disable no-unused-vars */
 import React from "react";
-import { HrTopNavBar } from "./HrIndex";
+import CustomNavbar from "./CustomHrNavbar";
 import useTitle from "@/Components/useTitle";
-function Hrhelp() {
+function AdminHelpPage() {
   useTitle('HR Help')
-
 
 const cards = [
     {
@@ -49,7 +48,7 @@ const cards = [
 
   return (
     <>
-   <HrTopNavBar/>
+   <CustomNavbar/>
     <div className="flex flex-col min-h-screen">
       {/* Content starts after upper navbar */}
       <div className="flex-grow ">
@@ -77,4 +76,4 @@ const cards = [
    </>
   );
 }
-export default Hrhelp;
+export default AdminHelpPage;

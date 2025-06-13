@@ -1,18 +1,21 @@
-import HrTopNavBar from "./HrTopNavBar";
-import HrProgressReport from "./HrProgressReport";
-import HrTaskAssignment from "./HrTaskAssignment";
-import HrTasksubmissions from "./HrtaskSubmissions";
+import HrHelpPage from "./HrHelpPage";
+import HrNotify from "./HrNotify";
+import HrProject from "./HrProject";
+import HrReport from "./HrReport";
+import HrTaskAssignment from "./HrTask";
+import AllHrUsers from "./AllHrUsers";
 import HrAllUsersInterns from "./HrAllUsersInterns";
+import HrBatchManagement from "./HrBatchManagement";
 import Hrprofile from "./Hrprofile";
-import HrInterns from "./HrInterns";
-import HrSideBar from "./HrSideBar";
-import HrSideInternAttendance from "./HrSideInternAttendance"
-import Hrhelp from "./Hrhelp";
-
-import InternsLeaveApplication from "./InternsLeaveApplication";
+import HrTasksubmissions from "./InternTasksSubmissions";
+import HrAllAttendance from "./InternAttendance";
+import InternManagement from "./InternManagement";
+import InternsHrLeaveApplication from "./Internleaveapplications";
 
 
 
 export{
-HrTopNavBar,HrProgressReport,HrTaskAssignment,HrTasksubmissions,HrSideBar,HrAllUsersInterns,HrInterns,Hrprofile,HrSideInternAttendance, Hrhelp,InternsLeaveApplication
+HrNotify,HrReport,HrProject,AllHrUsers,HrAllAttendance,
+HrBatchManagement,InternManagement,HrTaskAssignment,
+HrTasksubmissions,HrAllUsersInterns,Hrprofile, HrHelpPage,InternsHrLeaveApplication
 }

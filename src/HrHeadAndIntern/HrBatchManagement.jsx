@@ -1,8 +1,7 @@
-import CustomNavbar from "./CustomNavbar";
+import CustomHrNavbar from "./CustomHrNavbar";
 import { Link } from "react-router-dom";
 import useTitle from "@/Components/useTitle";
 import { useState, useEffect } from "react";
-import axios from "axios";
 
 import {
   Users,
@@ -64,15 +63,15 @@ function BatchManagement() {
       try {
         setLoading(true);
         const baseUrl = import.meta.env.VITE_BASE_URL;
+        const response = await fetch(`${baseUrl}/batches/summary`);
 
-        // Using axios instead of fetch
-        const [batchResponse, progressResponse] = await Promise.all([
-          axios.get(`${baseUrl}/api/batch/get-summary`),
-          axios.get(`${baseUrl}/batches/progress`),
-        ]);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
-        const data = batchResponse.data;
-        const progressData = progressResponse.data;
+        const data = await response.json();
+        const progressResponse = await fetch(`${baseUrl}/batches/progress`);
+        const progressData = await progressResponse.json();
 
         // Transform API data to match component structure
         const transformedData = data.map((batch) => {
@@ -85,9 +84,7 @@ function BatchManagement() {
           const formatMonth = (date) => {
             if (!date) return "";
             const d = new Date(date);
-            return isNaN(d.getTime())
-              ? ""
-              : d.toLocaleString("default", { month: "long", year: "numeric" });
+            return isNaN(d.getTime()) ? "" : d.toLocaleString("default", { month: "long", year: "numeric" });
           };
 
           const getStatusFromDates = (start, end) => {
@@ -100,7 +97,7 @@ function BatchManagement() {
             return "Ongoing";
           };
 
-          const batchProgress = progressData.find((p) => p._id === batch._id);
+          const batchProgress = progressData.find(p => p._id === batch._id);
 
           return {
             id: batch._id,
@@ -110,9 +107,7 @@ function BatchManagement() {
             endDate: safeDate(batch.EndDate),
             totalInterns: batch.totalInterns,
             activeInterns: batch.totalInterns, // Assuming all are active for now
-            completedInterns: `${batchProgress?.completedTasks ?? 0}/${
-              batchProgress?.allTasks ?? 0
-            }`,
+            completedInterns: `${batchProgress?.completedTasks ?? 0}/${batchProgress?.allTasks ?? 0}`,
             totalHR: batch.totalHR,
             status: getStatusFromDates(batch.startDate, batch.EndDate),
             coordinator: "TBD", // API doesn't provide this
@@ -120,6 +115,8 @@ function BatchManagement() {
             progress: batchProgress?.progress ?? 0, // fallback to 0 if not found
           };
         });
+
+
 
         setBatchData(transformedData);
         setError(null);
@@ -145,10 +142,14 @@ function BatchManagement() {
     try {
       setUsersLoading(true);
       const baseUrl = import.meta.env.VITE_BASE_URL;
+      const response = await fetch(`${baseUrl}/allusers`);
 
-      // Using axios instead of fetch
-      const response = await axios.get(`${baseUrl}/allusers`);
-      const data = response.data;
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      // console.log("Raw API response:", data); // Debug log
 
       // Handle different response structures
       let allUsers;
@@ -163,6 +164,13 @@ function BatchManagement() {
         throw new Error("Invalid response format: expected an array of users");
       }
 
+      // console.log("Processed users array:", allUsers); // Debug log
+
+      // Validate that allUsers is an array
+      if (!Array.isArray(allUsers)) {
+        throw new Error("Users data is not an array");
+      }
+
       // Filter users based on their roles
       const interns = allUsers
         .filter((user) => {
@@ -172,6 +180,12 @@ function BatchManagement() {
             return false;
           }
 
+          // console.log(
+          //   "Checking user role:",
+          //   user.role,
+          //   "for user:",
+          //   user.email
+          // ); // Debug log
           return user.role === "intern";
         })
         .map((user) => ({
@@ -205,6 +219,9 @@ function BatchManagement() {
           email: user.email || "",
           role: user.role,
         }));
+
+      // console.log("Filtered interns:", interns); // Debug log
+      // console.log("Filtered HR personnel:", hrPersonnel); // Debug log
 
       setAvailableInterns(interns);
       setAvailableHR(hrPersonnel);
@@ -274,12 +291,13 @@ function BatchManagement() {
 
   const handleView = async (batchId) => {
     try {
-      // Using axios instead of fetch
-      const response = await axios.get(
+      const response = await fetch(
         `${import.meta.env.VITE_BASE_URL}/batches/${batchId}`
       );
-      const data = response.data;
-      console.log("Full batch object:", data);
+      if (!response.ok)
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      const data = await response.json();
+      console.log("Full batch object:", data); // ✅ You can verify what's coming
       setSelectedBatch(data);
       setIsModalOpen(true);
     } catch (error) {
@@ -308,9 +326,13 @@ function BatchManagement() {
 
     try {
       const baseUrl = import.meta.env.VITE_BASE_URL;
+      const response = await fetch(`${baseUrl}/batches/${batchId}`, {
+        method: "DELETE",
+      });
 
-      // Using axios instead of fetch
-      await axios.delete(`${baseUrl}/batches/${batchId}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
       // Remove the deleted batch from local state
       setBatchData((prevBatches) =>
@@ -356,10 +378,22 @@ function BatchManagement() {
 
     try {
       const baseUrl = import.meta.env.VITE_BASE_URL;
+      const response = await fetch(`${baseUrl}/batches`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
 
-      // Using axios instead of fetch
-      const response = await axios.post(`${baseUrl}/batches`, formData);
-      const result = response.data;
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          errorData.message || `HTTP error! status: ${response.status}`
+        );
+      }
+
+      const result = await response.json();
 
       // Reset form and close modal
       setFormData({
@@ -378,9 +412,7 @@ function BatchManagement() {
       window.location.reload();
     } catch (err) {
       console.error("Error creating batch:", err);
-      alert(
-        `Failed to create batch: ${err.response?.data?.message || err.message}`
-      );
+      alert(`Failed to create batch: ${err.message}`);
     } finally {
       setFormLoading(false);
     }
@@ -389,10 +421,10 @@ function BatchManagement() {
   const handleEditClick = async (batch) => {
     try {
       const baseUrl = import.meta.env.VITE_BASE_URL;
+      const res = await fetch(`${baseUrl}/batches/${batch.id}`); // assuming batch has _id
+      if (!res.ok) throw new Error("Failed to fetch batch details");
 
-      // Using axios instead of fetch
-      const res = await axios.get(`${baseUrl}/batches/${batch.id}`);
-      const fullBatch = res.data;
+      const fullBatch = await res.json();
 
       setFormData({
         name: fullBatch.name || "",
@@ -417,23 +449,26 @@ function BatchManagement() {
 
     try {
       const baseUrl = import.meta.env.VITE_BASE_URL;
+      const res = await fetch(`${baseUrl}/batches/${editBatchId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
 
-      // Using axios instead of fetch
-      const res = await axios.put(
-        `${baseUrl}/batches/${editBatchId}`,
-        formData
-      );
-      const data = res.data;
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "Update failed");
+      }
 
       alert("Batch updated successfully!");
       setShowCreateForm(false);
       setIsEditing(false);
       setEditBatchId(null);
-
-      // Refresh the data
-      window.location.reload();
     } catch (err) {
-      alert(err.response?.data?.message || err.message || "Update failed");
+      alert(err.message || "Update failed");
       console.error(err);
     } finally {
       setFormLoading(false);
@@ -578,7 +613,7 @@ function BatchManagement() {
   if (loading) {
     return (
       <>
-        <CustomNavbar />
+        <CustomHrNavbar />
         <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
           <div className="text-center">
             <Loader className="w-12 h-12 text-blue-600 mx-auto mb-4 animate-spin" />
@@ -595,7 +630,7 @@ function BatchManagement() {
   if (error) {
     return (
       <>
-        <CustomNavbar />
+        <CustomHrNavbar />
         <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
           <div className="text-center">
             <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
@@ -617,7 +652,7 @@ function BatchManagement() {
 
   return (
     <>
-      <CustomNavbar />
+      <CustomHrNavbar />
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
         <div className="container mx-auto p-6">
           {/* Header Section */}
@@ -883,11 +918,11 @@ function BatchManagement() {
                     <strong>Interns:</strong>{" "}
                     {Array.isArray(selectedBatch?.interns)
                       ? selectedBatch.interns.map((intern, idx) => (
-                          <span key={intern._id || idx}>
-                            {intern.name}
-                            {idx < selectedBatch.interns.length - 1 ? ", " : ""}
-                          </span>
-                        ))
+                        <span key={intern._id || idx}>
+                          {intern.name}
+                          {idx < selectedBatch.interns.length - 1 ? ", " : ""}
+                        </span>
+                      ))
                       : "N/A"}
                   </p>
 
@@ -1131,8 +1166,9 @@ function BatchManagement() {
                           ? "Updating...."
                           : "Update Batch"
                         : formLoading
-                        ? "Creating..."
-                        : "Create Batch"}
+                          ? "Creating..."
+                          : "Create Batch"}
+
                     </button>
                   </div>
                 </form>

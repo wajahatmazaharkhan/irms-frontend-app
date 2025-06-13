@@ -2,13 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/Components/ui/card";
 import { Button } from "@/Components/ui/button";
 import { Alert, AlertDescription } from "@/Components/ui/alert";
-import CustomNavbar from "./HrTopNavBar";
+import CustomNavbar from "./CustomHrNavbar";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { Loader, useTitle } from "@/Components/compIndex";
-import { useLocation } from "react-router-dom";
-import { useHrContext } from "@/context/HrContext.jsx";
-import PropTypes from "prop-types";
 
 const API_BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -21,11 +18,8 @@ const INITIAL_TASK_STATE = {
   status: "pending",
 };
 
-function AdminTask() {
-  useTitle('HR Task Assignment')
-  const { hrid } = useHrContext();
-  console.log("Hr task submissions:", hrid);
-
+export default function AdminTask() {
+  useTitle('Task Management')
   const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState([]);
   const [task, setTask] = useState(INITIAL_TASK_STATE);
@@ -36,11 +30,8 @@ function AdminTask() {
     const initializeData = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_BASE_URL}/hr/interns/${hrid}`
-        );
-        const usersList = response.data.interns;
-        console.log(response.data.interns);
+        const response = await axios.get(`${API_BASE_URL}/allusers`);
+        const usersList = response.data.data;
 
         if (!Array.isArray(usersList)) {
           throw new Error("Invalid users data format received");
@@ -56,7 +47,7 @@ function AdminTask() {
     };
 
     initializeData();
-  }, [hrid]);
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -120,7 +111,7 @@ function AdminTask() {
               )}
 
               <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="space-y-2 relative">
+                <div className="space-y-2">
                   <label
                     htmlFor="assignedTo"
                     className="text-gray-700 font-medium block"
@@ -132,7 +123,7 @@ function AdminTask() {
                     name="assignedTo"
                     value={task.assignedTo}
                     onChange={handleChange}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white overflow-hidden"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                     required
                   >
                     <option value="">Select a user</option>
@@ -143,6 +134,7 @@ function AdminTask() {
                     ))}
                   </select>
                 </div>
+
                 <div className="space-y-2">
                   <label
                     htmlFor="title"
@@ -233,9 +225,3 @@ function AdminTask() {
     </>
   );
 }
-
-AdminTask.propTypes = {
-  hrid: PropTypes.string.isRequired,
-};
-
-export default AdminTask;

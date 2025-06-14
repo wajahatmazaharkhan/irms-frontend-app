@@ -61,6 +61,7 @@ import {
   HrReport,
 } from "./HrHeadAndIntern/HrIndex";
 import AdminHRManagement from "./Admin/AdminHRManagement.jsx";
+import UserManagement from "./Admin/UserManagement.jsx";
 import BatchManagement from "./Admin/BatchManagement.jsx";
 
 const AdminRoute = ({ children }) => {
@@ -93,6 +94,7 @@ const App = () => {
             </AdminRoute>
           }
         />
+
         <Route
           path="/Projectmanagement"
           element={
@@ -224,13 +226,13 @@ const App = () => {
           }
         />
         {/* <Route
-        path="/AskHR"
-        element={
-          <PrivateRoute>
-            <AskHR />
-          </PrivateRoute>
-        }
-      /> */}
+          path="/AskHR"
+          element={
+            <PrivateRoute>
+              <AskHR />
+            </PrivateRoute>
+          }
+        /> */}
         <Route
           path="/my-attendance"
           element={
@@ -264,7 +266,7 @@ const App = () => {
           }
         />
         <Route
-          path="/Internleaveapplication"
+          path="/Internleaveapplication"  //add restriction to this route only hr or admin can access
           element={
             <PrivateRoute>
               <Internleaveapplication />
@@ -280,7 +282,7 @@ const App = () => {
           }
         />
         <Route
-          path="/notify-all"
+          path="/notify-all"   //add restriction to this route only admin can access
           element={
             <PrivateRoute>
               <AdminNotify />
@@ -288,10 +290,18 @@ const App = () => {
           }
         />
         <Route
-          path="/admin-hr-management"
+          path="/admin-hr-management"  //add restriction to this route only admin can access
           element={
             <PrivateRoute>
               <AdminHRManagement />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/user-management"  //add restriction to this route only admin can access
+          element={
+            <PrivateRoute>
+              <UserManagement />
             </PrivateRoute>
           }
         />
@@ -324,18 +334,18 @@ const App = () => {
 
 
         <Route path="/hrhomepage" element={<HrHomepage />} />
-		<Route path="/hrinternsmgmt" element={<InternManagement />} />
-		<Route path="/hrbatchmgmt" element={<HrBatchManagement />} />
-		<Route path="/allhrusers" element={<AllHrUsers />} />
-		<Route path="/hrallattendance" element={<HrAllAttendance />} />
-		<Route path="/internshrleaveapplications" element={<InternsHrLeaveApplication />}/>
-		<Route path="/hrhelp" element={<HrHelpPage />}></Route>
-		<Route path="/hrtasksubmissions" element={<HrTasksubmissions />} />
-		<Route path="/hrprojects" element={<HrProject />} />
-		<Route path="/hrnotify" element={<HrNotify />} />
-		<Route path="/hrreports" element={<HrReport />} />
-		<Route path="/hrtaskassignment" element={<HrTaskAssignment />} />
-		
+        <Route path="/hrinternsmgmt" element={<InternManagement />} />
+        <Route path="/hrbatchmgmt" element={<HrBatchManagement />} />
+        <Route path="/allhrusers" element={<AllHrUsers />} />
+        <Route path="/hrallattendance" element={<HrAllAttendance />} />
+        <Route path="/internshrleaveapplications" element={<InternsHrLeaveApplication />} />
+        <Route path="/hrhelp" element={<HrHelpPage />}></Route>
+        <Route path="/hrtasksubmissions" element={<HrTasksubmissions />} />
+        <Route path="/hrprojects" element={<HrProject />} />
+        <Route path="/hrnotify" element={<HrNotify />} />
+        <Route path="/hrreports" element={<HrReport />} />
+        <Route path="/hrtaskassignment" element={<HrTaskAssignment />} />
+
       </Routes>
     </HrProvider>
   );

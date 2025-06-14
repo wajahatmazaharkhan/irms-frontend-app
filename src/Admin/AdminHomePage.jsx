@@ -106,6 +106,13 @@ function AdminHomePage() {
       description: "System administration",
       gradient: "from-yellow-500 to-yellow-700",
     },
+    {
+      title: "User Management",
+      route: "/user-management",
+      icon: UserCheck,
+      description: "Manage user roles and permissions",
+      gradient: "from-pink-500 to-pink-700",
+    },
   ];
 
   return (

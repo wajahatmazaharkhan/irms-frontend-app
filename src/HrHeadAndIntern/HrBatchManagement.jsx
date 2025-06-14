@@ -2,7 +2,7 @@ import CustomHrNavbar from "./CustomHrNavbar";
 import useTitle from "@/Components/useTitle";
 import {useState, useEffect} from "react";
 import {BatchCard, BatchDetails, BatchFilterSearch, BatchForm} from "@/Components/compIndex.js"
-import {getStatusFromDates, calculateProgress, formatDate, formatMonth} from "@/utils/dateUtils.js";
+import { getStatusFromDates, formatDate, formatMonth } from "@/lib/dateUtils";
 import {batchService} from "@/services/batchService.js";
 
 import {
@@ -16,8 +16,6 @@ import {
     Calendar as CalendarIcon,
     Settings,
     Loader,
-    X,
-    Save,
 } from "lucide-react";
 
 function BatchManagement() {

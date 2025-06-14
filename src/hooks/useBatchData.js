@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { batchService } from '../services/batchService';
-import { formatMonth, getStatusFromDates } from '../utils/dateUtils';
+import { formatMonth, getStatusFromDates } from '../lib/dateUtils';
 
 export const useBatchData = () => {
     const [batchData, setBatchData] = useState([]);

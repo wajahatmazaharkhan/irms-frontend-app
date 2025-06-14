@@ -1,5 +1,5 @@
 import {Calendar, CheckCircle, Edit3, Eye, Loader, Trash2, UserCheck, Users} from "lucide-react";
-import {getStatusColor, getStatusIcon} from "../../utils/batchCardUtils.jsx";
+import {getStatusColor, getStatusIcon} from "@/lib/batchCardUtils.jsx";
 
 export const BatchCard = ({batch, handleView, handleEditClick, handleDeleteBatch, deleteLoading}) => {
     return <div

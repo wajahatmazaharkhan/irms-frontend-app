@@ -1,4 +1,4 @@
-import {formatDate, getStatusFromDates} from "@/utils/dateUtils.js";
+import {formatDate, getStatusFromDates} from "@/lib/dateUtils.js";
 
 export const BatchDetails = ({ setIsModalOpen, selectedBatch }) => {
 

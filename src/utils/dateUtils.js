@@ -1,10 +1,9 @@
-export const formatDate = (dateString) => {
-    if (!dateString) return "N/A";
-    const date = new Date(dateString);
+export const formatDate = (isoString) => {
+    if (!isoString) return "N/A";
+    const date = new Date(isoString);
     if (isNaN(date.getTime())) return "N/A";
-    return date.toISOString().split("T")[0];
+    return date.toLocaleDateString(); // e.g. 22/5/2025
 };
-
 
 export const formatMonth = (dateString) => {
     const date = new Date(dateString);

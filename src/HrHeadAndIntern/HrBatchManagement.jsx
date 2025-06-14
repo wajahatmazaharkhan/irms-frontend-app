@@ -251,12 +251,6 @@ function BatchManagement() {
     }
   };
 
-  const formatDatee = (isoString) => {
-    if (!isoString) return "N/A";
-    const date = new Date(isoString);
-    if (isNaN(date.getTime())) return "N/A";
-    return date.toLocaleDateString(); // e.g. 22/5/2025
-  };
 
   // Handle delete batch
   const handleDeleteBatch = async (batchId, batchName) => {
@@ -323,20 +317,19 @@ function BatchManagement() {
 
     try {
       const baseUrl = import.meta.env.VITE_BASE_URL;
+      const apiData = {
+        ...formData,
+        EndDate: formData.EndDate,  // Ensure this is included
+      };
+
       const response = await fetch(`${baseUrl}/batches`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(apiData),
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(
-          errorData.message || `HTTP error! status: ${response.status}`
-        );
-      }
 
       const result = await response.json();
 
@@ -354,7 +347,7 @@ function BatchManagement() {
       alert("Batch created successfully!");
 
       // Refresh batch data
-      window.location.reload();
+      // window.location.reload();
     } catch (err) {
       console.error("Error creating batch:", err);
       alert(`Failed to create batch: ${err.message}`);
@@ -751,11 +744,11 @@ function BatchManagement() {
                   </p>
                   <p>
                     <strong>Start Date:</strong>{" "}
-                    {formatDatee(selectedBatch?.startDate)}
+                    {formatDate(selectedBatch?.startDate)}
                   </p>
                   <p>
                     <strong>End Date:</strong>{" "}
-                    {formatDatee(selectedBatch?.EndDate)}
+                    {formatDate(selectedBatch?.EndDate)}
                   </p>
 
                   <p>

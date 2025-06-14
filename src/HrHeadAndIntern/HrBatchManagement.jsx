@@ -1,24 +1,18 @@
 import CustomHrNavbar from "./CustomHrNavbar";
-import {Link} from "react-router-dom";
 import useTitle from "@/Components/useTitle";
 import {useState, useEffect} from "react";
-import {BatchCard, BatchDetails, BatchFilterSearch, BatchForm} from "@/Components/batchManagement/index.js";
+import {BatchCard, BatchDetails, BatchFilterSearch, BatchForm} from "@/Components/compIndex.js"
 import {getStatusFromDates, calculateProgress, formatDate, formatMonth} from "@/utils/dateUtils.js";
+import {batchService} from "@/services/batchService.js";
 
 import {
     Users,
-    Calendar,
     Plus,
     Download,
-    Filter,
-    Search,
     CalendarDays,
-    Clock,
     UserCheck,
-    BookOpen,
     TrendingUp,
     AlertCircle,
-    CheckCircle,
     Calendar as CalendarIcon,
     Settings,
     Loader,
@@ -55,23 +49,13 @@ function BatchManagement() {
         hr: [],
     });
 
-    // Fetch batch data from API
     useEffect(() => {
         const fetchBatchData = async () => {
             try {
                 setLoading(true);
-                const baseUrl = import.meta.env.VITE_BASE_URL;
-                const response = await fetch(`${baseUrl}/api/batch/get-summary`);
+                const data = await batchService.fetchBatchData();
+                const progressData = await batchService.fetchBatchProgress();
 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const data = await response.json();
-                const progressResponse = await fetch(`${baseUrl}/batches/progress`);
-                const progressData = await progressResponse.json();
-
-                // Transform API data to match component structure
                 const transformedData = data.map((batch) => {
                     const safeDate = (date) => {
                         if (!date) return "";
@@ -88,16 +72,15 @@ function BatchManagement() {
                         startDate: safeDate(batch.startDate),
                         endDate: safeDate(batch.EndDate),
                         totalInterns: batch.totalInterns,
-                        activeInterns: batch.totalInterns, // Assuming all are active for now
+                        activeInterns: batch.totalInterns,
                         completedInterns: `${batchProgress?.completedTasks ?? 0}/${batchProgress?.allTasks ?? 0}`,
                         totalHR: batch.totalHR,
                         status: getStatusFromDates(batch.startDate, batch.EndDate),
-                        coordinator: "TBD", // API doesn't provide this
-                        technologies: [], // API doesn't provide this
-                        progress: batchProgress?.progress ?? 0, // fallback to 0 if not found
+                        coordinator: "TBD",
+                        technologies: [],
+                        progress: batchProgress?.progress ?? 0,
                     };
                 });
-
 
                 setBatchData(transformedData);
                 setError(null);
@@ -112,6 +95,7 @@ function BatchManagement() {
         fetchBatchData();
     }, []);
 
+
     // Fetch available interns and HR when form opens
     useEffect(() => {
         if (showCreateForm) {
@@ -122,17 +106,8 @@ function BatchManagement() {
     const fetchAvailableUsers = async () => {
         try {
             setUsersLoading(true);
-            const baseUrl = import.meta.env.VITE_BASE_URL;
-            const response = await fetch(`${baseUrl}/allusers`);
+            const data = await batchService.fetchAvailableUsers();
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data = await response.json();
-            // console.log("Raw API response:", data); // Debug log
-
-            // Handle different response structures
             let allUsers;
             if (Array.isArray(data)) {
                 allUsers = data;
@@ -141,96 +116,42 @@ function BatchManagement() {
             } else if (data.data && Array.isArray(data.data)) {
                 allUsers = data.data;
             } else {
-                console.error("Unexpected API response structure:", data);
                 throw new Error("Invalid response format: expected an array of users");
             }
 
-            // console.log("Processed users array:", allUsers); // Debug log
-
-            // Validate that allUsers is an array
             if (!Array.isArray(allUsers)) {
                 throw new Error("Users data is not an array");
             }
 
-            // Filter users based on their roles
             const interns = allUsers
-                .filter((user) => {
-                    // Ensure user object has required properties
-                    if (!user || typeof user !== "object") {
-                        console.warn("Invalid user object:", user);
-                        return false;
-                    }
-
-                    // console.log(
-                    //   "Checking user role:",
-                    //   user.role,
-                    //   "for user:",
-                    //   user.email
-                    // ); // Debug log
-                    return user.role === "intern";
-                })
-                .map((user) => ({
+                .filter(user => user && typeof user === 'object' && user.role === 'intern')
+                .map(user => ({
                     id: user._id,
-                    name:
-                        user.name ||
-                        `${user.firstName || ""} ${user.lastName || ""}`.trim() ||
-                        user.email ||
-                        "Unknown User",
+                    name: user.name || `${user.firstName || ""} ${user.lastName || ""}`.trim() || user.email || "Unknown User",
                     email: user.email || "",
                     role: user.role,
                 }));
 
             const hrPersonnel = allUsers
-                .filter((user) => {
-                    // Ensure user object has required properties
-                    if (!user || typeof user !== "object") {
-                        console.warn("Invalid user object:", user);
-                        return false;
-                    }
-
-                    return user.role === "hr";
-                })
-                .map((user) => ({
+                .filter(user => user && typeof user === 'object' && user.role === 'hr')
+                .map(user => ({
                     id: user._id,
-                    name:
-                        user.name ||
-                        `${user.firstName || ""} ${user.lastName || ""}`.trim() ||
-                        user.email ||
-                        "Unknown User",
+                    name: user.name || `${user.firstName || ""} ${user.lastName || ""}`.trim() || user.email || "Unknown User",
                     email: user.email || "",
                     role: user.role,
                 }));
-
-            // console.log("Filtered interns:", interns); // Debug log
-            // console.log("Filtered HR personnel:", hrPersonnel); // Debug log
 
             setAvailableInterns(interns);
             setAvailableHR(hrPersonnel);
         } catch (err) {
             console.error("Error fetching users:", err);
-
-            // Provide more specific error messages
-            let errorMessage = "Failed to load users. ";
-            if (err.message.includes("Invalid response format")) {
-                errorMessage +=
-                    "The server response format is unexpected. Please check the API endpoint.";
-            } else if (err.message.includes("Users data is not an array")) {
-                errorMessage +=
-                    "The user data format is invalid. Please contact support.";
-            } else {
-                errorMessage += "Please try again later.";
-            }
-
-            alert(errorMessage);
-
-            // Keep arrays empty to show proper empty state
+            alert(`Failed to load users: ${err.message}`);
             setAvailableInterns([]);
             setAvailableHR([]);
         } finally {
             setUsersLoading(false);
         }
     };
-
 
     const handleView = async (batchId) => {
         try {
@@ -249,10 +170,8 @@ function BatchManagement() {
         }
     };
 
-
     // Handle delete batch
     const handleDeleteBatch = async (batchId, batchName) => {
-        // Confirm deletion
         const confirmed = window.confirm(
             `Are you sure you want to delete the batch "${batchName}"? This action cannot be undone.`
         );
@@ -260,23 +179,12 @@ function BatchManagement() {
         if (!confirmed) return;
 
         setDeleteLoading(batchId);
-
         try {
-            const baseUrl = import.meta.env.VITE_BASE_URL;
-            const response = await fetch(`${baseUrl}/batches/${batchId}`, {
-                method: "DELETE",
-            });
-
+            const response = await batchService.deleteBatch(batchId);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-
-            // Remove the deleted batch from local state
-            setBatchData((prevBatches) =>
-                prevBatches.filter((batch) => batch.id !== batchId)
-            );
-
-            // Show success message
+            setBatchData((prevBatches) => prevBatches.filter((batch) => batch.id !== batchId));
             alert("Batch deleted successfully!");
         } catch (err) {
             console.error("Error deleting batch:", err);
@@ -290,7 +198,6 @@ function BatchManagement() {
     const handleCreateBatch = async (e) => {
         e.preventDefault();
 
-        // Validation
         if (!formData.name || !formData.startDate || !formData.EndDate) {
             alert("Please fill in all required fields.");
             return;
@@ -301,37 +208,16 @@ function BatchManagement() {
             return;
         }
 
-        if (formData.interns.length === 0) {
-            alert("Please select at least one intern.");
-            return;
-        }
-
-        if (formData.hr.length === 0) {
-            alert("Please select at least one HR personnel.");
+        if (formData.interns.length === 0 || formData.hr.length === 0) {
+            alert("Please select at least one intern and one HR personnel.");
             return;
         }
 
         setFormLoading(true);
-
         try {
-            const baseUrl = import.meta.env.VITE_BASE_URL;
-            const apiData = {
-                ...formData,
-                EndDate: formData.EndDate,  // Ensure this is included
-            };
-
-            const response = await fetch(`${baseUrl}/batches`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(apiData),
-            });
-
-
+            const response = await batchService.createBatch(formData);
             const result = await response.json();
 
-            // Reset form and close modal
             setFormData({
                 name: "",
                 startDate: "",
@@ -340,11 +226,7 @@ function BatchManagement() {
                 hr: [],
             });
             setShowCreateForm(false);
-
-            // Show success message
             alert("Batch created successfully!");
-
-            // Refresh batch data
             window.location.reload();
         } catch (err) {
             console.error("Error creating batch:", err);
@@ -382,20 +264,11 @@ function BatchManagement() {
     const handleUpdateBatch = async (e) => {
         e.preventDefault();
         setFormLoading(true);
-
         try {
-            const baseUrl = import.meta.env.VITE_BASE_URL;
-            const res = await fetch(`${baseUrl}/batches/${editBatchId}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(formData),
-            });
+            const response = await batchService.updateBatch(editBatchId, formData);
+            const data = await response.json();
 
-            const data = await res.json();
-
-            if (!res.ok) {
+            if (!response.ok) {
                 throw new Error(data.error || "Update failed");
             }
 

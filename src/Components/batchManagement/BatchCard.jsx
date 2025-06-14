@@ -2,7 +2,6 @@ import {Calendar, CheckCircle, Edit3, Eye, Loader, Trash2, UserCheck, Users} fro
 import {getStatusColor, getStatusIcon} from "../../utils/batchCardUtils.jsx";
 
 export const BatchCard = ({batch, handleView, handleEditClick, handleDeleteBatch, deleteLoading}) => {
-    console.log(batch)
     return <div
         key={batch.id}
         className="bg-white rounded-xl shadow-md p-6 border  border-gray-200 hover:shadow-lg transition-shadow duration-300"

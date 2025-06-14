@@ -5,8 +5,10 @@ import { createContext, useState, useContext } from "react";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+
   const [token, setToken] = useState(localStorage.getItem("token"));
   const [loggedIn, setIsLoggedIn] = useState(!!token);
+
   const [admin, setAdmin] = useState(localStorage.getItem("isAdmin") === "true");
   const [isAdmin, setIsAdmin] = useState(!!admin);
   const [permissions, setPermissions] = useState([]);
@@ -16,9 +18,18 @@ export const AuthProvider = ({ children }) => {
     setPermissions(perms);
   };
 
+  const [hr, setHr] = useState(localStorage.getItem("isHr") === "true");
+  const [isHr, setIsHr] = useState(!!hr);
+
+
   const storeIsAdminState = (adminState) => {
     localStorage.setItem("isAdmin", adminState);
     setIsAdmin(adminState);
+  };
+
+  const storeIsHrState = (hrState) => {
+    localStorage.setItem("isHr", hrState);
+    setIsHr(hrState);
   };
 
   const storeTokenInLocalStorage = (serverToken) => {
@@ -31,6 +42,7 @@ export const AuthProvider = ({ children }) => {
   const LogoutUser = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("isAdmin");
+    localStorage.removeItem("isHr");
     localStorage.removeItem("userId");
     localStorage.removeItem("userName");
     localStorage.removeItem("permissions");
@@ -49,6 +61,7 @@ export const AuthProvider = ({ children }) => {
         setIsLoggedIn,
         storeTokenInLocalStorage,
         storeIsAdminState,
+        storeIsHrState,
         LogoutUser,
         storePermissions,
         storeUserId,

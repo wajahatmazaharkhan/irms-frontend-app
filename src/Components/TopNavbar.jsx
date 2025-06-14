@@ -25,6 +25,7 @@ const TopNavbar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { loggedIn } = useAuthContext();
   const isAdmin = localStorage.getItem("isAdmin") === "true";
+  const isHr = localStorage.getItem("isHr") === "true";
 
   const availableRoutes = [
     // Public Routes
@@ -64,11 +65,15 @@ const TopNavbar = () => {
       label: "View All Attendance",
       adminOnly: true,
     },
+	
+	//HR Routes
+	{ path: "/hrhomepage", label: "HR Dashboard", hrOnly: true},
   ];
 
   const filteredRoutes = availableRoutes.filter((route) => {
     if (!loggedIn) return route.public;
     if (isAdmin) return true;
+	if(isHr) return true;
     return !route.adminOnly;
   });
 
@@ -196,6 +201,15 @@ const TopNavbar = () => {
         </svg>
       ),
     },
+    ...(isHr
+      ? [
+          {
+            label: "HR Panel",
+            path: "/hrhomepage",
+            icon: <Building2 className="w-4 h-4" />,
+          },
+        ]
+      : []),
     ...(isAdmin
       ? [
           {

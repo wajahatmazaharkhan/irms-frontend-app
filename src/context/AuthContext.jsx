@@ -9,6 +9,12 @@ export const AuthProvider = ({ children }) => {
   const [loggedIn, setIsLoggedIn] = useState(!!token);
   const [admin, setAdmin] = useState(localStorage.getItem("isAdmin") === "true");
   const [isAdmin, setIsAdmin] = useState(!!admin);
+  const [permissions, setPermissions] = useState([]);
+
+  const storePermissions = (perms) => {
+    localStorage.setItem("permissions", JSON.stringify(perms));
+    setPermissions(perms);
+  };
 
   const storeIsAdminState = (adminState) => {
     localStorage.setItem("isAdmin", adminState);
@@ -27,6 +33,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("isAdmin");
     localStorage.removeItem("userId");
     localStorage.removeItem("userName");
+    localStorage.removeItem("permissions");
     setIsLoggedIn(false);
   };
 
@@ -43,6 +50,7 @@ export const AuthProvider = ({ children }) => {
         storeTokenInLocalStorage,
         storeIsAdminState,
         LogoutUser,
+        storePermissions,
         storeUserId,
       }}
     >

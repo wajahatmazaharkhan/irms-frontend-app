@@ -2,14 +2,13 @@ import CustomHrNavbar from "./CustomHrNavbar";
 import { Link } from "react-router-dom";
 import useTitle from "@/Components/useTitle";
 import { useState, useEffect } from "react";
+import {BatchCard} from "@/Components/batchManagement/index.js";
+import {getStatusFromDates, calculateProgress, formatDate, formatMonth} from "@/utils/dateUtils.js";
 
 import {
   Users,
   Calendar,
   Plus,
-  Edit3,
-  Trash2,
-  Eye,
   Download,
   Filter,
   Search,
@@ -21,7 +20,6 @@ import {
   AlertCircle,
   CheckCircle,
   Calendar as CalendarIcon,
-  FileText,
   Settings,
   Loader,
   X,
@@ -79,22 +77,6 @@ function BatchManagement() {
             if (!date) return "";
             const d = new Date(date);
             return isNaN(d.getTime()) ? "" : d.toISOString().split("T")[0];
-          };
-
-          const formatMonth = (date) => {
-            if (!date) return "";
-            const d = new Date(date);
-            return isNaN(d.getTime()) ? "" : d.toLocaleString("default", { month: "long", year: "numeric" });
-          };
-
-          const getStatusFromDates = (start, end) => {
-            const now = new Date();
-            const s = new Date(start);
-            const e = new Date(end);
-            if (isNaN(s.getTime()) || isNaN(e.getTime())) return "Invalid";
-            if (now < s) return "Upcoming";
-            if (now > e) return "Completed";
-            return "Ongoing";
           };
 
           const batchProgress = progressData.find(p => p._id === batch._id);
@@ -250,44 +232,7 @@ function BatchManagement() {
     }
   };
 
-  // Helper functions
-  const formatDate = (dateString) => {
-    return new Date(dateString).toISOString().split("T")[0];
-  };
 
-  const formatMonth = (dateString) => {
-    const date = new Date(dateString);
-    return `${date.toLocaleDateString("en-US", {
-      month: "long",
-    })} ${date.getFullYear()}`;
-  };
-
-  const getStatusFromDates = (startDate, endDate) => {
-    const now = new Date();
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-
-    if (now < start) {
-      return "Upcoming";
-    } else if (now > end) {
-      return "Completed";
-    } else {
-      return "Active";
-    }
-  };
-
-  const calculateProgress = (startDate, endDate) => {
-    const now = new Date();
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-
-    if (now < start) return 0;
-    if (now > end) return 100;
-
-    const totalDuration = end - start;
-    const elapsed = now - start;
-    return Math.round((elapsed / totalDuration) * 100);
-  };
 
   const handleView = async (batchId) => {
     try {
@@ -767,117 +712,16 @@ function BatchManagement() {
           {/* Batch Cards */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {filteredBatches.map((batch) => (
-              <div
-                key={batch.id}
-                className="bg-white rounded-xl shadow-md p-6 border  border-gray-200 hover:shadow-lg transition-shadow duration-300"
-              >
-                <div className="flex justify-between items-start mb-4">
-                  <div className="flex-1">
-                    <h3 className="text-xl font-semibold text-gray-800 mb-2">
-                      {batch.batchName}
-                    </h3>
-                    <div
-                      className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(
-                        batch.status
-                      )}`}
-                    >
-                      {getStatusIcon(batch.status)}
-                      {batch.status}
-                    </div>
-                  </div>
-                  <div className="flex gap-2">
-                    <button
-                      className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                      onClick={() => handleView(batch.id)}
-                    >
-                      <Eye className="w-4 h-4" />
-                    </button>
-                    <button
-                      className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
-                      onClick={() => handleEditClick(batch)}
-                    >
-                      <Edit3 className="w-4 h-4" />
-                    </button>
+                <BatchCard
+                    key={batch.id}
+                    batch={batch}
+                    handleView={handleView}
+                    handleEditClick={handleEditClick}
+                    handleDeleteBatch={handleDeleteBatch}
+                    deleteLoading={deleteLoading}
+                />
 
-                    <button
-                      onClick={() =>
-                        handleDeleteBatch(batch.id, batch.batchName)
-                      }
-                      disabled={deleteLoading === batch.id}
-                      className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
-                    >
-                      {deleteLoading === batch.id ? (
-                        <Loader className="w-4 h-4 animate-spin" />
-                      ) : (
-                        <Trash2 className="w-4 h-4" />
-                      )}
-                    </button>
-                  </div>
-                </div>
 
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <Calendar className="w-4 h-4" />
-                    {batch.startDate} to {batch.endDate}
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <Users className="w-4 h-4" />
-                    {batch.totalInterns} Total Interns
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <UserCheck className="w-4 h-4" />
-                    {batch.totalHR} HR Personnel
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <CheckCircle className="w-4 h-4" />
-                    {batch.completedInterns} Completed
-                  </div>
-                </div>
-
-                <div className="mb-4">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-sm font-medium text-gray-600">
-                      Progress
-                    </span>
-                    <span className="text-sm font-medium text-gray-800">
-                      {batch.progress}%
-                    </span>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div
-                      className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                      style={{ width: `${batch.progress}%` }}
-                    ></div>
-                  </div>
-                </div>
-
-                <div className="mb-4">
-                  <p className="text-sm text-gray-600 mb-2">
-                    <span className="font-medium">Month:</span> {batch.month}
-                  </p>
-                  {batch.technologies.length > 0 && (
-                    <div className="flex flex-wrap gap-2">
-                      {batch.technologies.map((tech, index) => (
-                        <span
-                          key={index}
-                          className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-md"
-                        >
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                <div className="flex gap-2">
-                  <button className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors duration-200 text-sm font-medium">
-                    View Details
-                  </button>
-                  <button className="flex-1 bg-gray-100 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-200 transition-colors duration-200 text-sm font-medium">
-                    Manage Interns
-                  </button>
-                </div>
-              </div>
             ))}
           </div>
           {isModalOpen && selectedBatch && (

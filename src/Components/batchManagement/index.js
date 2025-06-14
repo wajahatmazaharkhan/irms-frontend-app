@@ -1,5 +1,4 @@
-export { BatchDetails } from './BatchDetails';
-export { BatchForm } from './BatchForm';
-export { BatchItem } from './BatchItem';
-export { BatchList } from './BatchList';
+export {BatchDetails} from './BatchDetails';
+export {BatchForm} from './BatchForm';
 export {BatchCard} from './BatchCard';
+export {BatchFilterSearch} from './BatchFilterSearch';

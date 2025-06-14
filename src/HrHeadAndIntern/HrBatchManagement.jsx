@@ -2,7 +2,7 @@ import CustomHrNavbar from "./CustomHrNavbar";
 import { Link } from "react-router-dom";
 import useTitle from "@/Components/useTitle";
 import { useState, useEffect } from "react";
-import {BatchCard, BatchDetails} from "@/Components/batchManagement/index.js";
+import {BatchCard, BatchDetails, BatchForm} from "@/Components/batchManagement/index.js";
 import {getStatusFromDates, calculateProgress, formatDate, formatMonth} from "@/utils/dateUtils.js";
 
 import {
@@ -347,7 +347,7 @@ function BatchManagement() {
       alert("Batch created successfully!");
 
       // Refresh batch data
-      // window.location.reload();
+      window.location.reload();
     } catch (err) {
       console.error("Error creating batch:", err);
       alert(`Failed to create batch: ${err.message}`);
@@ -505,32 +505,6 @@ function BatchManagement() {
       action: "settings",
     },
   ];
-
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "Active":
-        return "bg-green-100 text-green-800 border-green-200";
-      case "Completed":
-        return "bg-blue-100 text-blue-800 border-blue-200";
-      case "Upcoming":
-        return "bg-yellow-100 text-yellow-800 border-yellow-200";
-      default:
-        return "bg-gray-100 text-gray-800 border-gray-200";
-    }
-  };
-
-  const getStatusIcon = (status) => {
-    switch (status) {
-      case "Active":
-        return <CheckCircle className="w-4 h-4" />;
-      case "Completed":
-        return <BookOpen className="w-4 h-4" />;
-      case "Upcoming":
-        return <Clock className="w-4 h-4" />;
-      default:
-        return <AlertCircle className="w-4 h-4" />;
-    }
-  };
 
   const filteredBatches = batchData.filter((batch) => {
     const matchesSearch =
@@ -739,229 +713,23 @@ function BatchManagement() {
 
       {/* Create Batch Modal */}
       {showCreateForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-screen overflow-y-auto">
-            <div className="p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-800">
-                  {isEditing ? "Edit Batch" : "Create New Batch"}
-                </h2>
-                <button
-                  onClick={() => {
-                    setShowCreateForm(false);
-                    setIsEditing(false);
-                    setEditBatchId(null);
-                    // Reset form and close modal
-                    setFormData({
-                      name: "",
-                      startDate: "",
-                      EndDate: "",
-                      interns: [],
-                      hr: [],
-                    });
-                  }}
-                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-              {usersLoading ? (
-                <div className="text-center py-8">
-                  <Loader className="w-8 h-8 text-blue-600 mx-auto mb-4 animate-spin" />
-                  <p className="text-gray-600">Loading users...</p>
-                </div>
-              ) : (
-                <form
-                  onSubmit={isEditing ? handleUpdateBatch : handleCreateBatch}
-                  className="space-y-6"
-                >
-                  {/* Batch Name */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Batch Name *
-                    </label>
-                    <input
-                      type="text"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      placeholder="e.g., Web Dev Internship Batch 2025"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      required
-                    />
-                  </div>
+          <BatchForm
+              formData={formData}
+              availableInterns={availableInterns}
+              availableHR={availableHR}
+              isEditing={isEditing}
+              setShowCreateForm={setShowCreateForm}
+              setIsEditing={setIsEditing}
+              setEditBatchId={setEditBatchId}
+              setFormData={setFormData}
+              usersLoading={usersLoading}
+              handleUpdateBatch={handleUpdateBatch}
+              handleCreateBatch={handleCreateBatch}
+              handleInputChange={handleInputChange}
+              handleMultiSelectChange={handleMultiSelectChange}
+              formLoading={formLoading}
+          />
 
-                  {/* Date Range */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Start Date *
-                      </label>
-                      <input
-                        type="date"
-                        name="startDate"
-                        value={formData.startDate}
-                        onChange={handleInputChange}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        End Date *
-                      </label>
-                      <input
-                        type="date"
-                        name="EndDate"
-                        value={formData.EndDate}
-                        onChange={handleInputChange}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  {/* Interns Selection */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Select Interns *
-                    </label>
-                    {availableInterns.length === 0 ? (
-                      <div className="border border-gray-300 rounded-lg p-4 text-center text-gray-500">
-                        No interns available. Make sure users with "intern" role
-                        exist in the system.
-                      </div>
-                    ) : (
-                      <div className="border border-gray-300 rounded-lg p-4 max-h-40 overflow-y-auto">
-                        {availableInterns.map((intern) => (
-                          <div
-                            key={intern.id}
-                            className="flex items-center mb-2"
-                          >
-                            <input
-                              type="checkbox"
-                              id={`intern-${intern.id}`}
-                              checked={formData.interns.includes(intern.id)}
-                              onChange={() =>
-                                handleMultiSelectChange("interns", intern.id)
-                              }
-                              className="mr-3 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                            />
-                            <label
-                              htmlFor={`intern-${intern.id}`}
-                              className="text-sm text-gray-700 flex-1"
-                            >
-                              <span className="font-medium">{intern.name}</span>
-                              <span className="text-gray-500 ml-2">
-                                ({intern.email})
-                              </span>
-                              <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded ml-2">
-                                {intern.role}
-                              </span>
-                            </label>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                    <p className="text-xs text-gray-500 mt-1">
-                      Selected: {formData.interns.length} intern(s)
-                    </p>
-                  </div>
-
-                  {/* HR Selection */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Select HR Personnel *
-                    </label>
-                    {availableHR.length === 0 ? (
-                      <div className="border border-gray-300 rounded-lg p-4 text-center text-gray-500">
-                        No HR personnel available. Make sure users with "hr"
-                        role exist in the system.
-                      </div>
-                    ) : (
-                      <div className="border border-gray-300 rounded-lg p-4 max-h-40 overflow-y-auto">
-                        {availableHR.map((hr) => (
-                          <div key={hr.id} className="flex items-center mb-2">
-                            <input
-                              type="checkbox"
-                              id={`hr-${hr.id}`}
-                              checked={formData.hr.includes(hr.id)}
-                              onChange={() =>
-                                handleMultiSelectChange("hr", hr.id)
-                              }
-                              className="mr-3 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                            />
-                            <label
-                              htmlFor={`hr-${hr.id}`}
-                              className="text-sm text-gray-700 flex-1"
-                            >
-                              <span className="font-medium">{hr.name}</span>
-                              <span className="text-gray-500 ml-2">
-                                ({hr.email})
-                              </span>
-                              <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded ml-2">
-                                {hr.role}
-                              </span>
-                            </label>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                    <p className="text-xs text-gray-500 mt-1">
-                      Selected: {formData.hr.length} HR personnel
-                    </p>
-                  </div>
-
-                  {/* Form Actions */}
-                  <div className="flex gap-4 pt-4">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setShowCreateForm(false);
-                        setIsEditing(false);
-                        setEditBatchId(null);
-                        // Reset form and close modal
-                        setFormData({
-                          name: "",
-                          startDate: "",
-                          EndDate: "",
-                          interns: [],
-                          hr: [],
-                        });
-                      }}
-                      className="flex-1 px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={
-                        formLoading ||
-                        availableInterns.length === 0 ||
-                        availableHR.length === 0
-                      }
-                      className="flex-1 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      {formLoading ? (
-                        <Loader className="w-4 h-4 animate-spin" />
-                      ) : (
-                        <Save className="w-4 h-4" />
-                      )}
-                      {isEditing
-                        ? formLoading
-                          ? "Updating...."
-                          : "Update Batch"
-                        : formLoading
-                          ? "Creating..."
-                          : "Create Batch"}
-
-                    </button>
-                  </div>
-                </form>
-              )}
-            </div>
-          </div>
-        </div>
       )}
     </>
   );

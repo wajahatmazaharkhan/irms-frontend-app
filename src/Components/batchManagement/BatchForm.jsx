@@ -1,121 +1,247 @@
-import { useState } from 'react';
-import { X, Save, Plus } from 'lucide-react';
+// src/components/batch/BatchCreateForm.jsx
+import {Loader, Save, X} from "lucide-react";
 
-export const BatchForm = ({ onSubmit, availableInterns, availableHR, onClose }) => {
-    const [formData, setFormData] = useState({
-        name: '',
-        startDate: '',
-        EndDate: '',
-        interns: [],
-        hr: []
-    });
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        onSubmit(formData);
-    };
-
+export const BatchForm = ({
+                              formData,
+                              availableInterns,
+                              availableHR,
+                              isEditing,
+                              setShowCreateForm,
+                              setIsEditing,
+                              setEditBatchId,
+                              setFormData,
+                              usersLoading,
+                              handleUpdateBatch,
+                              handleCreateBatch,
+                              handleInputChange,
+                              handleMultiSelectChange,
+                              formLoading,
+                          }) => {
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-            <div className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4">
-                <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-xl font-semibold">Create New Batch</h2>
-                    <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
-                        <X className="w-6 h-6" />
-                    </button>
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+            <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-screen overflow-y-auto">
+                <div className="p-6">
+                    <div className="flex justify-between items-center mb-6">
+                        <h2 className="text-2xl font-bold text-gray-800">
+                            {isEditing ? "Edit Batch" : "Create New Batch"}
+                        </h2>
+                        <button
+                            onClick={() => {
+                                setShowCreateForm(false);
+                                setIsEditing(false);
+                                setEditBatchId(null);
+                                // Reset form and close modal
+                                setFormData({
+                                    name: "",
+                                    startDate: "",
+                                    EndDate: "",
+                                    interns: [],
+                                    hr: [],
+                                });
+                            }}
+                            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                        >
+                            <X className="w-5 h-5"/>
+                        </button>
+                    </div>
+                    {usersLoading ? (
+                        <div className="text-center py-8">
+                            <Loader className="w-8 h-8 text-blue-600 mx-auto mb-4 animate-spin"/>
+                            <p className="text-gray-600">Loading users...</p>
+                        </div>
+                    ) : (
+                        <form
+                            onSubmit={isEditing ? handleUpdateBatch : handleCreateBatch}
+                            className="space-y-6"
+                        >
+                            {/* Batch Name */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Batch Name *
+                                </label>
+                                <input
+                                    type="text"
+                                    name="name"
+                                    value={formData.name}
+                                    onChange={handleInputChange}
+                                    placeholder="e.g., Web Dev Internship Batch 2025"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    required
+                                />
+                            </div>
+
+                            {/* Date Range */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Start Date *
+                                    </label>
+                                    <input
+                                        type="date"
+                                        name="startDate"
+                                        value={formData.startDate}
+                                        onChange={handleInputChange}
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        required
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        End Date *
+                                    </label>
+                                    <input
+                                        type="date"
+                                        name="EndDate"
+                                        value={formData.EndDate}
+                                        onChange={handleInputChange}
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        required
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Interns Selection */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Select Interns *
+                                </label>
+                                {availableInterns.length === 0 ? (
+                                    <div className="border border-gray-300 rounded-lg p-4 text-center text-gray-500">
+                                        No interns available. Make sure users with "intern" role
+                                        exist in the system.
+                                    </div>
+                                ) : (
+                                    <div className="border border-gray-300 rounded-lg p-4 max-h-40 overflow-y-auto">
+                                        {availableInterns.map((intern) => (
+                                            <div
+                                                key={intern.id}
+                                                className="flex items-center mb-2"
+                                            >
+                                                <input
+                                                    type="checkbox"
+                                                    id={`intern-${intern.id}`}
+                                                    checked={formData.interns.includes(intern.id)}
+                                                    onChange={() =>
+                                                        handleMultiSelectChange("interns", intern.id)
+                                                    }
+                                                    className="mr-3 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                                />
+                                                <label
+                                                    htmlFor={`intern-${intern.id}`}
+                                                    className="text-sm text-gray-700 flex-1"
+                                                >
+                                                    <span className="font-medium">{intern.name}</span>
+                                                    <span className="text-gray-500 ml-2">
+                                ({intern.email})
+                              </span>
+                                                    <span
+                                                        className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded ml-2">
+                                {intern.role}
+                              </span>
+                                                </label>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                                <p className="text-xs text-gray-500 mt-1">
+                                    Selected: {formData.interns.length} intern(s)
+                                </p>
+                            </div>
+
+                            {/* HR Selection */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Select HR Personnel *
+                                </label>
+                                {availableHR.length === 0 ? (
+                                    <div className="border border-gray-300 rounded-lg p-4 text-center text-gray-500">
+                                        No HR personnel available. Make sure users with "hr"
+                                        role exist in the system.
+                                    </div>
+                                ) : (
+                                    <div className="border border-gray-300 rounded-lg p-4 max-h-40 overflow-y-auto">
+                                        {availableHR.map((hr) => (
+                                            <div key={hr.id} className="flex items-center mb-2">
+                                                <input
+                                                    type="checkbox"
+                                                    id={`hr-${hr.id}`}
+                                                    checked={formData.hr.includes(hr.id)}
+                                                    onChange={() =>
+                                                        handleMultiSelectChange("hr", hr.id)
+                                                    }
+                                                    className="mr-3 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                                />
+                                                <label
+                                                    htmlFor={`hr-${hr.id}`}
+                                                    className="text-sm text-gray-700 flex-1"
+                                                >
+                                                    <span className="font-medium">{hr.name}</span>
+                                                    <span className="text-gray-500 ml-2">
+                                ({hr.email})
+                              </span>
+                                                    <span
+                                                        className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded ml-2">
+                                {hr.role}
+                              </span>
+                                                </label>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                                <p className="text-xs text-gray-500 mt-1">
+                                    Selected: {formData.hr.length} HR personnel
+                                </p>
+                            </div>
+
+                            {/* Form Actions */}
+                            <div className="flex gap-4 pt-4">
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setShowCreateForm(false);
+                                        setIsEditing(false);
+                                        setEditBatchId(null);
+                                        // Reset form and close modal
+                                        setFormData({
+                                            name: "",
+                                            startDate: "",
+                                            EndDate: "",
+                                            interns: [],
+                                            hr: [],
+                                        });
+                                    }}
+                                    className="flex-1 px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    disabled={
+                                        formLoading ||
+                                        availableInterns.length === 0 ||
+                                        availableHR.length === 0
+                                    }
+                                    className="flex-1 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    {formLoading ? (
+                                        <Loader className="w-4 h-4 animate-spin"/>
+                                    ) : (
+                                        <Save className="w-4 h-4"/>
+                                    )}
+                                    {isEditing
+                                        ? formLoading
+                                            ? "Updating...."
+                                            : "Update Batch"
+                                        : formLoading
+                                            ? "Creating..."
+                                            : "Create Batch"}
+
+                                </button>
+                            </div>
+                        </form>
+                    )}
                 </div>
-
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <div>
-                        <label className="block text-sm font-medium mb-1">Batch Name</label>
-                        <input
-                            type="text"
-                            value={formData.name}
-                            onChange={(e) => setFormData({...formData, name: e.target.value})}
-                            className="w-full border rounded-md p-2"
-                            required
-                        />
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4">
-                        <div>
-                            <label className="block text-sm font-medium mb-1">Start Date</label>
-                            <input
-                                type="date"
-                                value={formData.startDate}
-                                onChange={(e) => setFormData({...formData, startDate: e.target.value})}
-                                className="w-full border rounded-md p-2"
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium mb-1">End Date</label>
-                            <input
-                                type="date"
-                                value={formData.EndDate}
-                                onChange={(e) => setFormData({...formData, EndDate: e.target.value})}
-                                className="w-full border rounded-md p-2"
-                                required
-                            />
-                        </div>
-                    </div>
-
-                    <div className="space-y-2">
-                        <label className="block text-sm font-medium">Select Interns</label>
-                        <select
-                            multiple
-                            value={formData.interns}
-                            onChange={(e) => setFormData({
-                                ...formData,
-                                interns: Array.from(e.target.selectedOptions, option => option.value)
-                            })}
-                            className="w-full border rounded-md p-2"
-                        >
-                            {availableInterns.map(intern => (
-                                <option key={intern.id} value={intern.id}>
-                                    {intern.name}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-
-                    <div className="space-y-2">
-                        <label className="block text-sm font-medium">Select HR</label>
-                        <select
-                            multiple
-                            value={formData.hr}
-                            onChange={(e) => setFormData({
-                                ...formData,
-                                hr: Array.from(e.target.selectedOptions, option => option.value)
-                            })}
-                            className="w-full border rounded-md p-2"
-                        >
-                            {availableHR.map(hr => (
-                                <option key={hr.id} value={hr.id}>
-                                    {hr.name}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-
-                    <div className="flex justify-end gap-2">
-                        <button
-                            type="button"
-                            onClick={onClose}
-                            className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-md"
-                        >
-                            Cancel
-                        </button>
-                        <button
-                            type="submit"
-                            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 flex items-center gap-2"
-                        >
-                            <Save className="w-4 h-4" />
-                            Save Batch
-                        </button>
-                    </div>
-                </form>
             </div>
         </div>
-    );
+    )
 };

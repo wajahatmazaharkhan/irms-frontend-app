@@ -59,9 +59,17 @@ function BatchManagement() {
     const fetchBatchData = async () => {
       try {
         setLoading(true);
-
-        const progressData = await batchService.fetchBatchProgress();
+        const baseUrl = import.meta.env.VITE_BASE_URL;
+        const response = await fetch(`${baseUrl}/api/batch/get-summary`);
         const batchIds = await batchService.fetchBatchIds();
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        var data = await response.json();
+        const progressResponse = await fetch(`${baseUrl}/batches/progress`);
+        const progressData = await progressResponse.json();
 
         // Filter for user's batches
         const userBatches = batchIds.data.filter((batch) =>
@@ -72,18 +80,16 @@ function BatchManagement() {
           return;
         }
 
-        // Get all batch data for matching batches
-        const batchPromises = userBatches.map(async (batch) => {
-          const response = await batchService.getBatchById(batch._id);
-          if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-          }
-          return response.json();
-        });
+       // Extract batch IDs
+        const hrBatchIds = userBatches.map(batch => batch._id);
 
-        // Wait for all batch data to be fetched
-        const batchesData = await Promise.all(batchPromises);
-        const data = batchesData;
+        // Filter the main data to only include batches where ID matches
+        const filteredBatches = data.filter(batch => 
+            hrBatchIds.includes(batch._id)
+        );
+
+        data = filteredBatches;
+        // console.log(filteredBatches)
 
         const transformedData = data.map((batch) => {
           const safeDate = (date) => {

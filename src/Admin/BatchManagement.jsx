@@ -53,7 +53,7 @@ function BatchManagement() {
   const [formData, setFormData] = useState({
     name: "",
     startDate: "",
-    EndDate: "",
+    endDate: "",
     interns: [],
     hr: [],
   });
@@ -107,14 +107,14 @@ function BatchManagement() {
             batchName: batch.name,
             month: formatMonth(batch.startDate),
             startDate: safeDate(batch.startDate),
-            endDate: safeDate(batch.EndDate),
+            endDate: safeDate(batch.endDate),
             totalInterns: batch.totalInterns,
             activeInterns: batch.totalInterns, // Assuming all are active for now
             completedInterns: `${batchProgress?.completedTasks ?? 0}/${
               batchProgress?.allTasks ?? 0
             }`,
             totalHR: batch.totalHR,
-            status: getStatusFromDates(batch.startDate, batch.EndDate),
+            status: getStatusFromDates(batch.startDate, batch.endDate),
             coordinator: "TBD", // API doesn't provide this
             technologies: [], // API doesn't provide this
             progress: batchProgress?.progress ?? 0, // fallback to 0 if not found
@@ -259,18 +259,6 @@ function BatchManagement() {
     }
   };
 
-  const calculateProgress = (startDate, endDate) => {
-    const now = new Date();
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-
-    if (now < start) return 0;
-    if (now > end) return 100;
-
-    const totalDuration = end - start;
-    const elapsed = now - start;
-    return Math.round((elapsed / totalDuration) * 100);
-  };
 
   const handleView = async (batchId) => {
     try {
@@ -332,12 +320,12 @@ function BatchManagement() {
     e.preventDefault();
 
     // Validation
-    if (!formData.name || !formData.startDate || !formData.EndDate) {
+    if (!formData.name || !formData.startDate || !formData.endDate) {
       alert("Please fill in all required fields.");
       return;
     }
 
-    if (new Date(formData.startDate) >= new Date(formData.EndDate)) {
+    if (new Date(formData.startDate) >= new Date(formData.endDate)) {
       alert("End date must be after start date.");
       return;
     }
@@ -365,7 +353,7 @@ function BatchManagement() {
       setFormData({
         name: "",
         startDate: "",
-        EndDate: "",
+        endDate: "",
         interns: [],
         hr: [],
       });
@@ -395,12 +383,13 @@ function BatchManagement() {
       const fullBatch = res.data;
 
       setFormData({
-        name: fullBatch.name || "",
-        startDate: fullBatch.startDate?.split("T")[0] || "",
-        EndDate: fullBatch.EndDate?.split("T")[0] || "",
-        interns: fullBatch.interns?.map((i) => i._id || i) || [],
-        hr: fullBatch.hr?.map((h) => h._id || h) || [],
-      });
+		  name: fullBatch.name || "",
+		  startDate: fullBatch.startDate?.split("T")[0] || "",
+		  endDate: fullBatch.endDate?.split("T")[0] || "",
+		  interns: fullBatch.interns?.map((i) => i._id || i) || [],
+		  hr: fullBatch.hr?.map((h) => h.hrId?._id || h.hrId || h._id || h) || [],
+		});
+
 
       setIsEditing(true);
       setEditBatchId(fullBatch._id);
@@ -449,15 +438,19 @@ function BatchManagement() {
     }));
   };
 
-  // Handle multi-select changes
-  const handleMultiSelectChange = (field, value) => {
-    setFormData((prev) => ({
+const handleMultiSelectChange = (field, value) => {
+  const stringValue = String(value);
+  setFormData((prev) => {
+    const current = prev[field].map(String); // ensure all string
+    return {
       ...prev,
-      [field]: prev[field].includes(value)
-        ? prev[field].filter((item) => item !== value)
-        : [...prev[field], value],
-    }));
-  };
+      [field]: current.includes(stringValue)
+        ? current.filter((item) => item !== stringValue)
+        : [...current, stringValue],
+    };
+  });
+};
+
 
   // Calculate dashboard stats from fetched data
   const dashboardStats = [
@@ -846,59 +839,81 @@ function BatchManagement() {
             ))}
           </div>
           {isModalOpen && selectedBatch && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-              <div className="bg-white rounded-xl p-6 max-w-lg w-full shadow-xl border border-gray-200 relative">
-                <button
-                  onClick={() => setIsModalOpen(false)}
-                  className="absolute top-2 right-2 text-gray-400 hover:text-gray-600"
-                >
-                  ✕
-                </button>
+			  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+				<div className="bg-white rounded-2xl p-6 max-w-xl w-full shadow-2xl border border-blue-200 relative transition-all">
+				  <button
+					onClick={() => setIsModalOpen(false)}
+					className="absolute top-3 right-3 text-blue-400 hover:text-blue-600 text-lg font-bold transition"
+				  >
+					✕
+				  </button>
 
-                <h2 className="text-2xl font-semibold text-blue-600 mb-4">
-                  {selectedBatch?.batchName ?? "Batch Details"}
-                </h2>
+				  <h2 className="text-2xl font-bold text-blue-700 mb-6 border-b pb-2 border-blue-100">
+					{selectedBatch?.batchName ?? "Batch Details"}
+				  </h2>
 
-                <div className="text-gray-600 text-sm space-y-2">
-                  <p>
-                    <strong>Name:</strong> {selectedBatch?.name ?? "N/A"}
-                  </p>
-                  <p>
-                    <strong>Status:</strong>{" "}
-                    {getStatusFromDates(
-                      selectedBatch?.startDate,
-                      selectedBatch?.EndDate
-                    )}
-                  </p>
-                  <p>
-                    <strong>Start Date:</strong>{" "}
-                    {formatDatee(selectedBatch?.startDate)}
-                  </p>
-                  <p>
-                    <strong>End Date:</strong>{" "}
-                    {formatDatee(selectedBatch?.EndDate)}
-                  </p>
+				  <div className="text-blue-900 text-sm space-y-4">
+					<p>
+					  <strong className="text-blue-600">Name:</strong>{" "}
+					  {selectedBatch?.name ?? "N/A"}
+					</p>
 
-                  <p>
-                    <strong>Interns:</strong>{" "}
-                    {Array.isArray(selectedBatch?.interns)
-                      ? selectedBatch.interns.map((intern, idx) => (
-                          <span key={intern._id || idx}>
-                            {intern.name}
-                            {idx < selectedBatch.interns.length - 1 ? ", " : ""}
-                          </span>
-                        ))
-                      : "N/A"}
-                  </p>
+					<p>
+					  <strong className="text-blue-600">Status:</strong>{" "}
+					  {getStatusFromDates(selectedBatch?.startDate, selectedBatch?.endDate)}
+					</p>
 
-                  <p>
-                    <strong>HR Personnel:</strong>{" "}
-                    {selectedBatch?.hr?.length ?? 0}
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
+					<p>
+					  <strong className="text-blue-600">Start Date:</strong>{" "}
+					  {formatDatee(selectedBatch?.startDate)}
+					</p>
+
+					<p>
+					  <strong className="text-blue-600">End Date:</strong>{" "}
+					  {formatDatee(selectedBatch?.endDate)}
+					</p>
+
+					<div>
+					  <strong className="text-blue-600">Interns:</strong>
+					  <div className="flex flex-wrap gap-2 mt-2">
+						{Array.isArray(selectedBatch?.interns) && selectedBatch.interns.length > 0 ? (
+						  selectedBatch.interns.map((intern) => (
+							<span
+							  key={intern._id}
+							  className="bg-blue-50 text-blue-700 border border-blue-200 px-3 py-1 rounded-full text-sm font-medium"
+							>
+							  {intern.name}
+							</span>
+						  ))
+						) : (
+						  <span className="text-gray-500">N/A</span>
+						)}
+					  </div>
+					</div>
+
+					<div>
+					  <strong className="text-blue-600">HR Personnel:</strong>
+					  <div className="flex flex-wrap gap-2 mt-2">
+						{Array.isArray(selectedBatch?.hr) && selectedBatch.hr.length > 0 ? (
+						  selectedBatch.hr.map((entry) => (
+							<span
+							  key={entry._id}
+							  className="bg-blue-100 text-blue-800 border border-blue-300 px-3 py-1 rounded-full text-sm font-medium"
+							>
+							  {entry.hrId?.name || "Unknown"}
+							</span>
+						  ))
+						) : (
+						  <span className="text-gray-500">N/A</span>
+						)}
+					  </div>
+					</div>
+				  </div>
+				</div>
+			  </div>
+			)}
+
+
         </div>
 
         {filteredBatches.length === 0 && !loading && (
@@ -934,7 +949,7 @@ function BatchManagement() {
                     setFormData({
                       name: "",
                       startDate: "",
-                      EndDate: "",
+                      endDate: "",
                       interns: [],
                       hr: [],
                     });
@@ -991,8 +1006,8 @@ function BatchManagement() {
                       </label>
                       <input
                         type="date"
-                        name="EndDate"
-                        value={formData.EndDate}
+                        name="endDate"
+                        value={formData.endDate}
                         onChange={handleInputChange}
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         required
@@ -1048,48 +1063,56 @@ function BatchManagement() {
                   </div>
 
                   {/* HR Selection */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Select HR Personnel *
-                    </label>
-                    {availableHR.length === 0 ? (
-                      <div className="border border-gray-300 rounded-lg p-4 text-center text-gray-500">
-                        No HR personnel available. Make sure users with "hr"
-                        role exist in the system.
-                      </div>
-                    ) : (
-                      <div className="border border-gray-300 rounded-lg p-4 max-h-40 overflow-y-auto">
-                        {availableHR.map((hr) => (
-                          <div key={hr.id} className="flex items-center mb-2">
-                            <input
-                              type="checkbox"
-                              id={`hr-${hr.id}`}
-                              checked={formData.hr.includes(hr.id)}
-                              onChange={() =>
-                                handleMultiSelectChange("hr", hr.id)
-                              }
-                              className="mr-3 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                            />
-                            <label
-                              htmlFor={`hr-${hr.id}`}
-                              className="text-sm text-gray-700 flex-1"
-                            >
-                              <span className="font-medium">{hr.name}</span>
-                              <span className="text-gray-500 ml-2">
-                                ({hr.email})
-                              </span>
-                              <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded ml-2">
-                                {hr.role}
-                              </span>
-                            </label>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                    <p className="text-xs text-gray-500 mt-1">
-                      Selected: {formData.hr.length} HR personnel
-                    </p>
-                  </div>
+					<div>
+					  <label className="block text-sm font-medium text-gray-700 mb-2">
+						Select HR Personnel *
+					  </label>
+					  {availableHR.length === 0 ? (
+						<div className="border border-gray-300 rounded-lg p-4 text-center text-gray-500">
+						  No HR personnel available. Make sure users with "hr" role exist in the system.
+						</div>
+					  ) : (
+						<div className="border border-gray-300 rounded-lg p-4 max-h-40 overflow-y-auto">
+						  {availableHR.map((hr) => {
+					  const isChecked = formData.hr.includes(hr.id);
+					  console.log("HR ID:", hr.id);
+					  console.log("Is Checked?", isChecked);
+					  console.log("formData.hr:", formData.hr);
+
+					  return (
+						<div key={hr.id} className="flex items-center mb-2">
+						  <input
+							type="checkbox"
+							id={`hr-${hr.id}`}
+							checked={isChecked}
+							onChange={() => handleMultiSelectChange("hr", hr.id)}
+							className="mr-3 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+						  />
+						  <label
+							htmlFor={`hr-${hr.id}`}
+							className="text-sm text-gray-700 flex-1"
+						  >
+							<span className="font-medium">{hr.name}</span>
+							<span className="text-gray-500 ml-2">({hr.email})</span>
+							<span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded ml-2">
+							  {hr.role}
+							</span>
+						  </label>
+						</div>
+					  );
+					})}
+
+						</div>
+					  )}
+					  <p className="text-xs text-gray-500 mt-1">
+						Selected: {formData.hr.length} HR personnel
+					  </p>
+					</div>
+
+
+
+
+
 
                   {/* Form Actions */}
                   <div className="flex gap-4 pt-4">
@@ -1103,7 +1126,7 @@ function BatchManagement() {
                         setFormData({
                           name: "",
                           startDate: "",
-                          EndDate: "",
+                          endDate: "",
                           interns: [],
                           hr: [],
                         });

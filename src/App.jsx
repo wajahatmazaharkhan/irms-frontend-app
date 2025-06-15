@@ -32,6 +32,7 @@ import {
   IntroPage,
   AdminNotify,
   HarassmentEmailForm,
+  BatchDashboard,
 } from "./Pages/pageIndex";
 import {
   AdminTask,
@@ -149,6 +150,14 @@ const App = () => {
             <AdminRoute>
               <InternAttendance />
             </AdminRoute>
+          }
+        />
+		<Route
+          path="/batch-dashboard"
+          element={
+            <PrivateRoute>
+              <BatchDashboard />
+            </PrivateRoute>
           }
         />
         <Route

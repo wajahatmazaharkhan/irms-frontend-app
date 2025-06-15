@@ -1,35 +1,16 @@
 import CustomNavbar from "./CustomNavbar";
-import { Link } from "react-router-dom";
 import useTitle from "@/Components/useTitle";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
-
-import {
-  Users,
-  Calendar,
-  Plus,
-  Edit3,
-  Trash2,
-  Eye,
-  Download,
-  Filter,
-  Search,
-  CalendarDays,
-  Clock,
-  UserCheck,
-  BookOpen,
-  TrendingUp,
-  AlertCircle,
-  CheckCircle,
-  Calendar as CalendarIcon,
-  FileText,
-  Settings,
-  Loader,
-  X,
-  Save,
-} from "lucide-react";
+import BatchStats from "./BatchManagement/components/BatchStats";
+import QuickActions from "./BatchManagement/components/QuickActions";
+import Filters from "./BatchManagement/components/Filters";
+import BatchCard from "./BatchManagement/components/BatchCard";
+import BatchForm from "./BatchManagement/components/BatchForm";
+import BatchModal from "./BatchManagement/components/BatchModal";
+import { Loader, AlertCircle } from "lucide-react";
+import { formatDate, formatMonth, getStatusFromDates } from "./BatchManagement/components/utils";
 
 function BatchManagement() {
   useTitle("Batch Management");
@@ -41,7 +22,6 @@ function BatchManagement() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showCreateForm, setShowCreateForm] = useState(false);
-  const [formLoading, setFormLoading] = useState(false);
   const [availableInterns, setAvailableInterns] = useState([]);
   const [availableHR, setAvailableHR] = useState([]);
   const [deleteLoading, setDeleteLoading] = useState(null);
@@ -51,6 +31,7 @@ function BatchManagement() {
   const [selectedBatch, setSelectedBatch] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState("simple");
+  const [formLoading, setFormLoading] = useState(false);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -68,7 +49,6 @@ function BatchManagement() {
         setLoading(true);
         const baseUrl = import.meta.env.VITE_BASE_URL;
 
-        // Using axios instead of fetch
         const [batchResponse, progressResponse] = await Promise.all([
           axios.get(`${baseUrl}/api/batch/get-summary`),
           axios.get(`${baseUrl}/batches/progress`),
@@ -77,10 +57,6 @@ function BatchManagement() {
         const data = batchResponse.data;
         const progressData = progressResponse.data;
 
-       
-       
-
-        // Transform API data to match component structure
         const transformedData = data.map((batch) => {
           const safeDate = (date) => {
             if (!date) return "";
@@ -94,20 +70,17 @@ function BatchManagement() {
             return isNaN(d.getTime())
               ? ""
               : d.toLocaleString("default", { month: "long", year: "numeric" });
-            return isNaN(d.getTime())
-              ? ""
-              : d.toLocaleString("default", { month: "long", year: "numeric" });
           };
 
           const getStatusFromDates = (start, end) => {
-            const now = new Date();
-            const s = new Date(start);
-            const e = new Date(end);
-            if (isNaN(s.getTime()) || isNaN(e.getTime())) return "Invalid";
-            if (now < s) return "Upcoming";
-            if (now > e) return "Completed";
-            return "Ongoing";
-          };
+			  const now = new Date();
+			  const s = new Date(start);
+			  const e = new Date(end);
+			  if (isNaN(s.getTime()) || isNaN(e.getTime())) return "Invalid";
+			  if (now < s) return "upcoming";  // Changed from "Upcoming" to "upcoming"
+			  if (now > e) return "completed"; // Changed from "Completed" to "completed"
+			  return "active";                 // Changed from "Ongoing" to "active"
+			};
 
           const batchProgress = progressData.find((p) => p._id === batch._id);
          
@@ -118,15 +91,15 @@ function BatchManagement() {
             startDate: safeDate(batch.startDate),
             endDate: safeDate(batch.endDate),
             totalInterns: batch.totalInterns,
-            activeInterns: batch.totalInterns, // Assuming all are active for now
+            activeInterns: batch.totalInterns,
             completedInterns: `${batchProgress?.completedTasks ?? 0}/${
               batchProgress?.allTasks ?? 0
             }`,
             totalHR: batch.totalHR,
             status: getStatusFromDates(batch.startDate, batch.endDate),
-            coordinator: "TBD", // API doesn't provide this
-            technologies: [], // API doesn't provide this
-            progress: batchProgress?.progress ?? 0, // fallback to 0 if not found
+            coordinator: "TBD",
+            technologies: [],
+            progress: batchProgress?.progress ?? 0,
           };
         });
 
@@ -154,15 +127,11 @@ function BatchManagement() {
     try {
       setUsersLoading(true);
       const baseUrl = import.meta.env.VITE_BASE_URL;
-
-      // Using axios instead of fetch
-      
-
-      // Using axios instead of fetch
       const response = await axios.get(`${baseUrl}/allusers`);
       const data = response.data;
-
-      // Handle different response structures
+		
+	  const availUsersResponse = await axios.get(`${baseUrl}/available-interns`);
+	  
       let allUsers;
       if (Array.isArray(data)) {
         allUsers = data;
@@ -175,45 +144,13 @@ function BatchManagement() {
         throw new Error("Invalid response format: expected an array of users");
       }
 
-      // Filter users based on their roles
-      const interns = allUsers
-        .filter((user) => {
-          // Ensure user object has required properties
-          if (!user || typeof user !== "object") {
-            console.warn("Invalid user object:", user);
-            return false;
-          }
-
-          return user.role === "intern";
-        })
-        .map((user) => ({
-          id: user._id,
-          name:
-            user.name ||
-            `${user.firstName || ""} ${user.lastName || ""}`.trim() ||
-            user.email ||
-            "Unknown User",
-          email: user.email || "",
-          role: user.role,
-        }));
-
+      const interns = availUsersResponse.data.data;
+		console.log(interns);
       const hrPersonnel = allUsers
-        .filter((user) => {
-          // Ensure user object has required properties
-          if (!user || typeof user !== "object") {
-            console.warn("Invalid user object:", user);
-            return false;
-          }
-
-          return user.role === "hr";
-        })
+        .filter((user) => user.role === "hr")
         .map((user) => ({
           id: user._id,
-          name:
-            user.name ||
-            `${user.firstName || ""} ${user.lastName || ""}`.trim() ||
-            user.email ||
-            "Unknown User",
+          name: user.name || `${user.firstName || ""} ${user.lastName || ""}`.trim() || user.email || "Unknown User",
           email: user.email || "",
           role: user.role,
         }));
@@ -222,22 +159,16 @@ function BatchManagement() {
       setAvailableHR(hrPersonnel);
     } catch (err) {
       console.error("Error fetching users:", err);
-
-      // Provide more specific error messages
       let errorMessage = "Failed to load users. ";
       if (err.message.includes("Invalid response format")) {
-        errorMessage +=
-          "The server response format is unexpected. Please check the API endpoint.";
+        errorMessage += "The server response format is unexpected. Please check the API endpoint.";
       } else if (err.message.includes("Users data is not an array")) {
-        errorMessage +=
-          "The user data format is invalid. Please contact support.";
+        errorMessage += "The user data format is invalid. Please contact support.";
       } else {
         errorMessage += "Please try again later.";
       }
 
       alert(errorMessage);
-
-      // Keep arrays empty to show proper empty state
       setAvailableInterns([]);
       setAvailableHR([]);
     } finally {
@@ -245,96 +176,50 @@ function BatchManagement() {
     }
   };
 
-  // Helper functions
-  const formatDate = (dateString) => {
-    return new Date(dateString).toISOString().split("T")[0];
-  };
-
-  const formatMonth = (dateString) => {
-    const date = new Date(dateString);
-    return `${date.toLocaleDateString("en-US", {
-      month: "long",
-    })} ${date.getFullYear()}`;
-  };
-
-  const getStatusFromDates = (startDate, endDate) => {
-    const now = new Date();
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-
-    if (now < start) {
-      return "Upcoming";
-    } else if (now > end) {
-      return "Completed";
-    } else {
-      return "Active";
+  const handleView = async (batchId, type = "simple") => {
+    try {
+      setIsModalOpen(true);
+      setLoading(true);
+      const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/batches/${batchId}`);
+      const batchData = response.data;
+      
+      if (type === "deep" && batchData.tasks?.length > 0) {
+        const tasksWithDetails = await Promise.all(
+          batchData.tasks.map(async (task) => {
+            try {
+              if (!task.taskId) return task;
+              const taskResponse = await axios.get(
+                `${import.meta.env.VITE_BASE_URL}/task/get-task/${task.taskId}`,
+                { timeout: 3000 }
+              );
+              return {
+                ...task,
+                details: taskResponse.data?.taskDetails || null
+              };
+            } catch (error) {
+              console.error(`Error fetching task ${task.taskId}:`, error);
+              return task;
+            }
+          })
+        );
+        batchData.tasks = tasksWithDetails;
+      }
+      
+      setSelectedBatch(batchData);
+      setModalType(type);
+    } catch (error) {
+      console.error("Failed to fetch batch details:", error);
+      if (error.response?.status === 500) {
+        alert("Server error occurred while loading batch details");
+      } else {
+        alert("Failed to load batch details. Please try again.");
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
-
-	const handleView = async (batchId, type = "simple") => {
-	  try {
-		setIsModalOpen(true);
-		setLoading(true);
-		
-		// Fetch batch details
-		const response = await axios.get(
-		  `${import.meta.env.VITE_BASE_URL}/batches/${batchId}`
-		);
-		const batchData = response.data;
-		
-		// If deep view, enhance with task details
-		if (type === "deep") {
-		  // Only proceed if tasks exist
-		  if (batchData.tasks?.length > 0) {
-			const tasksWithDetails = await Promise.all(
-			  batchData.tasks.map(async (task) => {
-				try {
-				  // Skip if no taskId exists
-				  if (!task.taskId) return task;
-				  
-				  const taskResponse = await axios.get(
-					`${import.meta.env.VITE_BASE_URL}/task/get-task/${task.taskId}`,
-					{ timeout: 3000 } // Add timeout to prevent hanging
-				  );
-				  return {
-					...task,
-					details: taskResponse.data?.taskDetails || null
-				  };
-				} catch (error) {
-				  console.error(`Error fetching task ${task.taskId}:`, error);
-				  return task; // Return original task if details fetch fails
-				}
-			  })
-			);
-			batchData.tasks = tasksWithDetails;
-		  }
-		}
-		
-		setSelectedBatch(batchData);
-		setModalType(type);
-	  } catch (error) {
-		console.error("Failed to fetch batch details:", error);
-		if (error.response?.status === 500) {
-		  alert("Server error occurred while loading batch details");
-		} else {
-		  alert("Failed to load batch details. Please try again.");
-		}
-	  } finally {
-		setLoading(false);
-	  }
-	};
-
-  const formatDatee = (isoString) => {
-    if (!isoString) return "N/A";
-    const date = new Date(isoString);
-    if (isNaN(date.getTime())) return "N/A";
-    return date.toLocaleDateString(); // e.g. 22/5/2025
-  };
-
-  // Handle delete batch
   const handleDeleteBatch = async (batchId, batchName) => {
-    // Confirm deletion
     const confirmed = window.confirm(
       `Are you sure you want to delete the batch "${batchName}"? This action cannot be undone.`
     );
@@ -345,16 +230,10 @@ function BatchManagement() {
 
     try {
       const baseUrl = import.meta.env.VITE_BASE_URL;
-
-      // Using axios instead of fetch
       await axios.delete(`${baseUrl}/batches/${batchId}`);
-
-      // Remove the deleted batch from local state
       setBatchData((prevBatches) =>
         prevBatches.filter((batch) => batch.id !== batchId)
       );
-
-      // Show success message
       alert("Batch deleted successfully!");
     } catch (err) {
       console.error("Error deleting batch:", err);
@@ -364,87 +243,19 @@ function BatchManagement() {
     }
   };
 
-  // Handle form submission
-  const handleCreateBatch = async (e) => {
-    e.preventDefault();
-
-    // Validation
-    if (!formData.name || !formData.startDate || !formData.endDate) {
-      alert("Please fill in all required fields.");
-      return;
-    }
-
-    if (new Date(formData.startDate) >= new Date(formData.endDate)) {
-      alert("End date must be after start date.");
-      return;
-    }
-
-    if (formData.interns.length === 0) {
-      alert("Please select at least one intern.");
-      return;
-    }
-
-    if (formData.hr.length === 0) {
-      alert("Please select at least one HR personnel.");
-      return;
-    }
-
-    setFormLoading(true);
-
-    try {
-      const baseUrl = import.meta.env.VITE_BASE_URL;
-
-      // Using axios instead of fetch
-     
-
-      // Using axios instead of fetch
-      const response = await axios.post(`${baseUrl}/batches`, formData);
-      const result = response.data;
-
-      // Reset form and close modal
-      setFormData({
-        name: "",
-        startDate: "",
-        endDate: "",
-        interns: [],
-        hr: [],
-      });
-      setShowCreateForm(false);
-
-      // Show success message
-      alert("Batch created successfully!");
-
-      // Refresh batch data
-      window.location.reload();
-    } catch (err) {
-      console.error("Error creating batch:", err);
-      alert(
-        `Failed to create batch: ${err.response?.data?.message || err.message}`
-      );
-      alert(
-        `Failed to create batch: ${err.response?.data?.message || err.message}`
-      );
-    } finally {
-      setFormLoading(false);
-    }
-  };
-
   const handleEditClick = async (batch) => {
     try {
       const baseUrl = import.meta.env.VITE_BASE_URL;
-
-      // Using axios instead of fetch
       const res = await axios.get(`${baseUrl}/batches/${batch.id}`);
       const fullBatch = res.data;
 
       setFormData({
-		  name: fullBatch.name || "",
-		  startDate: fullBatch.startDate?.split("T")[0] || "",
-		  endDate: fullBatch.endDate?.split("T")[0] || "",
-		  interns: fullBatch.interns?.map((i) => i._id || i) || [],
-		  hr: fullBatch.hr?.map((h) => h.hrId?._id || h.hrId || h._id || h) || [],
-		});
-
+        name: fullBatch.name || "",
+        startDate: fullBatch.startDate?.split("T")[0] || "",
+        endDate: fullBatch.endDate?.split("T")[0] || "",
+        interns: fullBatch.interns?.map((i) => i._id || i) || [],
+        hr: fullBatch.hr?.map((h) => h.hrId?._id || h.hrId || h._id || h) || [],
+      });
 
       setIsEditing(true);
       setEditBatchId(fullBatch._id);
@@ -455,42 +266,83 @@ function BatchManagement() {
     }
   };
 
-  const handleUpdateBatch = async (e) => {
-    e.preventDefault();
-    setFormLoading(true);
+	// Handle form submission
+	const handleCreateBatch = async (e) => {
+	  e.preventDefault();
 
-    try {
-      const baseUrl = import.meta.env.VITE_BASE_URL;
+	  // Validation
+	  if (!formData.name || !formData.startDate || !formData.endDate) {
+		alert("Please fill in all required fields.");
+		return;
+	  }
 
-      // Using axios instead of fetch
-     
-      // Using axios instead of fetch
-      const res = await axios.put(
-        `${baseUrl}/batches/${editBatchId}`,
-        formData
-      );
-      const data = res.data;
+	  if (new Date(formData.startDate) >= new Date(formData.endDate)) {
+		alert("End date must be after start date.");
+		return;
+	  }
 
-      alert("Batch updated successfully!");
-      setShowCreateForm(false);
-      setIsEditing(false);
-      setEditBatchId(null);
+	  if (formData.interns.length === 0) {
+		alert("Please select at least one intern.");
+		return;
+	  }
 
-      // Refresh the data
-      window.location.reload();
+	  if (formData.hr.length === 0) {
+		alert("Please select at least one HR personnel.");
+		return;
+	  }
 
-      // Refresh the data
-      window.location.reload();
-    } catch (err) {
-      alert(err.response?.data?.message || err.message || "Update failed");
-      alert(err.response?.data?.message || err.message || "Update failed");
-      console.error(err);
-    } finally {
-      setFormLoading(false);
-    }
-  };
+	  setFormLoading(true);
 
-  // Handle form input changes
+	  try {
+		const baseUrl = import.meta.env.VITE_BASE_URL;
+		const response = await axios.post(`${baseUrl}/batches`, formData);
+		const result = response.data;
+
+		// Reset form and close modal
+		setFormData({
+		  name: "",
+		  startDate: "",
+		  endDate: "",
+		  interns: [],
+		  hr: [],
+		});
+		setShowCreateForm(false);
+
+		alert("Batch created successfully!");
+		window.location.reload();
+	  } catch (err) {
+		console.error("Error creating batch:", err);
+		alert(`Failed to create batch: ${err.response?.data?.message || err.message}`);
+	  } finally {
+		setFormLoading(false);
+	  }
+	};
+
+	const handleUpdateBatch = async (e) => {
+	  e.preventDefault();
+	  setFormLoading(true);
+
+	  try {
+		const baseUrl = import.meta.env.VITE_BASE_URL;
+		const res = await axios.put(
+		  `${baseUrl}/batches/${editBatchId}`,
+		  formData
+		);
+		const data = res.data;
+
+		alert("Batch updated successfully!");
+		setShowCreateForm(false);
+		setIsEditing(false);
+		setEditBatchId(null);
+		window.location.reload();
+	  } catch (err) {
+		alert(err.response?.data?.message || err.message || "Update failed");
+		console.error(err);
+	  } finally {
+		setFormLoading(false);
+	  }
+	};
+	
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -499,135 +351,34 @@ function BatchManagement() {
     }));
   };
 
-const handleMultiSelectChange = (field, value) => {
-  const stringValue = String(value);
-  setFormData((prev) => {
-    const current = prev[field].map(String); // ensure all string
-    return {
-      ...prev,
-      [field]: current.includes(stringValue)
-        ? current.filter((item) => item !== stringValue)
-        : [...current, stringValue],
-    };
-  });
-};
-
-
-  // Calculate dashboard stats from fetched data
-  const dashboardStats = [
-    {
-      icon: Users,
-      label: "Total Batches",
-      value: batchData.length.toString(),
-      color: "text-blue-600",
-      bgColor: "bg-blue-50",
-      borderColor: "border-blue-200",
-    },
-    {
-      icon: CalendarDays,
-      label: "Active Sessions",
-      value: batchData
-        .filter((batch) => batch.status === "Active")
-        .length.toString(),
-      color: "text-green-600",
-      bgColor: "bg-green-50",
-      borderColor: "border-green-200",
-    },
-    {
-      icon: UserCheck,
-      label: "Total Interns",
-      value: batchData
-        .reduce((sum, batch) => sum + batch.totalInterns, 0)
-        .toString(),
-      color: "text-purple-600",
-      bgColor: "bg-purple-50",
-      borderColor: "border-purple-200",
-    },
-    {
-      icon: TrendingUp,
-      label: "Total HR",
-      value: batchData
-        .reduce((sum, batch) => sum + batch.totalHR, 0)
-        .toString(),
-      color: "text-orange-600",
-      bgColor: "bg-orange-50",
-      borderColor: "border-orange-200",
-    },
-  ];
-
-  const quickActions = [
-    {
-      title: "Create New Batch",
-      description: "Start a new intern batch session",
-      icon: Plus,
-      color: "from-blue-500 to-blue-700",
-      action: "create",
-      onClick: () => setShowCreateForm(true),
-    },
-    {
-      title: "Schedule Sessions",
-      description: "Plan upcoming batch sessions",
-      icon: CalendarIcon,
-      color: "from-green-500 to-green-700",
-      action: "schedule",
-    },
-    {
-      title: "Export Reports",
-      description: "Download batch performance reports",
-      icon: Download,
-      color: "from-purple-500 to-purple-700",
-      action: " ",
-    },
-    {
-      title: "Batch Settings",
-      description: "Configure batch parameters",
-      icon: Settings,
-      color: "from-orange-500 to-orange-700",
-      action: "settings",
-    },
-  ];
-
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "Active":
-        return "bg-green-100 text-green-800 border-green-200";
-      case "Completed":
-        return "bg-blue-100 text-blue-800 border-blue-200";
-      case "Upcoming":
-        return "bg-yellow-100 text-yellow-800 border-yellow-200";
-      default:
-        return "bg-gray-100 text-gray-800 border-gray-200";
-    }
+  const handleMultiSelectChange = (field, value) => {
+    const stringValue = String(value);
+    setFormData((prev) => {
+      const current = prev[field].map(String);
+      return {
+        ...prev,
+        [field]: current.includes(stringValue)
+          ? current.filter((item) => item !== stringValue)
+          : [...current, stringValue],
+      };
+    });
   };
-
-  const getStatusIcon = (status) => {
-    switch (status) {
-      case "Active":
-        return <CheckCircle className="w-4 h-4" />;
-      case "Completed":
-        return <BookOpen className="w-4 h-4" />;
-      case "Upcoming":
-        return <Clock className="w-4 h-4" />;
-      default:
-        return <AlertCircle className="w-4 h-4" />;
-    }
-  };
-
-  const filteredBatches = batchData.filter((batch) => {
-    const matchesSearch =
-      batch.batchName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      batch.coordinator.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus =
-      filterStatus === "all" ||
-      batch.status.toLowerCase() === filterStatus.toLowerCase();
-    const matchesMonth =
-      selectedMonth === "" || batch.month.includes(selectedMonth);
-
-    return matchesSearch && matchesStatus && matchesMonth;
-  });
 
   // Get unique months for filter dropdown
   const uniqueMonths = [...new Set(batchData.map((batch) => batch.month))];
+
+	const filteredBatches = batchData.filter((batch) => {
+	  const matchesSearch =
+		batch.batchName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+		batch.coordinator.toLowerCase().includes(searchTerm.toLowerCase());
+	  const matchesStatus =
+		filterStatus === "all" ||
+		batch.status.toLowerCase() === filterStatus.toLowerCase(); // Case-insensitive comparison
+	  const matchesMonth =
+		selectedMonth === "" || batch.month.includes(selectedMonth);
+
+	  return matchesSearch && matchesStatus && matchesMonth;
+	});
 
   if (loading) {
     return (
@@ -684,751 +435,90 @@ const handleMultiSelectChange = (field, value) => {
             </p>
           </div>
 
-          {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            {dashboardStats.map((stat, index) => {
-              const IconComponent = stat.icon;
-              return (
-                <div
-                  key={index}
-                  className={`bg-white rounded-xl shadow-md p-6 border ${stat.borderColor} hover:shadow-lg transition-shadow duration-300`}
-                >
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-gray-600 mb-1">
-                        {stat.label}
-                      </p>
-                      <p className={`text-2xl font-bold ${stat.color}`}>
-                        {stat.value}
-                      </p>
-                    </div>
-                    <div className={`p-3 rounded-full ${stat.bgColor}`}>
-                      <IconComponent className={`w-6 h-6 ${stat.color}`} />
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Quick Actions */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            {quickActions.map((action, index) => {
-              const IconComponent = action.icon;
-              return (
-                <button
-                  key={index}
-                  onClick={action.onClick}
-                  className={`bg-gradient-to-br ${action.color} rounded-xl shadow-lg p-6 text-white hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 text-left`}
-                >
-                  <div className="flex items-center justify-between mb-4">
-                    <IconComponent className="w-8 h-8" />
-                    <div className="w-2 h-2 bg-white rounded-full opacity-70"></div>
-                  </div>
-                  <h3 className="text-lg font-semibold mb-2">{action.title}</h3>
-                  <p className="text-sm opacity-90">{action.description}</p>
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Filters and Search */}
-          <div className="bg-white rounded-xl shadow-md p-6 mb-8 border border-gray-200">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                <input
-                  type="text"
-                  placeholder="Search batches..."
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-              </div>
-
-              <div className="relative">
-                <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                <select
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none"
-                  value={filterStatus}
-                  onChange={(e) => setFilterStatus(e.target.value)}
-                >
-                  <option value="all">All Statuses</option>
-                  <option value="active">Active</option>
-                  <option value="completed">Completed</option>
-                  <option value="upcoming">Upcoming</option>
-                </select>
-              </div>
-
-              <div className="relative">
-                <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                <select
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none"
-                  value={selectedMonth}
-                  onChange={(e) => setSelectedMonth(e.target.value)}
-                >
-                  <option value="">All Months</option>
-                  {uniqueMonths.map((month, index) => (
-                    <option key={index} value={month}>
-                      {month}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center gap-2">
-                <Download className="w-4 h-4" />
-                Export Data
-              </button>
-            </div>
-          </div>
+          <BatchStats batchData={batchData} />
+          <QuickActions setShowCreateForm={setShowCreateForm} />
+          
+          <Filters 
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            filterStatus={filterStatus}
+            setFilterStatus={setFilterStatus}
+            selectedMonth={selectedMonth}
+            setSelectedMonth={setSelectedMonth}
+            uniqueMonths={uniqueMonths}
+          />
 
           {/* Batch Cards */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {filteredBatches.map((batch) => (
-              <div
+              <BatchCard
                 key={batch.id}
-                className="bg-white rounded-xl shadow-md p-6 border  border-gray-200 hover:shadow-lg transition-shadow duration-300"
-              >
-                <div className="flex justify-between items-start mb-4">
-                  <div className="flex-1">
-                    <h3 className="text-xl font-semibold text-gray-800 mb-2">
-                      {batch.batchName}
-                    </h3>
-                    <div
-                      className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(
-                        batch.status
-                      )}`}
-                    >
-                      {getStatusIcon(batch.status)}
-                      {batch.status}
-                    </div>
-                  </div>
-                  <div className="flex gap-2">
-                    <button
-                      className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                      onClick={() => handleView(batch.id, "simple")} //  Eye opens simple modal
-                    >
-                      <Eye className="w-4 h-4" />
-                    </button>
-                    <button
-                      className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
-                      onClick={() => handleEditClick(batch)}
-                    >
-                      <Edit3 className="w-4 h-4" />
-                    </button>
-
-                    <button
-                      onClick={() =>
-                        handleDeleteBatch(batch.id, batch.batchName)
-                      }
-                      disabled={deleteLoading === batch.id}
-                      className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
-                    >
-                      {deleteLoading === batch.id ? (
-                        <Loader className="w-4 h-4 animate-spin" />
-                      ) : (
-                        <Trash2 className="w-4 h-4" />
-                      )}
-                    </button>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <Calendar className="w-4 h-4" />
-                    {batch.startDate} to {batch.endDate}
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <Users className="w-4 h-4" />
-                    {batch.totalInterns} Total Interns
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <UserCheck className="w-4 h-4" />
-                    {batch.totalHR} HR Personnel
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <CheckCircle className="w-4 h-4" />
-                    {batch.completedInterns} Completed
-                  </div>
-                </div>
-
-                <div className="mb-4">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-sm font-medium text-gray-600">
-                      Progress
-                    </span>
-                    <span className="text-sm font-medium text-gray-800">
-                      {batch.progress}%
-                    </span>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div
-                      className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                      style={{ width: `${batch.progress}%` }}
-                    ></div>
-                  </div>
-                </div>
-
-                <div className="mb-4">
-                  <p className="text-sm text-gray-600 mb-2">
-                    <span className="font-medium">Month:</span> {batch.month}
-                  </p>
-                  {batch.technologies.length > 0 && (
-                    <div className="flex flex-wrap gap-2">
-                      {batch.technologies.map((tech, index) => (
-                        <span
-                          key={index}
-                          className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-md"
-                        >
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => handleView(batch.id, "deep")} // Button opens deep modal
-                    className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors duration-200 text-sm font-medium"
-                  >
-                    View Details
-                  </button>
-                </div>
-              </div>
+                batch={batch}
+                handleView={handleView}
+                handleEditClick={handleEditClick}
+                handleDeleteBatch={handleDeleteBatch}
+                deleteLoading={deleteLoading}
+              />
             ))}
           </div>
-          {isModalOpen && selectedBatch && modalType === "simple" && (
-   <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-				<div className="bg-white rounded-2xl p-6 max-w-xl w-full shadow-2xl border border-blue-200 relative transition-all">
-				  <button
-					onClick={() => setIsModalOpen(false)}
-					className="absolute top-3 right-3 text-blue-400 hover:text-blue-600 text-lg font-bold transition"
-				  >
-					✕
-				  </button>
 
-				  <h2 className="text-2xl font-bold text-blue-700 mb-6 border-b pb-2 border-blue-100">
-					{selectedBatch?.batchName ?? "Batch Details"}
-				  </h2>
-
-				  <div className="text-blue-900 text-sm space-y-4">
-					<p>
-					  <strong className="text-blue-600">Name:</strong>{" "}
-					  {selectedBatch?.name ?? "N/A"}
-					</p>
-
-					<p>
-					  <strong className="text-blue-600">Status:</strong>{" "}
-					  {getStatusFromDates(selectedBatch?.startDate, selectedBatch?.endDate)}
-					</p>
-
-					<p>
-					  <strong className="text-blue-600">Start Date:</strong>{" "}
-					  {formatDatee(selectedBatch?.startDate)}
-					</p>
-
-					<p>
-					  <strong className="text-blue-600">End Date:</strong>{" "}
-					  {formatDatee(selectedBatch?.endDate)}
-					</p>
-
-					<div>
-					  <strong className="text-blue-600">Interns:</strong>
-					  <div className="flex flex-wrap gap-2 mt-2">
-						{Array.isArray(selectedBatch?.interns) && selectedBatch.interns.length > 0 ? (
-						  selectedBatch.interns.map((intern) => (
-							<span
-							  key={intern._id}
-							  className="bg-blue-50 text-blue-700 border border-blue-200 px-3 py-1 rounded-full text-sm font-medium"
-							>
-							  {intern.name}
-							</span>
-						  ))
-						) : (
-						  <span className="text-gray-500">N/A</span>
-						)}
-					  </div>
-					</div>
-
-					<div>
-					  <strong className="text-blue-600">HR Personnel:</strong>
-					  <div className="flex flex-wrap gap-2 mt-2">
-						{Array.isArray(selectedBatch?.hr) && selectedBatch.hr.length > 0 ? (
-						  selectedBatch.hr.map((entry) => (
-							<span
-							  key={entry._id}
-							  className="bg-blue-100 text-blue-800 border border-blue-300 px-3 py-1 rounded-full text-sm font-medium"
-							>
-							  {entry.hrId?.name || "Unknown"}
-							</span>
-						  ))
-						) : (
-						  <span className="text-gray-500">N/A</span>
-						)}
-					  </div>
-					</div>
-				  </div>
-				</div>
-			  </div>
-          )}
-
-          {isModalOpen && selectedBatch && modalType === "deep" && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm transition-opacity duration-300 animate-fadeIn">
-              <div className="bg-gradient-to-br from-white via-indigo-50 to-purple-100 rounded-2xl p-6 max-w-4xl w-full shadow-2xl border border-indigo-200 relative overflow-y-auto max-h-[90vh] transform scale-95 animate-zoomIn transition-transform duration-300">
-                {/* Close Button */}
-                <button
-                  onClick={() => setIsModalOpen(false)}
-                  className="absolute top-3 right-3 text-gray-400 hover:text-rose-500 text-xl transition-colors"
-                >
-                  ✕
-                </button>
-
-                {/* Title */}
-                <h2 className="text-3xl font-bold text-indigo-800 mb-6 border-b border-indigo-200 pb-3">
-                  {selectedBatch?.name || "Batch Details"}
-                </h2>
-
-                <div className="text-gray-900 space-y-6 text-sm">
-                  {/* Basic Info */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-indigo-50 p-4 rounded-lg shadow-inner">
-                    <p>
-                      <span className="font-semibold text-indigo-700">
-                        Status:
-                      </span>{" "}
-                      <span className="text-indigo-900">
-                        {getStatusFromDates(
-                          selectedBatch.startDate,
-                          selectedBatch.EndDate
-                        )}
-                      </span>
-                    </p>
-                    <p>
-                      <span className="font-semibold text-indigo-700">
-                        Start Date:
-                      </span>{" "}
-                      {formatDatee(selectedBatch.startDate)}
-                    </p>
-                    <p>
-                      <span className="font-semibold text-indigo-700">
-                        End Date:
-                      </span>{" "}
-                      {formatDatee(selectedBatch.endDate)}
-                    </p>
-                  </div>
-
-                  {/* Interns */}
-                  <div>
-                    <h3 className="text-xl font-semibold text-purple-700 mb-1">
-                      👨‍🎓 Interns
-                    </h3>
-                    <ul className="list-disc ml-6 text-gray-800 space-y-1">
-                      {Array.isArray(selectedBatch.interns) &&
-                      selectedBatch.interns.length > 0 ? (
-                        selectedBatch.interns.map((intern, idx) => (
-                          <li key={intern._id || idx}>
-                            <span className="font-medium">{intern.name}</span>
-                            <span className="text-gray-500">
-                              {" "}
-                              ({intern.email})
-                            </span>
-                          </li>
-                        ))
-                      ) : (
-                        <li className="text-gray-500">No interns assigned.</li>
-                      )}
-                    </ul>
-                  </div>
-
-                  {/* HRs */}
-                  <div>
-                    <h3 className="text-xl font-semibold text-pink-700 mb-1">
-                      🧑‍💼 HR Personnel
-                    </h3>
-                    <ul className="list-disc ml-6 text-gray-800 space-y-1">
-                      {Array.isArray(selectedBatch.hr) &&
-                      selectedBatch.hr.length > 0 ? (
-                        selectedBatch.hr.map((hrEntry, idx) => (
-                          <li key={hrEntry._id || idx}>
-                            <span className="font-medium">
-                              {hrEntry?.hrId?.name || "Unknown"}
-                            </span>
-                            <span className="text-gray-500">
-                              {" "}
-                              ({hrEntry?.hrId?.email})
-                            </span>
-                          </li>
-                        ))
-                      ) : (
-                        <li className="text-gray-500">No HR assigned.</li>
-                      )}
-                    </ul>
-                  </div>
-
-                  {/* Tasks Section */}
-					<div>
-					  <h3 className="text-xl font-semibold text-emerald-700 mb-2">
-						📋 Tasks ({selectedBatch.tasks?.length || 0})
-					  </h3>
-					  
-					  {loading ? (
-						<div className="flex justify-center py-4">
-						  <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
-						</div>
-					  ) : (
-						<div className="space-y-4">
-						  {selectedBatch.tasks?.length > 0 ? (
-							selectedBatch.tasks.map((task) => {
-							  const taskDetails = task.details || {};
-							  const assignedIntern = selectedBatch.interns?.find(
-								intern => intern._id === task.assignedTo
-							  ) || { name: 'Unassigned', email: '' };
-
-							  return (
-								<div key={task._id} className="border border-emerald-200 rounded-lg p-4 bg-white">
-								  <div className="flex justify-between items-start mb-2">
-									<h4 className="text-lg font-semibold text-gray-800">
-									  {taskDetails.title || `Task ${task._id}`}
-									</h4>
-									<span className={`px-2 py-1 text-xs rounded-full ${
-									  taskDetails.status === 'completed' ? 'bg-green-100 text-green-800' :
-									  taskDetails.status === 'in-progress' ? 'bg-yellow-100 text-yellow-800' :
-									  'bg-gray-100 text-gray-800'
-									}`}>
-									  {taskDetails.status || 'not started'}
-									</span>
-								  </div>
-
-								  {taskDetails.description && (
-									<p className="text-sm text-gray-600 mb-3">
-									  {taskDetails.description}
-									</p>
-								  )}
-
-								  <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
-									<div>
-									  <p className="text-xs text-gray-500">Assigned to</p>
-									  <p className="font-medium">{assignedIntern.name}</p>
-									</div>
-									
-									{taskDetails.startDate && (
-									  <div>
-										<p className="text-xs text-gray-500">Start Date</p>
-										<p className="font-medium">
-										  {new Date(taskDetails.startDate).toLocaleDateString()}
-										</p>
-									  </div>
-									)}
-
-									{taskDetails.endDate && (
-									  <div>
-										<p className="text-xs text-gray-500">Due Date</p>
-										<p className="font-medium">
-										  {new Date(taskDetails.endDate).toLocaleDateString()}
-										</p>
-									  </div>
-									)}
-								  </div>
-								</div>
-							  );
-							})
-						  ) : (
-							<p className="text-gray-500 py-4 text-center">No tasks assigned to this batch</p>
-						  )}
-						</div>
-					  )}
-					</div>
-
-                  {/* Progress */}
-                  <div>
-                    <h3 className="text-xl font-semibold text-indigo-600 mb-2">
-                      📊 Progress
-                    </h3>
-                    {selectedBatch.completedTasks !== undefined &&
-                    selectedBatch.allTasks > 0 ? (
-                      <div>
-                        <p className="mb-1 text-sm text-gray-700">
-                          {selectedBatch.completedTasks} /{" "}
-                          {selectedBatch.allTasks} Tasks Completed
-                        </p>
-                        <div className="w-full bg-indigo-100 rounded-full h-3">
-                          <div
-                            className="bg-gradient-to-r from-emerald-400 via-blue-500 to-purple-500 h-3 rounded-full transition-all duration-300"
-                            style={{
-                              width: `${Math.round(
-                                (selectedBatch.completedTasks /
-                                  selectedBatch.allTasks) *
-                                  100
-                              )}%`,
-                            }}
-                          ></div>
-                        </div>
-                      </div>
-                    ) : (
-                      <p className="text-gray-500">
-                        No progress data available.
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </div>
+          {filteredBatches.length === 0 && !loading && (
+            <div className="text-center py-12">
+              <AlertCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-700 mb-2">
+                No batches found
+              </h3>
+              <p className="text-gray-500">
+                {batchData.length === 0
+                  ? "No batch data available. Create your first batch to get started."
+                  : "Try adjusting your search or filter criteria"}
+              </p>
             </div>
           )}
-				  </div>
-			
-
-        {filteredBatches.length === 0 && !loading && (
-          <div className="text-center py-12">
-            <AlertCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-700 mb-2">
-              No batches found
-            </h3>
-            <p className="text-gray-500">
-              {batchData.length === 0
-                ? "No batch data available. Create your first batch to get started."
-                : "Try adjusting your search or filter criteria"}
-            </p>
-          </div>
-        )}
+        </div>
       </div>
 
-      {/* Create Batch Modal */}
-      {showCreateForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-screen overflow-y-auto">
-            <div className="p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-800">
-                  {isEditing ? "Edit Batch" : "Create New Batch"}
-                </h2>
-                <button
-                  onClick={() => {
-                    setShowCreateForm(false);
-                    setIsEditing(false);
-                    setEditBatchId(null);
-                    // Reset form and close modal
-                    setFormData({
-                      name: "",
-                      startDate: "",
-                      endDate: "",
-                      interns: [],
-                      hr: [],
-                    });
-                  }}
-                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-              {usersLoading ? (
-                <div className="text-center py-8">
-                  <Loader className="w-8 h-8 text-blue-600 mx-auto mb-4 animate-spin" />
-                  <p className="text-gray-600">Loading users...</p>
-                </div>
-              ) : (
-                <form
-                  onSubmit={isEditing ? handleUpdateBatch : handleCreateBatch}
-                  className="space-y-6"
-                >
-                  {/* Batch Name */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Batch Name *
-                    </label>
-                    <input
-                      type="text"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      placeholder="e.g., Web Dev Internship Batch 2025"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      required
-                    />
-                  </div>
-
-                  {/* Date Range */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Start Date *
-                      </label>
-                      <input
-                        type="date"
-                        name="startDate"
-                        value={formData.startDate}
-                        onChange={handleInputChange}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        End Date *
-                      </label>
-                      <input
-                        type="date"
-                        name="endDate"
-                        value={formData.endDate}
-                        onChange={handleInputChange}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  {/* Interns Selection */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Select Interns *
-                    </label>
-                    {availableInterns.length === 0 ? (
-                      <div className="border border-gray-300 rounded-lg p-4 text-center text-gray-500">
-                        No interns available. Make sure users with "intern" role
-                        exist in the system.
-                      </div>
-                    ) : (
-                      <div className="border border-gray-300 rounded-lg p-4 max-h-40 overflow-y-auto">
-                        {availableInterns.map((intern) => (
-                          <div
-                            key={intern.id}
-                            className="flex items-center mb-2"
-                          >
-                            <input
-                              type="checkbox"
-                              id={`intern-${intern.id}`}
-                              checked={formData.interns.includes(intern.id)}
-                              onChange={() =>
-                                handleMultiSelectChange("interns", intern.id)
-                              }
-                              className="mr-3 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                            />
-                            <label
-                              htmlFor={`intern-${intern.id}`}
-                              className="text-sm text-gray-700 flex-1"
-                            >
-                              <span className="font-medium">{intern.name}</span>
-                              <span className="text-gray-500 ml-2">
-                                ({intern.email})
-                              </span>
-                              <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded ml-2">
-                                {intern.role}
-                              </span>
-                            </label>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                    <p className="text-xs text-gray-500 mt-1">
-                      Selected: {formData.interns.length} intern(s)
-                    </p>
-                  </div>
-
-                  {/* HR Selection */}
-					<div>
-					  <label className="block text-sm font-medium text-gray-700 mb-2">
-						Select HR Personnel *
-					  </label>
-					  {availableHR.length === 0 ? (
-						<div className="border border-gray-300 rounded-lg p-4 text-center text-gray-500">
-						  No HR personnel available. Make sure users with "hr" role exist in the system.
-						</div>
-					  ) : (
-						<div className="border border-gray-300 rounded-lg p-4 max-h-40 overflow-y-auto">
-						  {availableHR.map((hr) => {
-					  const isChecked = formData.hr.includes(hr.id);
-					  console.log("HR ID:", hr.id);
-					  console.log("Is Checked?", isChecked);
-					  console.log("formData.hr:", formData.hr);
-
-					  return (
-						<div key={hr.id} className="flex items-center mb-2">
-						  <input
-							type="checkbox"
-							id={`hr-${hr.id}`}
-							checked={isChecked}
-							onChange={() => handleMultiSelectChange("hr", hr.id)}
-							className="mr-3 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-						  />
-						  <label
-							htmlFor={`hr-${hr.id}`}
-							className="text-sm text-gray-700 flex-1"
-						  >
-							<span className="font-medium">{hr.name}</span>
-							<span className="text-gray-500 ml-2">({hr.email})</span>
-							<span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded ml-2">
-							  {hr.role}
-							</span>
-						  </label>
-						</div>
-					  );
-					})}
-
-						</div>
-					  )}
-					  <p className="text-xs text-gray-500 mt-1">
-						Selected: {formData.hr.length} HR personnel
-					  </p>
-					</div>
-
-
-
-
-
-
-                  {/* Form Actions */}
-                  <div className="flex gap-4 pt-4">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setShowCreateForm(false);
-                        setIsEditing(false);
-                        setEditBatchId(null);
-                        // Reset form and close modal
-                        setFormData({
-                          name: "",
-                          startDate: "",
-                          endDate: "",
-                          interns: [],
-                          hr: [],
-                        });
-                      }}
-                      className="flex-1 px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-                    >
-                      Cancel
-                    </button>
-                    <button
-					  type="submit"
-					  disabled={
-						formLoading ||
-						availableInterns.length === 0 ||
-						availableHR.length === 0
-					  }
-					  className="flex-1 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-					>
-					  {formLoading ? (
-						<>
-						  <Loader className="w-4 h-4 animate-spin" />
-						  {isEditing ? "Updating..." : "Creating..."}
-						</>
-					  ) : (
-						<>
-						  <Save className="w-4 h-4" />
-						  {isEditing ? "Update Batch" : "Create Batch"}
-						</>
-					  )}
-					</button>
-
-                  </div>
-                </form>
-              )}
-            </div>
-          </div>
-        </div>
+      {isModalOpen && selectedBatch && (
+        <BatchModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          batch={selectedBatch}
+          type={modalType}
+          loading={loading}
+        />
       )}
+
+      {showCreateForm && (
+		  <BatchForm
+			isOpen={showCreateForm}
+			onClose={() => {
+			  setShowCreateForm(false);
+			  setIsEditing(false);
+			  setEditBatchId(null);
+			  setFormData({
+				name: "",
+				startDate: "",
+				endDate: "",
+				interns: [],
+				hr: [],
+			  });
+			}}
+			formData={formData}
+			setFormData={setFormData}
+			handleInputChange={handleInputChange}
+			handleMultiSelectChange={handleMultiSelectChange}
+			availableInterns={availableInterns}
+			availableHR={availableHR}
+			usersLoading={usersLoading}
+			isEditing={isEditing}
+			editBatchId={editBatchId}
+			formLoading={formLoading} // Add this line
+			handleCreateBatch={handleCreateBatch} // Add these two lines
+			handleUpdateBatch={handleUpdateBatch}
+		  />
+		)}
     </>
   );
 }
 
 export default BatchManagement;
-

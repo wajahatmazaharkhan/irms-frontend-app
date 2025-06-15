@@ -5,8 +5,10 @@ import Reports from "./Reports";
 import Projects from "./Projects";
 import Categories from "./Categories";
 import Stores from "./Stores";
+import NewPasswordForm from "./NewPasswordForm";
 import Signin from "./Signin-page";
 import SignUp from "./Signup-page";
+import OTPVerification from "./OTPVerification";
 import Logout from "./Logout";
 import SettingsPage from "./SettingsPage";
 import Profile from "./Profile";
@@ -37,4 +39,4 @@ import HarassmentEmailForm from "@/Components/HarassmentEmailForm";
 
 
 
-export { Home, Notifications, HarassmentEmailForm, Settings, AdminNotify, IntroPage, ResetPassword, Reports, UserAttendance, NotAuthorized, Projects, FAQ, SettingsPage, Categories, Dashboard, Stores, Signin, SignUp, Logout, Profile, Aboutus, CustomNavbar, AdminHomePage, AdminProject, AdminTask, AdminReport, PrivacyPolicy, Help, AllUsers, AdminHelpPage, InternAttendance, AdminHelp, InternTasksSubmissions, LeaveApplication, Internleaveapplication }
+export { Home, NewPasswordForm, Notifications, OTPVerification, HarassmentEmailForm, Settings, AdminNotify, IntroPage, ResetPassword, Reports, UserAttendance, NotAuthorized, Projects, FAQ, SettingsPage, Categories, Dashboard, Stores, Signin, SignUp, Logout, Profile, Aboutus, CustomNavbar, AdminHomePage, AdminProject, AdminTask, AdminReport, PrivacyPolicy, Help, AllUsers, AdminHelpPage, InternAttendance, AdminHelp, InternTasksSubmissions, LeaveApplication, Internleaveapplication }

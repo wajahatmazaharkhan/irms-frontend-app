@@ -1,93 +1,140 @@
-import React from "react";
-import { Lock, ArrowLeft, Clock, Wrench, AlertCircle } from "lucide-react";
+import React, { useState } from "react";
+import { Mail, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
+import iispprLogo from "../assets/Images/iisprlogo.png";
 import useTitle from "@/Components/useTitle";
+import axios from "axios";
 
 const PasswordResetPage = () => {
   useTitle("Reset Password");
   const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleGoBack = () => {
+  const handleBackToLogin = () => {
     navigate("/login");
+  };
+
+  const handleSendOTP = async (e) => {
+    e.preventDefault();
+    if (!email) {
+      toast.error("Please enter your email address");
+      return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      toast.error("Please enter a valid email address");
+      return;
+    }
+
+    setIsLoading(true);
+    setError("");
+
+    try {
+      // Simulate API call to send OTP
+      await axios.post(`${import.meta.env.VITE_BASE_URL}/user/sendresetotp`, { email });
+
+      // Store email in session storage for OTP verification
+      sessionStorage.setItem('resetEmail', email);
+
+      // Show success message
+      toast.success("OTP sent to your email!");
+
+      // Redirect to OTP verification
+      navigate('/verify-otp');
+    } catch (error) {
+      console.error("Error sending OTP:", error);
+      setError("Failed to send OTP. Please try again later.");
+      toast.error("Failed to send OTP. Please try again later.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-blue-100 flex items-center justify-center p-4">
-      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg">
-        {/* Header */}
+      <div className="max-w-md w-full space-y-6 bg-white p-8 rounded-xl shadow-lg">
+        {/* Logo and Header */}
         <div className="text-center">
-          <div className="mx-auto w-20 h-20 mb-4 bg-orange-100 rounded-full flex items-center justify-center">
-            <Wrench className="w-10 h-10 text-orange-600" />
-          </div>
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">
+          <img src={iispprLogo} alt="IISPPR Logo" className="mx-auto h-16 w-auto mb-4" />
+          <h2 className="text-2xl font-bold text-gray-900">
             Reset Password
           </h2>
-          <p className="text-gray-600">IISPPR InternHub Account</p>
+          <p className="text-gray-600">
+            Enter your email to receive a verification code
+          </p>
         </div>
 
-        {/* Under Development Notice */}
-        <div className="bg-orange-50 border border-orange-200 rounded-lg p-6 text-center">
-          <div className="flex justify-center mb-4">
-            <div className="bg-orange-200 rounded-full p-3">
-              <Clock className="w-8 h-8 text-orange-600" />
+        <form onSubmit={handleSendOTP} className="space-y-6">
+          <div className="space-y-4">
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                Email address
+              </label>
+              <div className="mt-1 relative rounded-md shadow-sm">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Mail className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="appearance-none block w-full pl-10 px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  placeholder="you@example.com"
+                />
+              </div>
             </div>
+
+            {error && (
+              <p className="text-red-500 text-sm">{error}</p>
+            )}
           </div>
 
-          <h3 className="text-lg font-semibold text-orange-800 mb-2">
-            Feature Under Development
-          </h3>
-
-          <p className="text-orange-700 mb-4">
-            The password reset functionality is currently being developed and
-            will be available soon.
-          </p>
-
-          <div className="bg-white rounded-lg p-4 mb-4">
-            <div className="flex items-center justify-center gap-2 text-orange-600 mb-2">
-              <AlertCircle className="w-5 h-5" />
-              <span className="font-medium">Coming Soon</span>
-            </div>
-            <ul className="text-sm text-gray-600 space-y-1">
-              <li>• Secure password reset via email</li>
-              <li>• Enhanced security validation</li>
-              <li>• Multi-factor authentication support</li>
-              <li>• Improved user experience</li>
-            </ul>
+          <div>
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isLoading ? (
+                <span className="flex items-center">
+                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Sending OTP...
+                </span>
+              ) : (
+                'Send Verification Code'
+              )}
+            </button>
           </div>
+        </form>
 
-          <p className="text-sm text-orange-600 font-medium">
-            Expected Release: Coming Soon
-          </p>
-        </div>
-
-        {/* Alternative Options */}
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <h4 className="font-medium text-blue-800 mb-2">Need Help Now?</h4>
-          <p className="text-sm text-blue-700 mb-3">
-            If you've forgotten your password, please contact the system
-            administrator for assistance.
-          </p>
-          <div className="text-sm text-blue-600">
-            <p>📧 Email: support@iisppr.edu</p>
-            <p>📞 Phone: Contact your institution</p>
-          </div>
-        </div>
-
-        {/* Back to Login Button */}
-        <button
-          onClick={handleGoBack}
-          className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition duration-200 flex items-center justify-center gap-2 font-medium"
-        >
-          <ArrowLeft className="w-5 h-5" />
-          Back to Login
-        </button>
-
-        {/* Development Status */}
         <div className="text-center">
-          <div className="inline-flex items-center gap-2 text-sm text-gray-500">
-            <div className="w-2 h-2 bg-orange-400 rounded-full animate-pulse"></div>
-            <span>Development in Progress</span>
-          </div>
+          <button
+            onClick={handleBackToLogin}
+            className="text-sm text-blue-600 hover:text-blue-500 font-medium flex items-center justify-center w-full"
+          >
+            <ArrowLeft className="w-4 h-4 mr-1" />
+            Back to Login
+          </button>
+        </div>
+
+        {/* Help Section */}
+        <div className="mt-6 border-t border-gray-200 pt-4">
+          <p className="text-xs text-gray-500 text-center">
+            Need help? Contact support at{' '}
+            <a href="mailto:support@iisppr.edu" className="text-blue-600 hover:text-blue-500">
+              support@iisppr.edu
+            </a>
+          </p>
         </div>
       </div>
     </div>

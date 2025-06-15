@@ -33,6 +33,8 @@ import {
   Internleaveapplication,
   IntroPage,
   AdminNotify,
+  OTPVerification,
+  NewPasswordForm,
   HarassmentEmailForm,
   BatchDashboard,
 } from "./Pages/pageIndex";
@@ -83,7 +85,9 @@ const App = () => {
       <Routes>
         <Route path="/login" element={<Signin />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/verify-reset-token" element={<NewPasswordForm />} />
         <Route path="/reset-account-password" element={<ResetPassword />} />
+        <Route path="/verify-otp" element={<OTPVerification />} />
         <Route path="/aboutus" element={<Aboutus />} />
         <Route path="/privacypolicy" element={<PrivacyPolicy />} />
         <Route path="/frequently-asked-questions" element={<FAQ />} />

@@ -24,7 +24,7 @@ import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
 
 const LeaveApplication = () => {
-  useTitle('Leave Application')
+  useTitle("Leave Application");
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [leaveHistory, setLeaveHistory] = useState([]);
@@ -50,12 +50,12 @@ const LeaveApplication = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        `${import.meta.env.VITE_BASE_URL}/leave/history`,
+        `${import.meta.env.VITE_BASE_URL}/leave/mine`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      setLeaveHistory(response.data);
+      setLeaveHistory(response.data.leaves || []);
     } catch (error) {
       console.error("Error fetching leave history:", error);
     }
@@ -285,40 +285,47 @@ const LeaveApplication = () => {
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="p-6">
-                    <div className="space-y-6">
-                      {leaveHistory.map((leave) => (
-                        <div
-                          key={leave.id}
-                          className="p-4 border rounded-lg space-y-3"
-                        >
-                          <div className="flex justify-between items-start">
-                            <div className="space-y-1">
-                              <h3 className="font-medium">{leave.type}</h3>
-                              <p className="text-sm text-gray-500">
-                                {new Date(leave.startDate).toLocaleDateString()}{" "}
-                                - {new Date(leave.endDate).toLocaleDateString()}
-                              </p>
+                    {leaveHistory.length === 0 ? (
+                      <p className="text-gray-500">No leave records found.</p>
+                    ) : (
+                      <div className="space-y-6">
+                        {leaveHistory.map((leave) => (
+                          <div
+                            key={leave._id}
+                            className="p-4 border rounded-lg space-y-3"
+                          >
+                            <div className="flex justify-between items-start">
+                              <div className="space-y-1">
+                                <h3 className="font-medium">
+                                  {leave.leaveType}
+                                </h3>
+                                <p className="text-sm text-gray-500">
+                                  {new Date(
+                                    leave.startDate
+                                  ).toLocaleDateString()}{" "}
+                                  -{" "}
+                                  {new Date(
+                                    leave.endDate
+                                  ).toLocaleDateString()}
+                                </p>
+                              </div>
+                              {getStatusBadge(leave.status)}
                             </div>
-                            {getStatusBadge(leave.status)}
-                          </div>
 
-                          {leave.status === "Approved" && leave.approvedBy && (
-                            <div className="pt-2 border-t">
-                              <p className="text-sm text-gray-600">
-                                Approved by{" "}
-                                <span className="font-medium">
-                                  {leave.approvedBy}
-                                </span>
-                                <br />
-                                <span className="text-gray-500">
-                                  {leave.approverRole}
-                                </span>
-                              </p>
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                    </div>
+                            {leave.updatedBy && (
+                              <div className="pt-2 border-t">
+                                <p className="text-sm text-gray-600">
+                                  Updated by{" "}
+                                  <span className="font-medium">
+                                    {leave.updatedBy}
+                                  </span>
+                                </p>
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
 
@@ -332,7 +339,7 @@ const LeaveApplication = () => {
                         </h3>
                         <p className="mt-1 text-sm text-blue-700">
                           Leave applications are typically processed within
-                          24-48 hours.
+                          24–48 hours.
                         </p>
                       </div>
                     </div>

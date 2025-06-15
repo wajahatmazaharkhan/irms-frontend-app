@@ -920,30 +920,35 @@ function BatchManagement() {
                         <span className="text-gray-500">N/A</span>
                       )}
                     </div>
-                    
                   </div>
                   <div>
-          <strong>Progress:</strong>
-          {selectedBatch.completedTasks !== undefined && selectedBatch.allTasks > 0 ? (
-            <>
-              <p className="text-sm mt-1">
-                {selectedBatch.completedTasks} / {selectedBatch.allTasks} Tasks Completed
-              </p>
-              <div className="w-full bg-gray-200 rounded-full h-2 mt-1">
-                <div
-                  className="bg-blue-500 h-2 rounded-full transition-all duration-300"
-                  style={{
-                    width: `${Math.round(
-                      (selectedBatch.completedTasks / selectedBatch.allTasks) * 100
-                    )}%`,
-                  }}
-                ></div>
-              </div>
-            </>
-          ) : (
-            <p className="text-gray-500">No progress data available.</p>
-          )}
-        </div>
+                    <strong>Progress:</strong>
+                    {selectedBatch.completedTasks !== undefined &&
+                    selectedBatch.allTasks > 0 ? (
+                      <>
+                        <p className="text-sm mt-1">
+                          {selectedBatch.completedTasks} /{" "}
+                          {selectedBatch.allTasks} Tasks Completed
+                        </p>
+                        <div className="w-full bg-gray-200 rounded-full h-2 mt-1">
+                          <div
+                            className="bg-blue-500 h-2 rounded-full transition-all duration-300"
+                            style={{
+                              width: `${Math.round(
+                                (selectedBatch.completedTasks /
+                                  selectedBatch.allTasks) *
+                                  100
+                              )}%`,
+                            }}
+                          ></div>
+                        </div>
+                      </>
+                    ) : (
+                      <p className="text-gray-500">
+                        No progress data available.
+                      </p>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>

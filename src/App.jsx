@@ -1,6 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { HrProvider } from "./context/HrContext.jsx";
 import AskHR from "./Pages/AskHR";
+
+
 import {
   Aboutus,
   FAQ,
@@ -34,6 +36,7 @@ import {
   OTPVerification,
   NewPasswordForm,
   HarassmentEmailForm,
+  BatchDashboard,
 } from "./Pages/pageIndex";
 import {
   AdminTask,
@@ -153,6 +156,14 @@ const App = () => {
             <AdminRoute>
               <InternAttendance />
             </AdminRoute>
+          }
+        />
+		<Route
+          path="/batch-dashboard"
+          element={
+            <PrivateRoute>
+              <BatchDashboard />
+            </PrivateRoute>
           }
         />
         <Route
@@ -333,6 +344,8 @@ const App = () => {
             </PrivateRoute>
           }
         />
+        
+
 
         {/* hrhead and hr interns routes  */}
 

@@ -53,14 +53,14 @@ const SideNav = () => {
   // Menu items
   const menuItems = [
     { id: 0, name: "Home", icon: "bi-house" },
-    { id: 1, name: "Projects", icon: "bi-people" },
-    { id: 2, name: "Report", icon: "bi-bar-chart" },
-    { id: 3, name: "Setting", icon: "bi-gear" },
-    { id: 4, name: "Help", icon: "bi-question-circle" },
-    // { id: 5, name: "AskHR", icon: "bi-question-circle" },
+    { id: 1, name: "Batch", icon: "bi-grid" },
+    { id: 2, name: "Projects", icon: "bi-people" },
+    { id: 3, name: "Report", icon: "bi-bar-chart" },
+    { id: 4, name: "Setting", icon: "bi-gear" },
+    { id: 5, name: "Help", icon: "bi-question-circle" }
   ];
 
-  const redirectURLs = ["", "projects", "reports", "Setting", "help", "AskHR"];
+  const redirectURLs = ["", "batch-dashboard", "projects", "reports", "Setting", "help", "AskHR"];
 
   const footerItems = [{ name: "Log Out", icon: "bi-box-arrow-left" }];
 

@@ -36,7 +36,17 @@ import Internleaveapplication from "@/Admin/InternLeaveApplications";
 import IntroPage from "./IntroPage";
 import AdminNotify from "@/Admin/AdminNotify";
 import HarassmentEmailForm from "@/Components/HarassmentEmailForm";
+import BatchDashboard from "@/Components/BatchDashboard";
 
 
 
-export { Home, NewPasswordForm, Notifications, OTPVerification, HarassmentEmailForm, Settings, AdminNotify, IntroPage, ResetPassword, Reports, UserAttendance, NotAuthorized, Projects, FAQ, SettingsPage, Categories, Dashboard, Stores, Signin, SignUp, Logout, Profile, Aboutus, CustomNavbar, AdminHomePage, AdminProject, AdminTask, AdminReport, PrivacyPolicy, Help, AllUsers, AdminHelpPage, InternAttendance, AdminHelp, InternTasksSubmissions, LeaveApplication, Internleaveapplication }
+export { Home, NewPasswordForm, Notifications,BatchDashboard, OTPVerification, 
+HarassmentEmailForm, Settings, AdminNotify, IntroPage, 
+ResetPassword, Reports, UserAttendance, NotAuthorized, 
+Projects, FAQ, SettingsPage, Categories, Dashboard, 
+Stores, Signin, SignUp, Logout, 
+Profile, Aboutus, CustomNavbar, AdminHomePage,
+ AdminProject, AdminTask, AdminReport, PrivacyPolicy, 
+ Help, AllUsers, AdminHelpPage, InternAttendance,
+ AdminHelp, InternTasksSubmissions, LeaveApplication, Internleaveapplication }
+

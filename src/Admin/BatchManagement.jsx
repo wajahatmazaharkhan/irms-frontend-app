@@ -272,23 +272,58 @@ function BatchManagement() {
   };
 
 
-  const handleView = async (batchId, type = "simple") => {
-    try {
-    
-      const response = await axios.get(
-        `${import.meta.env.VITE_BASE_URL}/batches/${batchId}`
-      );
-      
-      const data = response.data;
-      console.log("Full batch object:", data);
-      setSelectedBatch(data);
-      setModalType(type);
-      setIsModalOpen(true);
-    } catch (error) {
-      console.error("Failed to fetch batch details:", error.message);
-      alert("Failed to load batch details.");
-    }
-  };
+	const handleView = async (batchId, type = "simple") => {
+	  try {
+		setIsModalOpen(true);
+		setLoading(true);
+		
+		// Fetch batch details
+		const response = await axios.get(
+		  `${import.meta.env.VITE_BASE_URL}/batches/${batchId}`
+		);
+		const batchData = response.data;
+		
+		// If deep view, enhance with task details
+		if (type === "deep") {
+		  // Only proceed if tasks exist
+		  if (batchData.tasks?.length > 0) {
+			const tasksWithDetails = await Promise.all(
+			  batchData.tasks.map(async (task) => {
+				try {
+				  // Skip if no taskId exists
+				  if (!task.taskId) return task;
+				  
+				  const taskResponse = await axios.get(
+					`${import.meta.env.VITE_BASE_URL}/task/get-task/${task.taskId}`,
+					{ timeout: 3000 } // Add timeout to prevent hanging
+				  );
+				  return {
+					...task,
+					details: taskResponse.data?.taskDetails || null
+				  };
+				} catch (error) {
+				  console.error(`Error fetching task ${task.taskId}:`, error);
+				  return task; // Return original task if details fetch fails
+				}
+			  })
+			);
+			batchData.tasks = tasksWithDetails;
+		  }
+		}
+		
+		setSelectedBatch(batchData);
+		setModalType(type);
+	  } catch (error) {
+		console.error("Failed to fetch batch details:", error);
+		if (error.response?.status === 500) {
+		  alert("Server error occurred while loading batch details");
+		} else {
+		  alert("Failed to load batch details. Please try again.");
+		}
+	  } finally {
+		setLoading(false);
+	  }
+	};
 
   const formatDatee = (isoString) => {
     if (!isoString) return "N/A";
@@ -311,8 +346,6 @@ function BatchManagement() {
     try {
       const baseUrl = import.meta.env.VITE_BASE_URL;
 
-      // Using axios instead of fetch
-      await axios.delete(`${baseUrl}/batches/${batchId}`);
       // Using axios instead of fetch
       await axios.delete(`${baseUrl}/batches/${batchId}`);
 
@@ -1033,70 +1066,79 @@ const handleMultiSelectChange = (field, value) => {
                     </ul>
                   </div>
 
-                  {/* Tasks */}
-                  <div>
-                    <h3 className="text-xl font-semibold text-emerald-700 mb-2">
-                      📋 Tasks
-                    </h3>
-                    <div className="space-y-4">
-                      {Array.isArray(selectedBatch.tasks) &&
-                      selectedBatch.tasks.length > 0 ? (
-                        selectedBatch.tasks.map((taskEntry, idx) => {
-                          const task =
-                            typeof taskEntry.taskId === "object" &&
-                            taskEntry.taskId !== null
-                              ? taskEntry.taskId
-                              : {};
-                          const assigned =
-                            typeof taskEntry.assignedTo === "object" &&
-                            taskEntry.assignedTo !== null
-                              ? taskEntry.assignedTo
-                              : {};
+                  {/* Tasks Section */}
+					<div>
+					  <h3 className="text-xl font-semibold text-emerald-700 mb-2">
+						📋 Tasks ({selectedBatch.tasks?.length || 0})
+					  </h3>
+					  
+					  {loading ? (
+						<div className="flex justify-center py-4">
+						  <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+						</div>
+					  ) : (
+						<div className="space-y-4">
+						  {selectedBatch.tasks?.length > 0 ? (
+							selectedBatch.tasks.map((task) => {
+							  const taskDetails = task.details || {};
+							  const assignedIntern = selectedBatch.interns?.find(
+								intern => intern._id === task.assignedTo
+							  ) || { name: 'Unassigned', email: '' };
 
-                          return (
-                            <div
-                              key={idx}
-                              className="border border-emerald-200 rounded-lg p-4 bg-gradient-to-r from-white via-emerald-50 to-white hover:shadow-md transition-all duration-200"
-                            >
-                              <p>
-                                <strong>Title:</strong>{" "}
-                                <span className="text-emerald-900">
-                                  {task.title || "Untitled"}
-                                </span>
-                              </p>
-                              <p>
-                                <strong>Description:</strong>{" "}
-                                <span className="text-gray-700">
-                                  {task.description || "No description"}
-                                </span>
-                              </p>
-                              <p>
-                                <strong>Status:</strong>
-                                <span
-                                  className={`ml-1 px-2 py-0.5 text-xs rounded-full font-semibold ${
-                                    (task.status || taskEntry.status) ===
-                                    "completed"
-                                      ? "bg-green-100 text-green-700"
-                                      : "bg-yellow-100 text-yellow-700"
-                                  }`}
-                                >
-                                  {task.status || taskEntry.status || "Unknown"}
-                                </span>
-                              </p>
-                              <p>
-                                <strong>Assigned To:</strong>{" "}
-                                <span className="text-indigo-800">
-                                  {assigned.name || "Unassigned"}
-                                </span>
-                              </p>
-                            </div>
-                          );
-                        })
-                      ) : (
-                        <p className="text-gray-500">No tasks assigned.</p>
-                      )}
-                    </div>
-                  </div>
+							  return (
+								<div key={task._id} className="border border-emerald-200 rounded-lg p-4 bg-white">
+								  <div className="flex justify-between items-start mb-2">
+									<h4 className="text-lg font-semibold text-gray-800">
+									  {taskDetails.title || `Task ${task._id}`}
+									</h4>
+									<span className={`px-2 py-1 text-xs rounded-full ${
+									  taskDetails.status === 'completed' ? 'bg-green-100 text-green-800' :
+									  taskDetails.status === 'in-progress' ? 'bg-yellow-100 text-yellow-800' :
+									  'bg-gray-100 text-gray-800'
+									}`}>
+									  {taskDetails.status || 'not started'}
+									</span>
+								  </div>
+
+								  {taskDetails.description && (
+									<p className="text-sm text-gray-600 mb-3">
+									  {taskDetails.description}
+									</p>
+								  )}
+
+								  <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
+									<div>
+									  <p className="text-xs text-gray-500">Assigned to</p>
+									  <p className="font-medium">{assignedIntern.name}</p>
+									</div>
+									
+									{taskDetails.startDate && (
+									  <div>
+										<p className="text-xs text-gray-500">Start Date</p>
+										<p className="font-medium">
+										  {new Date(taskDetails.startDate).toLocaleDateString()}
+										</p>
+									  </div>
+									)}
+
+									{taskDetails.endDate && (
+									  <div>
+										<p className="text-xs text-gray-500">Due Date</p>
+										<p className="font-medium">
+										  {new Date(taskDetails.endDate).toLocaleDateString()}
+										</p>
+									  </div>
+									)}
+								  </div>
+								</div>
+							  );
+							})
+						  ) : (
+							<p className="text-gray-500 py-4 text-center">No tasks assigned to this batch</p>
+						  )}
+						</div>
+					  )}
+					</div>
 
                   {/* Progress */}
                   <div>
@@ -1356,29 +1398,27 @@ const handleMultiSelectChange = (field, value) => {
                       Cancel
                     </button>
                     <button
-                      type="submit"
-                      disabled={
-                        formLoading ||
-                        availableInterns.length === 0 ||
-                        availableHR.length === 0
-                      }
-                      className="flex-1 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      {formLoading ? (
-                        <Loader className="w-4 h-4 animate-spin" />
-                      ) : (
-                        <Save className="w-4 h-4" />
-                      )}
-                      {isEditing
-                        ? formLoading
-                          ? "Updating...."
-                          : "Update Batch"
-                        : formLoading
-                        ? "Creating..."
-                        : "Create Batch"}
-                        ? "Creating..."
-                        :
-                    </button>
+					  type="submit"
+					  disabled={
+						formLoading ||
+						availableInterns.length === 0 ||
+						availableHR.length === 0
+					  }
+					  className="flex-1 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+					>
+					  {formLoading ? (
+						<>
+						  <Loader className="w-4 h-4 animate-spin" />
+						  {isEditing ? "Updating..." : "Creating..."}
+						</>
+					  ) : (
+						<>
+						  <Save className="w-4 h-4" />
+						  {isEditing ? "Update Batch" : "Create Batch"}
+						</>
+					  )}
+					</button>
+
                   </div>
                 </form>
               )}

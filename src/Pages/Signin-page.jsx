@@ -26,8 +26,10 @@ const Signin = ({ onSwitchToSignup }) => {
     loggedIn,
     setIsLoggedIn,
     storeIsAdminState,
+    storeIsHrState,
     storeTokenInLocalStorage,
     storeUserId,
+    storePermissions
   } = useAuthContext();
   const { storeUsername } = useAppContext();
 
@@ -48,36 +50,30 @@ const Signin = ({ onSwitchToSignup }) => {
 
       await storeTokenInLocalStorage(token);
       await storeUserId(user.id);
-    
+      await storePermissions(user.permissions); // Store permissions if available
+
       await storeUsername(user.name);
       console.log(`response :- ${response.data.user}`);
       console.log(`response :- ${JSON.stringify(response.data.user)}`);
-   
 
 
 
-      if(user.role ==='hr'){
-        navigate("/hrhomepage");
+      if (user.role === 'hr') {
+        await storeIsHrState(true);
       }
-      
+
       const isAdminValue = Boolean(user.isAdmin);
       console.log("Converting isAdmin to boolean:", isAdminValue);
-    
-     
+
+
       await storeIsAdminState(isAdminValue);
       setIsLoggedIn(true);
       setIsLoading(false);
       toast.success("Login successful");
-     
-    if(user.role === 'hr'){
-      navigate("/hrhomepage",{state:{hrid:response.data.user.id}});
-      alert("You will be redirected to HR Panel.")
-    }
-    else{
+
       navigate("/");
-    }
-     
-      
+
+
       console.log(`response for checking role :- ${JSON.stringify(response.data.user)}
 }`)
     } catch (error) {
@@ -95,7 +91,7 @@ const Signin = ({ onSwitchToSignup }) => {
 
 
 
-  
+
 
 
   const handleSubmit = (e) => {
@@ -111,17 +107,17 @@ const Signin = ({ onSwitchToSignup }) => {
 
   return (
     <>
-  
+
       <div className="flex items-center justify-center min-h-screen px-4 bg-gradient-to-br from-blue-50 to-purple-50">
         <div className="w-full max-w-md p-8 transition-all duration-300 bg-white border border-gray-100 shadow-2xl rounded-xl hover:shadow-3xl">
           <div className="mb-6 text-center">
-          <div className="mx-auto mb-4 w-28 h-28">
-            <img
-              src={iispprLogo}
-              alt="IISPPR Logo"
-              className="object-contain w-full h-full"
-            />
-          </div>
+            <div className="mx-auto mb-4 w-28 h-28">
+              <img
+                src={iispprLogo}
+                alt="IISPPR Logo"
+                className="object-contain w-full h-full"
+              />
+            </div>
             <h1 className="mb-2 text-3xl font-bold text-blue-800">
               Welcome Back
             </h1>

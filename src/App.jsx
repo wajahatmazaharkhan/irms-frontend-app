@@ -1,6 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { HrProvider } from "./context/HrContext.jsx";
 import AskHR from "./Pages/AskHR";
+
+
 import {
   Aboutus,
   FAQ,
@@ -316,6 +318,8 @@ const App = () => {
             </PrivateRoute>
           }
         />
+        
+
 
         {/* hrhead and hr interns routes  */}
 

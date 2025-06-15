@@ -2,6 +2,8 @@ import CustomNavbar from "./CustomNavbar";
 import { Link } from "react-router-dom";
 import useTitle from "@/Components/useTitle";
 import { useState, useEffect } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 import {
   Users,
@@ -30,7 +32,7 @@ import {
 
 function BatchManagement() {
   useTitle("Batch Management");
-
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
   const [selectedMonth, setSelectedMonth] = useState("");
@@ -47,6 +49,7 @@ function BatchManagement() {
   const [editBatchId, setEditBatchId] = useState(null);
   const [selectedBatch, setSelectedBatch] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalType, setModalType] = useState("simple");
 
   // Form state
   const [formData, setFormData] = useState({
@@ -63,15 +66,15 @@ function BatchManagement() {
       try {
         setLoading(true);
         const baseUrl = import.meta.env.VITE_BASE_URL;
-        const response = await fetch(`${baseUrl}/batches/summary`);
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
+        // Using axios instead of fetch
+        const [batchResponse, progressResponse] = await Promise.all([
+          axios.get(`${baseUrl}/api/batch/get-summary`),
+          axios.get(`${baseUrl}/batches/progress`),
+        ]);
 
-        const data = await response.json();
-        const progressResponse = await fetch(`${baseUrl}/batches/progress`);
-        const progressData = await progressResponse.json();
+        const data = batchResponse.data;
+        const progressData = progressResponse.data;
 
         // Transform API data to match component structure
         const transformedData = data.map((batch) => {
@@ -84,7 +87,9 @@ function BatchManagement() {
           const formatMonth = (date) => {
             if (!date) return "";
             const d = new Date(date);
-            return isNaN(d.getTime()) ? "" : d.toLocaleString("default", { month: "long", year: "numeric" });
+            return isNaN(d.getTime())
+              ? ""
+              : d.toLocaleString("default", { month: "long", year: "numeric" });
           };
 
           const getStatusFromDates = (start, end) => {
@@ -97,7 +102,7 @@ function BatchManagement() {
             return "Ongoing";
           };
 
-          const batchProgress = progressData.find(p => p._id === batch._id);
+          const batchProgress = progressData.find((p) => p._id === batch._id);
 
           return {
             id: batch._id,
@@ -107,7 +112,9 @@ function BatchManagement() {
             endDate: safeDate(batch.EndDate),
             totalInterns: batch.totalInterns,
             activeInterns: batch.totalInterns, // Assuming all are active for now
-            completedInterns: `${batchProgress?.completedTasks ?? 0}/${batchProgress?.allTasks ?? 0}`,
+            completedInterns: `${batchProgress?.completedTasks ?? 0}/${
+              batchProgress?.allTasks ?? 0
+            }`,
             totalHR: batch.totalHR,
             status: getStatusFromDates(batch.startDate, batch.EndDate),
             coordinator: "TBD", // API doesn't provide this
@@ -115,8 +122,6 @@ function BatchManagement() {
             progress: batchProgress?.progress ?? 0, // fallback to 0 if not found
           };
         });
-
-
 
         setBatchData(transformedData);
         setError(null);
@@ -142,14 +147,10 @@ function BatchManagement() {
     try {
       setUsersLoading(true);
       const baseUrl = import.meta.env.VITE_BASE_URL;
-      const response = await fetch(`${baseUrl}/allusers`);
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      // console.log("Raw API response:", data); // Debug log
+      // Using axios instead of fetch
+      const response = await axios.get(`${baseUrl}/allusers`);
+      const data = response.data;
 
       // Handle different response structures
       let allUsers;
@@ -164,13 +165,6 @@ function BatchManagement() {
         throw new Error("Invalid response format: expected an array of users");
       }
 
-      // console.log("Processed users array:", allUsers); // Debug log
-
-      // Validate that allUsers is an array
-      if (!Array.isArray(allUsers)) {
-        throw new Error("Users data is not an array");
-      }
-
       // Filter users based on their roles
       const interns = allUsers
         .filter((user) => {
@@ -180,12 +174,6 @@ function BatchManagement() {
             return false;
           }
 
-          // console.log(
-          //   "Checking user role:",
-          //   user.role,
-          //   "for user:",
-          //   user.email
-          // ); // Debug log
           return user.role === "intern";
         })
         .map((user) => ({
@@ -219,9 +207,6 @@ function BatchManagement() {
           email: user.email || "",
           role: user.role,
         }));
-
-      // console.log("Filtered interns:", interns); // Debug log
-      // console.log("Filtered HR personnel:", hrPersonnel); // Debug log
 
       setAvailableInterns(interns);
       setAvailableHR(hrPersonnel);
@@ -289,16 +274,14 @@ function BatchManagement() {
     return Math.round((elapsed / totalDuration) * 100);
   };
 
-  const handleView = async (batchId) => {
+  const handleView = async (batchId, type = "simple") => {
     try {
-      const response = await fetch(
+      const response = await axios.get(
         `${import.meta.env.VITE_BASE_URL}/batches/${batchId}`
       );
-      if (!response.ok)
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      const data = await response.json();
-      console.log("Full batch object:", data); // ✅ You can verify what's coming
+      const data = response.data;
       setSelectedBatch(data);
+      setModalType(type);
       setIsModalOpen(true);
     } catch (error) {
       console.error("Failed to fetch batch details:", error.message);
@@ -326,13 +309,9 @@ function BatchManagement() {
 
     try {
       const baseUrl = import.meta.env.VITE_BASE_URL;
-      const response = await fetch(`${baseUrl}/batches/${batchId}`, {
-        method: "DELETE",
-      });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+      // Using axios instead of fetch
+      await axios.delete(`${baseUrl}/batches/${batchId}`);
 
       // Remove the deleted batch from local state
       setBatchData((prevBatches) =>
@@ -378,22 +357,10 @@ function BatchManagement() {
 
     try {
       const baseUrl = import.meta.env.VITE_BASE_URL;
-      const response = await fetch(`${baseUrl}/batches`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(
-          errorData.message || `HTTP error! status: ${response.status}`
-        );
-      }
-
-      const result = await response.json();
+      // Using axios instead of fetch
+      const response = await axios.post(`${baseUrl}/batches`, formData);
+      const result = response.data;
 
       // Reset form and close modal
       setFormData({
@@ -412,7 +379,9 @@ function BatchManagement() {
       window.location.reload();
     } catch (err) {
       console.error("Error creating batch:", err);
-      alert(`Failed to create batch: ${err.message}`);
+      alert(
+        `Failed to create batch: ${err.response?.data?.message || err.message}`
+      );
     } finally {
       setFormLoading(false);
     }
@@ -421,10 +390,10 @@ function BatchManagement() {
   const handleEditClick = async (batch) => {
     try {
       const baseUrl = import.meta.env.VITE_BASE_URL;
-      const res = await fetch(`${baseUrl}/batches/${batch.id}`); // assuming batch has _id
-      if (!res.ok) throw new Error("Failed to fetch batch details");
 
-      const fullBatch = await res.json();
+      // Using axios instead of fetch
+      const res = await axios.get(`${baseUrl}/batches/${batch.id}`);
+      const fullBatch = res.data;
 
       setFormData({
         name: fullBatch.name || "",
@@ -449,26 +418,23 @@ function BatchManagement() {
 
     try {
       const baseUrl = import.meta.env.VITE_BASE_URL;
-      const res = await fetch(`${baseUrl}/batches/${editBatchId}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error || "Update failed");
-      }
+      // Using axios instead of fetch
+      const res = await axios.put(
+        `${baseUrl}/batches/${editBatchId}`,
+        formData
+      );
+      const data = res.data;
 
       alert("Batch updated successfully!");
       setShowCreateForm(false);
       setIsEditing(false);
       setEditBatchId(null);
+
+      // Refresh the data
+      window.location.reload();
     } catch (err) {
-      alert(err.message || "Update failed");
+      alert(err.response?.data?.message || err.message || "Update failed");
       console.error(err);
     } finally {
       setFormLoading(false);
@@ -788,7 +754,7 @@ function BatchManagement() {
                   <div className="flex gap-2">
                     <button
                       className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                      onClick={() => handleView(batch.id)}
+                      onClick={() => handleView(batch.id, "simple")} //  Eye opens simple modal
                     >
                       <Eye className="w-4 h-4" />
                     </button>
@@ -870,66 +836,307 @@ function BatchManagement() {
                 </div>
 
                 <div className="flex gap-2">
-                  <button className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors duration-200 text-sm font-medium">
+                  <button
+                    onClick={() => handleView(batch.id, "deep")} // Button opens deep modal
+                    className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors duration-200 text-sm font-medium"
+                  >
                     View Details
-                  </button>
-                  <button className="flex-1 bg-gray-100 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-200 transition-colors duration-200 text-sm font-medium">
-                    Manage Interns
                   </button>
                 </div>
               </div>
             ))}
           </div>
-          {isModalOpen && selectedBatch && (
+          {isModalOpen && selectedBatch && modalType === "simple" && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-              <div className="bg-white rounded-xl p-6 max-w-lg w-full shadow-xl border border-gray-200 relative">
+              <div className="bg-white rounded-2xl p-6 max-w-xl w-full shadow-2xl border border-blue-200 relative transition-all">
                 <button
                   onClick={() => setIsModalOpen(false)}
-                  className="absolute top-2 right-2 text-gray-400 hover:text-gray-600"
+                  className="absolute top-3 right-3 text-blue-400 hover:text-blue-600 text-lg font-bold transition"
                 >
                   ✕
                 </button>
 
-                <h2 className="text-2xl font-semibold text-blue-600 mb-4">
+                <h2 className="text-2xl font-bold text-blue-700 mb-6 border-b pb-2 border-blue-100">
                   {selectedBatch?.batchName ?? "Batch Details"}
                 </h2>
 
-                <div className="text-gray-600 text-sm space-y-2">
+                <div className="text-blue-900 text-sm space-y-4">
                   <p>
-                    <strong>Name:</strong> {selectedBatch?.name ?? "N/A"}
+                    <strong className="text-blue-600">Name:</strong>{" "}
+                    {selectedBatch?.name ?? "N/A"}
                   </p>
+
                   <p>
-                    <strong>Status:</strong>{" "}
+                    <strong className="text-blue-600">Status:</strong>{" "}
                     {getStatusFromDates(
                       selectedBatch?.startDate,
-                      selectedBatch?.EndDate
+                      selectedBatch?.endDate
                     )}
                   </p>
+
                   <p>
-                    <strong>Start Date:</strong>{" "}
+                    <strong className="text-blue-600">Start Date:</strong>{" "}
                     {formatDatee(selectedBatch?.startDate)}
                   </p>
-                  <p>
-                    <strong>End Date:</strong>{" "}
-                    {formatDatee(selectedBatch?.EndDate)}
-                  </p>
 
                   <p>
-                    <strong>Interns:</strong>{" "}
-                    {Array.isArray(selectedBatch?.interns)
-                      ? selectedBatch.interns.map((intern, idx) => (
-                        <span key={intern._id || idx}>
-                          {intern.name}
-                          {idx < selectedBatch.interns.length - 1 ? ", " : ""}
-                        </span>
-                      ))
-                      : "N/A"}
+                    <strong className="text-blue-600">End Date:</strong>{" "}
+                    {formatDatee(selectedBatch?.endDate)}
                   </p>
 
-                  <p>
-                    <strong>HR Personnel:</strong>{" "}
-                    {selectedBatch?.hr?.length ?? 0}
-                  </p>
+                  <div>
+                    <strong className="text-blue-600">Interns:</strong>
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {Array.isArray(selectedBatch?.interns) &&
+                      selectedBatch.interns.length > 0 ? (
+                        selectedBatch.interns.map((intern) => (
+                          <span
+                            key={intern._id}
+                            className="bg-blue-50 text-blue-700 border border-blue-200 px-3 py-1 rounded-full text-sm font-medium"
+                          >
+                            {intern.name}
+                          </span>
+                        ))
+                      ) : (
+                        <span className="text-gray-500">N/A</span>
+                      )}
+                    </div>
+                  </div>
+
+                  <div>
+                    <strong className="text-blue-600">HR Personnel:</strong>
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {Array.isArray(selectedBatch?.hr) &&
+                      selectedBatch.hr.length > 0 ? (
+                        selectedBatch.hr.map((entry) => (
+                          <span
+                            key={entry._id}
+                            className="bg-blue-100 text-blue-800 border border-blue-300 px-3 py-1 rounded-full text-sm font-medium"
+                          >
+                            {entry.hrId?.name || "Unknown"}
+                          </span>
+                        ))
+                      ) : (
+                        <span className="text-gray-500">N/A</span>
+                      )}
+                    </div>
+                    
+                  </div>
+                  <div>
+          <strong>Progress:</strong>
+          {selectedBatch.completedTasks !== undefined && selectedBatch.allTasks > 0 ? (
+            <>
+              <p className="text-sm mt-1">
+                {selectedBatch.completedTasks} / {selectedBatch.allTasks} Tasks Completed
+              </p>
+              <div className="w-full bg-gray-200 rounded-full h-2 mt-1">
+                <div
+                  className="bg-blue-500 h-2 rounded-full transition-all duration-300"
+                  style={{
+                    width: `${Math.round(
+                      (selectedBatch.completedTasks / selectedBatch.allTasks) * 100
+                    )}%`,
+                  }}
+                ></div>
+              </div>
+            </>
+          ) : (
+            <p className="text-gray-500">No progress data available.</p>
+          )}
+        </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {isModalOpen && selectedBatch && modalType === "deep" && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm transition-opacity duration-300 animate-fadeIn">
+              <div className="bg-gradient-to-br from-white via-indigo-50 to-purple-100 rounded-2xl p-6 max-w-4xl w-full shadow-2xl border border-indigo-200 relative overflow-y-auto max-h-[90vh] transform scale-95 animate-zoomIn transition-transform duration-300">
+                {/* Close Button */}
+                <button
+                  onClick={() => setIsModalOpen(false)}
+                  className="absolute top-3 right-3 text-gray-400 hover:text-rose-500 text-xl transition-colors"
+                >
+                  ✕
+                </button>
+
+                {/* Title */}
+                <h2 className="text-3xl font-bold text-indigo-800 mb-6 border-b border-indigo-200 pb-3">
+                  {selectedBatch?.name || "Batch Details"}
+                </h2>
+
+                <div className="text-gray-900 space-y-6 text-sm">
+                  {/* Basic Info */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-indigo-50 p-4 rounded-lg shadow-inner">
+                    <p>
+                      <span className="font-semibold text-indigo-700">
+                        Status:
+                      </span>{" "}
+                      <span className="text-indigo-900">
+                        {getStatusFromDates(
+                          selectedBatch.startDate,
+                          selectedBatch.EndDate
+                        )}
+                      </span>
+                    </p>
+                    <p>
+                      <span className="font-semibold text-indigo-700">
+                        Start Date:
+                      </span>{" "}
+                      {formatDatee(selectedBatch.startDate)}
+                    </p>
+                    <p>
+                      <span className="font-semibold text-indigo-700">
+                        End Date:
+                      </span>{" "}
+                      {formatDatee(selectedBatch.endDate)}
+                    </p>
+                  </div>
+
+                  {/* Interns */}
+                  <div>
+                    <h3 className="text-xl font-semibold text-purple-700 mb-1">
+                      👨‍🎓 Interns
+                    </h3>
+                    <ul className="list-disc ml-6 text-gray-800 space-y-1">
+                      {Array.isArray(selectedBatch.interns) &&
+                      selectedBatch.interns.length > 0 ? (
+                        selectedBatch.interns.map((intern, idx) => (
+                          <li key={intern._id || idx}>
+                            <span className="font-medium">{intern.name}</span>
+                            <span className="text-gray-500">
+                              {" "}
+                              ({intern.email})
+                            </span>
+                          </li>
+                        ))
+                      ) : (
+                        <li className="text-gray-500">No interns assigned.</li>
+                      )}
+                    </ul>
+                  </div>
+
+                  {/* HRs */}
+                  <div>
+                    <h3 className="text-xl font-semibold text-pink-700 mb-1">
+                      🧑‍💼 HR Personnel
+                    </h3>
+                    <ul className="list-disc ml-6 text-gray-800 space-y-1">
+                      {Array.isArray(selectedBatch.hr) &&
+                      selectedBatch.hr.length > 0 ? (
+                        selectedBatch.hr.map((hrEntry, idx) => (
+                          <li key={hrEntry._id || idx}>
+                            <span className="font-medium">
+                              {hrEntry?.hrId?.name || "Unknown"}
+                            </span>
+                            <span className="text-gray-500">
+                              {" "}
+                              ({hrEntry?.hrId?.email})
+                            </span>
+                          </li>
+                        ))
+                      ) : (
+                        <li className="text-gray-500">No HR assigned.</li>
+                      )}
+                    </ul>
+                  </div>
+
+                  {/* Tasks */}
+                  <div>
+                    <h3 className="text-xl font-semibold text-emerald-700 mb-2">
+                      📋 Tasks
+                    </h3>
+                    <div className="space-y-4">
+                      {Array.isArray(selectedBatch.tasks) &&
+                      selectedBatch.tasks.length > 0 ? (
+                        selectedBatch.tasks.map((taskEntry, idx) => {
+                          const task =
+                            typeof taskEntry.taskId === "object" &&
+                            taskEntry.taskId !== null
+                              ? taskEntry.taskId
+                              : {};
+                          const assigned =
+                            typeof taskEntry.assignedTo === "object" &&
+                            taskEntry.assignedTo !== null
+                              ? taskEntry.assignedTo
+                              : {};
+
+                          return (
+                            <div
+                              key={idx}
+                              className="border border-emerald-200 rounded-lg p-4 bg-gradient-to-r from-white via-emerald-50 to-white hover:shadow-md transition-all duration-200"
+                            >
+                              <p>
+                                <strong>Title:</strong>{" "}
+                                <span className="text-emerald-900">
+                                  {task.title || "Untitled"}
+                                </span>
+                              </p>
+                              <p>
+                                <strong>Description:</strong>{" "}
+                                <span className="text-gray-700">
+                                  {task.description || "No description"}
+                                </span>
+                              </p>
+                              <p>
+                                <strong>Status:</strong>
+                                <span
+                                  className={`ml-1 px-2 py-0.5 text-xs rounded-full font-semibold ${
+                                    (task.status || taskEntry.status) ===
+                                    "completed"
+                                      ? "bg-green-100 text-green-700"
+                                      : "bg-yellow-100 text-yellow-700"
+                                  }`}
+                                >
+                                  {task.status || taskEntry.status || "Unknown"}
+                                </span>
+                              </p>
+                              <p>
+                                <strong>Assigned To:</strong>{" "}
+                                <span className="text-indigo-800">
+                                  {assigned.name || "Unassigned"}
+                                </span>
+                              </p>
+                            </div>
+                          );
+                        })
+                      ) : (
+                        <p className="text-gray-500">No tasks assigned.</p>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Progress */}
+                  <div>
+                    <h3 className="text-xl font-semibold text-indigo-600 mb-2">
+                      📊 Progress
+                    </h3>
+                    {selectedBatch.completedTasks !== undefined &&
+                    selectedBatch.allTasks > 0 ? (
+                      <div>
+                        <p className="mb-1 text-sm text-gray-700">
+                          {selectedBatch.completedTasks} /{" "}
+                          {selectedBatch.allTasks} Tasks Completed
+                        </p>
+                        <div className="w-full bg-indigo-100 rounded-full h-3">
+                          <div
+                            className="bg-gradient-to-r from-emerald-400 via-blue-500 to-purple-500 h-3 rounded-full transition-all duration-300"
+                            style={{
+                              width: `${Math.round(
+                                (selectedBatch.completedTasks /
+                                  selectedBatch.allTasks) *
+                                  100
+                              )}%`,
+                            }}
+                          ></div>
+                        </div>
+                      </div>
+                    ) : (
+                      <p className="text-gray-500">
+                        No progress data available.
+                      </p>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -1166,9 +1373,8 @@ function BatchManagement() {
                           ? "Updating...."
                           : "Update Batch"
                         : formLoading
-                          ? "Creating..."
-                          : "Create Batch"}
-
+                        ? "Creating..."
+                        : "Create Batch"}
                     </button>
                   </div>
                 </form>

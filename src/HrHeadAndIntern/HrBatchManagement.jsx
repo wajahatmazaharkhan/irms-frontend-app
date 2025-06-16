@@ -14,8 +14,8 @@ import {
 } from "@/Components/compIndex.js";
 
 import { formatDate, formatMonth, getStatusFromDates } from "@/lib/batchUtils";
-
 import { batchService } from "@/services/batchService.js";
+import { getMatchingBatchedByUserId } from "@/lib/batchUtils";
 
 function HRBatchManagement() {
   useTitle("My Batches");
@@ -51,34 +51,20 @@ function HRBatchManagement() {
     const fetchBatchData = async () => {
       try {
         setLoading(true);
-        const baseUrl = import.meta.env.VITE_BASE_URL;
-        
-        // Get all batch IDs first to filter by HR
-        const batchIdsResponse = await batchService.fetchBatchIds();
-        const userBatches = batchIdsResponse.data.filter((batch) =>
-          batch.hr.some((hrMember) => hrMember._id === userId)
+
+        // fetch relevant data
+        let data = await batchService.fetchBatchData();
+        const progressData = await batchService.fetchBatchProgress();
+
+        const filteredIds = await getMatchingBatchedByUserId({
+          userId: userId
+        })
+
+        const filteredBatches = data.filter((batch) =>
+          filteredIds.includes(batch._id)
         );
 
-        if (userBatches.length === 0) {
-          setBatchData([]);
-          setLoading(false);
-          return;
-        }
-
-        // Extract batch IDs for the current HR
-        const hrBatchIds = userBatches.map(batch => batch._id);
-
-        // Fetch summary data for all batches
-        const response = await fetch(`${baseUrl}/api/batch/get-summary`);
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        
-        let data = await response.json();
-        // Filter to only include HR's batches
-        data = data.filter(batch => hrBatchIds.includes(batch._id));
-
-        // Fetch progress data
-        const progressResponse = await fetch(`${baseUrl}/batches/progress`);
-        const progressData = await progressResponse.json();
+        data = filteredBatches; // Will show the filtered data
 
         const transformedData = data.map((batch) => {
           const safeDate = (date) => {

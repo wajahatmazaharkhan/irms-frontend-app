@@ -64,6 +64,7 @@ import {
   HrProject,
   HrNotify,
   HrReport,
+  InternAttendancePage,
 } from "./HrHeadAndIntern/HrIndex";
 import AdminHRManagement from "./Admin/AdminHRManagement.jsx";
 import UserManagement from "./Admin/UserManagement.jsx";
@@ -362,6 +363,7 @@ const App = () => {
         <Route path="/hrnotify" element={<HrNotify />} />
         <Route path="/hrreports" element={<HrReport />} />
         <Route path="/hrtaskassignment" element={<HrTaskAssignment />} />
+        <Route path="/hrattendance/:id" element={<InternAttendancePage />} />
 
       </Routes>
     </HrProvider>

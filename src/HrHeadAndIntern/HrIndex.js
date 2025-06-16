@@ -11,11 +11,13 @@ import HrTasksubmissions from "./InternTasksSubmissions";
 import HrAllAttendance from "./InternAttendance";
 import InternManagement from "./InternManagement";
 import InternsHrLeaveApplication from "./InternLeaveApplications";
+import InternAttendancePage from "./InternAttendancePage";
 
 
 
 export{
 HrNotify,HrReport,HrProject,AllHrUsers,HrAllAttendance,
 HrBatchManagement,InternManagement,HrTaskAssignment,
-HrTasksubmissions,HrAllUsersInterns,Hrprofile, HrHelpPage,InternsHrLeaveApplication
+HrTasksubmissions,HrAllUsersInterns,Hrprofile, HrHelpPage,InternsHrLeaveApplication,
+InternAttendancePage
 }

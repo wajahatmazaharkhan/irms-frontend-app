@@ -1,6 +1,6 @@
 import { CheckCircle, BookOpen, Clock, AlertCircle } from "lucide-react";
 
-export default function BatchModal({ isOpen, onClose, batch, type, loading }) {
+export function BatchModal({ isOpen, onClose, batch, type, loading }) {
   if (!isOpen || !batch) return null;
 
   const formatDatee = (isoString) => {

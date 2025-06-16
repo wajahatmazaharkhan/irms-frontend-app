@@ -18,7 +18,7 @@ import DynamicCalendar from "./DynamicCalendar";
 import Loader from "./Loader";
 import SkeletonLoader from "./SkeletonLoader";
 import useTitle from "./useTitle";
-import {BatchCard, BatchDetails, BatchFilterSearch, BatchForm} from "@/Components/hrBatchManagment/index.js";
+import {BatchCard, BatchStats, Filters, BatchForm,BatchModal,QuickActions} from "@/Components/BatchManagment/index.js";
 
 export {
     useTitle,
@@ -42,7 +42,9 @@ export {
     FAQsData,
     Footer,
     BatchCard,
-    BatchDetails,
-    BatchFilterSearch,
+    BatchStats,
+    Filters,
     BatchForm,
+	BatchModal,
+	QuickActions,
 };

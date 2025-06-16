@@ -1,6 +1,6 @@
 import { Search, Filter, Calendar, Download } from "lucide-react";
 
-export default function Filters({
+export function Filters({
   searchTerm,
   setSearchTerm,
   filterStatus,

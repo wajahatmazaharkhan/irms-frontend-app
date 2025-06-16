@@ -1,6 +1,6 @@
 import { Plus, Calendar as CalendarIcon, Download, Settings } from "lucide-react";
 
-export default function QuickActions({ setShowCreateForm }) {
+export function QuickActions({ setShowCreateForm }) {
   const actions = [
     {
       title: "Create New Batch",

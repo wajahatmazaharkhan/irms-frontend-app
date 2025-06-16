@@ -59,17 +59,17 @@ function BatchManagement() {
     const fetchBatchData = async () => {
       try {
         setLoading(true);
-        const baseUrl = import.meta.env.VITE_BASE_URL;
-        const response = await fetch(`${baseUrl}/api/batch/get-summary`);
+        // const baseUrl = import.meta.env.VITE_BASE_URL;
+        // const response = await fetch(`${baseUrl}/api/batch/get-summary`);
         const batchIds = await batchService.fetchBatchIds();
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
+        // if (!response.ok) {
+        //   throw new Error(`HTTP error! status: ${response.status}`);
+        // }
 
-        var data = await response.json();
-        const progressResponse = await fetch(`${baseUrl}/batches/progress`);
-        const progressData = await progressResponse.json();
+        var data = await batchService.fetchBatchData();
+        // const progressResponse = await fetch(`${baseUrl}/batches/progress`);
+        const progressData = await batchService.fetchBatchProgress();
 
         // Filter for user's batches
         const userBatches = batchIds.data.filter((batch) =>

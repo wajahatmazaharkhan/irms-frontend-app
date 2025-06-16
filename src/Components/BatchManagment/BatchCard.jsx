@@ -1,6 +1,4 @@
 import { Calendar, Users, UserCheck, CheckCircle, Eye, Edit3, Trash2, Loader } from "lucide-react";
-
-
 import { getStatusColor, getStatusIcon } from "@/lib/batchUtils";
 import { useState, useEffect } from "react";
 

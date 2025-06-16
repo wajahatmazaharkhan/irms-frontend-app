@@ -6,7 +6,14 @@ import toast from "react-hot-toast";
 import { Alert, AlertDescription } from "@/Components/ui/alert";
 import { Loader, useTitle } from "@/Components/compIndex";
 import { Card, CardContent, CardHeader, CardTitle } from "@/Components/ui/card";
-import { InfoIcon, CheckCircle2, XCircle, X } from "lucide-react";
+import {
+  InfoIcon,
+  CheckCircle2,
+  XCircle,
+  X,
+  CrossIcon,
+  Trash2,
+} from "lucide-react";
 import Swal from "sweetalert2";
 
 const InternTasksSubmissions = () => {

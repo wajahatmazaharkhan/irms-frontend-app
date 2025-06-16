@@ -1,376 +1,313 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
+
 import CustomNavbar from "./CustomHrNavbar";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/Components/ui/table";
-import { Card, CardContent, CardHeader, CardTitle } from "@/Components/ui/card";
-import { Button } from "@/Components/ui/button";
-import { Badge } from "@/Components/ui/badge";
-import { Alert, AlertDescription } from "@/Components/ui/alert";
-import { Search, Calendar, Users } from "lucide-react";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/Components/ui/alert-dialog";
-import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import useTitle from "@/Components/useTitle";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import {
+  Users,
+  CalendarDays,
+  Clock,
+  BookOpen,
+  CheckCircle,
+  AlertCircle,
+  Loader,
+  FileText,
+  Search,
+  Filter,
+} from "lucide-react";
 
-const InternAttendance = () => {
-  useTitle('Attendance Management')
-  const [loading, setLoading] = useState(false);
-  const [users, setUsers] = useState([]);
+function BatchPage() {
+  useTitle("My Batches");
+
+  const [batchData, setBatchData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
-  const [bulkAction, setBulkAction] = useState(null);
-  const [processing, setProcessing] = useState(false);
+  const [filterStatus, setFilterStatus] = useState("all");
+  const [hrUserId, setHrUserId] = useState(null);
 
-  const navigate = useNavigate();
-
+  // Retrieve HR user ID from localStorage
   useEffect(() => {
-    const fetchUser = async () => {
-      setLoading(true);
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_BASE_URL}/allusers`
-        );
-        setUsers(response.data.data);
-      } catch (error) {
-        console.error("Error fetching users:", error);
-        toast.error("Failed to fetch users");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUser();
+    const userId = localStorage.getItem("userId");
+    if (userId) {
+      setHrUserId(userId);
+    } else {
+      setError("HR user ID not found in localStorage.");
+      setLoading(false);
+    }
   }, []);
 
-  const date = new Date();
-  const formattedDate = date.toISOString().split(".")[0] + "Z";
-  const displayDate = date.toLocaleDateString("en-US", {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
+  // Fetch batches assigned to the HR user
+  useEffect(() => {
+    const fetchBatchData = async () => {
+    if (!hrUserId) return;
+
+    try {
+      setLoading(true);
+      const baseUrl = import.meta.env.VITE_BASE_URL;
+
+      // Fetch batches where the HR user is assigned
+      const response = await axios.get(`${baseUrl}/api/batch/get-by-hr/${hrUserId}`);
+      const data = response.data;
+
+      // Transform API data to match component structure
+      const transformedData = data.map((batch) => {
+        const safeDate = (date) => {
+          if (!date) return "";
+          const d = new Date(date);
+          return isNaN(d.getTime()) ? "" : d.toISOString().split("T")[0];
+        };
+
+        const formatMonth = (date) => {
+          if (!date) return "";
+          const d = new Date(date);
+          return isNaN(d.getTime())
+            ? ""
+            : d.toLocaleString("default", { month: "long", year: "numeric" });
+        };
+
+        const getStatusFromDates = (start, end) => {
+          const now = new Date();
+          const s = new Date(start);
+          const e = new Date(end);
+          if (isNaN(s.getTime()) || isNaN(e.getTime())) return "Invalid";
+          if (now < s) return "Upcoming";
+          if (now > e) return "Completed";
+          return "Active";
+        };
+
+        return {
+          id: batch._id,
+          batchName: batch.name,
+          month: formatMonth(batch.startDate),
+          startDate: safeDate(batch.startDate),
+          endDate: safeDate(batch.endDate),
+          totalInterns: batch.totalManagedInterns, 
+          totalHR: batch.totalHR,  
+          status: getStatusFromDates(batch.startDate, batch.endDate),
+        };
+      });
+
+      setBatchData(transformedData);
+      setError(null);
+    } catch (err) {
+      console.error("Error fetching batch data:", err);
+      setError("Failed to load your batches. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+    fetchBatchData();
+  }, [hrUserId]);
+
+  // Status color and icon helpers
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "Active":
+        return "bg-green-100 text-green-800 border-green-200";
+      case "Completed":
+        return "bg-blue-100 text-blue-800 border-blue-200";
+      case "Upcoming":
+        return "bg-yellow-100 text-yellow-800 border-yellow-200";
+      default:
+        return "bg-gray-100 text-gray-800 border-gray-200";
+    }
+  };
+
+  const getStatusIcon = (status) => {
+    switch (status) {
+      case "Active":
+        return <CheckCircle className="w-4 h-4" />;
+      case "Completed":
+        return <BookOpen className="w-4 h-4" />;
+      case "Upcoming":
+        return <Clock className="w-4 h-4" />;
+      default:
+        return <AlertCircle className="w-4 h-4" />;
+    }
+  };
+
+  // Filter batches based on search and status
+  const filteredBatches = batchData.filter((batch) => {
+    const matchesSearch = batch.batchName
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+    const matchesStatus =
+      filterStatus === "all" ||
+      batch.status.toLowerCase() === filterStatus.toLowerCase();
+    return matchesSearch && matchesStatus;
   });
 
-  const sendNotification = async (userId, status) => {
-    try {
-      await axios.post(`${import.meta.env.VITE_BASE_URL}/send/notify-single`, {
-        userId: userId,
-        message: `Your attendance for ${displayDate} has been marked as ${status}`,
-        status: status.toLowerCase(),
-      });
-    } catch (error) {
-      console.error("Error sending notification:", error);
-    }
-  };
+  if (loading) {
+    return (
+      <>
+        <CustomNavbar />
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
+          <div className="text-center">
+            <Loader className="w-12 h-12 text-blue-600 mx-auto mb-4 animate-spin" />
+            <h3 className="text-lg font-medium text-gray-700 mb-2">
+              Loading your batches...
+            </h3>
+            <p className="text-gray-500">Please wait while we fetch the data</p>
+          </div>
+        </div>
+      </>
+    );
+  }
 
-  const sendBulkNotification = async (status) => {
-    try {
-      await axios.post(`${import.meta.env.VITE_BASE_URL}/send/notify-all`, {
-        message: `Your attendance for ${displayDate} has been marked as ${status}`,
-        status: status.toLowerCase(),
-      });
-    } catch (error) {
-      console.error("Error sending bulk notification:", error);
-    }
-  };
-
-  const updateStatus = async (id, status) => {
-    const attendanceStatus = {
-      userId: id,
-      date: formattedDate,
-      status: status,
-    };
-    try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/attendance`,
-        attendanceStatus
-      );
-      if (response.status == 409) {
-        toast.error(`Attendance already marked`, {
-          position: "top-left",
-        });
-        return "already_marked";
-      }
-      if (
-        response.status == 201 ||
-        response.status == 204 ||
-        response.status == 205
-      ) {
-        await sendNotification(id, status);
-        toast.success(`Attendance marked as ${status}`, {
-          position: "top-left",
-        });
-        return "success";
-      }
-      toast.error(`Failed to mark attendance`, {
-        position: "top-left",
-      });
-      return "error";
-    } catch (error) {
-      if (error.status == 409) {
-        toast.error(`Attendance already marked`, {
-          position: "top-left",
-        });
-      }
-      return "error";
-    }
-  };
-
-  const handleBulkAction = async (status) => {
-    setBulkAction(status);
-    setShowConfirmDialog(true);
-  };
-
-  const executeBulkAction = async () => {
-    setProcessing(true);
-    let successCount = 0;
-    let alreadyMarkedCount = 0;
-    let errorCount = 0;
-
-    for (const user of filteredUsers) {
-      const result = await updateStatus(user._id, bulkAction);
-      if (result === "success") successCount++;
-      else if (result === "already_marked") alreadyMarkedCount++;
-      else errorCount++;
-    }
-
-    if (successCount > 0) {
-      await sendBulkNotification(bulkAction);
-    }
-
-    let message = `Updated ${successCount} users successfully.`;
-    if (alreadyMarkedCount > 0) {
-      message += ` ${alreadyMarkedCount} users were already marked.`;
-    }
-    if (errorCount > 0) {
-      message += ` Failed to update ${errorCount} users.`;
-    }
-    toast(message, {
-      position: "top-left",
-    });
-
-    setProcessing(false);
-    setShowConfirmDialog(false);
-  };
-
-  const filteredUsers = users.filter(
-    (user) =>
-      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  if (error) {
+    return (
+      <>
+        <CustomNavbar />
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
+          <div className="text-center">
+            <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-700 mb-2">
+              Error Loading Data
+            </h3>
+            <p className="text-gray-500 mb-4">{error}</p>
+            <button
+              onClick={() => window.location.reload()}
+              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+      </>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <>
       <CustomNavbar />
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid gap-6">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+        <div className="container mx-auto p-6">
           {/* Header Section */}
-          <Card>
-            <CardHeader className="space-y-1">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-2xl font-bold">
-                  IISPPR Attendance Management
-                </CardTitle>
-                <Badge variant="secondary" className="flex items-center gap-2">
-                  <Calendar className="h-4 w-4" />
-                  {displayDate}
-                </Badge>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-col space-y-4">
-                <div className="flex items-center space-x-4">
-                  <div className="relative flex-1">
-                    <input
-                      type="text"
-                      placeholder="Search users..."
-                      className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                    />
-                    <Search className="absolute right-3 top-2.5 h-5 w-5 text-gray-400" />
-                  </div>
-                  <Badge variant="outline" className="flex items-center gap-2">
-                    <Users className="h-4 w-4" />
-                    Total Users: {users.length}
-                  </Badge>
-                </div>
-                <div className="flex justify-end space-x-4">
-                  <Button
-                    variant="outline"
-                    className="bg-green-500 hover:bg-green-600 text-white"
-                    onClick={() => handleBulkAction("Present")}
-                    disabled={processing || filteredUsers.length === 0}
-                  >
-                    Mark All Present
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="bg-red-500 hover:bg-red-600 text-white"
-                    onClick={() => handleBulkAction("Absent")}
-                    disabled={processing || filteredUsers.length === 0}
-                  >
-                    Mark All Absent
-                  </Button>
-                </div>
-                <div>
-                  <Alert className="w-full bg-blue-50 border-blue-200">
-                    <div className="flex flex-col items-center w-full">
-                      <AlertDescription className="text-blue-700 text-center">
-                        <p>
-                          Click on the buttons above to mark all users as
-                          present or absent for the current date.
-                        </p>
-                        <p>
-                          This action cannot be undone. Please proceed with
-                          caution. Bulk Action may take time to complete.
-                        </p>
-                      </AlertDescription>
-                    </div>
-                  </Alert>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <div className="text-center mb-8">
+            <h1 className="text-4xl font-bold text-gray-800 mb-2">
+              My Batches
+            </h1>
+            <p className="text-gray-600 text-lg">
+              View and manage attendance for your assigned batches
+            </p>
+          </div>
 
-          <div className="flex justify-center">
-            <div
-              onClick={() =>
-                toast("Page under development!", {
-                  icon: " ⏳ ",
-                })
-              }
-              className="flex text-blue-500 underline cursor-pointer items-center space-x-4"
-            >
-              Click here to view attendance of all users.
+          {/* Filters and Search */}
+          <div className="bg-white rounded-xl shadow-md p-6 mb-8">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+              <div className="relative w-full md:w-1/3">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <input
+                  type="text"
+                  placeholder="Search by batch name..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <div className="relative w-full md:w-auto">
+                <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <select
+                  value={filterStatus}
+                  onChange={(e) => setFilterStatus(e.target.value)}
+                  className="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="all">All Statuses</option>
+                  <option value="Active">Active</option>
+                  <option value="Completed">Completed</option>
+                  <option value="Upcoming">Upcoming</option>
+                </select>
+              </div>
             </div>
           </div>
 
-          <div className="flex justify-center items-center">
-            <Alert className="w-full bg-blue-50 border-blue-200">
-              <div className="flex flex-col items-center w-full">
-                <AlertDescription className="text-blue-700 text-center">
-                  <p>Present → User is marked present for current Date.</p>
-                  <p>Absent → User is marked absent for current Date.</p>
-                  <p>
-                    Attendance once marked cannot be updated again for current
-                    Date.{" "}
-                  </p>
-                </AlertDescription>
-              </div>
-            </Alert>
+          {/* Batch Table */}
+          <div className="bg-white rounded-xl shadow-md overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Batch Name
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Month
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Status
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Interns
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      HR
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  {filteredBatches.length === 0 ? (
+                    <tr>
+                      <td
+                        colSpan="6"
+                        className="px-6 py-4 text-center text-gray-500"
+                      >
+                        No batches assigned to you.
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredBatches.map((batch) => (
+                      <tr key={batch.id} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm font-medium text-gray-900">
+                            {batch.batchName}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {batch.month}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span
+                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getStatusColor(
+                              batch.status
+                            )}`}
+                          >
+                            {getStatusIcon(batch.status)}
+                            <span className="ml-1">{batch.status}</span>
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {batch.totalInterns}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {batch.totalHR}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <Link
+                            to={`/hrattendance/${batch.id}`}
+                            className="text-blue-600 hover:text-blue-800 flex items-center gap-2"
+                            title="Manage Attendance"
+                          >
+                            <FileText className="w-5 h-5" />
+                            Attendance
+                          </Link>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
-
-          {/* Table Section */}
-          <Card>
-            <CardContent className="p-0">
-              {loading ? (
-                <div className="flex justify-center items-center h-64">
-                  <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
-                </div>
-              ) : (
-                <Table>
-                  <TableCaption>
-                    List of all users and their attendance status
-                  </TableCaption>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Email</TableHead>
-                      <TableHead className="text-right">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredUsers.length > 0 ? (
-                      filteredUsers.map((user) => (
-                        <TableRow key={user._id}>
-                          <TableCell className="font-medium">
-                            {user.name}
-                          </TableCell>
-                          <TableCell>{user.email}</TableCell>
-                          <TableCell className="text-right">
-                            <div className="flex justify-end space-x-2">
-                              <Button
-                                variant="outline"
-                                className="bg-green-500 hover:bg-green-600 text-white"
-                                onClick={() =>
-                                  updateStatus(user._id, "Present")
-                                }
-                                disabled={processing}
-                              >
-                                Present
-                              </Button>
-                              <Button
-                                variant="outline"
-                                className="bg-red-500 hover:bg-red-600 text-white"
-                                onClick={() => updateStatus(user._id, "Absent")}
-                                disabled={processing}
-                              >
-                                Absent
-                              </Button>
-                            </div>
-                          </TableCell>
-                        </TableRow>
-                      ))
-                    ) : (
-                      <TableRow>
-                        <TableCell colSpan={3} className="text-center py-8">
-                          No users found
-                        </TableCell>
-                      </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
-              )}
-            </CardContent>
-          </Card>
         </div>
-      </main>
-
-      <AlertDialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Confirm Bulk Action</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to mark all {filteredUsers.length} users as{" "}
-              {bulkAction}? This action cannot be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={processing}>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={executeBulkAction}
-              disabled={processing}
-              className={
-                bulkAction === "Present"
-                  ? "bg-green-500 hover:bg-green-600"
-                  : "bg-red-500 hover:bg-red-600"
-              }
-            >
-              {processing ? "Processing..." : "Confirm"}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    </div>
+      </div>
+    </>
   );
-};
+}
 
-export default InternAttendance;
+export default BatchPage;

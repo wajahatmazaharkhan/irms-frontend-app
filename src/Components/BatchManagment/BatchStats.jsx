@@ -1,6 +1,6 @@
 import { Users, CalendarDays, UserCheck, TrendingUp } from "lucide-react";
 
-export default function BatchStats({ batchData }) {
+export function BatchStats({ batchData }) {
   const stats = [
     {
       icon: Users,

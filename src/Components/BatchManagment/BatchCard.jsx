@@ -1,7 +1,23 @@
 import { Calendar, Users, UserCheck, CheckCircle, Eye, Edit3, Trash2, Loader } from "lucide-react";
-import { getStatusColor, getStatusIcon } from "./utils";
 
-export default function BatchCard({ batch, handleView, handleEditClick, handleDeleteBatch, deleteLoading }) {
+
+import { getStatusColor, getStatusIcon } from "@/lib/batchUtils";
+import { useState, useEffect } from "react";
+
+export function BatchCard({ 
+  batch, 
+  handleView, 
+  handleEditClick, 
+  handleDeleteBatch, 
+  deleteLoading,
+}) {
+	const [hideActions, setHideActions] = useState(true);
+	useEffect(() => {
+    // Check if user is admin from localStorage
+    const isAdmin = localStorage.getItem("isAdmin") === "true";
+    setHideActions(!isAdmin); // Hide actions if not admin
+  }, []);
+	console.log("hideActions: ",hideActions);
   return (
     <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200 hover:shadow-lg transition-shadow duration-300">
       <div className="flex justify-between items-start mb-4">
@@ -25,27 +41,34 @@ export default function BatchCard({ batch, handleView, handleEditClick, handleDe
           >
             <Eye className="w-4 h-4" />
           </button>
-          <button
-            className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
-            onClick={() => handleEditClick(batch)}
-          >
-            <Edit3 className="w-4 h-4" />
-          </button>
+          
+          {/* Only show edit/delete buttons if hideActions is false */}
+          {!hideActions && (
+            <>
+              <button
+                className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                onClick={() => handleEditClick(batch)}
+              >
+                <Edit3 className="w-4 h-4" />
+              </button>
 
-          <button
-            onClick={() => handleDeleteBatch(batch.id, batch.batchName)}
-            disabled={deleteLoading === batch.id}
-            className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
-          >
-            {deleteLoading === batch.id ? (
-              <Loader className="w-4 h-4 animate-spin" />
-            ) : (
-              <Trash2 className="w-4 h-4" />
-            )}
-          </button>
+              <button
+                onClick={() => handleDeleteBatch(batch.id, batch.batchName)}
+                disabled={deleteLoading === batch.id}
+                className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
+              >
+                {deleteLoading === batch.id ? (
+                  <Loader className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Trash2 className="w-4 h-4" />
+                )}
+              </button>
+            </>
+          )}
         </div>
       </div>
 
+      {/* Rest of the component remains exactly the same */}
       <div className="grid grid-cols-2 gap-4 mb-4">
         <div className="flex items-center gap-2 text-sm text-gray-600">
           <Calendar className="w-4 h-4" />

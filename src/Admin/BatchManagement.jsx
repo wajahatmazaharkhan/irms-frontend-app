@@ -3,14 +3,18 @@ import useTitle from "@/Components/useTitle";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import BatchStats from "./BatchManagement/components/BatchStats";
-import QuickActions from "./BatchManagement/components/QuickActions";
-import Filters from "./BatchManagement/components/Filters";
-import BatchCard from "./BatchManagement/components/BatchCard";
-import BatchForm from "./BatchManagement/components/BatchForm";
-import BatchModal from "./BatchManagement/components/BatchModal";
+
+import {
+  BatchStats,
+  QuickActions,
+  BatchModal,
+  Filters,
+  BatchForm,
+  BatchCard,
+} from "@/Components/compIndex.js";
+
 import { Loader, AlertCircle } from "lucide-react";
-import { formatDate, formatMonth, getStatusFromDates } from "./BatchManagement/components/utils";
+import { formatDate, formatMonth, getStatusFromDates } from "@/lib/batchUtils";
 
 function BatchManagement() {
   useTitle("Batch Management");
@@ -118,63 +122,76 @@ function BatchManagement() {
 
   // Fetch available interns and HR when form opens
   useEffect(() => {
-    if (showCreateForm) {
-      fetchAvailableUsers();
-    }
-  }, [showCreateForm]);
+	  if (showCreateForm) {
+		if (isEditing) {
+		  // For edit mode, we'll fetch users in handleEditClick
+		  return;
+		}
+		// For create mode, just fetch available users normally
+		fetchAvailableUsers();
+	  }
+	}, [showCreateForm]);
 
-  const fetchAvailableUsers = async () => {
-    try {
-      setUsersLoading(true);
-      const baseUrl = import.meta.env.VITE_BASE_URL;
-      const response = await axios.get(`${baseUrl}/allusers`);
-      const data = response.data;
-		
-	  const availUsersResponse = await axios.get(`${baseUrl}/available-interns`);
-	  
-      let allUsers;
-      if (Array.isArray(data)) {
-        allUsers = data;
-      } else if (data.users && Array.isArray(data.users)) {
-        allUsers = data.users;
-      } else if (data.data && Array.isArray(data.data)) {
-        allUsers = data.data;
-      } else {
-        console.error("Unexpected API response structure:", data);
-        throw new Error("Invalid response format: expected an array of users");
-      }
+	const fetchAvailableUsers = async (batchInterns = null) => {
+	  try {
+		setUsersLoading(true);
+		const baseUrl = import.meta.env.VITE_BASE_URL;
 
-      const interns = availUsersResponse.data.data;
-		console.log(interns);
-      const hrPersonnel = allUsers
-        .filter((user) => user.role === "hr")
-        .map((user) => ({
-          id: user._id,
-          name: user.name || `${user.firstName || ""} ${user.lastName || ""}`.trim() || user.email || "Unknown User",
-          email: user.email || "",
-          role: user.role,
-        }));
+		const [allUsersResponse, availUsersResponse] = await Promise.all([
+		  axios.get(`${baseUrl}/allusers`),
+		  axios.get(`${baseUrl}/available-interns`)
+		]);
 
-      setAvailableInterns(interns);
-      setAvailableHR(hrPersonnel);
-    } catch (err) {
-      console.error("Error fetching users:", err);
-      let errorMessage = "Failed to load users. ";
-      if (err.message.includes("Invalid response format")) {
-        errorMessage += "The server response format is unexpected. Please check the API endpoint.";
-      } else if (err.message.includes("Users data is not an array")) {
-        errorMessage += "The user data format is invalid. Please contact support.";
-      } else {
-        errorMessage += "Please try again later.";
-      }
+		const allUsers = allUsersResponse.data?.data ?? allUsersResponse.data ?? [];
+		const availableInternsFromAPI = availUsersResponse.data?.data ?? availUsersResponse.data ?? [];
 
-      alert(errorMessage);
-      setAvailableInterns([]);
-      setAvailableHR([]);
-    } finally {
-      setUsersLoading(false);
-    }
-  };
+		// Process current batch interns if provided
+		let currentBatchInterns = [];
+		if (batchInterns) {
+		  currentBatchInterns = batchInterns.map(intern => ({
+			id: intern._id || intern.id,
+			name: intern.name,
+			email: intern.email,
+			role: intern.role || 'intern'
+		  }));
+		}
+
+		// Merge current batch interns with available interns (no duplicates)
+		const finalAvailableInterns = [
+		  ...currentBatchInterns,
+		  ...availableInternsFromAPI.filter(
+			availIntern => !currentBatchInterns.some(bi => bi.id === availIntern.id)
+		  )
+		];
+
+		const availableHR = allUsers
+		  .filter(user => user.role === "hr")
+		  .map(user => {
+			const firstName = user.firstName || "";
+			const lastName = user.lastName || "";
+			const fullName = `${firstName} ${lastName}`.trim();
+			
+			return {
+			  id: user._id,
+			  name: user.name || fullName || user.email || "Unknown HR",
+			  email: user.email || "",
+			  role: user.role
+			};
+		  });
+
+		setAvailableInterns(finalAvailableInterns);
+		setAvailableHR(availableHR);
+	  } catch (err) {
+		console.error("Error fetching users:", err);
+		alert("Failed to load users. Please try again later.");
+		setAvailableInterns([]);
+		setAvailableHR([]);
+	  } finally {
+		setUsersLoading(false);
+	  }
+	};
+
+
 
   const handleView = async (batchId, type = "simple") => {
     try {
@@ -243,28 +260,37 @@ function BatchManagement() {
     }
   };
 
-  const handleEditClick = async (batch) => {
-    try {
-      const baseUrl = import.meta.env.VITE_BASE_URL;
-      const res = await axios.get(`${baseUrl}/batches/${batch.id}`);
-      const fullBatch = res.data;
+	const handleEditClick = async (batch) => {
+	  try {
+		const baseUrl = import.meta.env.VITE_BASE_URL;
+		
+		// Fetch full batch details
+		const res = await axios.get(`${baseUrl}/batches/${batch.id}`);
+		const fullBatch = res.data;
 
-      setFormData({
-        name: fullBatch.name || "",
-        startDate: fullBatch.startDate?.split("T")[0] || "",
-        endDate: fullBatch.endDate?.split("T")[0] || "",
-        interns: fullBatch.interns?.map((i) => i._id || i) || [],
-        hr: fullBatch.hr?.map((h) => h.hrId?._id || h.hrId || h._id || h) || [],
-      });
+		// Set form data first
+		setFormData({
+		  name: fullBatch.name || "",
+		  startDate: fullBatch.startDate?.split("T")[0] || "",
+		  endDate: fullBatch.endDate?.split("T")[0] || "",
+		  interns: fullBatch.interns?.map(i => i._id || i) || [],
+		  hr: fullBatch.hr?.map(h => h.hrId?._id || h.hrId || h._id || h) || [],
+		});
 
-      setIsEditing(true);
-      setEditBatchId(fullBatch._id);
-      setShowCreateForm(true);
-    } catch (error) {
-      console.error("Error loading batch for edit:", error);
-      alert("Could not load batch details. Please try again.");
-    }
-  };
+		// Fetch users with current batch interns
+		await fetchAvailableUsers(fullBatch.interns);
+
+		setIsEditing(true);
+		setEditBatchId(fullBatch._id);
+		setShowCreateForm(true);
+	  } catch (error) {
+		console.error("Error loading batch for edit:", error);
+		alert("Could not load batch details. Please try again.");
+	  }
+	};
+
+
+
 
 	// Handle form submission
 	const handleCreateBatch = async (e) => {

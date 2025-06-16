@@ -10,6 +10,7 @@ import {
 } from "@/Components/compIndex.js";
 import { getStatusFromDates, formatMonth } from "@/lib/dateUtils";
 import { batchService } from "@/services/batchService.js";
+import { getMatchingBatchedByUserId } from "@/lib/batchUtils";
 
 import {
   Users,
@@ -60,29 +61,21 @@ function BatchManagement() {
     const fetchBatchData = async () => {
       try {
         setLoading(true);
-        var data = await batchService.fetchBatchData();
-        const batchIds = await batchService.fetchBatchIds();
+
+        // fetch relevant data
+        let data = await batchService.fetchBatchData();
         const progressData = await batchService.fetchBatchProgress();
 
-        // Filter for user's batches
-        const userBatches = batchIds.data.filter((batch) =>
-          batch.hr.some((hrMember) => hrMember._id === userId)
+        const filteredIds = await getMatchingBatchedByUserId({
+          userId: userId
+        })
+
+        const filteredBatches = data.filter((batch) =>
+          filteredIds.includes(batch._id)
         );
 
-        if (userBatches.length === 0) {
-          return;
-        }
-
-       // Extract batch IDs
-        const hrBatchIds = userBatches.map(batch => batch._id);
-
-        // Filter the main data to only include batches where ID matches
-        const filteredBatches = data.filter(batch => 
-            hrBatchIds.includes(batch._id)
-        );
-
-        data = filteredBatches;
-        // console.log(filteredBatches)
+        data = filteredBatches; // Will show the filtered data
+      
 
         const transformedData = data.map((batch) => {
           const safeDate = (date) => {

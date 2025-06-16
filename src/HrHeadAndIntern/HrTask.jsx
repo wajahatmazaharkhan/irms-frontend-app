@@ -8,6 +8,7 @@ import axios from "axios";
 import { toast } from "react-hot-toast";
 import { Loader, useTitle } from "@/Components/compIndex";
 import { batchService } from "@/services/batchService";
+import { getMatchingBatchedByUserId } from "@/lib/batchUtils";
 
 const API_BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -37,23 +38,12 @@ export default function AdminTask() {
         const response = await axios.get(`${API_BASE_URL}/allusers`);
         var usersList = response.data.data;
 
-        const batchIds = await batchService.fetchBatchIds();
-        const progressData = await batchService.fetchBatchProgress();
-
-        // Filter for user's batches
-        const userBatches = batchIds.data.filter((batch) =>
-          batch.hr.some((hrMember) => hrMember._id === userId)
-        );
-
-        if (userBatches.length === 0) {
-          return;
-        }
-
-        // Extract batch IDs
-        const hrBatchIds = userBatches.map((batch) => batch._id);
+        const filteredIds = await getMatchingBatchedByUserId({
+          userId: userId
+        })
 
         const filteredUsers = usersList.filter((user) =>
-          hrBatchIds.includes(user.batch)
+          filteredIds.includes(user.batch)
         );
 
         usersList = filteredUsers;

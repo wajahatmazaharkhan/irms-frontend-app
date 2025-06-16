@@ -8,7 +8,7 @@ import {
   UserCheck,
   Users,
 } from "lucide-react";
-import { getStatusColor, getStatusIcon } from "@/lib/batchCardUtils.jsx";
+import { getStatusColor, getStatusIcon } from "@/lib/batchUtils.jsx";
 
 export const BatchCard = ({
   batch,

@@ -5,11 +5,18 @@ import toast from "react-hot-toast";
 import { Alert, AlertDescription } from "@/Components/ui/alert";
 import { Loader, useTitle } from "@/Components/compIndex";
 import { Card, CardContent, CardHeader, CardTitle } from "@/Components/ui/card";
-import { InfoIcon, CheckCircle2, XCircle, X } from "lucide-react";
+import {
+  InfoIcon,
+  CheckCircle2,
+  XCircle,
+  X,
+  CrossIcon,
+  Trash2,
+} from "lucide-react";
 import Swal from "sweetalert2";
 
 const InternTasksSubmissions = () => {
-  useTitle(`Task Submissions`)
+  useTitle(`Task Submissions`);
   const [taskSubmissions, setTaskSubmissions] = useState([]);
   const [tasksMap, setTasksMap] = useState({}); // Map to store task ID -> task title
   const [loading, setLoading] = useState(true);
@@ -264,7 +271,7 @@ const InternTasksSubmissions = () => {
               buttonsStyling: false,
             });
           }}
-          className="text-3xl underline cursor-pointer font-semibold text-center mb-6"
+          className="text-4xl font-bold text-center text-blue-700 cursor-pointer mb-8 transition-transform duration-300 hover:-translate-y-1"
         >
           Intern Task Submissions
         </h2>
@@ -274,14 +281,13 @@ const InternTasksSubmissions = () => {
             taskSubmissions.map((submission) => (
               <div
                 key={submission._id}
-                className="mb-4 p-4 border border-gray-300 rounded-lg"
+                className="mb-6 p-5 border-2 rounded-xl shadow-md bg-white"
               >
-                <h3 className="font-semibold text-lg">
+                <h3 className="text-xl font-bold text-gray-900">
                   {submission.user?.name}
                 </h3>
-                <p>
-                  <strong>Task:</strong>{" "}
-                  {tasksMap[submission.task] || submission.task || "N/A"}
+                <p className="mt-2">
+                  <strong>Task:</strong> {tasksMap[submission.task]}
                 </p>
                 <p>
                   <strong>Comments:</strong>{" "}
@@ -313,21 +319,13 @@ const InternTasksSubmissions = () => {
                     />
                   </div>
                 )}
-                <div className="mt-2 space-x-2">
-                  <button
-                    onClick={() =>
-                      markAsComplete(submission.task, submission.user?._id)
-                    }
-                    className="bg-green-500 text-white px-2 py-1 rounded"
-                  >
+                <div className="mt-4 flex gap-3">
+                  <button className="bg-green-100 flex items-center justify-center gap-1 border-2 border-green-400 text-green-500 px-3 py-1.5 rounded-xl hover:bg-green-300 transition">
+                    <CheckCircle2 className="size-4" />
                     Accept
                   </button>
-                  <button
-                    onClick={() =>
-                      markAsIncomplete(submission.task, submission.user?._id)
-                    }
-                    className="bg-red-500 text-white px-2 py-1 rounded"
-                  >
+                  <button className="flex items-center justify-center gap-1 bg-red-100 border-2 border-red-400 text-red-500 px-3 py-1.5 rounded-xl hover:bg-red-300 transition">
+                    <XCircle className="size-4" />
                     Reject
                   </button>
                 </div>
@@ -338,9 +336,9 @@ const InternTasksSubmissions = () => {
           )}
         </div>
 
-        <div className="overflow-x-auto mt-10 hidden sm:block">
+        <div className="overflow-x-auto mx-auto xl:mx-12 lg:mx-8  mt-10 hidden sm:block">
           {/* Desktop View: Horizontal Table Layout */}
-          <table className="min-w-full table-auto border-collapse border border-gray-300">
+          <table className="min-w-full table-auto border-2 border-gray-600 bg-blue-100 rounded-xl shadow-lg overflow-hidden">
             <thead>
               <tr>
                 <th className="border-b p-3 text-left text-sm sm:text-base">
@@ -374,8 +372,13 @@ const InternTasksSubmissions = () => {
             </thead>
             <tbody>
               {taskSubmissions.length > 0 ? (
-                taskSubmissions.map((submission) => (
-                  <tr key={submission._id}>
+                taskSubmissions.map((submission, idx) => (
+                  <tr
+                    key={submission._id}
+                    className={`${
+                      idx % 2 === 0 ? "bg-white" : "bg-gray-50"
+                    } hover:bg-gray-100 transition-colors`}
+                  >
                     {/* Intern Name */}
                     <td className="border-b p-3 text-sm sm:text-base">
                       {submission.user?.name || "N/A"}
@@ -386,7 +389,7 @@ const InternTasksSubmissions = () => {
                       {tasksMap[submission.task] ? (
                         tasksMap[submission.task]
                       ) : (
-                        <p className="text-red-500 uppercase">approved</p>
+                        <p className="text-green-500 bg-green-100 border-2 border-green-400 py-0.5 px-3 text-sm rounded-full uppercase w-fit">approved</p>
                       )}
                     </td>
 
@@ -436,8 +439,9 @@ const InternTasksSubmissions = () => {
                         onClick={() =>
                           markAsComplete(submission.task, submission.user?._id)
                         }
-                        className="bg-green-500 text-white px-2 py-1 rounded"
+                        className="bg-green-100 flex items-center justify-center gap-1 border-2 border-green-400 text-green-500 px-3 py-1.5 rounded-xl hover:bg-green-300 transition"
                       >
+                        <CheckCircle2 className="size-4" />
                         Accept
                       </button>
                     </td>
@@ -451,8 +455,9 @@ const InternTasksSubmissions = () => {
                             submission.user?._id
                           )
                         }
-                        className="bg-red-500 text-white px-2 py-1 rounded"
+                        className="flex items-center justify-center gap-1 bg-red-100 border-2 border-red-400 text-red-500 px-3 py-1.5 rounded-xl hover:bg-red-300 transition"
                       >
+                        <XCircle className="size-4" />
                         Reject
                       </button>
                     </td>
@@ -461,8 +466,9 @@ const InternTasksSubmissions = () => {
                     <td className="border-b p-3 text-sm sm:text-base">
                       <button
                         onClick={() => deleteTask(submission.task)}
-                        className="bg-blue-500 text-white px-2 py-1 rounded"
+                        className="flex items-center justify-center gap-1 bg-blue-100 border-2 border-blue-400 text-blue-500 px-3 py-1.5 rounded-xl hover:bg-blue-300 transition"
                       >
+                        <Trash2 className="size-4" />
                         Delete
                       </button>
                     </td>

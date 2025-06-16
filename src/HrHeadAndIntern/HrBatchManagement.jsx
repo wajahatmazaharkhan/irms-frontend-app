@@ -1,40 +1,32 @@
-import CustomHrNavbar from "./CustomHrNavbar";
+import CustomNavbar from "./CustomHrNavbar";
 import useTitle from "@/Components/useTitle";
 import { useState, useEffect } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { Loader, AlertCircle } from "lucide-react";
 import {
-  BatchCard,
-  BatchDetails,
-  BatchFilterSearch,
+  BatchStats,
+  QuickActions,
+  BatchModal,
+  Filters,
   BatchForm,
+  BatchCard,
 } from "@/Components/compIndex.js";
-import { getStatusFromDates, formatMonth } from "@/lib/dateUtils";
+
+import { formatDate, formatMonth, getStatusFromDates } from "@/lib/batchUtils";
+
 import { batchService } from "@/services/batchService.js";
 
-import {
-  Users,
-  Plus,
-  Download,
-  CalendarDays,
-  UserCheck,
-  TrendingUp,
-  AlertCircle,
-  Calendar as CalendarIcon,
-  Settings,
-  Loader,
-} from "lucide-react";
-
-function BatchManagement() {
-  useTitle("Batch Management");
-
+function HRBatchManagement() {
+  useTitle("My Batches");
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
   const [selectedMonth, setSelectedMonth] = useState("");
   const [batchData, setBatchData] = useState([]);
-  const [batchInternHrIds, setBatchInternHrIds] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showCreateForm, setShowCreateForm] = useState(false);
-  const [formLoading, setFormLoading] = useState(false);
   const [availableInterns, setAvailableInterns] = useState([]);
   const [availableHR, setAvailableHR] = useState([]);
   const [deleteLoading, setDeleteLoading] = useState(null);
@@ -43,53 +35,50 @@ function BatchManagement() {
   const [editBatchId, setEditBatchId] = useState(null);
   const [selectedBatch, setSelectedBatch] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const userId = localStorage.getItem("userId");
-
-  // Form state
+  const [modalType, setModalType] = useState("simple");
+  const [formLoading, setFormLoading] = useState(false);
+  
   const [formData, setFormData] = useState({
     name: "",
     startDate: "",
-    EndDate: "",
+    endDate: "",
     interns: [],
     hr: [],
   });
-
+  const userId = localStorage.getItem("userId");
+  // Fetch batch data from API
   useEffect(() => {
     const fetchBatchData = async () => {
       try {
         setLoading(true);
         const baseUrl = import.meta.env.VITE_BASE_URL;
-        const response = await fetch(`${baseUrl}/api/batch/get-summary`);
-        const batchIds = await batchService.fetchBatchIds();
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        var data = await response.json();
-        const progressResponse = await fetch(`${baseUrl}/batches/progress`);
-        const progressData = await progressResponse.json();
-
-        // Filter for user's batches
-        const userBatches = batchIds.data.filter((batch) =>
+        
+        // Get all batch IDs first to filter by HR
+        const batchIdsResponse = await batchService.fetchBatchIds();
+        const userBatches = batchIdsResponse.data.filter((batch) =>
           batch.hr.some((hrMember) => hrMember._id === userId)
         );
 
         if (userBatches.length === 0) {
+          setBatchData([]);
+          setLoading(false);
           return;
         }
 
-       // Extract batch IDs
+        // Extract batch IDs for the current HR
         const hrBatchIds = userBatches.map(batch => batch._id);
 
-        // Filter the main data to only include batches where ID matches
-        const filteredBatches = data.filter(batch => 
-            hrBatchIds.includes(batch._id)
-        );
+        // Fetch summary data for all batches
+        const response = await fetch(`${baseUrl}/api/batch/get-summary`);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        
+        let data = await response.json();
+        // Filter to only include HR's batches
+        data = data.filter(batch => hrBatchIds.includes(batch._id));
 
-        data = filteredBatches;
-        // console.log(filteredBatches)
+        // Fetch progress data
+        const progressResponse = await fetch(`${baseUrl}/batches/progress`);
+        const progressData = await progressResponse.json();
 
         const transformedData = data.map((batch) => {
           const safeDate = (date) => {
@@ -105,14 +94,14 @@ function BatchManagement() {
             batchName: batch.name,
             month: formatMonth(batch.startDate),
             startDate: safeDate(batch.startDate),
-            endDate: safeDate(batch.EndDate),
+            endDate: safeDate(batch.endDate),
             totalInterns: batch.totalInterns,
             activeInterns: batch.totalInterns,
             completedInterns: `${batchProgress?.completedTasks ?? 0}/${
               batchProgress?.allTasks ?? 0
             }`,
             totalHR: batch.totalHR,
-            status: getStatusFromDates(batch.startDate, batch.EndDate),
+            status: getStatusFromDates(batch.startDate, batch.endDate),
             coordinator: "TBD",
             technologies: [],
             progress: batchProgress?.progress ?? 0,
@@ -130,20 +119,24 @@ function BatchManagement() {
     };
 
     fetchBatchData();
-  }, []);
+  }, [userId]);
 
-  // Fetch available interns and HR when form opens
-  useEffect(() => {
-    if (showCreateForm) {
-      fetchAvailableUsers();
-    }
-  }, [showCreateForm]);
-
-  const fetchAvailableUsers = async () => {
+	useEffect(() => {
+		if (showCreateForm) {
+		  fetchAvailableUsers();
+		}
+	  }, [showCreateForm]);
+  
+  
+	const fetchAvailableUsers = async () => {
     try {
       setUsersLoading(true);
-      const data = await batchService.fetchAvailableUsers();
-
+      const baseUrl = import.meta.env.VITE_BASE_URL;
+      const response = await axios.get(`${baseUrl}/allusers`);
+      const data = response.data;
+		
+	  const availUsersResponse = await axios.get(`${baseUrl}/available-interns`);
+	  
       let allUsers;
       if (Array.isArray(data)) {
         allUsers = data;
@@ -152,71 +145,88 @@ function BatchManagement() {
       } else if (data.data && Array.isArray(data.data)) {
         allUsers = data.data;
       } else {
+        console.error("Unexpected API response structure:", data);
         throw new Error("Invalid response format: expected an array of users");
       }
-
-      if (!Array.isArray(allUsers)) {
-        throw new Error("Users data is not an array");
-      }
-
-      const interns = allUsers
-        .filter(
-          (user) => user && typeof user === "object" && user.role === "intern"
-        )
-        .map((user) => ({
-          id: user._id,
-          name:
-            user.name ||
-            `${user.firstName || ""} ${user.lastName || ""}`.trim() ||
-            user.email ||
-            "Unknown User",
-          email: user.email || "",
-          role: user.role,
-        }));
-
+		
+      const interns = availUsersResponse.data.data;
+		console.log(interns);
+	  const currentUserId = userId;
       const hrPersonnel = allUsers
-        .filter(
-          (user) => user && typeof user === "object" && user.role === "hr"
-        )
-        .map((user) => ({
-          id: user._id,
-          name:
-            user.name ||
-            `${user.firstName || ""} ${user.lastName || ""}`.trim() ||
-            user.email ||
-            "Unknown User",
-          email: user.email || "",
-          role: user.role,
-        }));
+		  .filter((user) => user.role === "hr" && user._id === currentUserId) // Only current HR
+		  .map((user) => ({
+			id: user._id,
+			name: user.name || `${user.firstName || ""} ${user.lastName || ""}`.trim() || user.email || "Unknown User",
+			email: user.email || "",
+			role: user.role,
+		  }));
 
-      setAvailableInterns(interns);
-      setAvailableHR(hrPersonnel);
+		setAvailableInterns(interns);
+		setAvailableHR(hrPersonnel);
     } catch (err) {
       console.error("Error fetching users:", err);
-      alert(`Failed to load users: ${err.message}`);
+      let errorMessage = "Failed to load users. ";
+      if (err.message.includes("Invalid response format")) {
+        errorMessage += "The server response format is unexpected. Please check the API endpoint.";
+      } else if (err.message.includes("Users data is not an array")) {
+        errorMessage += "The user data format is invalid. Please contact support.";
+      } else {
+        errorMessage += "Please try again later.";
+      }
+
+      alert(errorMessage);
       setAvailableInterns([]);
       setAvailableHR([]);
     } finally {
       setUsersLoading(false);
     }
   };
-
-  const handleView = async (batchId) => {
+  
+  const handleView = async (batchId, type = "simple") => {
     try {
-      const response = await batchService.getBatchById(batchId);
-      if (!response.ok)
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      const data = await response.json();
-      console.log("Full batch object:", data); // ✅ You can verify what's coming
-      setSelectedBatch(data);
       setIsModalOpen(true);
+      setLoading(true);
+      const response = await batchService.getBatchById(batchId);
+      if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+      
+      const batchData = await response.json();
+      
+      if (type === "deep" && batchData.tasks?.length > 0) {
+        const tasksWithDetails = await Promise.all(
+          batchData.tasks.map(async (task) => {
+            try {
+              if (!task.taskId) return task;
+              const taskResponse = await axios.get(
+                `${import.meta.env.VITE_BASE_URL}/task/get-task/${task.taskId}`,
+                { timeout: 3000 }
+              );
+              return {
+                ...task,
+                details: taskResponse.data?.taskDetails || null
+              };
+            } catch (error) {
+              console.error(`Error fetching task ${task.taskId}:`, error);
+              return task;
+            }
+          })
+        );
+        batchData.tasks = tasksWithDetails;
+      }
+      
+      setSelectedBatch(batchData);
+      setModalType(type);
     } catch (error) {
-      console.error("Failed to fetch batch details:", error.message);
-      alert("Failed to load batch details.");
+      console.error("Failed to fetch batch details:", error);
+      if (error.response?.status === 500) {
+        alert("Server error occurred while loading batch details");
+      } else {
+        alert("Failed to load batch details. Please try again.");
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Handle delete batch
   const handleDeleteBatch = async (batchId, batchName) => {
     const confirmed = window.confirm(
       `Are you sure you want to delete the batch "${batchName}"? This action cannot be undone.`
@@ -225,11 +235,10 @@ function BatchManagement() {
     if (!confirmed) return;
 
     setDeleteLoading(batchId);
+
     try {
-      const response = await batchService.deleteBatch(batchId);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+      const baseUrl = import.meta.env.VITE_BASE_URL;
+      await axios.delete(`${baseUrl}/batches/${batchId}`);
       setBatchData((prevBatches) =>
         prevBatches.filter((batch) => batch.id !== batchId)
       );
@@ -242,63 +251,18 @@ function BatchManagement() {
     }
   };
 
-  // Handle form submission
-  const handleCreateBatch = async (e) => {
-    e.preventDefault();
-    console.log(formData.hr);
-
-    if (!formData.name || !formData.startDate || !formData.EndDate) {
-      alert("Please fill in all required fields.");
-      return;
-    }
-
-    if (new Date(formData.startDate) >= new Date(formData.EndDate)) {
-      alert("End date must be after start date.");
-      return;
-    }
-
-    if (formData.interns.length === 0 || formData.hr.length === 0) {
-      alert("Please select at least one intern and one HR personnel.");
-      return;
-    }
-
-    setFormLoading(true);
-    try {
-      const response = await batchService.createBatch(formData);
-      const result = await response.json();
-
-      setFormData({
-        name: "",
-        startDate: "",
-        EndDate: "",
-        interns: [],
-        hr: [],
-      });
-      setShowCreateForm(false);
-      alert("Batch created successfully!");
-      window.location.reload();
-    } catch (err) {
-      console.error("Error creating batch:", err);
-      alert(`Failed to create batch: ${err.message}`);
-    } finally {
-      setFormLoading(false);
-    }
-  };
-
   const handleEditClick = async (batch) => {
     try {
       const baseUrl = import.meta.env.VITE_BASE_URL;
-      const res = await fetch(`${baseUrl}/batches/${batch.id}`); // assuming batch has _id
-      if (!res.ok) throw new Error("Failed to fetch batch details");
-
-      const fullBatch = await res.json();
+      const res = await axios.get(`${baseUrl}/batches/${batch.id}`);
+      const fullBatch = res.data;
 
       setFormData({
         name: fullBatch.name || "",
         startDate: fullBatch.startDate?.split("T")[0] || "",
-        EndDate: fullBatch.EndDate?.split("T")[0] || "",
+        endDate: fullBatch.endDate?.split("T")[0] || "",
         interns: fullBatch.interns?.map((i) => i._id || i) || [],
-        hr: fullBatch.hr?.map((h) => h._id || h) || [],
+        hr: fullBatch.hr?.map((h) => h.hrId?._id || h.hrId || h._id || h) || [],
       });
 
       setIsEditing(true);
@@ -310,30 +274,83 @@ function BatchManagement() {
     }
   };
 
-  const handleUpdateBatch = async (e) => {
-    e.preventDefault();
-    setFormLoading(true);
-    try {
-      const response = await batchService.updateBatch(editBatchId, formData);
-      const data = await response.json();
+	// Handle form submission
+	const handleCreateBatch = async (e) => {
+	  e.preventDefault();
 
-      if (!response.ok) {
-        throw new Error(data.error || "Update failed");
-      }
+	  // Validation
+	  if (!formData.name || !formData.startDate || !formData.endDate) {
+		alert("Please fill in all required fields.");
+		return;
+	  }
 
-      alert("Batch updated successfully!");
-      setShowCreateForm(false);
-      setIsEditing(false);
-      setEditBatchId(null);
-    } catch (err) {
-      alert(err.message || "Update failed");
-      console.error(err);
-    } finally {
-      setFormLoading(false);
-    }
-  };
+	  if (new Date(formData.startDate) >= new Date(formData.endDate)) {
+		alert("End date must be after start date.");
+		return;
+	  }
 
-  // Handle form input changes
+	  if (formData.interns.length === 0) {
+		alert("Please select at least one intern.");
+		return;
+	  }
+
+	  if (formData.hr.length === 0) {
+		alert("Please select at least one HR personnel.");
+		return;
+	  }
+
+	  setFormLoading(true);
+
+	  try {
+		const baseUrl = import.meta.env.VITE_BASE_URL;
+		const response = await axios.post(`${baseUrl}/batches`, formData);
+		const result = response.data;
+
+		// Reset form and close modal
+		setFormData({
+		  name: "",
+		  startDate: "",
+		  endDate: "",
+		  interns: [],
+		  hr: [],
+		});
+		setShowCreateForm(false);
+
+		alert("Batch created successfully!");
+		window.location.reload();
+	  } catch (err) {
+		console.error("Error creating batch:", err);
+		alert(`Failed to create batch: ${err.response?.data?.message || err.message}`);
+	  } finally {
+		setFormLoading(false);
+	  }
+	};
+
+	const handleUpdateBatch = async (e) => {
+	  e.preventDefault();
+	  setFormLoading(true);
+
+	  try {
+		const baseUrl = import.meta.env.VITE_BASE_URL;
+		const res = await axios.put(
+		  `${baseUrl}/batches/${editBatchId}`,
+		  formData
+		);
+		const data = res.data;
+
+		alert("Batch updated successfully!");
+		setShowCreateForm(false);
+		setIsEditing(false);
+		setEditBatchId(null);
+		window.location.reload();
+	  } catch (err) {
+		alert(err.response?.data?.message || err.message || "Update failed");
+		console.error(err);
+	  } finally {
+		setFormLoading(false);
+	  }
+	};
+	
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -342,110 +359,39 @@ function BatchManagement() {
     }));
   };
 
-  // Handle multi-select changes
   const handleMultiSelectChange = (field, value) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: prev[field].includes(value)
-        ? prev[field].filter((item) => item !== value)
-        : [...prev[field], value],
-    }));
+    const stringValue = String(value);
+    setFormData((prev) => {
+      const current = prev[field].map(String);
+      return {
+        ...prev,
+        [field]: current.includes(stringValue)
+          ? current.filter((item) => item !== stringValue)
+          : [...current, stringValue],
+      };
+    });
   };
-
-  // Calculate dashboard stats from fetched data
-  const dashboardStats = [
-    {
-      icon: Users,
-      label: "Total Batches",
-      value: batchData.length.toString(),
-      color: "text-blue-600",
-      bgColor: "bg-blue-50",
-      borderColor: "border-blue-200",
-    },
-    {
-      icon: CalendarDays,
-      label: "Active Sessions",
-      value: batchData
-        .filter((batch) => batch.status === "Active")
-        .length.toString(),
-      color: "text-green-600",
-      bgColor: "bg-green-50",
-      borderColor: "border-green-200",
-    },
-    {
-      icon: UserCheck,
-      label: "Total Interns",
-      value: batchData
-        .reduce((sum, batch) => sum + batch.totalInterns, 0)
-        .toString(),
-      color: "text-purple-600",
-      bgColor: "bg-purple-50",
-      borderColor: "border-purple-200",
-    },
-    {
-      icon: TrendingUp,
-      label: "Total HR",
-      value: batchData
-        .reduce((sum, batch) => sum + batch.totalHR, 0)
-        .toString(),
-      color: "text-orange-600",
-      bgColor: "bg-orange-50",
-      borderColor: "border-orange-200",
-    },
-  ];
-
-  const quickActions = [
-    {
-      title: "Create New Batch",
-      description: "Start a new intern batch session",
-      icon: Plus,
-      color: "from-blue-500 to-blue-700",
-      action: "create",
-      onClick: () => setShowCreateForm(true),
-    },
-    {
-      title: "Schedule Sessions",
-      description: "Plan upcoming batch sessions",
-      icon: CalendarIcon,
-      color: "from-green-500 to-green-700",
-      action: "schedule",
-    },
-    {
-      title: "Export Reports",
-      description: "Download batch performance reports",
-      icon: Download,
-      color: "from-purple-500 to-purple-700",
-      action: " ",
-    },
-    {
-      title: "Batch Settings",
-      description: "Configure batch parameters",
-      icon: Settings,
-      color: "from-orange-500 to-orange-700",
-      action: "settings",
-    },
-  ];
-
-  const filteredBatches = batchData.filter((batch) => {
-    const matchesSearch =
-      batch.batchName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      batch.coordinator.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus =
-      filterStatus === "all" ||
-      batch.status.toLowerCase() === filterStatus.toLowerCase();
-    const matchesMonth =
-      selectedMonth === "" || batch.month.includes(selectedMonth);
-
-    return matchesSearch && matchesStatus && matchesMonth;
-  });
 
   // Get unique months for filter dropdown
   const uniqueMonths = [...new Set(batchData.map((batch) => batch.month))];
 
+	const filteredBatches = batchData.filter((batch) => {
+	  const matchesSearch =
+		batch.batchName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+		batch.coordinator.toLowerCase().includes(searchTerm.toLowerCase());
+	  const matchesStatus =
+		filterStatus === "all" ||
+		batch.status.toLowerCase() === filterStatus.toLowerCase(); // Case-insensitive comparison
+	  const matchesMonth =
+		selectedMonth === "" || batch.month.includes(selectedMonth);
+
+	  return matchesSearch && matchesStatus && matchesMonth;
+	});
+
   if (loading) {
     return (
       <>
-        <CustomHrNavbar />
+        <CustomNavbar />
         <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
           <div className="text-center">
             <Loader className="w-12 h-12 text-blue-600 mx-auto mb-4 animate-spin" />
@@ -462,7 +408,7 @@ function BatchManagement() {
   if (error) {
     return (
       <>
-        <CustomHrNavbar />
+        <CustomNavbar />
         <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
           <div className="text-center">
             <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
@@ -484,7 +430,7 @@ function BatchManagement() {
 
   return (
     <>
-      <CustomHrNavbar />
+      <CustomNavbar />
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
         <div className="container mx-auto p-6">
           {/* Header Section */}
@@ -497,56 +443,10 @@ function BatchManagement() {
             </p>
           </div>
 
-          {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            {dashboardStats.map((stat, index) => {
-              const IconComponent = stat.icon;
-              return (
-                <div
-                  key={index}
-                  className={`bg-white rounded-xl shadow-md p-6 border ${stat.borderColor} hover:shadow-lg transition-shadow duration-300`}
-                >
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-gray-600 mb-1">
-                        {stat.label}
-                      </p>
-                      <p className={`text-2xl font-bold ${stat.color}`}>
-                        {stat.value}
-                      </p>
-                    </div>
-                    <div className={`p-3 rounded-full ${stat.bgColor}`}>
-                      <IconComponent className={`w-6 h-6 ${stat.color}`} />
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Quick Actions */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            {quickActions.map((action, index) => {
-              const IconComponent = action.icon;
-              return (
-                <button
-                  key={index}
-                  onClick={action.onClick}
-                  className={`bg-gradient-to-br ${action.color} rounded-xl shadow-lg p-6 text-white hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 text-left`}
-                >
-                  <div className="flex items-center justify-between mb-4">
-                    <IconComponent className="w-8 h-8" />
-                    <div className="w-2 h-2 bg-white rounded-full opacity-70"></div>
-                  </div>
-                  <h3 className="text-lg font-semibold mb-2">{action.title}</h3>
-                  <p className="text-sm opacity-90">{action.description}</p>
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Filters and Search */}
-          <BatchFilterSearch
+          <BatchStats batchData={batchData} />
+          <QuickActions setShowCreateForm={setShowCreateForm} />
+          
+          <Filters 
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
             filterStatus={filterStatus}
@@ -569,50 +469,65 @@ function BatchManagement() {
               />
             ))}
           </div>
-          {isModalOpen && selectedBatch && (
-            <BatchDetails
-              setIsModalOpen={setIsModalOpen}
-              selectedBatch={selectedBatch}
-            />
+
+          {filteredBatches.length === 0 && !loading && (
+            <div className="text-center py-12">
+              <AlertCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-700 mb-2">
+                No batches found
+              </h3>
+              <p className="text-gray-500">
+                {batchData.length === 0
+                  ? "No batch data available. Create your first batch to get started."
+                  : "Try adjusting your search or filter criteria"}
+              </p>
+            </div>
           )}
         </div>
-
-        {filteredBatches.length === 0 && !loading && (
-          <div className="text-center py-12">
-            <AlertCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-700 mb-2">
-              No batches found
-            </h3>
-            <p className="text-gray-500">
-              {batchData.length === 0
-                ? "No batch data available. Create your first batch to get started."
-                : "Try adjusting your search or filter criteria"}
-            </p>
-          </div>
-        )}
       </div>
 
-      {/* Create Batch Modal */}
-      {showCreateForm && (
-        <BatchForm
-          formData={formData}
-          availableInterns={availableInterns}
-          availableHR={availableHR}
-          isEditing={isEditing}
-          setShowCreateForm={setShowCreateForm}
-          setIsEditing={setIsEditing}
-          setEditBatchId={setEditBatchId}
-          setFormData={setFormData}
-          usersLoading={usersLoading}
-          handleUpdateBatch={handleUpdateBatch}
-          handleCreateBatch={handleCreateBatch}
-          handleInputChange={handleInputChange}
-          handleMultiSelectChange={handleMultiSelectChange}
-          formLoading={formLoading}
+      {isModalOpen && selectedBatch && (
+        <BatchModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          batch={selectedBatch}
+          type={modalType}
+          loading={loading}
         />
       )}
+
+      {showCreateForm && (
+		  <BatchForm
+			isOpen={showCreateForm}
+			onClose={() => {
+			  setShowCreateForm(false);
+			  setIsEditing(false);
+			  setEditBatchId(null);
+			  setFormData({
+				name: "",
+				startDate: "",
+				endDate: "",
+				interns: [],
+				hr: [],
+			  });
+			}}
+			formData={formData}
+			setFormData={setFormData}
+			handleInputChange={handleInputChange}
+			handleMultiSelectChange={handleMultiSelectChange}
+			availableInterns={availableInterns}
+			availableHR={availableHR}
+			usersLoading={usersLoading}
+			isEditing={isEditing}
+			editBatchId={editBatchId}
+			formLoading={formLoading} // Add this line
+			handleCreateBatch={handleCreateBatch} // Add these two lines
+			handleUpdateBatch={handleUpdateBatch}
+			hideActions={true}
+		  />
+		)}
     </>
   );
 }
 
-export default BatchManagement;
+export default HRBatchManagement;

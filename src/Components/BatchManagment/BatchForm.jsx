@@ -1,6 +1,6 @@
 import { X, Save, Loader } from "lucide-react";
 
-export default function BatchForm({
+export function BatchForm({
   isOpen,
   onClose,
   formData,

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import CustomHrNavbar from "./CustomHrNavbar";
 import useTitle from "@/Components/useTitle";
 import { useState, useEffect } from "react";
@@ -59,16 +60,8 @@ function BatchManagement() {
     const fetchBatchData = async () => {
       try {
         setLoading(true);
-        // const baseUrl = import.meta.env.VITE_BASE_URL;
-        // const response = await fetch(`${baseUrl}/api/batch/get-summary`);
-        const batchIds = await batchService.fetchBatchIds();
-
-        // if (!response.ok) {
-        //   throw new Error(`HTTP error! status: ${response.status}`);
-        // }
-
         var data = await batchService.fetchBatchData();
-        // const progressResponse = await fetch(`${baseUrl}/batches/progress`);
+        const batchIds = await batchService.fetchBatchIds();
         const progressData = await batchService.fetchBatchProgress();
 
         // Filter for user's batches

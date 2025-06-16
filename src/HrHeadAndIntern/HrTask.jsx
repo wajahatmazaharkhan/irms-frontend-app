@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/Components/ui/card";
 import { Button } from "@/Components/ui/button";
@@ -6,6 +7,7 @@ import CustomNavbar from "./CustomHrNavbar";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { Loader, useTitle } from "@/Components/compIndex";
+import { batchService } from "@/services/batchService";
 
 const API_BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -19,19 +21,42 @@ const INITIAL_TASK_STATE = {
 };
 
 export default function AdminTask() {
-  useTitle('Task Management')
+  useTitle("Task Management");
   const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState([]);
   const [task, setTask] = useState(INITIAL_TASK_STATE);
   const [successMessage, setSuccessMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const userId = localStorage.getItem("userId");
+
   useEffect(() => {
     const initializeData = async () => {
       setLoading(true);
       try {
         const response = await axios.get(`${API_BASE_URL}/allusers`);
-        const usersList = response.data.data;
+        var usersList = response.data.data;
+
+        const batchIds = await batchService.fetchBatchIds();
+        const progressData = await batchService.fetchBatchProgress();
+
+        // Filter for user's batches
+        const userBatches = batchIds.data.filter((batch) =>
+          batch.hr.some((hrMember) => hrMember._id === userId)
+        );
+
+        if (userBatches.length === 0) {
+          return;
+        }
+
+        // Extract batch IDs
+        const hrBatchIds = userBatches.map((batch) => batch._id);
+
+        const filteredUsers = usersList.filter((user) =>
+          hrBatchIds.includes(user.batch)
+        );
+
+        usersList = filteredUsers;
 
         if (!Array.isArray(usersList)) {
           throw new Error("Invalid users data format received");

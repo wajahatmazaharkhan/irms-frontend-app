@@ -206,297 +206,145 @@ const InternTasksSubmissions = () => {
 
   return (
   <>
-    <CustomNavbar />
-    <div className="container mx-auto my-6 p-6">
-      <h2
-        onClick={() => {
-          Swal.fire({
-            title:
-              '<div class="text-xl font-semibold text-gray-800 mb-2">Task Acceptance and Rejection Process</div>',
-            html: `
-            <div class="space-y-4 text-left p-2">
-              <!-- Accept Section -->
-              <div class="flex items-start gap-3 bg-green-50 p-4 rounded-lg border border-green-200">
-                <div class="mt-1">
-                  <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                  </svg>
-                </div>
-                <div>
-                  <h4 class="font-semibold text-green-700 text-lg mb-1">Accept</h4>
-                  <p class="text-green-600 leading-relaxed">
-                    Task is approved, and the user is notified. The task will be 
-                    <span class="font-semibold text-red-600">deleted</span> 
-                    from the database, but all submission details, files, and links will be archived in the admin panel for reference.
-                  </p>
-                </div>
-              </div>
-      
-              <!-- Reject Section -->
-              <div class="flex items-start gap-3 bg-red-50 p-4 rounded-lg border border-red-200">
-                <div class="mt-1">
-                  <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                  </svg>
-                </div>
-                <div>
-                  <h4 class="font-semibold text-red-700 text-lg mb-1">Reject</h4>
-                  <p class="text-red-600 leading-relaxed">
-                    User is notified for revision with an option to resubmit the task.
-                  </p>
-                </div>
-              </div>
-      
-              <!-- Important Note -->
-              <div class="flex items-start gap-3 bg-blue-50 p-4 rounded-lg border border-blue-200">
-                <div class="mt-1">
-                  <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                  </svg>
-                </div>
-                <div>
-                  <span class="font-semibold text-blue-700">Important:</span>
-                  <p class="text-blue-600 leading-relaxed">
-                    No need to worry, as all task submissions will be securely saved in the admin panel for future reference.
-                  </p>
-                </div>
-              </div>
-            </div>
-          `,
-            showCancelButton: true,
-            cancelButtonText: "Close",
-            showConfirmButton: false,
-            width: "600px",
-            padding: "2rem",
-            showCloseButton: true,
-            customClass: {
-              popup: "rounded-xl",
-              cancelButton:
-                "px-6 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200",
-              actions: "mt-4",
-              container: "font-sans",
-            },
-            buttonsStyling: false,
-          });
-        }}
-        className="text-3xl underline cursor-pointer font-semibold text-center mb-6"
-      >
-        Intern Task Submissions
-      </h2>
+  <CustomNavbar />
+  <div className="w-full max-w-[1440px] mx-auto my-6 px-4 md:px-10">
+    <h2
+      onClick={() => {
+        Swal.fire({
+          title:
+            '<div class="text-xl font-semibold text-gray-800 mb-2">Task Acceptance and Rejection Process</div>',
+          html: `...`, // Keep your existing Swal HTML here
+          showCancelButton: true,
+          cancelButtonText: "Close",
+          showConfirmButton: false,
+          width: "600px",
+          padding: "2rem",
+          showCloseButton: true,
+          customClass: {
+            popup: "rounded-xl",
+            cancelButton:
+              "px-6 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200",
+            actions: "mt-4",
+            container: "font-sans",
+          },
+          buttonsStyling: false,
+        });
+      }}
+      className="text-3xl underline cursor-pointer font-semibold text-center mb-6"
+    >
+      Intern Task Submissions
+    </h2>
 
-      {/* Mobile View */}
-      <div className="overflow-x-auto mt-10 sm:hidden">
-        {taskSubmissions.length > 0 ? (
-          taskSubmissions.map((submission) => (
-            <div
-              key={submission._id}
-              className="mb-4 p-4 border border-gray-300 rounded-lg"
-            >
-              <h3 className="font-semibold text-lg">
-                {submission.user?.name}
-              </h3>
-              <p>
-                <strong>Task:</strong>{" "}
-                {submission.taskDetails?.title || submission.task || "N/A"}
-              </p>
-              <p>
-                <strong>Status:</strong>{" "}
-                {submission.taskDetails?.status || "N/A"}
-              </p>
-              <p>
-                <strong>Comments:</strong>{" "}
-                {submission.comments || "No Comments"}
-              </p>
-              <p>
-                <strong>Created At:</strong>{" "}
-                {new Date(submission.createdAt).toLocaleString()}
-              </p>
-              {submission.file && (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {taskSubmissions.length > 0 ? (
+        taskSubmissions.map((submission) => (
+          <div
+            key={submission._id}
+            className="p-6 bg-gradient-to-br from-white via-indigo-50 to-purple-100 rounded-2xl shadow-md border border-indigo-200"
+          >
+            <h3 className="text-xl font-bold text-indigo-700 mb-2">
+              {submission.user?.name || "Unnamed Intern"}
+            </h3>
+
+            <p className="text-gray-700 mb-1">
+              <span className="font-semibold">Task:</span>{" "}
+              {submission.taskDetails?.title || submission.task || "N/A"}
+            </p>
+
+            <p className="mb-1">
+              <span className="font-semibold">Status:</span>{" "}
+              <span className="px-2 py-1 text-sm font-medium rounded bg-yellow-100 text-yellow-700">
+                {submission.taskDetails?.status || "Pending"}
+              </span>
+            </p>
+
+            <p className="text-gray-600 mb-1">
+              <span className="font-semibold">Comments:</span>{" "}
+              {submission.comments || "No Comments"}
+            </p>
+
+            <p className="text-gray-600 mb-2">
+              <span className="font-semibold">Created:</span>{" "}
+              {new Date(submission.createdAt).toLocaleString()}
+            </p>
+
+            {/* File Section */}
+            <div className="mb-2">
+              <span className="font-semibold text-gray-700">File:</span>{" "}
+              {submission.file ? (
                 <a
                   href={submission.file}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-500 hover:underline block mt-2"
+                  className="text-blue-600 hover:underline ml-1"
                 >
-                  View File
+                  📄 View File
                 </a>
+              ) : (
+                <span className="text-gray-500 ml-1">No File Uploaded</span>
               )}
-              {submission.image && (
+            </div>
+
+            {/* Image Section */}
+            <div className="mb-2">
+              <span className="font-semibold text-gray-700">Image:</span>{" "}
+              {submission.image ? (
                 <div
-                  className="mt-2"
+                  className="mt-2 cursor-pointer"
                   onClick={() => redirectToImage(submission.image)}
                 >
                   <img
                     src={submission.image}
                     alt="Task Submission"
-                    className="w-16 h-16 cursor-pointer object-cover rounded"
+                    className="rounded-lg w-full h-40 object-cover border border-gray-300 shadow-sm"
                   />
                 </div>
+              ) : (
+                <span className="text-gray-500 ml-1">No Image Uploaded</span>
               )}
-              <div className="mt-3 flex gap-2">
-                <button
-                  onClick={() =>
-                    markAsComplete(submission.task, submission.user?._id)
-                  }
-                  className="bg-green-500 text-white px-3 py-1 rounded flex items-center gap-1"
-                >
-                  <CheckCircle2 size={16} /> Accept
-                </button>
-                <button
-                  onClick={() =>
-                    markAsIncomplete(submission.task, submission.user?._id)
-                  }
-                  className="bg-red-500 text-white px-3 py-1 rounded flex items-center gap-1"
-                >
-                  <XCircle size={16} /> Reject
-                </button>
-                <button
-                  onClick={() => deleteTask(submission.task)}
-                  className="bg-blue-500 text-white px-3 py-1 rounded flex items-center gap-1"
-                >
-                  <X size={16} /> Delete
-                </button>
-              </div>
             </div>
-          ))
-        ) : (
+
+            {/* Action Buttons */}
+            <div className="mt-4 flex flex-wrap gap-2">
+              <button
+                onClick={() =>
+                  markAsComplete(submission.task, submission.user?._id)
+                }
+                className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-lg text-sm flex items-center gap-1"
+              >
+                <CheckCircle2 size={16} /> Accept
+              </button>
+              <button
+                onClick={() =>
+                  markAsIncomplete(submission.task, submission.user?._id)
+                }
+                className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-sm flex items-center gap-1"
+              >
+                <XCircle size={16} /> Reject
+              </button>
+              <button
+                onClick={() => deleteTask(submission.task)}
+                className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-lg text-sm flex items-center gap-1"
+              >
+                <X size={16} /> Delete
+              </button>
+            </div>
+          </div>
+        ))
+      ) : (
+        <div className="col-span-full">
           <Alert className="bg-blue-50 border-blue-200">
             <InfoIcon className="text-blue-500" />
             <AlertDescription>
               No task submissions available for your batches.
             </AlertDescription>
           </Alert>
-        )}
-      </div>
-
-      {/* Desktop View */}
-      <div className="overflow-x-auto mt-10 hidden sm:block">
-        <table className="min-w-full table-auto border-collapse border border-gray-300">
-          <thead>
-            <tr className="bg-gray-50">
-              <th className="border-b p-3 text-left text-sm sm:text-base">
-                Intern Name
-              </th>
-              <th className="border-b p-3 text-left text-sm sm:text-base">
-                Task
-              </th>
-              <th className="border-b p-3 text-left text-sm sm:text-base">
-                Status
-              </th>
-              <th className="border-b p-3 text-left text-sm sm:text-base">
-                Comments
-              </th>
-              <th className="border-b p-3 text-left text-sm sm:text-base">
-                File
-              </th>
-              <th className="border-b p-3 text-left text-sm sm:text-base">
-                Image
-              </th>
-              <th className="border-b p-3 text-left text-sm sm:text-base">
-                Created At
-              </th>
-              <th className="border-b p-3 text-left text-sm sm:text-base">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {taskSubmissions.length > 0 ? (
-              taskSubmissions.map((submission) => (
-                <tr key={submission._id} className="hover:bg-gray-50">
-                  <td className="border-b p-3 text-sm sm:text-base">
-                    {submission.user?.name || "N/A"}
-                  </td>
-
-                  <td className="border-b p-3 text-sm sm:text-base">
-                    {submission.taskDetails?.title || submission.task}
-                  </td>
-
-                  <td className="border-b p-3 text-sm sm:text-base capitalize">
-                    {submission.taskDetails?.status || "N/A"}
-                  </td>
-
-                  <td className="border-b p-3 text-sm sm:text-base max-w-xs truncate">
-                    {submission.comments || "No Comments"}
-                  </td>
-
-                  <td className="border-b p-3 text-sm sm:text-base">
-                    {submission.file ? (
-                      <a
-                        href={submission.file}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-500 hover:underline"
-                      >
-                        View File
-                      </a>
-                    ) : (
-                      "No File"
-                    )}
-                  </td>
-
-                  <td className="border-b p-3 text-sm sm:text-base">
-                    {submission.image ? (
-                      <img
-                        onClick={() => redirectToImage(submission.image)}
-                        src={submission.image}
-                        alt="Task Submission"
-                        className="w-16 h-16 cursor-pointer object-cover rounded"
-                      />
-                    ) : (
-                      "No Image"
-                    )}
-                  </td>
-
-                  <td className="border-b p-3 text-sm sm:text-base">
-                    {new Date(submission.createdAt).toLocaleString()}
-                  </td>
-
-                  <td className="border-b p-3 text-sm sm:text-base">
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() =>
-                          markAsComplete(submission.task, submission.user?._id)
-                        }
-                        className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded flex items-center gap-1 text-xs"
-                      >
-                        <CheckCircle2 size={14} /> Accept
-                      </button>
-                      <button
-                        onClick={() =>
-                          markAsIncomplete(submission.task, submission.user?._id)
-                        }
-                        className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded flex items-center gap-1 text-xs"
-                      >
-                        <XCircle size={14} /> Reject
-                      </button>
-                      <button
-                        onClick={() => deleteTask(submission.task)}
-                        className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded flex items-center gap-1 text-xs"
-                      >
-                        <X size={14} /> Delete
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="8" className="p-3 text-center">
-                  <Alert className="bg-blue-50 border-blue-200">
-                    <InfoIcon className="text-blue-500" />
-                    <AlertDescription>
-                      No task submissions available for your batches.
-                    </AlertDescription>
-                  </Alert>
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+        </div>
+      )}
     </div>
-  </>
+  </div>
+</>
+
 );
 };
 

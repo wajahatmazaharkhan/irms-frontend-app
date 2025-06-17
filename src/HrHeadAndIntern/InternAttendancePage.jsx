@@ -211,7 +211,6 @@ const deleteAttendance = async (userId) => {
 
     setProcessing(false);
     setShowConfirmDialog(false);
-    console.log("done")
   };
 
   const filteredUsers = users.filter(
@@ -368,8 +367,16 @@ const deleteAttendance = async (userId) => {
           <AlertDialogHeader>
             <AlertDialogTitle>Confirm Bulk Action</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to mark all {filteredUsers.length} users as{" "}
-              {bulkAction}?
+              You are about to mark <strong>
+                {
+                  filteredUsers.filter(user => !attendanceMap[user._id]).length
+                }
+              </strong>{" "}
+              out of <strong>{filteredUsers.length}</strong> users as <strong>{bulkAction}</strong>.
+              <br />
+              <span className="text-sm text-gray-600">
+                Already marked users will be skipped.
+              </span>
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

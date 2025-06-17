@@ -49,58 +49,56 @@ const AdminNotify = () => {
   ];
 
   const handleSendNotification = async () => {
-    if (!formData.status || !formData.message) {
-      Swal.fire({
-        icon: "error",
-        title: "Required Fields Missing",
-        text: "Please fill in all fields",
-        confirmButtonColor: "#3B82F6",
-      });
-      return;
-    }
+  if (!formData.status || !formData.message) {
+    Swal.fire({
+      icon: "error",
+      title: "Required Fields Missing",
+      text: "Please fill in all fields",
+      confirmButtonColor: "#3B82F6",
+    });
+    return;
+  }
 
-    setIsLoading(true);
+  setIsLoading(true);
 
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_BASE_URL}/send/notify-all`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
-        }
-      );
-
-      if (response.ok) {
-        Swal.fire({
-          icon: "success",
-          title: "Success!",
-          text: "Notification sent successfully to all users",
-          timer: 2000,
-          showConfirmButton: false,
-          confirmButtonColor: "#3B82F6",
-        });
-        setFormData({ status: "", message: "" });
-      } else {
-        throw new Error("Failed to send notification");
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_BASE_URL}/send/notification`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(formData),
       }
-    } catch (error) {
+    );
+
+    if (response.ok) {
       Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "Failed to send notification. Please try again.",
+        icon: "success",
+        title: "Success!",
+        text: "Notification sent successfully to all users",
+        timer: 2000,
+        showConfirmButton: false,
         confirmButtonColor: "#3B82F6",
       });
-    } finally {
-      setIsLoading(false);
+      setFormData({ status: "", message: "" });
+    } else {
+      throw new Error("Failed to send notification");
     }
-  };
+  } catch (error) {
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "Failed to send notification. Please try again.",
+      confirmButtonColor: "#3B82F6",
+    });
+  } finally {
+    setIsLoading(false);
+  }
+};
 
-  const selectedStatus = statusOptions.find(
-    (option) => option.value === formData.status
-  );
 
   return (
     <>

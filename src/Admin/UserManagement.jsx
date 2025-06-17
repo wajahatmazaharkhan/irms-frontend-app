@@ -71,6 +71,16 @@ const UserManagement = () => {
                 description: "Send system-wide notifications",
             },
             {
+                id: "leave_approval",
+                label: "Leave Approval",
+                description: "Approve/reject leave applications",
+            },
+            {
+                id: "attendance",
+                label: "Attendance Management",
+                description: "Manage employee attendance",
+            },
+            {
                 id: "data_export",
                 label: "Data Export",
                 description: "Export system data",
@@ -124,6 +134,7 @@ const UserManagement = () => {
     };
 
     const handleUpdateUser = async () => {
+        const userid = localStorage.getItem("userId");
         setIsLoading(true);
 
         try {
@@ -146,6 +157,10 @@ const UserManagement = () => {
                 mnumber: selectedUser.mnumber,
                 permissions,
             };
+            if (selectedUser._id === userid) {
+                localStorage.setItem("permissions", JSON.stringify(permissions));
+                localStorage.setItem("isAdmin", selectedUser.role === "admin" ? "true" : "false");
+            }
 
             // Remove keys with null or undefined values
             Object.keys(payload).forEach(
@@ -195,6 +210,12 @@ const UserManagement = () => {
                 isAdmin: newRole === "admin" ? true : false,
                 permissions: newPermissions, // send labels!
             });
+
+            const userid = localStorage.getItem("userId");
+            if (userId === userid) {
+                localStorage.setItem("permissions", JSON.stringify(newPermissions));
+                localStorage.setItem("isAdmin", newRole === "admin" ? "true" : "false");
+            }
 
             const updatedUser = {
                 ...userToPromote,

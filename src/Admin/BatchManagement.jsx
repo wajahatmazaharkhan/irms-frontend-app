@@ -36,6 +36,9 @@ function BatchManagement() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState("simple");
   const [formLoading, setFormLoading] = useState(false);
+  // New loading states
+  const [viewLoading, setViewLoading] = useState(null);
+  const [editLoading, setEditLoading] = useState(null);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -77,14 +80,14 @@ function BatchManagement() {
           };
 
           const getStatusFromDates = (start, end) => {
-			  const now = new Date();
-			  const s = new Date(start);
-			  const e = new Date(end);
-			  if (isNaN(s.getTime()) || isNaN(e.getTime())) return "Invalid";
-			  if (now < s) return "upcoming";  // Changed from "Upcoming" to "upcoming"
-			  if (now > e) return "completed"; // Changed from "Completed" to "completed"
-			  return "active";                 // Changed from "Ongoing" to "active"
-			};
+            const now = new Date();
+            const s = new Date(start);
+            const e = new Date(end);
+            if (isNaN(s.getTime()) || isNaN(e.getTime())) return "Invalid";
+            if (now < s) return "upcoming";
+            if (now > e) return "completed";
+            return "active";
+          };
 
           const batchProgress = progressData.find((p) => p._id === batch._id);
          
@@ -122,81 +125,80 @@ function BatchManagement() {
 
   // Fetch available interns and HR when form opens
   useEffect(() => {
-	  if (showCreateForm) {
-		if (isEditing) {
-		  // For edit mode, we'll fetch users in handleEditClick
-		  return;
-		}
-		// For create mode, just fetch available users normally
-		fetchAvailableUsers();
-	  }
-	}, [showCreateForm]);
+    if (showCreateForm) {
+      if (isEditing) {
+        // For edit mode, we'll fetch users in handleEditClick
+        return;
+      }
+      fetchAvailableUsers();
+    }
+  }, [showCreateForm]);
 
-	const fetchAvailableUsers = async (batchInterns = null) => {
-	  try {
-		setUsersLoading(true);
-		const baseUrl = import.meta.env.VITE_BASE_URL;
+  const fetchAvailableUsers = async (batchInterns = null) => {
+    try {
+      setUsersLoading(true);
+      const baseUrl = import.meta.env.VITE_BASE_URL;
 
-		const [allUsersResponse, availUsersResponse] = await Promise.all([
-		  axios.get(`${baseUrl}/allusers`),
-		  axios.get(`${baseUrl}/available-interns`)
-		]);
+      const [allUsersResponse, availUsersResponse] = await Promise.all([
+        axios.get(`${baseUrl}/allusers`),
+        axios.get(`${baseUrl}/available-interns`)
+      ]);
 
-		const allUsers = allUsersResponse.data?.data ?? allUsersResponse.data ?? [];
-		const availableInternsFromAPI = availUsersResponse.data?.data ?? availUsersResponse.data ?? [];
+      const allUsers = allUsersResponse.data?.data ?? allUsersResponse.data ?? [];
+      const availableInternsFromAPI = availUsersResponse.data?.data ?? availUsersResponse.data ?? [];
 
-		// Process current batch interns if provided
-		let currentBatchInterns = [];
-		if (batchInterns) {
-		  currentBatchInterns = batchInterns.map(intern => ({
-			id: intern._id || intern.id,
-			name: intern.name,
-			email: intern.email,
-			role: intern.role || 'intern'
-		  }));
-		}
+      // Process current batch interns if provided
+      let currentBatchInterns = [];
+      if (batchInterns) {
+        currentBatchInterns = batchInterns.map(intern => ({
+          id: intern._id || intern.id,
+          name: intern.name,
+          email: intern.email,
+          role: intern.role || 'intern'
+        }));
+      }
 
-		// Merge current batch interns with available interns (no duplicates)
-		const finalAvailableInterns = [
-		  ...currentBatchInterns,
-		  ...availableInternsFromAPI.filter(
-			availIntern => !currentBatchInterns.some(bi => bi.id === availIntern.id)
-		  )
-		];
+      // Merge current batch interns with available interns (no duplicates)
+      const finalAvailableInterns = [
+        ...currentBatchInterns,
+        ...availableInternsFromAPI.filter(
+          availIntern => !currentBatchInterns.some(bi => bi.id === availIntern.id)
+        )
+      ];
 
-		const availableHR = allUsers
-		  .filter(user => user.role === "hr")
-		  .map(user => {
-			const firstName = user.firstName || "";
-			const lastName = user.lastName || "";
-			const fullName = `${firstName} ${lastName}`.trim();
-			
-			return {
-			  id: user._id,
-			  name: user.name || fullName || user.email || "Unknown HR",
-			  email: user.email || "",
-			  role: user.role
-			};
-		  });
+      const availableHR = allUsers
+        .filter(user => user.role === "hr")
+        .map(user => {
+          const firstName = user.firstName || "";
+          const lastName = user.lastName || "";
+          const fullName = `${firstName} ${lastName}`.trim();
+          
+          return {
+            id: user._id,
+            name: user.name || fullName || user.email || "Unknown HR",
+            email: user.email || "",
+            role: user.role
+          };
+        });
 
-		setAvailableInterns(finalAvailableInterns);
-		setAvailableHR(availableHR);
-	  } catch (err) {
-		console.error("Error fetching users:", err);
-		alert("Failed to load users. Please try again later.");
-		setAvailableInterns([]);
-		setAvailableHR([]);
-	  } finally {
-		setUsersLoading(false);
-	  }
-	};
-
-
+      setAvailableInterns(finalAvailableInterns);
+      setAvailableHR(availableHR);
+    } catch (err) {
+      console.error("Error fetching users:", err);
+      alert("Failed to load users. Please try again later.");
+      setAvailableInterns([]);
+      setAvailableHR([]);
+    } finally {
+      setUsersLoading(false);
+    }
+  };
 
   const handleView = async (batchId, type = "simple") => {
     try {
+      setViewLoading(batchId);
       setIsModalOpen(true);
-      setLoading(true);
+      setModalType(type);
+      
       const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/batches/${batchId}`);
       const batchData = response.data;
       
@@ -223,7 +225,6 @@ function BatchManagement() {
       }
       
       setSelectedBatch(batchData);
-      setModalType(type);
     } catch (error) {
       console.error("Failed to fetch batch details:", error);
       if (error.response?.status === 500) {
@@ -232,7 +233,7 @@ function BatchManagement() {
         alert("Failed to load batch details. Please try again.");
       }
     } finally {
-      setLoading(false);
+      setViewLoading(null);
     }
   };
 
@@ -260,115 +261,155 @@ function BatchManagement() {
     }
   };
 
-	const handleEditClick = async (batch) => {
-	  try {
-		const baseUrl = import.meta.env.VITE_BASE_URL;
-		
-		// Fetch full batch details
-		const res = await axios.get(`${baseUrl}/batches/${batch.id}`);
-		const fullBatch = res.data;
+  const handleEditClick = async (batch) => {
+    try {
+      setEditLoading(batch.id);
+      const baseUrl = import.meta.env.VITE_BASE_URL;
+      
+      // Fetch full batch details
+      const res = await axios.get(`${baseUrl}/batches/${batch.id}`);
+      const fullBatch = res.data;
 
-		// Set form data first
-		setFormData({
-		  name: fullBatch.name || "",
-		  startDate: fullBatch.startDate?.split("T")[0] || "",
-		  endDate: fullBatch.endDate?.split("T")[0] || "",
-		  interns: fullBatch.interns?.map(i => i._id || i) || [],
-		  hr: fullBatch.hr?.map(h => h.hrId?._id || h.hrId || h._id || h) || [],
-		});
+      // Set form data first
+      setFormData({
+        name: fullBatch.name || "",
+        startDate: fullBatch.startDate?.split("T")[0] || "",
+        endDate: fullBatch.endDate?.split("T")[0] || "",
+        interns: fullBatch.interns?.map(i => i._id || i) || [],
+        hr: fullBatch.hr?.map(h => h.hrId?._id || h.hrId || h._id || h) || [],
+      });
 
-		// Fetch users with current batch interns
-		await fetchAvailableUsers(fullBatch.interns);
+      // Fetch users with current batch interns
+      await fetchAvailableUsers(fullBatch.interns);
 
-		setIsEditing(true);
-		setEditBatchId(fullBatch._id);
-		setShowCreateForm(true);
-	  } catch (error) {
-		console.error("Error loading batch for edit:", error);
-		alert("Could not load batch details. Please try again.");
-	  }
-	};
+      setIsEditing(true);
+      setEditBatchId(fullBatch._id);
+      setShowCreateForm(true);
+    } catch (error) {
+      console.error("Error loading batch for edit:", error);
+      alert("Could not load batch details. Please try again.");
+    } finally {
+      setEditLoading(null);
+    }
+  };
 
+  // Handle form submission
+  const handleCreateBatch = async (e) => {
+    e.preventDefault();
 
+    // Validation
+    if (!formData.name || !formData.startDate || !formData.endDate) {
+      alert("Please fill in all required fields.");
+      return;
+    }
 
+    if (new Date(formData.startDate) >= new Date(formData.endDate)) {
+      alert("End date must be after start date.");
+      return;
+    }
 
-	// Handle form submission
-	const handleCreateBatch = async (e) => {
-	  e.preventDefault();
+    if (formData.interns.length === 0) {
+      alert("Please select at least one intern.");
+      return;
+    }
 
-	  // Validation
-	  if (!formData.name || !formData.startDate || !formData.endDate) {
-		alert("Please fill in all required fields.");
-		return;
-	  }
+    if (formData.hr.length === 0) {
+      alert("Please select at least one HR personnel.");
+      return;
+    }
 
-	  if (new Date(formData.startDate) >= new Date(formData.endDate)) {
-		alert("End date must be after start date.");
-		return;
-	  }
+    setFormLoading(true);
 
-	  if (formData.interns.length === 0) {
-		alert("Please select at least one intern.");
-		return;
-	  }
+    try {
+      const baseUrl = import.meta.env.VITE_BASE_URL;
+      const response = await axios.post(`${baseUrl}/batches`, formData);
+      const newBatch = response.data;
 
-	  if (formData.hr.length === 0) {
-		alert("Please select at least one HR personnel.");
-		return;
-	  }
+      // Transform the new batch data to match our format
+      const transformedBatch = {
+        id: newBatch._id,
+        batchName: newBatch.name,
+        month: formatMonth(newBatch.startDate),
+        startDate: newBatch.startDate?.split("T")[0] || "",
+        endDate: newBatch.endDate?.split("T")[0] || "",
+        totalInterns: newBatch.interns?.length || 0,
+        activeInterns: newBatch.interns?.length || 0,
+        completedInterns: "0/0",
+        totalHR: newBatch.hr?.length || 0,
+        status: getStatusFromDates(newBatch.startDate, newBatch.endDate),
+        coordinator: "TBD",
+        technologies: [],
+        progress: 0,
+      };
 
-	  setFormLoading(true);
+      // Update state with the new batch
+      setBatchData(prev => [transformedBatch, ...prev]);
+      setFormData({
+        name: "",
+        startDate: "",
+        endDate: "",
+        interns: [],
+        hr: [],
+      });
+      setShowCreateForm(false);
 
-	  try {
-		const baseUrl = import.meta.env.VITE_BASE_URL;
-		const response = await axios.post(`${baseUrl}/batches`, formData);
-		const result = response.data;
+      alert("Batch created successfully!");
+    } catch (err) {
+      console.error("Error creating batch:", err);
+      alert(`Failed to create batch: ${err.response?.data?.message || err.message}`);
+    } finally {
+      setFormLoading(false);
+    }
+  };
 
-		// Reset form and close modal
-		setFormData({
-		  name: "",
-		  startDate: "",
-		  endDate: "",
-		  interns: [],
-		  hr: [],
-		});
-		setShowCreateForm(false);
+  const handleUpdateBatch = async (e) => {
+    e.preventDefault();
+    setFormLoading(true);
 
-		alert("Batch created successfully!");
-		window.location.reload();
-	  } catch (err) {
-		console.error("Error creating batch:", err);
-		alert(`Failed to create batch: ${err.response?.data?.message || err.message}`);
-	  } finally {
-		setFormLoading(false);
-	  }
-	};
+    try {
+      const baseUrl = import.meta.env.VITE_BASE_URL;
+      const res = await axios.put(
+        `${baseUrl}/batches/${editBatchId}`,
+        formData
+      );
+      const updatedBatch = res.data;
 
-	const handleUpdateBatch = async (e) => {
-	  e.preventDefault();
-	  setFormLoading(true);
+      // Transform the updated batch data
+      const transformedBatch = {
+        id: updatedBatch._id,
+        batchName: updatedBatch.name,
+        month: formatMonth(updatedBatch.startDate),
+        startDate: updatedBatch.startDate?.split("T")[0] || "",
+        endDate: updatedBatch.endDate?.split("T")[0] || "",
+        totalInterns: updatedBatch.interns?.length || 0,
+        activeInterns: updatedBatch.interns?.length || 0,
+        completedInterns: "0/0", // This would need proper calculation
+        totalHR: updatedBatch.hr?.length || 0,
+        status: getStatusFromDates(updatedBatch.startDate, updatedBatch.endDate),
+        coordinator: "TBD",
+        technologies: [],
+        progress: 0, // This would need proper calculation
+      };
 
-	  try {
-		const baseUrl = import.meta.env.VITE_BASE_URL;
-		const res = await axios.put(
-		  `${baseUrl}/batches/${editBatchId}`,
-		  formData
-		);
-		const data = res.data;
+      // Update state with the updated batch
+      setBatchData(prev => 
+        prev.map(batch => 
+          batch.id === editBatchId ? transformedBatch : batch
+        )
+      );
 
-		alert("Batch updated successfully!");
-		setShowCreateForm(false);
-		setIsEditing(false);
-		setEditBatchId(null);
-		window.location.reload();
-	  } catch (err) {
-		alert(err.response?.data?.message || err.message || "Update failed");
-		console.error(err);
-	  } finally {
-		setFormLoading(false);
-	  }
-	};
-	
+      alert("Batch updated successfully!");
+      setShowCreateForm(false);
+      setIsEditing(false);
+      setEditBatchId(null);
+    } catch (err) {
+      alert(err.response?.data?.message || err.message || "Update failed");
+      console.error(err);
+    } finally {
+      setFormLoading(false);
+    }
+  };
+  
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -393,18 +434,18 @@ function BatchManagement() {
   // Get unique months for filter dropdown
   const uniqueMonths = [...new Set(batchData.map((batch) => batch.month))];
 
-	const filteredBatches = batchData.filter((batch) => {
-	  const matchesSearch =
-		batch.batchName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-		batch.coordinator.toLowerCase().includes(searchTerm.toLowerCase());
-	  const matchesStatus =
-		filterStatus === "all" ||
-		batch.status.toLowerCase() === filterStatus.toLowerCase(); // Case-insensitive comparison
-	  const matchesMonth =
-		selectedMonth === "" || batch.month.includes(selectedMonth);
+  const filteredBatches = batchData.filter((batch) => {
+    const matchesSearch =
+      batch.batchName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      batch.coordinator.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus =
+      filterStatus === "all" ||
+      batch.status.toLowerCase() === filterStatus.toLowerCase();
+    const matchesMonth =
+      selectedMonth === "" || batch.month.includes(selectedMonth);
 
-	  return matchesSearch && matchesStatus && matchesMonth;
-	});
+    return matchesSearch && matchesStatus && matchesMonth;
+  });
 
   if (loading) {
     return (
@@ -484,6 +525,8 @@ function BatchManagement() {
                 handleEditClick={handleEditClick}
                 handleDeleteBatch={handleDeleteBatch}
                 deleteLoading={deleteLoading}
+                viewLoading={viewLoading === batch.id}
+                editLoading={editLoading === batch.id}
               />
             ))}
           </div>
@@ -510,39 +553,39 @@ function BatchManagement() {
           onClose={() => setIsModalOpen(false)}
           batch={selectedBatch}
           type={modalType}
-          loading={loading}
+          loading={viewLoading !== null}
         />
       )}
 
       {showCreateForm && (
-		  <BatchForm
-			isOpen={showCreateForm}
-			onClose={() => {
-			  setShowCreateForm(false);
-			  setIsEditing(false);
-			  setEditBatchId(null);
-			  setFormData({
-				name: "",
-				startDate: "",
-				endDate: "",
-				interns: [],
-				hr: [],
-			  });
-			}}
-			formData={formData}
-			setFormData={setFormData}
-			handleInputChange={handleInputChange}
-			handleMultiSelectChange={handleMultiSelectChange}
-			availableInterns={availableInterns}
-			availableHR={availableHR}
-			usersLoading={usersLoading}
-			isEditing={isEditing}
-			editBatchId={editBatchId}
-			formLoading={formLoading} // Add this line
-			handleCreateBatch={handleCreateBatch} // Add these two lines
-			handleUpdateBatch={handleUpdateBatch}
-		  />
-		)}
+        <BatchForm
+          isOpen={showCreateForm}
+          onClose={() => {
+            setShowCreateForm(false);
+            setIsEditing(false);
+            setEditBatchId(null);
+            setFormData({
+              name: "",
+              startDate: "",
+              endDate: "",
+              interns: [],
+              hr: [],
+            });
+          }}
+          formData={formData}
+          setFormData={setFormData}
+          handleInputChange={handleInputChange}
+          handleMultiSelectChange={handleMultiSelectChange}
+          availableInterns={availableInterns}
+          availableHR={availableHR}
+          usersLoading={usersLoading}
+          isEditing={isEditing}
+          editBatchId={editBatchId}
+          formLoading={formLoading}
+          handleCreateBatch={handleCreateBatch}
+          handleUpdateBatch={handleUpdateBatch}
+        />
+      )}
     </>
   );
 }

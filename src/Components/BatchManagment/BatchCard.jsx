@@ -8,16 +8,25 @@ export function BatchCard({
   handleEditClick, 
   handleDeleteBatch, 
   deleteLoading,
+  viewLoading,
+  editLoading,
 }) {
-	const [hideActions, setHideActions] = useState(true);
-	useEffect(() => {
-    // Check if user is admin from localStorage
+  const [hideActions, setHideActions] = useState(true);
+  
+  useEffect(() => {
     const isAdmin = localStorage.getItem("isAdmin") === "true";
-    setHideActions(!isAdmin); // Hide actions if not admin
+    setHideActions(!isAdmin);
   }, []);
-	console.log("hideActions: ",hideActions);
+
   return (
-    <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200 hover:shadow-lg transition-shadow duration-300">
+    <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200 hover:shadow-lg transition-shadow duration-300 relative">
+      {/* Loading Overlay */}
+      {(viewLoading || editLoading || deleteLoading) && (
+        <div className="absolute inset-0 bg-white bg-opacity-70 rounded-xl z-10 flex items-center justify-center">
+          <Loader className="w-6 h-6 animate-spin text-blue-600" />
+        </div>
+      )}
+
       <div className="flex justify-between items-start mb-4">
         <div className="flex-1">
           <h3 className="text-xl font-semibold text-gray-800 mb-2">
@@ -36,18 +45,27 @@ export function BatchCard({
           <button
             className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
             onClick={() => handleView(batch.id, "simple")}
+            disabled={viewLoading === batch.id}
           >
-            <Eye className="w-4 h-4" />
+            {viewLoading === batch.id ? (
+              <Loader className="w-4 h-4 animate-spin" />
+            ) : (
+              <Eye className="w-4 h-4" />
+            )}
           </button>
           
-          {/* Only show edit/delete buttons if hideActions is false */}
           {!hideActions && (
             <>
               <button
                 className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
                 onClick={() => handleEditClick(batch)}
+                disabled={editLoading === batch.id}
               >
-                <Edit3 className="w-4 h-4" />
+                {editLoading === batch.id ? (
+                  <Loader className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Edit3 className="w-4 h-4" />
+                )}
               </button>
 
               <button
@@ -66,7 +84,6 @@ export function BatchCard({
         </div>
       </div>
 
-      {/* Rest of the component remains exactly the same */}
       <div className="grid grid-cols-2 gap-4 mb-4">
         <div className="flex items-center gap-2 text-sm text-gray-600">
           <Calendar className="w-4 h-4" />
@@ -88,9 +105,7 @@ export function BatchCard({
 
       <div className="mb-4">
         <div className="flex justify-between items-center mb-2">
-          <span className="text-sm font-medium text-gray-600">
-            Progress
-          </span>
+          <span className="text-sm font-medium text-gray-600">Progress</span>
           <span className="text-sm font-medium text-gray-800">
             {batch.progress}%
           </span>
@@ -124,9 +139,14 @@ export function BatchCard({
       <div className="flex gap-2">
         <button
           onClick={() => handleView(batch.id, "deep")}
-          className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors duration-200 text-sm font-medium"
+          disabled={viewLoading === batch.id}
+          className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors duration-200 text-sm font-medium disabled:opacity-70"
         >
-          View Details
+          {viewLoading === batch.id ? (
+            <Loader className="w-4 h-4 animate-spin mx-auto" />
+          ) : (
+            "View Details"
+          )}
         </button>
       </div>
     </div>

@@ -93,13 +93,6 @@ function AdminHomePage() {
       gradient: "from-red-500 to-red-700",
     },
     {
-      title: "Intern System",
-      route: "/hrinternsmgmt",
-      icon: Settings,
-      description: "System administration",
-      gradient: "from-gray-500 to-gray-700",
-    },
-    {
       title: "Batch Management",
       route: "/hrbatchmgmt",
       icon: CalendarCheck2,

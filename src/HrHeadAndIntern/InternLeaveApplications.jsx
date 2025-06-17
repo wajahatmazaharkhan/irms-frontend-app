@@ -19,41 +19,39 @@ const Internleaveapplication = () => {
 	  </div>
 	);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-		
-        // Get current HR's user ID from localStorage
-        const userId = localStorage.getItem("userId");
-        setLoading(true);
-        // Fetch batches to get HR's interns
-        const batchesResponse = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/batch/get-ids`);
-        const hrBatch = batchesResponse.data.data.find(batch => 
-          batch.hr.some(hr => hr._id === userId)
-        );
-        
-        const internIds = hrBatch?.interns.map(intern => intern._id) || [];
-        
-        // Fetch all leaves
-        const leavesResponse = await axios.get(`${import.meta.env.VITE_BASE_URL}/leave`);
-        
-        // Filter leaves to show only HR's batch interns
-        const filtered = leavesResponse.data.leaves.filter(leave => 
-          leave.internid && internIds.includes(leave.internid._id)
-        );
-        
-        setLeaves(leavesResponse.data.leaves);
-        setFilteredLeaves(filtered);
-      } catch (error) {
-        console.log("Error fetching data:", error);
-      }
-	  finally{
-		  setLoading(false);
-	  }
-    };
-    
-    fetchData();
-  }, []);
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      // Get current HR's user ID from localStorage
+      const userId = localStorage.getItem("userId");
+      setLoading(true);
+      // Fetch batches to get HR's interns
+      const batchesResponse = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/batch/get-ids`);
+      const hrBatch = batchesResponse.data.data.find(batch => 
+        batch.hr.some(hr => hr._id === userId)
+      );
+      
+      const internIds = hrBatch?.interns.map(intern => intern._id) || [];
+      
+      // Fetch all leaves
+      const leavesResponse = await axios.get(`${import.meta.env.VITE_BASE_URL}/leave`);
+      
+      // Filter leaves to show only HR's batch interns
+      const filtered = leavesResponse.data.leaves.filter(leave => 
+        leave.internid && internIds.includes(leave.internid._id)
+      );
+      
+      setFilteredLeaves(filtered); // Only keep the filtered leaves
+    } catch (error) {
+      console.log("Error fetching data:", error);
+    }
+    finally{
+      setLoading(false);
+    }
+  };
+  
+  fetchData();
+}, []);
 
   const handleUpdateStatus = async () => {
     if (!selectedLeave || !status || !adminName) {
@@ -108,11 +106,11 @@ return (
                   <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
                   </svg>
-                  Pending Applications ({leaves.filter(l => l.status === 'Pending').length})
+                  Pending Applications ({filteredLeaves.filter(l => l.status === 'Pending').length})
                 </h2>
               </div>
               <div className="divide-y divide-gray-200">
-                {leaves
+                {filteredLeaves
                   .filter(leave => leave.status === 'Pending')
                   .map((leave) => (
                     <div key={leave._id} className="p-6 hover:bg-gray-50 transition-colors">
@@ -138,7 +136,7 @@ return (
                       </div>
                     </div>
                   ))}
-                {leaves.filter(l => l.status === 'Pending').length === 0 && (
+                {filteredLeaves.filter(l => l.status === 'Pending').length === 0 && (
                   <div className="p-6 text-center text-gray-500">
                     No pending leave applications
                   </div>
@@ -153,11 +151,11 @@ return (
                   <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
-                  Approved Leaves ({leaves.filter(l => l.status === 'Approved').length})
+                  Approved Leaves ({filteredLeaves.filter(l => l.status === 'Approved').length})
                 </h2>
               </div>
               <div className="divide-y divide-gray-200">
-                {leaves
+                {filteredLeaves
                   .filter(leave => leave.status === 'Approved')
                   .map((leave) => (
                     <div key={leave._id} className="p-6 hover:bg-gray-50 transition-colors">
@@ -185,7 +183,7 @@ return (
                       </div>
                     </div>
                   ))}
-                {leaves.filter(l => l.status === 'Approved').length === 0 && (
+                {filteredLeaves.filter(l => l.status === 'Approved').length === 0 && (
                   <div className="p-6 text-center text-gray-500">
                     No approved leave applications
                   </div>
@@ -200,11 +198,11 @@ return (
                   <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
                   </svg>
-                  Rejected Leaves ({leaves.filter(l => l.status === 'Rejected').length})
+                  Rejected Leaves ({filteredLeaves.filter(l => l.status === 'Rejected').length})
                 </h2>
               </div>
               <div className="divide-y divide-gray-200">
-                {leaves
+                {filteredLeaves
                   .filter(leave => leave.status === 'Rejected')
                   .map((leave) => (
                     <div key={leave._id} className="p-6 hover:bg-gray-50 transition-colors">
@@ -232,7 +230,7 @@ return (
                       </div>
                     </div>
                   ))}
-                {leaves.filter(l => l.status === 'Rejected').length === 0 && (
+                {filteredLeaves.filter(l => l.status === 'Rejected').length === 0 && (
                   <div className="p-6 text-center text-gray-500">
                     No rejected leave applications
                   </div>

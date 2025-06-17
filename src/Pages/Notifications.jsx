@@ -30,10 +30,18 @@ const Notifications = () => {
   useEffect(() => {
     const fetchNotifications = async () => {
       const userId = localStorage.getItem("userId");
+	  const reqbody = {"userId":userId};
       try {
         const response = await fetch(
-          `${import.meta.env.VITE_BASE_URL}/get-notifications?userId=${userId}`
-        );
+			`${import.meta.env.VITE_BASE_URL}/get-notifications`,
+			{
+			  method: "POST",
+			  headers: {
+				"Content-Type": "application/json",  // important!
+			  },
+			  body: JSON.stringify(reqbody),
+			}
+		  );
         if (!response.ok) throw new Error("Failed to fetch notifications");
         const data = await response.json();
         if (data?.notifications?.notifications) {

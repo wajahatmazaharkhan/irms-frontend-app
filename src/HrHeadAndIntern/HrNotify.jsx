@@ -13,10 +13,11 @@ import useTitle from "@/Components/useTitle";
 
 const AdminNotify = () => {
   useTitle("Notification Management");
-
+  const userId = localStorage.getItem("userId");
   const [formData, setFormData] = useState({
     status: "",
     message: "",
+	userId:userId,
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -47,7 +48,7 @@ const AdminNotify = () => {
       bgColor: "bg-green-50 border-green-200",
     },
   ];
-
+	
   const handleSendNotification = async () => {
   if (!formData.status || !formData.message) {
     Swal.fire({
@@ -60,7 +61,7 @@ const AdminNotify = () => {
   }
 
   setIsLoading(true);
-
+  console.log("Formdata: ",formData);
   try {
     const response = await fetch(
       `${import.meta.env.VITE_BASE_URL}/send/notification`,
@@ -78,7 +79,7 @@ const AdminNotify = () => {
       Swal.fire({
         icon: "success",
         title: "Success!",
-        text: "Notification sent successfully to all users",
+        text: "Notification sent successfully to your batch users",
         timer: 2000,
         showConfirmButton: false,
         confirmButtonColor: "#3B82F6",

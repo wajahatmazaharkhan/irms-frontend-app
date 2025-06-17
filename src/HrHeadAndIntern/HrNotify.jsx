@@ -99,7 +99,10 @@ const AdminNotify = () => {
   }
 };
 
-
+  const selectedStatus = statusOptions.find(
+    (option) => option.value === formData.status
+  );
+  
   return (
     <>
       <CustomNavbar />

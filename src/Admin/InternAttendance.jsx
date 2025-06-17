@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useParams } from "react-router-dom";
 import CustomNavbar from "./CustomNavbar";
+import { Trash2 } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -13,7 +15,6 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/Components/ui/card";
 import { Button } from "@/Components/ui/button";
 import { Badge } from "@/Components/ui/badge";
-import { Alert, AlertDescription } from "@/Components/ui/alert";
 import { Search, Calendar, Users } from "lucide-react";
 import {
   AlertDialog,
@@ -37,6 +38,8 @@ const InternAttendance = () => {
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [bulkAction, setBulkAction] = useState(null);
   const [processing, setProcessing] = useState(false);
+  const [attendanceMap, setAttendanceMap] = useState({});
+
 
   const navigate = useNavigate();
 
@@ -58,6 +61,26 @@ const InternAttendance = () => {
 
     fetchUser();
   }, []);
+
+  useEffect(() => {
+  const fetchAttendance = async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/attendance`
+      );
+      const map = {};
+      response.data.forEach((record) => {
+        map[record.userId] = record.status;
+      });
+      setAttendanceMap(map);
+    } catch (error) {
+      console.error("Error fetching attendance:", error);
+    }
+  };
+
+  fetchAttendance();
+  }, []);
+
 
   const date = new Date();
   const formattedDate = date.toISOString().split(".")[0] + "Z";
@@ -92,46 +115,65 @@ const InternAttendance = () => {
   };
 
   const updateStatus = async (id, status) => {
-    const attendanceStatus = {
-      userId: id,
-      date: formattedDate,
-      status: status,
-    };
-    try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/attendance`,
-        attendanceStatus
-      );
-      if (response.status == 409) {
-        toast.error(`Attendance already marked`, {
-          position: "top-left",
-        });
-        return "already_marked";
-      }
-      if (
-        response.status == 201 ||
-        response.status == 204 ||
-        response.status == 205
-      ) {
-        await sendNotification(id, status);
-        toast.success(`Attendance marked as ${status}`, {
-          position: "top-left",
-        });
-        return "success";
-      }
-      toast.error(`Failed to mark attendance`, {
+  const attendanceStatus = {
+    userId: id,
+    date: formattedDate,
+    status: status,
+  };
+  try {
+    const response = await axios.post(
+      `${import.meta.env.VITE_BASE_URL}/attendance`,
+      attendanceStatus
+    );
+    if (response.status === 409) {
+      toast.error(`Attendance already marked`, {
         position: "top-left",
       });
-      return "error";
-    } catch (error) {
-      if (error.status == 409) {
-        toast.error(`Attendance already marked`, {
-          position: "top-left",
-        });
-      }
-      return "error";
+      return "already_marked";
     }
-  };
+    if ([201, 204, 205].includes(response.status)) {
+      await sendNotification(id, status);
+
+      setAttendanceMap((prevMap) => ({
+        ...prevMap,
+        [id]: status,
+      }));
+
+      toast.success(`Attendance marked as ${status}`, {
+        position: "top-left",
+      });
+      return "success";
+    }
+    toast.error(`Failed to mark attendance`, {
+      position: "top-left",
+    });
+    return "error";
+  } catch (error) {
+    if (error.response?.status === 409) {
+      toast.error(`Attendance already marked`, {
+        position: "top-left",
+      });
+      return "already_marked";
+    }
+    console.error("Error updating attendance:", error);
+    return "error";
+  }
+};
+
+const deleteAttendance = async (userId) => {
+  try {
+    await axios.delete(`${import.meta.env.VITE_BASE_URL}/attendance/${userId}`);
+    setAttendanceMap((prev) => {
+      const updated = { ...prev };
+      delete updated[userId];
+      return updated;
+    });
+    toast.success("Attendance deleted");
+  } catch (error) {
+    toast.error("Error deleting attendance");
+    console.error(error);
+  }
+};
 
   const handleBulkAction = async (status) => {
     setBulkAction(status);
@@ -209,14 +251,14 @@ const InternAttendance = () => {
                   </div>
                   <Badge variant="outline" className="flex items-center gap-2">
                     <Users className="h-4 w-4" />
-                    Total Users: {users.length}
+                    Total Interns: {users.length}
                   </Badge>
                 </div>
                 <div className="flex justify-end space-x-4">
                   <Button
                     variant="outline"
                     className="bg-green-500 hover:bg-green-600 text-white"
-                    onClick={() => handleBulkAction("Present")}
+                    onClick={() => handleBulkAction("present")}
                     disabled={processing || filteredUsers.length === 0}
                   >
                     Mark All Present
@@ -224,59 +266,15 @@ const InternAttendance = () => {
                   <Button
                     variant="outline"
                     className="bg-red-500 hover:bg-red-600 text-white"
-                    onClick={() => handleBulkAction("Absent")}
+                    onClick={() => handleBulkAction("absent")}
                     disabled={processing || filteredUsers.length === 0}
                   >
                     Mark All Absent
                   </Button>
                 </div>
-                <div>
-                  <Alert className="w-full bg-blue-50 border-blue-200">
-                    <div className="flex flex-col items-center w-full">
-                      <AlertDescription className="text-blue-700 text-center">
-                        <p>
-                          Click on the buttons above to mark all users as
-                          present or absent for the current date.
-                        </p>
-                        <p>
-                          This action cannot be undone. Please proceed with
-                          caution. Bulk Action may take time to complete.
-                        </p>
-                      </AlertDescription>
-                    </div>
-                  </Alert>
-                </div>
               </div>
             </CardContent>
           </Card>
-
-          <div className="flex justify-center">
-            <div
-              onClick={() =>
-                toast("Page under development!", {
-                  icon: " ⏳ ",
-                })
-              }
-              className="flex text-blue-500 underline cursor-pointer items-center space-x-4"
-            >
-              Click here to view attendance of all users.
-            </div>
-          </div>
-
-          <div className="flex justify-center items-center">
-            <Alert className="w-full bg-blue-50 border-blue-200">
-              <div className="flex flex-col items-center w-full">
-                <AlertDescription className="text-blue-700 text-center">
-                  <p>Present → User is marked present for current Date.</p>
-                  <p>Absent → User is marked absent for current Date.</p>
-                  <p>
-                    Attendance once marked cannot be updated again for current
-                    Date.{" "}
-                  </p>
-                </AlertDescription>
-              </div>
-            </Alert>
-          </div>
 
           {/* Table Section */}
           <Card>
@@ -287,13 +285,11 @@ const InternAttendance = () => {
                 </div>
               ) : (
                 <Table>
-                  <TableCaption>
-                    List of all users and their attendance status
-                  </TableCaption>
                   <TableHeader>
                     <TableRow>
                       <TableHead>Name</TableHead>
                       <TableHead>Email</TableHead>
+                      <TableHead>Status</TableHead>
                       <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -305,27 +301,48 @@ const InternAttendance = () => {
                             {user.name}
                           </TableCell>
                           <TableCell>{user.email}</TableCell>
+                          <TableCell>
+                            <Badge
+                              className={`pointer-events-none ${
+                                attendanceMap[user._id] === "present"
+                                  ? "bg-green-100 text-green-700"
+                                  : attendanceMap[user._id] === "absent"
+                                  ? "bg-red-100 text-red-700"
+                                  : "bg-yellow-100 text-yellow-700"
+                              }`}
+                            >
+                              {attendanceMap[user._id] || "not marked"}
+                            </Badge>
+                          </TableCell>
                           <TableCell className="text-right">
                             <div className="flex justify-end space-x-2">
+                              {attendanceMap[user._id] && (
+                                <Button
+                                  variant="ghost"
+                                  className="text-red-500 hover:bg-red-100 p-2"
+                                  onClick={() => deleteAttendance(user._id)}
+                                >
+                                  <Trash2 className="w-5 h-5" />
+                                </Button>
+                              )}
                               <Button
                                 variant="outline"
                                 className="bg-green-500 hover:bg-green-600 text-white"
-                                onClick={() =>
-                                  updateStatus(user._id, "Present")
-                                }
-                                disabled={processing}
+                                onClick={() => updateStatus(user._id, "present")}
+                                disabled={processing || attendanceMap[user._id] === "present" || attendanceMap[user._id] === "absent"}
                               >
                                 Present
                               </Button>
                               <Button
                                 variant="outline"
                                 className="bg-red-500 hover:bg-red-600 text-white"
-                                onClick={() => updateStatus(user._id, "Absent")}
-                                disabled={processing}
+                                onClick={() => updateStatus(user._id, "absent")}
+                                disabled={processing || attendanceMap[user._id] === "present" || attendanceMap[user._id] === "absent"}
                               >
                                 Absent
                               </Button>
                             </div>
+
                           </TableCell>
                         </TableRow>
                       ))
@@ -349,8 +366,16 @@ const InternAttendance = () => {
           <AlertDialogHeader>
             <AlertDialogTitle>Confirm Bulk Action</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to mark all {filteredUsers.length} users as{" "}
-              {bulkAction}? This action cannot be undone.
+              You are about to mark <strong>
+                {
+                  filteredUsers.filter(user => !attendanceMap[user._id]).length
+                }
+              </strong>{" "}
+              out of <strong>{filteredUsers.length}</strong> users as <strong>{bulkAction}</strong>.
+              <br />
+              <span className="text-sm text-gray-600">
+                Already marked users will be skipped.
+              </span>
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -359,7 +384,7 @@ const InternAttendance = () => {
               onClick={executeBulkAction}
               disabled={processing}
               className={
-                bulkAction === "Present"
+                bulkAction === "present"
                   ? "bg-green-500 hover:bg-green-600"
                   : "bg-red-500 hover:bg-red-600"
               }

@@ -93,13 +93,6 @@ function AdminHomePage() {
       gradient: "from-red-500 to-red-700",
     },
     {
-      title: "Admin & HR System",
-      route: "/admin-hr-management",
-      icon: Settings,
-      description: "System administration",
-      gradient: "from-gray-500 to-gray-700",
-    },
-    {
       title: "Batch Management",
       route: "/batch-management",
       icon: CalendarCheck2,

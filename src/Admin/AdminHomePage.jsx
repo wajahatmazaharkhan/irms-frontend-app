@@ -101,6 +101,7 @@ function AdminHomePage() {
       permission: "notifications",
     },
     {
+
       title: "Admin & HR System",
       route: "/admin-hr-management",
       icon: Settings,

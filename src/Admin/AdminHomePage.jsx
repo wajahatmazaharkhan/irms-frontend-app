@@ -19,6 +19,7 @@ import {
 
 function AdminHomePage() {
   useTitle("Admin Dashboard");
+  const permissions = JSON.parse(localStorage.getItem("permissions") || "[]");
 
   const dashboardStats = [
     {
@@ -49,6 +50,7 @@ function AdminHomePage() {
       icon: Users,
       description: "Manage all system users",
       gradient: "from-blue-500 to-blue-700",
+      permission: "user_management",
     },
     {
       title: "Intern Attendance",
@@ -56,6 +58,7 @@ function AdminHomePage() {
       icon: Calendar,
       description: "Track intern attendance",
       gradient: "from-green-500 to-green-700",
+      permission: "attendance",
     },
     {
       title: "Leave Applications",
@@ -63,6 +66,7 @@ function AdminHomePage() {
       icon: FileText,
       description: "Review leave requests",
       gradient: "from-purple-500 to-purple-700",
+      permission: "leave_approval",
     },
     {
       title: "Help",
@@ -70,6 +74,7 @@ function AdminHomePage() {
       icon: HelpCircle,
       description: "Admin support center",
       gradient: "from-indigo-500 to-indigo-700",
+      permission: null, // No permission required
     },
     {
       title: "Task Submissions",
@@ -77,6 +82,7 @@ function AdminHomePage() {
       icon: CheckSquare,
       description: "Review task submissions",
       gradient: "from-teal-500 to-teal-700",
+      permission: "reports",
     },
     {
       title: "Projects",
@@ -84,6 +90,7 @@ function AdminHomePage() {
       icon: FolderOpen,
       description: "Manage projects",
       gradient: "from-orange-500 to-orange-700",
+
     },
     {
       title: "Send Notifications",
@@ -91,6 +98,16 @@ function AdminHomePage() {
       icon: Bell,
       description: "Broadcast notifications",
       gradient: "from-red-500 to-red-700",
+      permission: "notifications",
+    },
+    {
+
+      title: "Admin & HR System",
+      route: "/admin-hr-management",
+      icon: Settings,
+      description: "System administration",
+      gradient: "from-gray-500 to-gray-700",
+      permission: "system_settings",
     },
     {
       title: "Batch Management",
@@ -98,6 +115,7 @@ function AdminHomePage() {
       icon: CalendarCheck2,
       description: "System administration",
       gradient: "from-yellow-500 to-yellow-700",
+      permission: "data_export",
     },
     {
       title: "User Management",
@@ -105,6 +123,7 @@ function AdminHomePage() {
       icon: UserCheck,
       description: "Manage user roles and permissions",
       gradient: "from-pink-500 to-pink-700",
+      permission: "user_management",
     },
   ];
 
@@ -154,19 +173,33 @@ function AdminHomePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {navigationCards.map((card, index) => {
               const IconComponent = card.icon;
+              const allowed =
+                !card.permission || permissions.includes(card.permission);
+
               return (
-                <Link key={index} to={card.route} className="group">
-                  <div
-                    className={`bg-gradient-to-br ${card.gradient} rounded-xl shadow-lg p-6 text-white hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300`}
+                <div
+                  key={index}
+                  className="group relative"
+                // style={{ pointerEvents: allowed ? "auto" : "none" }}
+                >
+                  <Link
+                    to={allowed ? card.route : "#"}
+                    tabIndex={allowed ? 0 : -1}
                   >
-                    <div className="flex items-center justify-between mb-4">
-                      <IconComponent className="w-8 h-8" />
-                      <div className="w-2 h-2 bg-white rounded-full opacity-70"></div>
+                    <div
+                      className={`bg-gradient-to-br ${card.gradient} rounded-xl shadow-lg p-6 text-white hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 ${!allowed ? "opacity-80 cursor-not-allowed" : ""
+                        }`}
+                    >
+                      <div className="flex items-center justify-between mb-4">
+                        <IconComponent className="w-8 h-8" />
+                        <div className="w-2 h-2 bg-white rounded-full opacity-70"></div>
+                      </div>
+                      <h3 className="text-xl font-semibold mb-2">{card.title}</h3>
+                      <p className="text-sm opacity-90">{card.description}</p>
                     </div>
-                    <h3 className="text-xl font-semibold mb-2">{card.title}</h3>
-                    <p className="text-sm opacity-90">{card.description}</p>
-                  </div>
-                </Link>
+                  </Link>
+
+                </div>
               );
             })}
           </div>

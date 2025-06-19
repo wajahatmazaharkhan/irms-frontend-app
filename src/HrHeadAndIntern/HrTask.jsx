@@ -1,16 +1,17 @@
-/* eslint-disable no-unused-vars */
-import React, { useState, useEffect } from "react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/Components/ui/card";
-import { Button } from "@/Components/ui/button";
-import { Alert, AlertDescription } from "@/Components/ui/alert";
-import CustomNavbar from "./CustomHrNavbar";
-import axios from "axios";
-import { toast } from "react-hot-toast";
-import { Loader, useTitle } from "@/Components/compIndex";
-import { batchService } from "@/services/batchService";
-import { getMatchingBatchedByUserId } from "@/lib/batchUtils";
+"use client"
 
-const API_BASE_URL = import.meta.env.VITE_BASE_URL;
+/* eslint-disable no-unused-vars */
+import { useState, useEffect } from "react"
+import { Card, CardHeader, CardTitle, CardContent } from "@/Components/ui/card"
+import { Button } from "@/Components/ui/button"
+import { Alert, AlertDescription } from "@/Components/ui/alert"
+import CustomNavbar from "./CustomHrNavbar"
+import axios from "axios"
+import { toast } from "react-hot-toast"
+import { Loader, useTitle } from "@/Components/compIndex"
+import { getMatchingBatchedByUserId } from "@/lib/batchUtils"
+
+const API_BASE_URL = import.meta.env.VITE_BASE_URL
 
 const INITIAL_TASK_STATE = {
   assignedTo: "",
@@ -19,83 +20,82 @@ const INITIAL_TASK_STATE = {
   startDate: "",
   endDate: "",
   status: "pending",
-};
+  type: "Technical",
+}
 
 export default function AdminTask() {
-  useTitle("Task Management");
-  const [loading, setLoading] = useState(true);
-  const [users, setUsers] = useState([]);
-  const [task, setTask] = useState(INITIAL_TASK_STATE);
-  const [successMessage, setSuccessMessage] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  useTitle("Task Management")
+  const [loading, setLoading] = useState(true)
+  const [users, setUsers] = useState([])
+  const [task, setTask] = useState(INITIAL_TASK_STATE)
+  const [successMessage, setSuccessMessage] = useState("")
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const userId = localStorage.getItem("userId");
+  const userId = localStorage.getItem("userId")
 
   useEffect(() => {
     const initializeData = async () => {
-      setLoading(true);
+      setLoading(true)
       try {
-        const response = await axios.get(`${API_BASE_URL}/allusers`);
-        var usersList = response.data.data;
+        const response = await axios.get(`${API_BASE_URL}/allusers`)
+        var usersList = response.data.data
 
         const filteredIds = await getMatchingBatchedByUserId({
-          userId: userId
+          userId: userId,
         })
 
-        const filteredUsers = usersList.filter((user) =>
-          filteredIds.includes(user.batch)
-        );
+        const filteredUsers = usersList.filter((user) => filteredIds.includes(user.batch))
 
-        usersList = filteredUsers;
+        usersList = filteredUsers
 
         if (!Array.isArray(usersList)) {
-          throw new Error("Invalid users data format received");
+          throw new Error("Invalid users data format received")
         }
 
-        setUsers(usersList);
+        setUsers(usersList)
       } catch (error) {
-        toast.error("Failed to fetch data");
-        console.error("Data fetch error:", error);
+        toast.error("Failed to fetch data")
+        console.error("Data fetch error:", error)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
-
-    initializeData();
-  }, []);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setTask((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!task.assignedTo) {
-      toast.error("Please select a user");
-      return;
     }
 
-    setIsSubmitting(true);
+    initializeData()
+  }, [])
+
+  const handleChange = (e) => {
+    const { name, value } = e.target
+    setTask((prev) => ({ ...prev, [name]: value }))
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    if (!task.assignedTo) {
+      toast.error("Please select a user")
+      return
+    }
+
+    setIsSubmitting(true)
     try {
       const response = await axios.post(`${API_BASE_URL}/task/add-task`, task, {
         headers: { "Content-Type": "application/json" },
-      });
+      })
 
       if (response.status === 201 || response.status === 200) {
-        toast.success("Task assigned successfully!");
-        setSuccessMessage("Task successfully assigned!");
-        setTask(INITIAL_TASK_STATE);
+        toast.success("Task assigned successfully!")
+        setSuccessMessage("Task successfully assigned!")
+        setTask(INITIAL_TASK_STATE)
 
-        setTimeout(() => setSuccessMessage(""), 5000);
+        setTimeout(() => setSuccessMessage(""), 5000)
       }
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to assign task");
-      console.error("Task assignment error:", error);
+      toast.error(error.response?.data?.message || "Failed to assign task")
+      console.error("Task assignment error:", error)
     } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(false)
     }
-  };
+  }
 
   if (loading) {
     return (
@@ -103,7 +103,7 @@ export default function AdminTask() {
         <CustomNavbar />
         <Loader />
       </>
-    );
+    )
   }
 
   return (
@@ -114,9 +114,7 @@ export default function AdminTask() {
           {/* Task Assignment Form */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-2xl text-blue-600">
-                Task Assignment
-              </CardTitle>
+              <CardTitle className="text-2xl text-blue-600">Task Assignment</CardTitle>
             </CardHeader>
             <CardContent>
               {successMessage && (
@@ -127,10 +125,7 @@ export default function AdminTask() {
 
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-2">
-                  <label
-                    htmlFor="assignedTo"
-                    className="text-gray-700 font-medium block"
-                  >
+                  <label htmlFor="assignedTo" className="text-gray-700 font-medium block">
                     Assign to
                   </label>
                   <select
@@ -151,10 +146,24 @@ export default function AdminTask() {
                 </div>
 
                 <div className="space-y-2">
-                  <label
-                    htmlFor="title"
-                    className="text-gray-700 font-medium block"
+                  <label htmlFor="taskType" className="text-gray-700 font-medium block">
+                    Task Type
+                  </label>
+                  <select
+                    id="taskType"
+                    name="taskType"
+                    value={task.taskType}
+                    onChange={handleChange}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    required
                   >
+                    <option value="Technical">Technical Task</option>
+                    <option value="Social">Social Media Task</option>
+                  </select>
+                </div>
+
+                <div className="space-y-2">
+                  <label htmlFor="title" className="text-gray-700 font-medium block">
                     Task Title
                   </label>
                   <input
@@ -170,10 +179,7 @@ export default function AdminTask() {
                 </div>
 
                 <div className="space-y-2">
-                  <label
-                    htmlFor="description"
-                    className="text-gray-700 font-medium block"
-                  >
+                  <label htmlFor="description" className="text-gray-700 font-medium block">
                     Task Description
                   </label>
                   <textarea
@@ -189,10 +195,7 @@ export default function AdminTask() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <label
-                      htmlFor="startDate"
-                      className="text-gray-700 font-medium block"
-                    >
+                    <label htmlFor="startDate" className="text-gray-700 font-medium block">
                       Start Date
                     </label>
                     <input
@@ -207,10 +210,7 @@ export default function AdminTask() {
                   </div>
 
                   <div className="space-y-2">
-                    <label
-                      htmlFor="endDate"
-                      className="text-gray-700 font-medium block"
-                    >
+                    <label htmlFor="endDate" className="text-gray-700 font-medium block">
                       End Date
                     </label>
                     <input
@@ -225,11 +225,7 @@ export default function AdminTask() {
                   </div>
                 </div>
 
-                <Button
-                  type="submit"
-                  className="w-full bg-blue-600 hover:bg-blue-700"
-                  disabled={isSubmitting}
-                >
+                <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700" disabled={isSubmitting}>
                   {isSubmitting ? "Assigning..." : "Assign Task"}
                 </Button>
               </form>
@@ -238,5 +234,5 @@ export default function AdminTask() {
         </div>
       </div>
     </>
-  );
+  )
 }

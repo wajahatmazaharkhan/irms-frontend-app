@@ -13,12 +13,32 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { Logout } from "@/Pages/pageIndex";
+import axios from "axios";
+import Loader from "@/Components/Loader";
 
 export default function CustomNavbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileDropdown, setProfileDropdown] = useState(false);
+  const [userData, setUserData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const fetchUser = async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/api/auth/user/${localStorage.getItem(
+          "userId"
+        )}`
+      );
+      const data = response.data;
+      setUserData(data);
+      setIsLoading(false);
+    } catch (error) {
+      console.error(`Error fetching user details: ${error}`);
+      setIsLoading(false);
+    }
+  };
 
   const handleLogout = () => {
     // Clear any stored authentication data (like tokens or session)
@@ -42,7 +62,45 @@ export default function CustomNavbar() {
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
-  const navigationItems = [
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        await fetchUser();
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+    fetchUserData();
+  }, []);
+
+  const navigationItemsHR = [
+    {
+      name: "Home",
+      path: "/hrhomepage",
+      icon: Home,
+      active: location.pathname === "/HrHomepage",
+    },
+    {
+      name: "Project Management",
+      path: "/hrprojects",
+      icon: FolderOpen,
+      active: location.pathname === "/Projectmanagement",
+    },
+    {
+      name: "Weekly Report",
+      path: "/hrreports",
+      icon: FileText,
+      active: location.pathname === "/Weeklyreport",
+    },
+    {
+      name: "Task Assignment",
+      path: "/hrtaskassignment",
+      icon: CheckSquare,
+      active: location.pathname === "/Taskassignment",
+    },
+  ];
+
+  const navigationItemsAdmin = [
     {
       name: "Home",
       path: "/admin-access",
@@ -69,6 +127,36 @@ export default function CustomNavbar() {
     },
   ];
 
+  const NavbarSkeleton = () => (
+    <nav className="bg-white shadow-lg border-b border-gray-200 sticky top-0 z-50">
+      <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo and Title Skeleton */}
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 bg-gray-200 rounded-lg animate-pulse"></div>
+            <div className="hidden sm:block w-32 h-6 bg-gray-200 rounded animate-pulse"></div>
+          </div>
+
+          {/* Navigation Items Skeleton */}
+          <div className="hidden lg:flex lg:items-center lg:space-x-4">
+            {[1, 2, 3, 4].map((i) => (
+              <div
+                key={i}
+                className="w-24 h-8 bg-gray-200 rounded animate-pulse"
+              ></div>
+            ))}
+          </div>
+
+          {/* Profile Skeleton */}
+          <div className="flex items-center space-x-4">
+            <div className="w-10 h-10 bg-gray-200 rounded-full animate-pulse"></div>
+          </div>
+        </div>
+      </div>
+    </nav>
+  );
+
+  if (isLoading) return <NavbarSkeleton />;
   return (
     <nav className="bg-white shadow-lg border-b border-gray-200 sticky top-0 z-50">
       <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
@@ -84,14 +172,16 @@ export default function CustomNavbar() {
             </div>
             <div className="hidden sm:block">
               <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
-                Admin Portal
+                {userData.role === "admin" ? "Admin" : "HR"} Portal
               </h1>
             </div>
           </div>
-
           {/* Desktop Navigation */}
           <div className="hidden lg:flex lg:items-center lg:space-x-1">
-            {navigationItems.map((item) => {
+            {(userData.role === "admin"
+              ? navigationItemsAdmin
+              : navigationItemsHR
+            ).map((item) => {
               const IconComponent = item.icon;
               return (
                 <Link
@@ -112,7 +202,7 @@ export default function CustomNavbar() {
 
           {/* Right Side Actions */}
           <div className="flex items-center space-x-4">
-            {/* Admin Profile Dropdown */}
+            {/* Profile Dropdown */}
             <div className="relative hidden md:block">
               <button
                 onClick={(e) => {
@@ -122,9 +212,13 @@ export default function CustomNavbar() {
                 className="flex items-center space-x-2 p-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-gray-50 transition-colors duration-200"
               >
                 <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
-                  <span className="text-white text-sm font-semibold">A</span>
+                  <span className="text-white text-sm font-semibold">
+                    {userData.role[0].toUpperCase()}
+                  </span>
                 </div>
-                <span className="text-sm font-medium">Admin</span>
+                <span className="text-sm font-medium">{userData.role === "admin"
+                        ? "Admin"
+                        : "HR"}</span>
                 <ChevronDown
                   className={`w-4 h-4 transition-transform duration-200 ${
                     profileDropdown ? "rotate-180" : ""
@@ -137,9 +231,11 @@ export default function CustomNavbar() {
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-50">
                   <div className="px-4 py-2 border-b border-gray-200">
                     <p className="text-sm font-medium text-gray-800">
-                      Administrator
+                      {userData.role === "admin"
+                        ? "Administrator"
+                        : "Human Resource"}
                     </p>
-                    <p className="text-xs text-gray-500">admin@iispr.com</p>
+                    <p className="text-xs text-gray-500">{userData.email}</p>
                   </div>
                   <button
                     onClick={handleLogout}
@@ -179,7 +275,10 @@ export default function CustomNavbar() {
         {menuOpen && (
           <div className="lg:hidden border-t border-gray-200 bg-white">
             <div className="py-2 space-y-1">
-              {navigationItems.map((item) => {
+              {(userData.role == "admin"
+                ? navigationItemsAdmin
+                : navigationItemsHR
+              ).map((item) => {
                 const IconComponent = item.icon;
                 return (
                   <Link
@@ -201,13 +300,17 @@ export default function CustomNavbar() {
               <div className="px-4 py-3 border-t border-gray-200 mt-2">
                 <div className="flex items-center space-x-3 mb-3">
                   <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
-                    <span className="text-white font-semibold">A</span>
+                    <span className="text-white font-semibold">
+                      {userData.role[0].toUpperCase()}
+                    </span>
                   </div>
                   <div>
                     <p className="text-sm font-medium text-gray-800">
-                      Administrator
+                      {userData.role === "admin"
+                        ? "Administrator"
+                        : "Human Resource"}
                     </p>
-                    <p className="text-xs text-gray-500">admin@iispr.com</p>
+                    <p className="text-xs text-gray-500">{userData.email}</p>
                   </div>
                 </div>
                 <button

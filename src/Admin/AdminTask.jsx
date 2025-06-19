@@ -55,6 +55,7 @@ export default function AdminTask() {
   };
 
   const handleSubmit = async (e) => {
+	  console.log("Task: ",task);
     e.preventDefault();
     if (!task.assignedTo) {
       toast.error("Please select a user");

@@ -16,7 +16,7 @@ const InternRanking = () => {
     const fetchInternRankings = async () => {
       try {
         const res = await axios.get(
-          `${import.meta.env.VITE_BASE_URL}/admin/intern-rankings`
+          `${import.meta.env.VITE_BASE_URL}/intern-rankings`
         );
         setInterns(res.data.interns || []);
       } catch (error) {

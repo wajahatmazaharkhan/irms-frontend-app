@@ -216,7 +216,9 @@ export default function CustomNavbar() {
                     {userData.role[0].toUpperCase()}
                   </span>
                 </div>
-                <span className="text-sm font-medium"></span>
+                <span className="text-sm font-medium">{userData.role === "admin"
+                        ? "Admin"
+                        : "HR"}</span>
                 <ChevronDown
                   className={`w-4 h-4 transition-transform duration-200 ${
                     profileDropdown ? "rotate-180" : ""

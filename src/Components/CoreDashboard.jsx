@@ -26,7 +26,7 @@ import {
   DialogClose,
 } from "@/Components/ui/dialog";
 import { DynamicCalendar } from "./compIndex";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
 
 const CoreDashboard = () => {
@@ -34,12 +34,10 @@ const CoreDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [selectedTaskId, setSelectedTaskId] = useState(null);
   const [showAllTasks, setShowAllTasks] = useState(false);
+  const [activeTab, setActiveTab] = useState("technical");
   const navigate = useNavigate();
-  const { setDashboard } = useAppContext();
-  const currentDate = new Date();
-  const { modalView, setModalView } = useAppContext();
+  const { setDashboard, modalView, setModalView } = useAppContext();
   const username = localStorage.getItem("userName") || "Login to Continue";
-
   const isAdmin = localStorage.getItem("isAdmin") === "true";
 
   useEffect(() => {
@@ -47,9 +45,7 @@ const CoreDashboard = () => {
       try {
         setLoading(true);
         const response = await axios.get(
-          `${
-            import.meta.env.VITE_BASE_URL
-          }/task/get-tasks/${localStorage.getItem("userId")}`
+          `${import.meta.env.VITE_BASE_URL}/task/get-tasks/${localStorage.getItem("userId")}`
         );
         const fetchedTasks = response.data.tasksData;
         setTasks(fetchedTasks);
@@ -92,74 +88,95 @@ const CoreDashboard = () => {
     );
   };
 
-  const TaskList = ({ tasks, limit = null }) => {
+  const sortTasks = (tasks) => {
+    return [...tasks].sort((a, b) => {
+      // Unsubmitted tasks first (pending or overdue)
+      if (a.status !== "completed" && b.status === "completed") return -1;
+      if (a.status === "completed" && b.status !== "completed") return 1;
+      
+      // Then sort by end date (earlier dates first)
+      return new Date(a.endDate) - new Date(b.endDate);
+    });
+  };
+
+  const filterTasksByType = (tasks, type) => {
+    return tasks.filter(task => 
+      task.taskType?.toLowerCase() === type.toLowerCase() || 
+      task.type?.toLowerCase() === type.toLowerCase()
+    );
+  };
+
+  const TaskList = ({ tasks, limit = null, showTaskType = true }) => {
     const displayTasks = limit ? tasks.slice(0, limit) : tasks;
 
     return (
       <div className="space-y-4">
-        {displayTasks
-          .slice()
-          .reverse()
-          .map((task, index) => (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: index * 0.1 }}
-              key={task._id || index}
-            >
-              <Card className="hover:shadow-md transition-all duration-200 border border-gray-200">
-                <CardContent className="p-5">
-                  <div className="flex flex-col lg:flex-row items-start lg:items-center gap-4">
-                    <div className="flex-1 space-y-3">
-                      <div className="flex items-start justify-between">
-                        <h3 className="font-semibold text-lg text-gray-900">
-                          {task.title}
-                        </h3>
+        {displayTasks.map((task, index) => (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: index * 0.1 }}
+            key={task._id || index}
+          >
+            <Card className="hover:shadow-md transition-all duration-200 border border-gray-200">
+              <CardContent className="p-5">
+                <div className="flex flex-col lg:flex-row items-start lg:items-center gap-4">
+                  <div className="flex-1 space-y-3">
+                    <div className="flex items-start justify-between">
+                      <h3 className="font-semibold text-lg text-gray-900">
+                        {task.title}
+                      </h3>
+                      <div className="flex items-center gap-2">
                         <TaskStatusBadge status={task.status} />
-                      </div>
-                      <p className="text-gray-600 text-sm">
-                        {task.description}
-                      </p>
-                      <div className="flex flex-wrap gap-4 text-xs text-gray-500">
-                        <div className="flex items-center gap-1.5 bg-gray-50 px-2.5 py-1 rounded-full">
-                          <Calendar className="w-3.5 h-3.5" />
-                          <span>
-                            Start:{" "}
-                            {new Date(task.startDate).toLocaleDateString()}
+                        {showTaskType && (
+                          <span className="text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-600">
+                            {task.taskType || task.type}
                           </span>
-                        </div>
-                        <div className="flex items-center gap-1.5 bg-gray-50 px-2.5 py-1 rounded-full">
-                          <Calendar className="w-3.5 h-3.5" />
-                          <span>
-                            End: {new Date(task.endDate).toLocaleDateString()}
-                          </span>
-                        </div>
+                        )}
                       </div>
                     </div>
-                    <div className="flex flex-col gap-3 min-w-[120px] w-full lg:w-auto mt-4 lg:mt-0">
-                      <Button
-                        onClick={() => {
-                          setSelectedTaskId(task._id);
-                          setModalView(true);
-                          setShowAllTasks(false);
-                        }}
-                        className={`w-full ${
-                          task.status === "completed"
-                            ? "bg-green-50 text-green-700 hover:bg-green-100 border border-green-200"
-                            : "bg-blue-500 text-white hover:bg-blue-600"
-                        }`}
-                        variant={
-                          task.status === "completed" ? "outline" : "default"
-                        }
-                      >
-                        {task.status === "completed" ? "Resubmit" : "Submit"}
-                      </Button>
+                    <p className="text-gray-600 text-sm">
+                      {task.description}
+                    </p>
+                    <div className="flex flex-wrap gap-4 text-xs text-gray-500">
+                      <div className="flex items-center gap-1.5 bg-gray-50 px-2.5 py-1 rounded-full">
+                        <Calendar className="w-3.5 h-3.5" />
+                        <span>
+                          Start: {new Date(task.startDate).toLocaleDateString()}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-1.5 bg-gray-50 px-2.5 py-1 rounded-full">
+                        <Calendar className="w-3.5 h-3.5" />
+                        <span>
+                          End: {new Date(task.endDate).toLocaleDateString()}
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
+                  <div className="flex flex-col gap-3 min-w-[120px] w-full lg:w-auto mt-4 lg:mt-0">
+                    <Button
+                      onClick={() => {
+                        setSelectedTaskId(task._id);
+                        setModalView(true);
+                        setShowAllTasks(false);
+                      }}
+                      className={`w-full ${
+                        task.status === "completed"
+                          ? "bg-green-50 text-green-700 hover:bg-green-100 border border-green-200"
+                          : "bg-blue-500 text-white hover:bg-blue-600"
+                      }`}
+                      variant={
+                        task.status === "completed" ? "outline" : "default"
+                      }
+                    >
+                      {task.status === "completed" ? "Resubmit" : "Submit"}
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        ))}
       </div>
     );
   };
@@ -170,25 +187,18 @@ const CoreDashboard = () => {
         <Card key={index} className="w-full border border-gray-200">
           <CardContent className="p-5">
             <div className="flex flex-col space-y-4 animate-pulse">
-              {/* Header - Title and Status */}
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                 <div className="h-6 bg-gray-200 rounded-md w-2/3 sm:w-1/3"></div>
                 <div className="h-6 bg-gray-200 rounded-full w-24"></div>
               </div>
-
-              {/* Description */}
               <div className="space-y-2">
                 <div className="h-4 bg-gray-200 rounded-md w-full"></div>
                 <div className="h-4 bg-gray-200 rounded-md w-5/6"></div>
               </div>
-
-              {/* Dates */}
               <div className="flex flex-wrap gap-3">
                 <div className="h-6 bg-gray-200 rounded-full w-32"></div>
                 <div className="h-6 bg-gray-200 rounded-full w-32"></div>
               </div>
-
-              {/* Submit Button */}
               <div className="flex justify-start sm:justify-end mt-2">
                 <div className="h-9 bg-gray-200 rounded-md w-full sm:w-28"></div>
               </div>
@@ -198,6 +208,32 @@ const CoreDashboard = () => {
       ))}
     </div>
   );
+
+  const tabVariants = {
+    hidden: { opacity: 0, y: 10 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: { 
+        type: "spring", 
+        stiffness: 300, 
+        damping: 25 
+      }
+    },
+    exit: { 
+      opacity: 0, 
+      y: -10,
+      transition: { ease: "easeInOut" }
+    }
+  };
+
+  const filteredTasks = activeTab === "technical" 
+    ? filterTasksByType(tasks, "technical")
+    : filterTasksByType(tasks, "social");
+
+  const sortedTasks = sortTasks(filteredTasks);
+  const hasTechnicalTasks = filterTasksByType(tasks, "technical").length > 0;
+  const hasSocialTasks = filterTasksByType(tasks, "social").length > 0;
 
   return (
     <>
@@ -220,7 +256,7 @@ const CoreDashboard = () => {
                 <p className="text-gray-600">Loading tasks...</p>
               </div>
             ) : (
-              <TaskList tasks={tasks} />
+              <TaskList tasks={sortTasks(tasks)} showTaskType={true} />
             )}
           </div>
         </DialogContent>
@@ -305,25 +341,86 @@ const CoreDashboard = () => {
               </Button>
             </div>
 
-            {loading ? (
-              <TasksSkeleton />
-            ) : tasks.length > 0 ? (
-              <TaskList tasks={tasks} limit={3} />
-            ) : (
-              <Card className="border border-dashed border-gray-300 bg-gray-50">
-                <CardContent className="p-6 flex flex-col items-center justify-center text-center">
-                  <Info className="h-10 w-10 text-gray-400 mb-2" />
-                  <h3 className="text-lg font-medium text-gray-700">
-                    No tasks found
-                  </h3>
-                  <p className="text-gray-500 text-sm mt-1">
-                    You {`don't `}have any tasks assigned yet.
-                  </p>
-                </CardContent>
-              </Card>
-            )}
+            {/* Tab Navigation */}
+            <div className="flex border-b border-gray-200">
+              <button
+                className={`relative py-3 px-6 font-medium text-gray-600 hover:text-blue-600 transition-colors ${
+                  activeTab === "technical" ? "text-blue-600" : ""
+                }`}
+                onClick={() => setActiveTab("technical")}
+              >
+                Technical
+                {activeTab === "technical" && (
+                  <motion.div
+                    layoutId="tabUnderline"
+                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600"
+                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                  />
+                )}
+              </button>
+              <button
+                className={`relative py-3 px-6 font-medium text-gray-600 hover:text-blue-600 transition-colors ${
+                  activeTab === "social" ? "text-blue-600" : ""
+                }`}
+                onClick={() => setActiveTab("social")}
+              >
+                Social
+                {activeTab === "social" && (
+                  <motion.div
+                    layoutId="tabUnderline"
+                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600"
+                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                  />
+                )}
+              </button>
+            </div>
 
-            {tasks.length > 3 && (
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeTab}
+                variants={tabVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+              >
+                {loading ? (
+                  <TasksSkeleton />
+                ) : activeTab === "technical" ? (
+                  hasTechnicalTasks ? (
+                    <TaskList tasks={sortedTasks} limit={3} />
+                  ) : (
+                    <Card className="border border-dashed border-gray-300 bg-gray-50">
+                      <CardContent className="p-6 flex flex-col items-center justify-center text-center">
+                        <Info className="h-10 w-10 text-gray-400 mb-2" />
+                        <h3 className="text-lg font-medium text-gray-700">
+                          No technical tasks found
+                        </h3>
+                        <p className="text-gray-500 text-sm mt-1">
+                          You don't have any technical tasks assigned yet.
+                        </p>
+                      </CardContent>
+                    </Card>
+                  )
+                ) : hasSocialTasks ? (
+                  <TaskList tasks={sortedTasks} limit={3} />
+                ) : (
+                  <Card className="border border-dashed border-gray-300 bg-gray-50">
+                    <CardContent className="p-6 flex flex-col items-center justify-center text-center">
+                      <Info className="h-10 w-10 text-gray-400 mb-2" />
+                      <h3 className="text-lg font-medium text-gray-700">
+                        No social tasks found
+                      </h3>
+                      <p className="text-gray-500 text-sm mt-1">
+                        You don't have any social tasks assigned yet.
+                      </p>
+                    </CardContent>
+                  </Card>
+                )}
+              </motion.div>
+            </AnimatePresence>
+
+            {(activeTab === "technical" && hasTechnicalTasks && sortedTasks.length > 3) ||
+            (activeTab === "social" && hasSocialTasks && sortedTasks.length > 3) ? (
               <Button
                 variant="outline"
                 className="w-full py-4 text-base hover:bg-gray-50 border border-gray-200 text-gray-700"
@@ -332,7 +429,7 @@ const CoreDashboard = () => {
                 View all tasks
                 <ExternalLink className="h-4 w-4 ml-2" />
               </Button>
-            )}
+            ) : null}
           </div>
 
           {/* Calendar and Quick Actions Section */}

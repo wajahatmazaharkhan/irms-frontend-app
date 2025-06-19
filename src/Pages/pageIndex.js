@@ -37,7 +37,7 @@ import IntroPage from "./IntroPage";
 import AdminNotify from "@/Admin/AdminNotify";
 import HarassmentEmailForm from "@/Components/HarassmentEmailForm";
 import BatchDashboard from "@/Components/BatchDashboard";
-
+import InternRankings from "./InternRanking";
 
 
 export { Home, NewPasswordForm, Notifications,BatchDashboard, OTPVerification, 
@@ -48,5 +48,6 @@ Stores, Signin, SignUp, Logout,
 Profile, Aboutus, CustomNavbar, AdminHomePage,
  AdminProject, AdminTask, AdminReport, PrivacyPolicy, 
  Help, AllUsers, AdminHelpPage, InternAttendance,
- AdminHelp, InternTasksSubmissions, LeaveApplication, Internleaveapplication }
+ AdminHelp, InternTasksSubmissions, LeaveApplication, Internleaveapplication,
+InternRankings }
 

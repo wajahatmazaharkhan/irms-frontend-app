@@ -37,6 +37,7 @@ import {
   NewPasswordForm,
   HarassmentEmailForm,
   BatchDashboard,
+  InternRankings,
 } from "./Pages/pageIndex";
 import {
   AdminTask,
@@ -241,6 +242,14 @@ const App = () => {
             </PrivateRoute>
           }
         />
+		<Route
+          path="/intern-rankings"
+          element={
+            <PrivateRoute>
+              <InternRankings />
+            </PrivateRoute>
+			}
+		/>
         {/* <Route
           path="/AskHR"
           element={

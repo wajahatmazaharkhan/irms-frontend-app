@@ -55,12 +55,12 @@ const SideNav = () => {
     { id: 0, name: "Home", icon: "bi-house" },
     { id: 1, name: "Batch", icon: "bi-grid" },
     { id: 2, name: "Projects", icon: "bi-people" },
-    { id: 3, name: "Report", icon: "bi-bar-chart" },
+	{ id: 3, name: "Rankings", icon: "bi-trophy" },
     { id: 4, name: "Setting", icon: "bi-gear" },
     { id: 5, name: "Help", icon: "bi-question-circle" }
   ];
 
-  const redirectURLs = ["", "batch-dashboard", "projects", "reports", "Setting", "help", "AskHR"];
+  const redirectURLs = ["", "batch-dashboard", "projects","intern-rankings", "reports", "Setting", "help", "AskHR"];
 
   const footerItems = [{ name: "Log Out", icon: "bi-box-arrow-left" }];
 

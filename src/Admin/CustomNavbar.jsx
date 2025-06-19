@@ -16,7 +16,7 @@ import { Logout } from "@/Pages/pageIndex";
 import axios from "axios";
 import Loader from "@/Components/Loader";
 
-export default function CustomHrNavbar() {
+export default function CustomNavbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);

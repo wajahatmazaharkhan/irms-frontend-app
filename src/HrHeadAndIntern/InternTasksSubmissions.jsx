@@ -249,18 +249,17 @@ const reviewTask = async (submissionId, userId, status) => {
         // Get the task ID from the submission first
         const submission = taskSubmissions.find(sub => sub._id === submissionId);
         const taskIdToDelete = submission?.task;
-
-        if (taskIdToDelete) {
-          // First delete the task itself using the task ID from submission
-          await axios.delete(
+		
+		// Delete submission first
+        let res = await axios.delete(
+          `${import.meta.env.VITE_BASE_URL}/deletetasksubmition/${taskIdToDelete}`
+        );
+		
+          // Then delete task
+          res = await axios.delete(
             `${import.meta.env.VITE_BASE_URL}/task/delete-task/${taskIdToDelete}`
           );
-        }
 
-        // Then delete the submission using submission ID
-        const res = await axios.delete(
-          `${import.meta.env.VITE_BASE_URL}/deletetasksubmition/${submissionId}`
-        );
 
         if (res.status === 200 || res.status === 204) {
           // Remove from local state

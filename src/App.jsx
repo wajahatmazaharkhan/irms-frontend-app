@@ -70,6 +70,8 @@ import {
 import AdminHRManagement from "./Admin/AdminHRManagement.jsx";
 import UserManagement from "./Admin/UserManagement.jsx";
 import BatchManagement from "./Admin/BatchManagement.jsx";
+import ChatInterface from "./HrHeadAndIntern/InternChat.jsx";
+import HRChatDashboard from "./HrHeadAndIntern/HrChatBox.jsx";
 
 const AdminRoute = ({ children }) => {
   const isAdmin = localStorage.getItem("isAdmin") === "true";
@@ -160,7 +162,7 @@ const App = () => {
             </AdminRoute>
           }
         />
-		<Route
+        <Route
           path="/batch-dashboard"
           element={
             <PrivateRoute>
@@ -242,14 +244,22 @@ const App = () => {
             </PrivateRoute>
           }
         />
-		<Route
+        <Route
           path="/intern-rankings"
           element={
             <PrivateRoute>
               <InternRankings />
             </PrivateRoute>
-			}
-		/>
+          }
+        />
+        <Route
+          path="/internchat/:receiverId"
+          element={
+            <PrivateRoute>
+              <ChatInterface />
+            </PrivateRoute>
+          }
+        />
         {/* <Route
           path="/AskHR"
           element={
@@ -354,7 +364,7 @@ const App = () => {
             </PrivateRoute>
           }
         />
-        
+
 
 
         {/* hrhead and hr interns routes  */}
@@ -364,6 +374,8 @@ const App = () => {
         <Route path="/hrinternsmgmt" element={<InternManagement />} />
         <Route path="/hrbatchmgmt" element={<HrBatchManagement />} />
         <Route path="/allhrusers" element={<AllHrUsers />} />
+        <Route path="/hrchat" element={<HRChatDashboard />} />
+        <Route path="/hrchat/:receiverId" element={<HRChatDashboard />} />
         <Route path="/hrallattendance" element={<HrAllAttendance />} />
         <Route path="/internshrleaveapplications" element={<InternsHrLeaveApplication />} />
         <Route path="/hrhelp" element={<HrHelpPage />}></Route>

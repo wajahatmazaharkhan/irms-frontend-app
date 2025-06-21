@@ -99,6 +99,13 @@ function AdminHomePage() {
       description: "System administration",
       gradient: "from-yellow-500 to-yellow-700",
     },
+    {
+      title: "Chat with Interns",
+      route: "/hrchat",
+      icon: Settings, // You can replace with a more suitable icon if available
+      description: "Direct messaging with interns",
+      gradient: "from-pink-500 to-pink-700",
+    },
   ];
 
   return (

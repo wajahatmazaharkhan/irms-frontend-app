@@ -33,7 +33,7 @@ export default function RealtimeChat({ ReceiverId }) {
             socketRef.current.disconnect()
         }
 
-        socketRef.current = io("http://localhost:8000", {
+        socketRef.current = io(`${import.meta.env.VITE_BASE_URL}`, {
             transports: ["websocket", "polling"],
             timeout: 20000,
             forceNew: true,
@@ -140,7 +140,7 @@ export default function RealtimeChat({ ReceiverId }) {
         try {
             setIsLoading(true)
             setError(null)
-            const res = await axios.get(`http://localhost:8000/chat/history/${senderId}/${receiverId}`)
+            const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/chat/history/${senderId}/${receiverId}`)
             setMessages(res.data.data || [])
             console.log("Fetched messages:", res.data.data)
             setTimeout(scrollToBottom, 100)
@@ -184,7 +184,7 @@ export default function RealtimeChat({ ReceiverId }) {
         setTimeout(scrollToBottom, 100)
 
         try {
-            const res = await axios.post("http://localhost:8000/chat/send", {
+            const res = await axios.post(`${import.meta.env.VITE_BASE_URL}/chat/send`, {
                 sender: senderId,
                 receiver: receiverId,
                 content: messageContent,

@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom"
 import { Send, Dot, Check, CheckCheck, Loader2, AlertCircle, Wifi, WifiOff } from "lucide-react"
 import axios from "axios"
 import { io } from "socket.io-client"
-import TopNavbar from "../components/TopNavbar"
+import TopNavbar from "../Components/TopNavbar"
 
 export default function RealtimeChat() {
     const senderId = localStorage.getItem("userId")

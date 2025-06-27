@@ -150,7 +150,7 @@ const UserManagement = () => {
     // Accept/Verify user function
     const handleAcceptUser = async (userId) => {
         try {
-            await axios.post(`${import.meta.env.VITE_BASE_URL}accept/${userId}`)
+            await axios.post(`${import.meta.env.VITE_BASE_URL}/accept/${userId}`)
             // Refresh the user list after accepting
             GetAllUser()
             alert("User verified successfully!")

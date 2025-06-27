@@ -44,7 +44,7 @@ const UserManagement = () => {
 
     const GetAvailableInterns = () => {
         axios
-            .get(`http://localhost:8000/available-interns`)
+            .get(`${import.meta.env.VITE_BASE_URL}/available-interns`)
             .then((response) => {
                 setAvailableInterns(response.data.data || response.data)
                 console.log("Available interns fetched successfully:", response.data)
@@ -150,7 +150,7 @@ const UserManagement = () => {
     // Accept/Verify user function
     const handleAcceptUser = async (userId) => {
         try {
-            await axios.post(`http://localhost:8000/accept/${userId}`)
+            await axios.post(`${import.meta.env.VITE_BASE_URL}accept/${userId}`)
             // Refresh the user list after accepting
             GetAllUser()
             alert("User verified successfully!")
@@ -209,7 +209,7 @@ const UserManagement = () => {
     const handleDeleteUser = async (userId) => {
         if (window.confirm("Are you sure you want to delete this user?")) {
             try {
-                await axios.delete(`http://localhost:8000/delete/${userId}`)
+                await axios.delete(`${import.meta.env.VITE_BASE_URL}/delete/${userId}`)
                 setUsers(users.filter((user) => user._id !== userId))
                 alert("User deleted successfully!")
             } catch (error) {

@@ -1,9 +1,10 @@
+"use client"
+
 import { useState, useEffect } from "react"
 import {
     Users,
     Shield,
     UserCheck,
-    UserPlus,
     Edit3,
     Trash2,
     Search,
@@ -14,39 +15,53 @@ import {
     Calendar,
     CheckCircle,
     XCircle,
+    Clock,
 } from "lucide-react"
 import axios from "axios"
 import CustomNavbar from "./CustomNavbar"
 
-
-
 const UserManagement = () => {
     const [users, setUsers] = useState([])
+    const [availableInterns, setAvailableInterns] = useState([])
     const [searchTerm, setSearchTerm] = useState("")
     const [filterRole, setFilterRole] = useState("all")
     const [filterStatus, setFilterStatus] = useState("all")
-    const [showAddModal, setShowAddModal] = useState(false)
     const [showEditModal, setShowEditModal] = useState(false)
     const [selectedUser, setSelectedUser] = useState()
     const [isLoading, setIsLoading] = useState(false)
 
-
     const GetAllUser = () => {
-        axios.get(`${import.meta.env.VITE_BASE_URL}/allusers`)
+        axios
+            .get(`${import.meta.env.VITE_BASE_URL}/allusers`)
             .then((response) => {
                 setUsers(response.data.data)
-                console.log("Users fetched successfully:", response.data.data);
+                console.log("Users fetched successfully:", response.data.data)
             })
             .catch((error) => {
                 console.error("Error fetching users:", error)
             })
     }
 
+    const GetAvailableInterns = () => {
+        axios
+            .get(`http://localhost:8000/available-interns`)
+            .then((response) => {
+                setAvailableInterns(response.data.data || response.data)
+                console.log("Available interns fetched successfully:", response.data)
+            })
+            .catch((error) => {
+                console.error("Error fetching available interns:", error)
+            })
+    }
+
     useEffect(() => {
         GetAllUser()
+        GetAvailableInterns()
     }, [])
 
-
+    // Separate users into verified and unverified
+    const verifiedUsers = users.filter((user) => user.isVerified === true)
+    const unverifiedUsers = users.filter((user) => user.isVerified === false || user.isVerified === undefined)
 
     const availablePermissions = {
         admin: [
@@ -116,39 +131,51 @@ const UserManagement = () => {
         user: [],
     }
 
-    const filteredUsers = users.filter((user) => {
+    const filteredVerifiedUsers = verifiedUsers.filter((user) => {
         const matchesSearch =
             user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
             user.email.toLowerCase().includes(searchTerm.toLowerCase())
         const matchesRole = filterRole === "all" || user.role === filterRole
         const matchesStatus = filterStatus === "all" || user.status === filterStatus
-
         return matchesSearch && matchesRole && matchesStatus
     })
 
+    const filteredUnverifiedUsers = unverifiedUsers.filter((user) => {
+        const matchesSearch =
+            user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            user.email.toLowerCase().includes(searchTerm.toLowerCase())
+        return matchesSearch
+    })
 
+    // Accept/Verify user function
+    const handleAcceptUser = async (userId) => {
+        try {
+            await axios.post(`http://localhost:8000/accept/${userId}`)
+            // Refresh the user list after accepting
+            GetAllUser()
+            alert("User verified successfully!")
+        } catch (error) {
+            console.error("Error accepting user:", error)
+            alert("Failed to verify user")
+        }
+    }
 
     const handleEditUser = (user) => {
-        setSelectedUser({ ...user });
-        setShowEditModal(true);
-    };
+        setSelectedUser({ ...user })
+        setShowEditModal(true)
+    }
 
     const handleUpdateUser = async () => {
-        const userid = localStorage.getItem("userId");
-        setIsLoading(true);
-
+        const userid = localStorage.getItem("userId")
+        setIsLoading(true)
         try {
-            // Build permissions array (convert IDs to labels, filter out nulls)
             const permissions =
                 selectedUser.role === "intern"
                     ? []
                     : selectedUser.permissions
-                        .map((permId) =>
-                            availablePermissions[selectedUser.role].find((p) => p.id === permId)?.id
-                        )
-                        .filter(Boolean); // removes null/undefined
+                        .map((permId) => availablePermissions[selectedUser.role].find((p) => p.id === permId)?.id)
+                        .filter(Boolean)
 
-            // Build payload and remove null/undefined values
             const payload = {
                 role: selectedUser.role,
                 name: selectedUser.name,
@@ -156,65 +183,59 @@ const UserManagement = () => {
                 isAdmin: selectedUser.role === "admin" ? true : false,
                 mnumber: selectedUser.mnumber,
                 permissions,
-            };
-            if (selectedUser._id === userid) {
-                localStorage.setItem("permissions", JSON.stringify(permissions));
-                localStorage.setItem("isAdmin", selectedUser.role === "admin" ? "true" : "false");
             }
 
-            // Remove keys with null or undefined values
-            Object.keys(payload).forEach(
-                (key) => (payload[key] == null) && delete payload[key]
-            );
+            if (selectedUser._id === userid) {
+                localStorage.setItem("permissions", JSON.stringify(permissions))
+                localStorage.setItem("isAdmin", selectedUser.role === "admin" ? "true" : "false")
+            }
 
-            await axios.put(
-                `${import.meta.env.VITE_BASE_URL}/update/${selectedUser._id}`,
-                payload
-            );
+            Object.keys(payload).forEach((key) => payload[key] == null && delete payload[key])
 
-            setUsers(users.map((user) =>
-                user._id === selectedUser._id ? { ...selectedUser, permissions } : user
-            ));
+            await axios.put(`${import.meta.env.VITE_BASE_URL}/update/${selectedUser._id}`, payload)
 
-            setShowEditModal(false);
-            setSelectedUser(null);
-            alert("User updated successfully!");
+            setUsers(users.map((user) => (user._id === selectedUser._id ? { ...selectedUser, permissions } : user)))
+
+            setShowEditModal(false)
+            setSelectedUser(null)
+            alert("User updated successfully!")
         } catch (error) {
-            alert("Failed to update user");
+            alert("Failed to update user")
         } finally {
-            setIsLoading(false);
+            setIsLoading(false)
         }
     }
 
     const handleDeleteUser = async (userId) => {
         if (window.confirm("Are you sure you want to delete this user?")) {
-            await axios.delete(`${import.meta.env.VITE_BASE_URL}/delete/${userId}`);
-            setUsers(users.filter((user) => user._id !== userId));
-            alert("User deleted successfully!");
+            try {
+                await axios.delete(`http://localhost:8000/delete/${userId}`)
+                setUsers(users.filter((user) => user._id !== userId))
+                alert("User deleted successfully!")
+            } catch (error) {
+                console.error("Error deleting user:", error)
+                alert("Failed to delete user")
+            }
         }
     }
 
     const promoteUser = async (userId, newRole) => {
-        const userToPromote = users.find((user) => user._id === userId);
-        if (!userToPromote) return;
+        const userToPromote = users.find((user) => user._id === userId)
+        if (!userToPromote) return
 
-        // Get permission labels for the new role
-        const newPermissions =
-            newRole === "intern"
-                ? []
-                : availablePermissions[newRole].map((p) => p.id);
+        const newPermissions = newRole === "intern" ? [] : availablePermissions[newRole].map((p) => p.id)
 
         try {
             await axios.put(`${import.meta.env.VITE_BASE_URL}/update/${userId}`, {
                 role: newRole,
                 isAdmin: newRole === "admin" ? true : false,
-                permissions: newPermissions, // send labels!
-            });
+                permissions: newPermissions,
+            })
 
-            const userid = localStorage.getItem("userId");
+            const userid = localStorage.getItem("userId")
             if (userId === userid) {
-                localStorage.setItem("permissions", JSON.stringify(newPermissions));
-                localStorage.setItem("isAdmin", newRole === "admin" ? "true" : "false");
+                localStorage.setItem("permissions", JSON.stringify(newPermissions))
+                localStorage.setItem("isAdmin", newRole === "admin" ? "true" : "false")
             }
 
             const updatedUser = {
@@ -222,14 +243,13 @@ const UserManagement = () => {
                 role: newRole,
                 isAdmin: newRole === "admin" ? true : false,
                 permissions: newPermissions,
-            };
+            }
 
-            setUsers(users.map((user) =>
-                user._id === userId ? updatedUser : user
-            ));
-            alert(`User promoted to ${newRole} successfully!`);
+            setUsers(users.map((user) => (user._id === userId ? updatedUser : user)))
+
+            alert(`User promoted to ${newRole} successfully!`)
         } catch (error) {
-            alert("Failed to promote user");
+            alert("Failed to promote user")
         }
     }
 
@@ -260,9 +280,207 @@ const UserManagement = () => {
     }
 
     const formatDate = (dateString) => {
-        const options = { year: 'numeric', month: 'short', day: 'numeric' };
-        return new Date(dateString).toLocaleDateString(undefined, options);
-    };
+        const options = { year: "numeric", month: "short", day: "numeric" }
+        return new Date(dateString).toLocaleDateString(undefined, options)
+    }
+
+    const UserTable = ({ users, isVerified = true, title }) => (
+        <div className="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden mb-8">
+            <div className="bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-4 border-b border-gray-200">
+                <div className="flex items-center justify-between">
+                    <h2 className="text-xl font-bold text-gray-800 flex items-center">
+                        {isVerified ? (
+                            <CheckCircle className="w-6 h-6 text-green-600 mr-2" />
+                        ) : (
+                            <Clock className="w-6 h-6 text-orange-600 mr-2" />
+                        )}
+                        {title}
+                    </h2>
+                    <span className="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full">
+                        {users.length} users
+                    </span>
+                </div>
+            </div>
+            <div className="overflow-x-auto">
+                <table className="w-full">
+                    <thead className="bg-gray-50 border-b border-gray-200">
+                        <tr>
+                            <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">User</th>
+                            {isVerified && <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">Role</th>}
+                            {!isVerified && <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">For Role</th>}
+                            {isVerified && <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">Status</th>}
+                            <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">Join Date</th>
+                            {isVerified && <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">Permissions</th>}
+                            <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200">
+                        {users.map((user) => {
+                            const RoleIcon = getRoleIcon(user.role)
+                            return (
+                                <tr key={user._id} className="hover:bg-gray-50 transition-colors duration-200">
+                                    <td className="px-6 py-4">
+                                        <div className="flex items-center space-x-3">
+                                            <div
+                                                className={`w-10 h-10 rounded-full flex items-center justify-center ${isVerified
+                                                    ? "bg-gradient-to-br from-blue-500 to-blue-600"
+                                                    : "bg-gradient-to-br from-orange-500 to-orange-600"
+                                                    }`}
+                                            >
+                                                <span className="text-white font-semibold text-sm">
+                                                    {user.name
+                                                        .split(" ")
+                                                        .map((n) => n[0])
+                                                        .join("")}
+                                                </span>
+                                            </div>
+                                            <div>
+                                                <p className="font-semibold text-gray-800">{user.name}</p>
+                                                <p className="text-sm text-gray-500 flex items-center">
+                                                    <Mail className="w-3 h-3 mr-1" />
+                                                    {user.email}
+                                                </p>
+                                                <p className="text-sm text-gray-500 flex items-center">
+                                                    <Phone className="w-3 h-3 mr-1" />
+                                                    {user.mnumber}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    {isVerified && (
+                                        <td className="px-6 py-4">
+                                            <div className="space-y-2">
+                                                <div
+                                                    className={`inline-flex items-center space-x-2 px-3 py-1 rounded-full text-sm font-medium ${getRoleColor(
+                                                        user.role,
+                                                    )}`}
+                                                >
+                                                    <RoleIcon className="w-4 h-4" />
+                                                    <span className="capitalize">{user.role === "development" ? "intern" : user.role}</span>
+                                                </div>
+                                                {user.role === "intern" && (
+                                                    <div className="flex space-x-1">
+                                                        <button
+                                                            onClick={() => promoteUser(user._id, "hr")}
+                                                            className="text-xs bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition-colors"
+                                                        >
+                                                            Promote to HR
+                                                        </button>
+                                                        <button
+                                                            onClick={() => promoteUser(user._id, "admin")}
+                                                            className="text-xs bg-purple-500 text-white px-2 py-1 rounded hover:bg-purple-600 transition-colors"
+                                                        >
+                                                            Promote to Admin
+                                                        </button>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </td>
+                                    )}
+                                    {!isVerified && (
+                                        <td className="px-6 py-4">
+                                            <div className="space-y-2">
+                                                <div
+                                                    className={`inline-flex items-center space-x-2 px-3 py-1 rounded-full text-sm font-medium ${getRoleColor(
+                                                        user.role,
+                                                    )}`}
+                                                >
+                                                    <RoleIcon className="w-4 h-4" />
+                                                    <span className="capitalize">{user.role === "development" ? "intern" : user.role}</span>
+                                                </div>
+
+
+                                            </div>
+                                        </td>
+                                    )}
+                                    {isVerified && (
+                                        <td className="px-6 py-4">
+                                            {(() => {
+                                                const today = new Date()
+                                                const endDate = user.enddate ? new Date(user.enddate) : null
+                                                const isActive = endDate ? today <= endDate : true
+                                                const status = isActive ? "active" : "inactive"
+                                                return (
+                                                    <div
+                                                        className={`inline-flex items-center space-x-2 px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(status)}`}
+                                                    >
+                                                        {isActive ? <CheckCircle className="w-4 h-4" /> : <XCircle className="w-4 h-4" />}
+                                                        <span className="capitalize">{status}</span>
+                                                    </div>
+                                                )
+                                            })()}
+                                        </td>
+                                    )}
+                                    <td className="px-6 py-4 text-sm text-gray-600">
+                                        <div className="flex items-center">
+                                            <Calendar className="w-4 h-4 mr-2" />
+                                            {formatDate(user.startDate)}
+                                        </div>
+                                    </td>
+                                    {isVerified && (
+                                        <td className="px-6 py-4">
+                                            <div className="flex flex-wrap gap-1">
+                                                {user?.permissions?.length > 0 ? (
+                                                    user?.permissions.slice(0, 2).map((permission) => (
+                                                        <span key={permission} className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">
+                                                            {permission?.replace("_", " ")}
+                                                        </span>
+                                                    ))
+                                                ) : (
+                                                    <span className="text-xs text-gray-400">No permissions</span>
+                                                )}
+                                                {user?.permissions?.length > 2 && (
+                                                    <span className="text-xs text-gray-500">+{user?.permissions?.length - 2} more</span>
+                                                )}
+                                            </div>
+                                        </td>
+                                    )}
+                                    <td className="px-6 py-4">
+                                        <div className="flex items-center space-x-2">
+                                            {!isVerified ? (
+                                                <button
+                                                    onClick={() => handleAcceptUser(user._id)}
+                                                    className="px-3 py-1 bg-green-500 text-white text-sm rounded hover:bg-green-600 transition-colors duration-200 flex items-center space-x-1"
+                                                    title="Accept User"
+                                                >
+                                                    <UserCheck className="w-4 h-4" />
+                                                    <span>Accept</span>
+                                                </button>
+                                            ) : (
+                                                <button
+                                                    onClick={() => handleEditUser(user)}
+                                                    className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors duration-200"
+                                                    title="Edit User"
+                                                >
+                                                    <Edit3 className="w-4 h-4" />
+                                                </button>
+                                            )}
+                                            <button
+                                                onClick={() => handleDeleteUser(user._id)}
+                                                className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200"
+                                                title="Delete User"
+                                            >
+                                                <Trash2 className="w-4 h-4" />
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            )
+                        })}
+                    </tbody>
+                </table>
+                {users?.length === 0 && (
+                    <div className="text-center py-12">
+                        <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                        <p className="text-gray-500 text-lg">No users found</p>
+                        <p className="text-gray-400">
+                            {isVerified ? "No verified users available" : "No pending verification requests"}
+                        </p>
+                    </div>
+                )}
+            </div>
+        </div>
+    )
 
     return (
         <>
@@ -281,7 +499,7 @@ const UserManagement = () => {
                     </div>
 
                     {/* Stats Cards */}
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
                         <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200">
                             <div className="flex items-center justify-between">
                                 <div>
@@ -294,8 +512,28 @@ const UserManagement = () => {
                         <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200">
                             <div className="flex items-center justify-between">
                                 <div>
+                                    <p className="text-sm font-medium text-gray-600 mb-1">Verified</p>
+                                    <p className="text-2xl font-bold text-green-600">{verifiedUsers.length}</p>
+                                </div>
+                                <CheckCircle className="w-8 h-8 text-green-600" />
+                            </div>
+                        </div>
+                        <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-sm font-medium text-gray-600 mb-1">Pending</p>
+                                    <p className="text-2xl font-bold text-orange-600">{unverifiedUsers.length}</p>
+                                </div>
+                                <Clock className="w-8 h-8 text-orange-600" />
+                            </div>
+                        </div>
+                        <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200">
+                            <div className="flex items-center justify-between">
+                                <div>
                                     <p className="text-sm font-medium text-gray-600 mb-1">Admins</p>
-                                    <p className="text-2xl font-bold text-purple-600">{users.filter((u) => u.role === "admin")?.length}</p>
+                                    <p className="text-2xl font-bold text-purple-600">
+                                        {verifiedUsers.filter((u) => u.role === "admin")?.length}
+                                    </p>
                                 </div>
                                 <Crown className="w-8 h-8 text-purple-600" />
                             </div>
@@ -304,18 +542,11 @@ const UserManagement = () => {
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="text-sm font-medium text-gray-600 mb-1">HR Personnel</p>
-                                    <p className="text-2xl font-bold text-blue-600">{users.filter((u) => u.role === "hr")?.length}</p>
+                                    <p className="text-2xl font-bold text-blue-600">
+                                        {verifiedUsers.filter((u) => u.role === "hr")?.length}
+                                    </p>
                                 </div>
                                 <Briefcase className="w-8 h-8 text-blue-600" />
-                            </div>
-                        </div>
-                        <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="text-sm font-medium text-gray-600 mb-1">Active Users</p>
-                                    <p className="text-2xl font-bold text-green-600">{users.filter((u) => u.status === "active")?.length}</p>
-                                </div>
-                                <UserCheck className="w-8 h-8 text-green-600" />
                             </div>
                         </div>
                     </div>
@@ -323,7 +554,6 @@ const UserManagement = () => {
                     {/* Controls Section */}
                     <div className="bg-white rounded-xl shadow-lg p-6 mb-8 border border-gray-200">
                         <div className="flex flex-col lg:flex-row lg:items-center gap-4">
-                            {/* Search and Filters */}
                             <div className="flex flex-col sm:flex-row gap-4 flex-1">
                                 <div className="relative flex-1 max-w-md">
                                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -336,23 +566,23 @@ const UserManagement = () => {
                                     />
                                 </div>
                                 <style jsx>{`
-                .select-wrapper {
-                  position: relative;
-                }
-                .select-wrapper::after {
-                  content: '';
-                  position: absolute;
-                  right: 12px;
-                  top: 50%;
-                  transform: translateY(-50%);
-                  width: 0;
-                  height: 0;
-                  border-left: 5px solid transparent;
-                  border-right: 5px solid transparent;
-                  border-top: 5px solid #6b7280;
-                  pointer-events: none;
-                }
-              `}</style>
+                                .select-wrapper {
+                                  position: relative;
+                                }
+                                .select-wrapper::after {
+                                  content: '';
+                                  position: absolute;
+                                  right: 12px;
+                                  top: 50%;
+                                  transform: translateY(-50%);
+                                  width: 0;
+                                  height: 0;
+                                  border-left: 5px solid transparent;
+                                  border-right: 5px solid transparent;
+                                  border-top: 5px solid #6b7280;
+                                  pointer-events: none;
+                                }
+                              `}</style>
                                 <div className="select-wrapper">
                                     <select
                                         value={filterRole}
@@ -365,7 +595,6 @@ const UserManagement = () => {
                                         <option value="intern">Intern</option>
                                     </select>
                                 </div>
-
                                 <div className="select-wrapper">
                                     <select
                                         value={filterStatus}
@@ -378,177 +607,20 @@ const UserManagement = () => {
                                     </select>
                                 </div>
                             </div>
-
-                            {/* Results count */}
                             <div className="text-sm text-gray-600 bg-gray-100 px-4 py-2 rounded-lg">
-                                Showing {filteredUsers.length} of {users?.length} users
+                                Showing {filteredVerifiedUsers.length + filteredUnverifiedUsers.length} of {users?.length} users
                             </div>
                         </div>
                     </div>
-                    {/* Users Table */}
-                    <div className="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
-                        <div className="overflow-x-auto">
-                            <table className="w-full">
-                                <thead className="bg-gray-50 border-b border-gray-200">
-                                    <tr>
-                                        <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">User</th>
-                                        <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">Role</th>
-                                        <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">Status</th>
-                                        <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">Join Date</th>
-                                        <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">Permissions</th>
-                                        <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-gray-200">
-                                    {filteredUsers.map((user) => {
-                                        const RoleIcon = getRoleIcon(user.role)
 
-                                        return (
-                                            <tr key={user._id} className="hover:bg-gray-50 transition-colors duration-200">
-                                                <td className="px-6 py-4">
-                                                    <div className="flex items-center space-x-3">
-                                                        <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
-                                                            <span className="text-white font-semibold text-sm">
-                                                                {user.name
-                                                                    .split(" ")
-                                                                    .map((n) => n[0])
-                                                                    .join("")}
-                                                            </span>
-                                                        </div>
-                                                        <div>
-                                                            <p className="font-semibold text-gray-800">{user.name}</p>
-                                                            <p className="text-sm text-gray-500 flex items-center">
-                                                                <Mail className="w-3 h-3 mr-1" />
-                                                                {user.email}
-                                                            </p>
-                                                            <p className="text-sm text-gray-500 flex items-center">
-                                                                <Phone className="w-3 h-3 mr-1" />
-                                                                {user.mnumber}
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td className="px-6 py-4">
-                                                    <div className="space-y-2">
-                                                        <div
-                                                            className={`inline-flex items-center space-x-2 px-3 py-1 rounded-full text-sm font-medium ${getRoleColor(
-                                                                user.role
-                                                            )}`}
-                                                        >
-                                                            <RoleIcon className="w-4 h-4" />
-                                                            <span className="capitalize">{user.role === "development" ? "intern" : user.role}</span>
-                                                        </div>
-                                                        {user.role === "intern" && (
-                                                            <div className="flex space-x-1">
-                                                                <button
-                                                                    onClick={() => promoteUser(user._id, "hr")}
-                                                                    className="text-xs bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition-colors"
-                                                                >
-                                                                    Promote to HR
-                                                                </button>
-                                                                <button
-                                                                    onClick={() => promoteUser(user._id, "admin")}
-                                                                    className="text-xs bg-purple-500 text-white px-2 py-1 rounded hover:bg-purple-600 transition-colors"
-                                                                >
-                                                                    Promote to Admin
-                                                                </button>
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                </td>
-                                                <td className="px-6 py-4">
-                                                    {(() => {
-                                                        const today = new Date();
-                                                        const endDate = user.enddate ? new Date(user.enddate) : null;
-                                                        const isActive = endDate ? today <= endDate : true;
-                                                        const status = isActive ? "active" : "inactive";
-                                                        return (
-                                                            <div
-                                                                className={`inline-flex items-center space-x-2 px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(status)}`}
-                                                            >
-                                                                {isActive ? (
-                                                                    <CheckCircle className="w-4 h-4" />
-                                                                ) : (
-                                                                    <XCircle className="w-4 h-4" />
-                                                                )}
-                                                                <span className="capitalize">{status}</span>
-                                                            </div>
-                                                        );
-                                                    })()}
-                                                </td>
-                                                <td className="px-6 py-4 text-sm text-gray-600">
-                                                    <div className="flex items-center">
-                                                        <Calendar className="w-4 h-4 mr-2" />
-                                                        {formatDate(user.startDate)}
-                                                    </div>
-                                                </td>
-                                                <td className="px-6 py-4">
-                                                    <div className="flex flex-wrap gap-1">
-                                                        {user?.permissions?.length > 0 ? (
-                                                            user?.permissions.slice(0, 2).map((permission) => (
-                                                                <span key={permission} className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">
-                                                                    {permission?.replace("_", " ")}
-                                                                </span>
-                                                            ))
-                                                        ) : (
-                                                            <span className="text-xs text-gray-400">No permissions</span>
-                                                        )}
-                                                        {user?.permissions?.length > 2 && (
+                    {/* Unverified Users Section */}
+                    {unverifiedUsers.length > 0 && (
+                        <UserTable users={filteredUnverifiedUsers} isVerified={false} title="Pending Verification" />
+                    )}
 
-                                                            <span className="text-xs text-gray-500">+{user?.permissions?.length - 2} more</span>
-                                                        )}
-                                                    </div>
-                                                </td>
-                                                <td className="px-6 py-4">
-                                                    <div className="flex items-center space-x-2">
-                                                        <button
-                                                            onClick={() => handleEditUser(user)}
-                                                            className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors duration-200"
-                                                            title="Edit User"
-                                                        >
-                                                            <Edit3 className="w-4 h-4" />
-                                                        </button>
-                                                        {/* <button
-                                                        onClick={() => toggleUserStatus(user.id)}
-                                                        className={`p-2 rounded-lg transition-colors duration-200 ${user.status === "active"
-                                                            ? "text-red-600 hover:bg-red-50"
-                                                            : "text-green-600 hover:bg-green-50"
-                                                            }`}
-                                                        title={user.status === "active" ? "Deactivate" : "Activate"}
-                                                    >
-                                                        {user.status === "active" ? (
-                                                            <XCircle className="w-4 h-4" />
-                                                        ) : (
-                                                            <CheckCircle className="w-4 h-4" />
-                                                        )}
-                                                    </button> */}
-                                                        <button
-                                                            onClick={() => handleDeleteUser(user._id)}
-                                                            className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200"
-                                                            title="Delete User"
-                                                        >
-                                                            <Trash2 className="w-4 h-4" />
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        )
-                                    })}
-                                </tbody>
-                            </table>
-
-                            {filteredUsers?.length === 0 && (
-                                <div className="text-center py-12">
-                                    <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                                    <p className="text-gray-500 text-lg">No users found</p>
-                                    <p className="text-gray-400">Try adjusting your search or filters</p>
-                                </div>
-                            )}
-                        </div>
-                    </div>
+                    {/* Verified Users Section */}
+                    <UserTable users={filteredVerifiedUsers} isVerified={true} title="Verified Users" />
                 </div>
-
-
 
                 {/* Edit User Modal */}
                 {showEditModal && selectedUser && (
@@ -558,7 +630,6 @@ const UserManagement = () => {
                                 <h3 className="text-xl font-bold text-gray-800">Edit User</h3>
                                 <p className="text-gray-600">Update user information and permissions</p>
                             </div>
-
                             <div className="p-6 space-y-6">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
@@ -571,7 +642,6 @@ const UserManagement = () => {
                                             placeholder="Enter full name"
                                         />
                                     </div>
-
                                     <div>
                                         <label className="block text-sm font-semibold text-gray-700 mb-2">Email Address *</label>
                                         <input
@@ -583,7 +653,6 @@ const UserManagement = () => {
                                         />
                                     </div>
                                 </div>
-
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
                                         <label className="block text-sm font-semibold text-gray-700 mb-2">Phone Number *</label>
@@ -595,7 +664,6 @@ const UserManagement = () => {
                                             placeholder="Enter phone number"
                                         />
                                     </div>
-
                                     <div>
                                         <label className="block text-sm font-semibold text-gray-700 mb-2">Role *</label>
                                         <select
@@ -615,8 +683,6 @@ const UserManagement = () => {
                                         </select>
                                     </div>
                                 </div>
-
-                                {/* Permissions */}
                                 {selectedUser.role !== "user" && (
                                     <div>
                                         <label className="block text-sm font-semibold text-gray-700 mb-4">Permissions</label>
@@ -652,14 +718,14 @@ const UserManagement = () => {
                                                         >
                                                             {permission.label}
                                                         </label>
-                                                        <p className="text-xs text-gray-500">{permission.description}</p> </div>
+                                                        <p className="text-xs text-gray-500">{permission.description}</p>
+                                                    </div>
                                                 </div>
                                             ))}
                                         </div>
                                     </div>
                                 )}
                             </div>
-
                             <div className="p-6 border-t border-gray-200 flex justify-end space-x-4">
                                 <button
                                     onClick={() => {
@@ -684,7 +750,6 @@ const UserManagement = () => {
                 )}
             </div>
         </>
-
     )
 }
 

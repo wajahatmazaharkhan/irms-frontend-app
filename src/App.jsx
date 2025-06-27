@@ -39,6 +39,8 @@ import {
   HarassmentEmailForm,
   BatchDashboard,
   InternRankings,
+  InternRaiseTicket,
+  MyTickets,
 } from "./Pages/pageIndex";
 import {
   AdminTask,
@@ -73,6 +75,8 @@ import UserManagement from "./Admin/UserManagement.jsx";
 import BatchManagement from "./Admin/BatchManagement.jsx";
 import ChatInterface from "./HrHeadAndIntern/InternChat.jsx";
 import HRChatDashboard from "./HrHeadAndIntern/HrChatBox.jsx";
+
+import {CommHomePage,ManageTickets} from "./CommunicationTeam/commIndex";
 
 const AdminRoute = ({ children }) => {
   const isAdmin = localStorage.getItem("isAdmin") === "true";
@@ -206,7 +210,7 @@ const App = () => {
           element={
             <PrivateRoute>
               {/* <VerifyRoute> */}
-              <Home />
+              <BatchDashboard />
               {/* </VerifyRoute> */}
 
             </PrivateRoute>
@@ -217,7 +221,7 @@ const App = () => {
           element={
             <PrivateRoute>
               {/* <VerifyRoute> */}
-              <Home />
+              <BatchDashboard />
               {/* </VerifyRoute> */}
             </PrivateRoute>
           }
@@ -281,6 +285,22 @@ const App = () => {
               <VerifyRoute>
                 <InternRankings />
               </VerifyRoute>
+            </PrivateRoute>
+          }
+        />
+		<Route
+          path="/internticket"
+          element={
+            <PrivateRoute>
+              <InternRaiseTicket />
+            </PrivateRoute>
+          }
+        />
+		<Route
+          path="/viewmytickets"
+          element={
+            <PrivateRoute>
+              <MyTickets />
             </PrivateRoute>
           }
         />
@@ -531,6 +551,11 @@ const App = () => {
           }
         />
 
+		
+		{/* Comm team routes  */}
+		<Route path="/commhomepage" element={<CommHomePage />} />
+		<Route path="/commtickets" element={<ManageTickets />} />
+		
       </Routes>
     </HrProvider>
   );

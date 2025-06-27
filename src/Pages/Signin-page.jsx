@@ -73,13 +73,16 @@ const Signin = ({ onSwitchToSignup }) => {
       setIsLoggedIn(true);
       setIsLoading(false);
       toast.success("Login successful");
-
+		console.log("User: ",user);
       if (isAdminValue) {
         navigate("/admin-access");
       }
       else if (user.role === "hr") {
         navigate("/hrhomepage");
       }
+	  else if (user.department === "communication"){
+		navigate("/commhomepage");
+	  }
       else {
         navigate("/");
       }

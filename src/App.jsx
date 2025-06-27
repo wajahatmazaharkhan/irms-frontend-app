@@ -210,7 +210,7 @@ const App = () => {
           element={
             <PrivateRoute>
               {/* <VerifyRoute> */}
-              <Home />
+              <BatchDashboard />
               {/* </VerifyRoute> */}
 
             </PrivateRoute>
@@ -221,7 +221,7 @@ const App = () => {
           element={
             <PrivateRoute>
               {/* <VerifyRoute> */}
-              <Home />
+              <BatchDashboard />
               {/* </VerifyRoute> */}
             </PrivateRoute>
           }

@@ -1,7 +1,7 @@
 import { Navbar, SideNav, Footer, useTitle } from "@/Components/compIndex";
 import { useEffect, useState } from "react";
 import axios from "axios";
-
+import { useNavigate, useLocation } from "react-router-dom";
 
 
 const RaiseTicket = () => {
@@ -11,6 +11,7 @@ const RaiseTicket = () => {
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(false);
   const baseUrl = import.meta.env.VITE_BASE_URL;
+  const navigate = useNavigate();
 
  const userId = localStorage.getItem("userId");
   // Fetch previous tickets
@@ -53,6 +54,11 @@ const RaiseTicket = () => {
     }
   };
 
+
+   const handleManage = ()=>{
+	   navigate("/viewmytickets");
+   }
+   
   return (
 	<>
 	<Navbar />
@@ -101,6 +107,7 @@ const RaiseTicket = () => {
 		) : Array.isArray(tickets) && tickets.length === 0 ? (
 		  <p>No tickets found.</p>
 		) : Array.isArray(tickets) ? (
+		  <>
 		  <div className="space-y-4">
 			{tickets.map((ticket) => (
 			  <div
@@ -130,6 +137,11 @@ const RaiseTicket = () => {
 			  </div>
 			))}
 		  </div>
+		  <div className="flex justify-center">
+			<button className="mt-[2vh] bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700" onClick={handleManage}>
+			Manage Tickets</button> 
+		  </div>
+		  </>
 		) : (
 		  <p>Something went wrong fetching tickets.</p>
 		)}

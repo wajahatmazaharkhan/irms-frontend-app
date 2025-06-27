@@ -136,27 +136,31 @@ const CommTeamDashboard = () => {
                 </div>
 
                 {/* Action Buttons */}
-                <div className="mt-4 flex flex-wrap gap-3">
-                  {ticket.assignedTo?._id === userId ? (
-                    <button
-                      onClick={() => handleMarkInProgress(ticket._id)}
-                      className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600"
-                    >
-                      Mark In Progress
-                    </button>
-                  ) : ticket.assignedTo ? (
-                    <p className="text-sm text-gray-500">
-                      Assigned to someone else
-                    </p>
-                  ) : (
-                    <button
-                      onClick={() => handleSelfAssign(ticket._id)}
-                      className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
-                    >
-                      Assign to Self
-                    </button>
-                  )}
-                </div>
+				<div className="mt-4 flex flex-wrap gap-3">
+				  {ticket.status === "Open" && (
+					<>
+					  {ticket.assignedTo?._id === userId ? (
+						<button
+						  onClick={() => handleMarkInProgress(ticket._id)}
+						  className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600"
+						>
+						  Mark In Progress
+						</button>
+					  ) : ticket.assignedTo ? (
+						<p className="text-sm text-gray-500">
+						  Assigned to someone else
+						</p>
+					  ) : (
+						<button
+						  onClick={() => handleSelfAssign(ticket._id)}
+						  className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
+						>
+						  Assign to Self
+						</button>
+					  )}
+					</>
+				  )}
+				</div>
               </div>
             ))}
           </div>

@@ -205,9 +205,9 @@ const App = () => {
           path="/"
           element={
             <PrivateRoute>
-              <VerifyRoute>
-                <Home />
-              </VerifyRoute>
+              {/* <VerifyRoute> */}
+              <Home />
+              {/* </VerifyRoute> */}
 
             </PrivateRoute>
           }
@@ -216,9 +216,9 @@ const App = () => {
           path="/dashboard"
           element={
             <PrivateRoute>
-              <VerifyRoute>
-                <Home />
-              </VerifyRoute>
+              {/* <VerifyRoute> */}
+              <Home />
+              {/* </VerifyRoute> */}
             </PrivateRoute>
           }
         />

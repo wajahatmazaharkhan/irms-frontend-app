@@ -4,6 +4,12 @@ import { Dashboard } from "./pageIndex";
 import { useAuthContext } from "@/context/AuthContext";
 import { IntroPage } from "./pageIndex";
 import { useNavigate } from "react-router-dom";
+import NotVerified from "./NotVerified";
+
+const VerifyRoute = ({ children }) => {
+  const isVerified = localStorage.getItem("isVerified") === "true";
+  return isVerified ? children : <NotVerified />;
+}
 
 const Home = () => {
   const navigate = useNavigate();
@@ -29,9 +35,11 @@ const Home = () => {
           </div>
           :
           <>
-            <TopNavbar />
-            <SideNav />
-            <Dashboard />
+            <VerifyRoute>
+              <TopNavbar />
+              <SideNav />
+              <Dashboard />
+            </VerifyRoute>
           </>
       ) : (
         <>

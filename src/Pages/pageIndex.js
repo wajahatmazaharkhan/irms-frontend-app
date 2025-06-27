@@ -40,6 +40,8 @@ import BatchDashboard from "@/Components/BatchDashboard";
 import InternRankings from "./InternRanking";
 import InternRaiseTicket from "./InternRaiseTicket";
 import MyTickets from "./MyTickets";
+import { Import } from "lucide-react";
+import NotVerified from "./NotVerified";
 
 
 
@@ -53,5 +55,6 @@ Profile, Aboutus, CustomNavbar, AdminHomePage,
  AdminProject, AdminTask, AdminReport, PrivacyPolicy, 
  Help, AllUsers, AdminHelpPage, InternAttendance,
  AdminHelp, InternTasksSubmissions, LeaveApplication, Internleaveapplication,
-InternRankings,InternRaiseTicket,MyTickets }
+InternRankings,InternRaiseTicket,MyTickets,NotVerified }
+
 

@@ -42,6 +42,7 @@ export const AuthProvider = ({ children }) => {
   const LogoutUser = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("isAdmin");
+    localStorage.removeItem("isVerified");
     localStorage.removeItem("isHr");
     localStorage.removeItem("userId");
     localStorage.removeItem("userName");

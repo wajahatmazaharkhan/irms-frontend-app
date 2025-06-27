@@ -26,28 +26,30 @@ const SignUp = ({ onSwitchToSignin }) => {
   const signUpUser = async () => {
     const signupURL = `${import.meta.env.VITE_BASE_URL}/api/auth/signup`;
     setIsLoading(true);
-    
-    
+
+
     const num = (phone);
-  
+
     try {
-      
+
       const response = await axios.post(signupURL, {
         name: fullName,
         email: email,
         password: password,
         rpassword: confirmPassword,
         mnumber: num,
-        role: "intern",
+        role: department === "hr" ? department : "intern",
         department: department,
-        startDate:startDate,
-        EndDate: endDate,  
+        startDate: startDate,
+        EndDate: endDate,
       });
 
-      const data  = await response.json;
+
+
+      const data = await response.json;
 
       console.log(data);
-      
+
       toast.success("Account created successfully");
       navigate("/login");
     } catch (error) {
@@ -213,27 +215,28 @@ const SignUp = ({ onSwitchToSignin }) => {
                   className="w-full p-3 pl-10 text-sm transition-all duration-300 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
                 >
                   <option value="">Select your internship type </option>
-                  <option value="development"> Development internship </option>
-                  <option value="research">Research internship</option>
-                  {/* <option value="hr">Hr internship</option> */}
+                  <option value="development"> Development</option>
+                  <option value="research">Research</option>
+                  <option value="communication">Communication</option>
+                  <option value="hr">Hr</option>
                 </select>
               </div>
             </div>
 
 
             {/*  */}
-      <div className="relative">
-        <label htmlFor="startDate" className="block mb-1 text-sm text-gray-600">
-          Start Date
-        </label>
-        <input
-          type="date"
-          id="startDate"
-          value={startDate}
-          readOnly
-          className="w-full p-3 text-sm bg-gray-100 border border-gray-200 rounded-lg"
-        />
-      </div>
+            <div className="relative">
+              <label htmlFor="startDate" className="block mb-1 text-sm text-gray-600">
+                Start Date
+              </label>
+              <input
+                type="date"
+                id="startDate"
+                value={startDate}
+                readOnly
+                className="w-full p-3 text-sm bg-gray-100 border border-gray-200 rounded-lg"
+              />
+            </div>
 
             {/* End date*/}
             <div className="relative">

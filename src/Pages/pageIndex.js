@@ -38,6 +38,10 @@ import AdminNotify from "@/Admin/AdminNotify";
 import HarassmentEmailForm from "@/Components/HarassmentEmailForm";
 import BatchDashboard from "@/Components/BatchDashboard";
 import InternRankings from "./InternRanking";
+import InternRaiseTicket from "./InternRaiseTicket";
+import MyTickets from "./MyTickets";
+
+
 
 
 export { Home, NewPasswordForm, Notifications,BatchDashboard, OTPVerification, 
@@ -49,5 +53,5 @@ Profile, Aboutus, CustomNavbar, AdminHomePage,
  AdminProject, AdminTask, AdminReport, PrivacyPolicy, 
  Help, AllUsers, AdminHelpPage, InternAttendance,
  AdminHelp, InternTasksSubmissions, LeaveApplication, Internleaveapplication,
-InternRankings }
+InternRankings,InternRaiseTicket,MyTickets }
 

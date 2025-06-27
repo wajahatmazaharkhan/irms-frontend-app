@@ -38,16 +38,20 @@ import AdminNotify from "@/Admin/AdminNotify";
 import HarassmentEmailForm from "@/Components/HarassmentEmailForm";
 import BatchDashboard from "@/Components/BatchDashboard";
 import InternRankings from "./InternRanking";
+import { Import } from "lucide-react";
+import NotVerified from "./NotVerified";
 
 
-export { Home, NewPasswordForm, Notifications,BatchDashboard, OTPVerification, 
-HarassmentEmailForm, Settings, AdminNotify, IntroPage, 
-ResetPassword, Reports, UserAttendance, NotAuthorized, 
-Projects, FAQ, SettingsPage, Categories, Dashboard, 
-Stores, Signin, SignUp, Logout, 
-Profile, Aboutus, CustomNavbar, AdminHomePage,
- AdminProject, AdminTask, AdminReport, PrivacyPolicy, 
- Help, AllUsers, AdminHelpPage, InternAttendance,
- AdminHelp, InternTasksSubmissions, LeaveApplication, Internleaveapplication,
-InternRankings }
+export {
+    Home, NewPasswordForm, Notifications, BatchDashboard, OTPVerification,
+    HarassmentEmailForm, Settings, AdminNotify, IntroPage,
+    ResetPassword, Reports, UserAttendance, NotAuthorized,
+    Projects, FAQ, SettingsPage, Categories, Dashboard,
+    Stores, Signin, SignUp, Logout,
+    Profile, Aboutus, CustomNavbar, AdminHomePage,
+    AdminProject, AdminTask, AdminReport, PrivacyPolicy, NotVerified,
+    Help, AllUsers, AdminHelpPage, InternAttendance,
+    AdminHelp, InternTasksSubmissions, LeaveApplication, Internleaveapplication,
+    InternRankings
+}
 

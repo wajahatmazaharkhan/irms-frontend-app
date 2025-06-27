@@ -56,7 +56,10 @@ const Signin = ({ onSwitchToSignup }) => {
       console.log(`response :- ${response.data.user}`);
       console.log(`response :- ${JSON.stringify(response.data.user)}`);
 
-
+      console.log("verified", user);
+      if (user) {
+        localStorage.setItem("isVerified", user.isVerified);
+      }
 
       if (user.role === 'hr') {
         await storeIsHrState(true);
@@ -71,8 +74,15 @@ const Signin = ({ onSwitchToSignup }) => {
       setIsLoading(false);
       toast.success("Login successful");
 
-      navigate("/");
-
+      if (isAdminValue) {
+        navigate("/admin-access");
+      }
+      else if (user.role === "hr") {
+        navigate("/hrhomepage");
+      }
+      else {
+        navigate("/");
+      }
 
       console.log(`response for checking role :- ${JSON.stringify(response.data.user)}
 }`)

@@ -22,6 +22,7 @@ import {
   AdminReport,
   AllUsers,
   LeaveApplication,
+  NotVerified,
   AdminHelpPage,
   NotAuthorized,
   UserAttendance,
@@ -82,6 +83,16 @@ const PrivateRoute = ({ children }) => {
   const { loggedIn } = useAuthContext();
   return loggedIn ? children : <IntroPage />;
 };
+
+const HrRoute = ({ children }) => {
+  const isHr = localStorage.getItem("isHr") === "true";
+  return isHr ? <VerifyRoute>{children}</VerifyRoute> : <NotAuthorized />;
+};
+
+const VerifyRoute = ({ children }) => {
+  const isVerified = localStorage.getItem("isVerified") === "true";
+  return isVerified ? children : <NotVerified />;
+}
 
 const App = () => {
   return (
@@ -166,7 +177,9 @@ const App = () => {
           path="/batch-dashboard"
           element={
             <PrivateRoute>
-              <BatchDashboard />
+              <VerifyRoute>
+                <BatchDashboard />
+              </VerifyRoute>
             </PrivateRoute>
           }
         />
@@ -192,7 +205,10 @@ const App = () => {
           path="/"
           element={
             <PrivateRoute>
-              <Home />
+              <VerifyRoute>
+                <Home />
+              </VerifyRoute>
+
             </PrivateRoute>
           }
         />
@@ -200,7 +216,9 @@ const App = () => {
           path="/dashboard"
           element={
             <PrivateRoute>
-              <Home />
+              <VerifyRoute>
+                <Home />
+              </VerifyRoute>
             </PrivateRoute>
           }
         />
@@ -208,7 +226,9 @@ const App = () => {
           path="/your-profile"
           element={
             <PrivateRoute>
-              <Profile />
+              <VerifyRoute>
+                <Profile />
+              </VerifyRoute>
             </PrivateRoute>
           }
         />
@@ -216,7 +236,10 @@ const App = () => {
           path="/notifications"
           element={
             <PrivateRoute>
-              <Notifications />
+              <VerifyRoute>
+
+                <Notifications />
+              </VerifyRoute>
             </PrivateRoute>
           }
         />
@@ -224,7 +247,10 @@ const App = () => {
           path="/reports"
           element={
             <PrivateRoute>
-              <Reports />
+              <VerifyRoute>
+
+                <Reports />
+              </VerifyRoute>
             </PrivateRoute>
           }
         />
@@ -232,7 +258,9 @@ const App = () => {
           path="/projects"
           element={
             <PrivateRoute>
-              <Projects />
+              <VerifyRoute>
+                <Projects />
+              </VerifyRoute>
             </PrivateRoute>
           }
         />
@@ -240,7 +268,9 @@ const App = () => {
           path="/help"
           element={
             <PrivateRoute>
+              {/* <VerifyRoute> */}
               <Help />
+              {/* </VerifyRoute> */}
             </PrivateRoute>
           }
         />
@@ -248,7 +278,9 @@ const App = () => {
           path="/intern-rankings"
           element={
             <PrivateRoute>
-              <InternRankings />
+              <VerifyRoute>
+                <InternRankings />
+              </VerifyRoute>
             </PrivateRoute>
           }
         />
@@ -256,6 +288,7 @@ const App = () => {
           path="/internchat/:receiverId"
           element={
             <PrivateRoute>
+
               <ChatInterface />
             </PrivateRoute>
           }
@@ -272,7 +305,9 @@ const App = () => {
           path="/my-attendance"
           element={
             <PrivateRoute>
-              <UserAttendance />
+              <VerifyRoute>
+                <UserAttendance />
+              </VerifyRoute>
             </PrivateRoute>
           }
         />
@@ -280,7 +315,9 @@ const App = () => {
           path="/stores"
           element={
             <PrivateRoute>
-              <Stores />
+              <VerifyRoute>
+                <Stores />
+              </VerifyRoute>
             </PrivateRoute>
           }
         />
@@ -288,7 +325,9 @@ const App = () => {
           path="/leave-application"
           element={
             <PrivateRoute>
-              <LeaveApplication />
+              <VerifyRoute>
+                <LeaveApplication />
+              </VerifyRoute>
             </PrivateRoute>
           }
         />
@@ -296,16 +335,18 @@ const App = () => {
           path="/setting"
           element={
             <PrivateRoute>
-              <SettingsPage />
+              <VerifyRoute>
+                <SettingsPage />
+              </VerifyRoute>
             </PrivateRoute>
           }
         />
         <Route
           path="/Internleaveapplication"  //add restriction to this route only hr or admin can access
           element={
-            <PrivateRoute>
+            <HrRoute>
               <Internleaveapplication />
-            </PrivateRoute>
+            </HrRoute>
           }
         />
         <Route
@@ -316,28 +357,29 @@ const App = () => {
             </PrivateRoute>
           }
         />
+
         <Route
           path="/notify-all"   //add restriction to this route only admin can access
           element={
-            <PrivateRoute>
+            <AdminRoute>
               <AdminNotify />
-            </PrivateRoute>
+            </AdminRoute>
           }
         />
         <Route
           path="/admin-hr-management"  //add restriction to this route only admin can access
           element={
-            <PrivateRoute>
+            <AdminRoute>
               <AdminHRManagement />
-            </PrivateRoute>
+            </AdminRoute>
           }
         />
         <Route
           path="/user-management"  //add restriction to this route only admin can access
           element={
-            <PrivateRoute>
+            <AdminRoute>
               <UserManagement />
-            </PrivateRoute>
+            </AdminRoute>
           }
         />
         <Route
@@ -360,31 +402,134 @@ const App = () => {
           path="/batch-management"
           element={
             <PrivateRoute>
+              {/* <VerifyRoute> */}
               <BatchManagement />
+              {/* </VerifyRoute> */}
             </PrivateRoute>
           }
         />
 
-
-
         {/* hrhead and hr interns routes  */}
-
-
-        <Route path="/hrhomepage" element={<HrHomepage />} />
-        <Route path="/hrinternsmgmt" element={<InternManagement />} />
-        <Route path="/hrbatchmgmt" element={<HrBatchManagement />} />
-        <Route path="/allhrusers" element={<AllHrUsers />} />
-        <Route path="/hrchat" element={<HRChatDashboard />} />
-        <Route path="/hrchat/:receiverId" element={<HRChatDashboard />} />
-        <Route path="/hrallattendance" element={<HrAllAttendance />} />
-        <Route path="/internshrleaveapplications" element={<InternsHrLeaveApplication />} />
-        <Route path="/hrhelp" element={<HrHelpPage />}></Route>
-        <Route path="/hrtasksubmissions" element={<HrTasksubmissions />} />
-        <Route path="/hrprojects" element={<HrProject />} />
-        <Route path="/hrnotify" element={<HrNotify />} />
-        <Route path="/hrreports" element={<HrReport />} />
-        <Route path="/hrtaskassignment" element={<HrTaskAssignment />} />
-        <Route path="/hrattendance/:id" element={<InternAttendancePage />} />
+        <Route
+          path="/hrhomepage"
+          element={
+            <HrRoute>
+              <HrHomepage />
+            </HrRoute>
+          }
+        />
+        <Route
+          path="/hrinternsmgmt"
+          element={
+            <HrRoute>
+              <InternManagement />
+            </HrRoute>
+          }
+        />
+        <Route
+          path="/hrbatchmgmt"
+          element={
+            <HrRoute>
+              <HrBatchManagement />
+            </HrRoute>
+          }
+        />
+        <Route
+          path="/allhrusers"
+          element={
+            <HrRoute>
+              <AllHrUsers />
+            </HrRoute>
+          }
+        />
+        <Route
+          path="/hrchat"
+          element={
+            <HrRoute>
+              <HRChatDashboard />
+            </HrRoute>
+          }
+        />
+        <Route
+          path="/hrchat/:receiverId"
+          element={
+            <HrRoute>
+              <HRChatDashboard />
+            </HrRoute>
+          }
+        />
+        <Route
+          path="/hrallattendance"
+          element={
+            <HrRoute>
+              <HrAllAttendance />
+            </HrRoute>
+          }
+        />
+        <Route
+          path="/internshrleaveapplications"
+          element={
+            <HrRoute>
+              <InternsHrLeaveApplication />
+            </HrRoute>
+          }
+        />
+        <Route
+          path="/hrhelp"
+          element={
+            <HrRoute>
+              <HrHelpPage />
+            </HrRoute>
+          }
+        />
+        <Route
+          path="/hrtasksubmissions"
+          element={
+            <HrRoute>
+              <HrTasksubmissions />
+            </HrRoute>
+          }
+        />
+        <Route
+          path="/hrprojects"
+          element={
+            <HrRoute>
+              <HrProject />
+            </HrRoute>
+          }
+        />
+        <Route
+          path="/hrnotify"
+          element={
+            <HrRoute>
+              <HrNotify />
+            </HrRoute>
+          }
+        />
+        <Route
+          path="/hrreports"
+          element={
+            <HrRoute>
+              <HrReport />
+            </HrRoute>
+          }
+        />
+        <Route
+          path="/hrtaskassignment"
+          element={
+            <HrRoute>
+              <HrTaskAssignment />
+            </HrRoute>
+          }
+        />
+        <Route
+          path="/hrattendance/:id"
+          element={
+            <HrRoute>
+              <InternAttendancePage />
+            </HrRoute>
+          }
+        />
 
       </Routes>
     </HrProvider>

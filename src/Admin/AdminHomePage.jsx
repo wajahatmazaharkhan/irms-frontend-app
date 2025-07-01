@@ -125,6 +125,13 @@ function AdminHomePage() {
       gradient: "from-pink-500 to-pink-700",
       permission: "user_management",
     },
+    {
+      title: "Intern Ranklist",
+      route: "/intern-rankings",
+      icon: TrendingUp,
+      description: "View intern rankings and performance",
+      gradient: "from-cyan-500 to-cyan-700",
+    },
   ];
 
   return (

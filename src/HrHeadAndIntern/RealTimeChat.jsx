@@ -154,7 +154,7 @@ export default function RealtimeChat({ ReceiverId }) {
 
     const markMessagesAsSeen = async () => {
         try {
-            await axios.post("http://localhost:8000/chat/mark-seen", {
+            await axios.post(`${import.meta.env.VITE_BASE_URL}/chat/mark-seen`, {
                 senderId: receiverId,
                 receiverId: senderId,
             })

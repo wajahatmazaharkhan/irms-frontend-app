@@ -55,7 +55,8 @@ const Signin = ({ onSwitchToSignup }) => {
       await storeUsername(user.name);
       console.log(`response :- ${response.data.user}`);
       console.log(`response :- ${JSON.stringify(response.data.user)}`);
-
+      // Store session start time in localStorage
+      localStorage.setItem("sessionStart", Date.now().toString());
       console.log("verified", user);
       if (user) {
         localStorage.setItem("isVerified", user.isVerified);
@@ -73,16 +74,16 @@ const Signin = ({ onSwitchToSignup }) => {
       setIsLoggedIn(true);
       setIsLoading(false);
       toast.success("Login successful");
-		console.log("User: ",user);
+      console.log("User: ", user);
       if (isAdminValue) {
         navigate("/admin-access");
       }
       else if (user.role === "hr") {
         navigate("/hrhomepage");
       }
-	  else if (user.department === "communication"){
-		navigate("/commhomepage");
-	  }
+      else if (user.department === "communication") {
+        navigate("/commhomepage");
+      }
       else {
         navigate("/");
       }

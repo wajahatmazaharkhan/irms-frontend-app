@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Navbar, SideNav, Wrapper, Footer, useTitle } from "@/Components/compIndex";
+import { Navbar, Wrapper, Footer, useTitle } from "@/Components/compIndex";
 
 const Projects = () => {
   useTitle('Projects')
@@ -31,7 +31,6 @@ const Projects = () => {
 
   return (
     <>
-      <SideNav />
       <Navbar />
       <Wrapper>
         <div className="flex flex-col items-center py-6 pb-36">

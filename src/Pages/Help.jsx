@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { SideNav, Navbar, useTitle } from "../Components/compIndex";
+import { Navbar, useTitle } from "../Components/compIndex";
 import { Search } from "lucide-react";
 
 const Help = () => {
@@ -71,7 +71,6 @@ const Help = () => {
 
   return (
     <>
-      <SideNav />
       <Navbar />
       <div className="flex flex-col min-h-screen bg-gray-50">
         <div className="flex-grow ml-0 lg:ml-36">

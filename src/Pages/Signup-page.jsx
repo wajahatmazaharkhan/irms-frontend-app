@@ -1,5 +1,4 @@
 import { useState } from "react";
-
 import { Mail, Lock, UserPlus, Phone, Laptop, Calendar } from "lucide-react";
 import { TopNavbar, Footer, useTitle } from "@/Components/compIndex";
 import toast from "react-hot-toast";
@@ -7,375 +6,234 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import iispprLogo from "../assets/Images/iisprlogo.png";
 
-const SignUp = ({ onSwitchToSignin }) => {
-  useTitle('Register')
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState();
-  const [department, setDepartment] = useState("");
-  const [password, setPassword] = useState("");
-  const [startDate] = useState(new Date().toISOString().split("T")[0]);
-  const [endDate, setEndDate] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+const countryCodes = [
+  { code: "+1", name: "USA" },
+  { code: "+44", name: "UK" },
+  { code: "+91", name: "India" },
+  { code: "+61", name: "Australia" },
+  // add more as needed
+];
 
+const SignUp = ({ onSwitchToSignin }) => {
+  useTitle('Register');
   const navigate = useNavigate();
 
-  const signUpUser = async () => {
-    const signupURL = `${import.meta.env.VITE_BASE_URL}/api/auth/signup`;
+  const [step, setStep] = useState(1); // 1 = signup form, 2 = OTP verify
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [countryCode, setCountryCode] = useState("+91");
+  const [phone, setPhone] = useState("");
+  const [department, setDepartment] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [otp, setOtp] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const sendSignupOtp = async () => {
     setIsLoading(true);
-
-
-    const num = (phone);
-
     try {
-
-      const response = await axios.post(signupURL, {
+      await axios.post(`${import.meta.env.VITE_BASE_URL}/user/signuprequest`, {
         name: fullName,
-        email: email,
-        password: password,
+        email,
+        password,
         rpassword: confirmPassword,
-        mnumber: num,
-        role: department === "hr" ? department : "intern",
-        department: department,
-        startDate: startDate,
+        mnumber: `${countryCode}${phone}`,
+        department,
+        startDate: new Date().toISOString().split("T")[0],
         EndDate: endDate,
       });
-
-
-
-      const data = await response.json;
-
-      console.log(data);
-
-      toast.success("Account created successfully");
-      navigate("/login");
-    } catch (error) {
-      if (error.response) {
-        const { message } = error.response.data;
-        if (message === "Email already exists.") {
-          toast.error("This email is already registered. Try logging in.");
-        } else if (message === "Password must be at least 6 characters.") {
-          toast.error("Password must be at least 6 characters long.");
-        } else if (message === "Passwords do not match.") {
-          toast.error("Your passwords do not match. Please try again.");
-        } else {
-          toast.error(message || "Something went wrong.");
-        }
-      } else {
-        // Generic error fallback
-        toast.error("Network error. Please try again later.");
-      }
+      toast.success("OTP sent to your email");
+      setStep(2);
+    } catch (err) {
+      toast.error(err?.response?.data?.message || "Failed to send OTP");
     } finally {
       setIsLoading(false);
-      window.scrollTo(0, 0);
+    }
+  };
+
+  const verifySignupOtp = async () => {
+    setIsLoading(true);
+    try {
+      await axios.post(`${import.meta.env.VITE_BASE_URL}/user/signupvalidate`, { email, otp });
+      toast.success("Signup successful!");
+      navigate("/login");
+    } catch (err) {
+      toast.error(err?.response?.data?.message || "OTP verification failed");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    if (!fullName || !email || !phone || !password || !confirmPassword || !endDate) {
-      toast.error("Please fill in all fields.");
-      return;
+    if (step === 1) {
+      if (!fullName || !email || !phone || !department || !password || !confirmPassword || !endDate) {
+        return toast.error("Please fill in all fields");
+      }
+      if (password !== confirmPassword) return toast.error("Passwords don't match");
+      if (phone.length < 6) return toast.error("Enter a valid phone number");
+      sendSignupOtp();
+    } else {
+      if (!otp) return toast.error("Please enter OTP");
+      verifySignupOtp();
     }
-
-    if (phone.trim().length < 10 || isNaN(phone)) {
-      toast.error("Please enter a valid phone number.");
-      return;
-    }
-    if (password !== confirmPassword) {
-      toast.error("Passwords do not match.");
-      return;
-    }
-
-    if (password.length < 6) {
-      toast.error("Password must be at least 6 characters long.");
-      return;
-    }
-
-    setError("");
-    signUpUser();
   };
 
-  // verify redirect issue
   return (
     <>
+      <TopNavbar />
       <div className="flex items-center justify-center min-h-screen px-4 bg-gradient-to-br from-blue-50 to-purple-50">
-        <div className="w-full max-w-md p-8 transition-all duration-300 bg-white border border-gray-100 shadow-2xl rounded-xl hover:shadow-3xl">
-          <div className="mb-6 text-center">
-            <div className="mx-auto mb-4 w-28 h-28">
-              <img
-                src={iispprLogo}
-                alt="IISPPR Logo"
-                className="object-contain w-full h-full"
-              />
-            </div>
-            <h1 className="mb-2 text-3xl font-bold text-blue-800">
-              Create Your Account
+        <div className="w-full max-w-md p-8 bg-white border shadow-lg rounded-xl">
+          <div className="text-center mb-6">
+            <img src={iispprLogo} alt="Logo" className="mx-auto mb-4 w-28 h-28" />
+            <h1 className="text-3xl font-bold text-blue-800">
+              {step === 1 ? "Create Your Account" : "Verify Your Email"}
             </h1>
             <p className="text-sm text-gray-500">
-              Sign up and enjoy all the benefits.
+              {step === 1
+                ? "Sign up and enjoy the benefits."
+                : "Enter the OTP sent to your email."}
             </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Full Name */}
-            <div className="relative">
-              <label
-                htmlFor="fullName"
-                className="block mb-1 text-sm text-gray-600"
-              >
-                Full Name
-              </label>
-              <div className="relative">
-                <UserPlus
-                  className="absolute text-gray-400 transform -translate-y-1/2 left-3 top-1/2"
-                  size={20}
-                />
-                <input
-                  type="text"
-                  id="fullName"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  placeholder="Enter your full name"
-                  className="w-full p-3 pl-10 text-sm transition-all duration-300 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
-                />
+            {step === 1 && <>
+              <div>
+                <label className="block mb-1 text-sm text-gray-600">Full Name</label>
+                <div className="relative">
+                  <UserPlus className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <input value={fullName} onChange={e => setFullName(e.target.value)}
+                    type="text" placeholder="Full Name"
+                    className="w-full pl-10 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+                  />
+                </div>
               </div>
-            </div>
 
-            {/* Email */}
-            <div className="relative">
-              <label
-                htmlFor="email"
-                className="block mb-1 text-sm text-gray-600"
-              >
-                Email Address
-              </label>
-              <div className="relative">
-                <Mail
-                  className="absolute text-gray-400 transform -translate-y-1/2 left-3 top-1/2"
-                  size={20}
-                />
-                <input
-                  type="email"
-                  id="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your email"
-                  className="w-full p-3 pl-10 text-sm transition-all duration-300 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
-                />
+              <div>
+                <label className="block mb-1 text-sm text-gray-600">Email</label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <input value={email} onChange={e => setEmail(e.target.value)}
+                    type="email" placeholder="Enter Email"
+                    className="w-full pl-10 p-3 border rounded-lg focus:ring-blue-300"
+                  />
+                </div>
               </div>
-            </div>
 
-            {/* Phone */}
-            <div className="relative">
-              <label
-                htmlFor="phone"
-                className="block mb-1 text-sm text-gray-600"
-              >
-                Phone
-              </label>
-              <div className="relative">
-                <Phone
-                  className="absolute text-gray-400 transform -translate-y-1/2 left-3 top-1/2"
-                  size={20}
-                />
-                <input
-                  type="text"
-                  id="phone"
-                  value={phone}
-                  onChange={(e) => {
-                    setPhone(e.target.value);
-                  }}
-                  placeholder="Enter your Phone"
-                  className="w-full p-3 pl-10 text-sm transition-all duration-300 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
-                />
+              <div>
+                <label className="block mb-1 text-sm text-gray-600">Phone</label>
+                <div className="flex space-x-2">
+                  <select value={countryCode} onChange={e => setCountryCode(e.target.value)}
+                    className="p-3 border rounded-lg bg-white"
+                  >
+                    {countryCodes.map(c => (
+                      <option key={c.code} value={c.code}>{c.name} {c.code}</option>
+                    ))}
+                  </select>
+                  <div className="relative flex-1">
+                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                    <input value={phone} onChange={e => setPhone(e.target.value)}
+                      type="text" placeholder="Phone number"
+                      className="w-full pl-10 p-3 border rounded-lg focus:ring-blue-300"
+                    />
+                  </div>
+                </div>
               </div>
-            </div>
 
-            <div className="relative">
-              <label
-                htmlFor="branch"
-                className="block mb-1 text-sm text-gray-600"
-              >
-                Internship Department
-              </label>
-              <div className="relative">
-                <Laptop
-                  className="absolute text-gray-400 transform -translate-y-1/2 left-3 top-1/2"
-                  size={20}
-                />
-
-                <select
-                  id="Department"
-                  onChange={(e) => setDepartment(e.target.value)}
-                  className="w-full p-3 pl-10 text-sm transition-all duration-300 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
-                >
-                  <option value="">Select your internship type </option>
-                  <option value="development"> Development</option>
-                  <option value="research">Research</option>
-                  <option value="communication">Communication</option>
-                  <option value="hr">Hr</option>
-                </select>
+              <div>
+                <label className="block mb-1 text-sm text-gray-600">Department</label>
+                <div className="relative">
+                  <Laptop className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <select value={department} onChange={e => setDepartment(e.target.value)}
+                    className="w-full pl-10 p-3 border rounded-lg focus:ring-blue-300"
+                  >
+                    <option value="">Select department</option>
+                    <option value="development">Development</option>
+                    <option value="research">Research</option>
+                    <option value="communication">Communication</option>
+                    <option value="hr">HR</option>
+                  </select>
+                </div>
               </div>
-            </div>
 
-
-            {/*  */}
-            <div className="relative">
-              <label htmlFor="startDate" className="block mb-1 text-sm text-gray-600">
-                Start Date
-              </label>
-              <input
-                type="date"
-                id="startDate"
-                value={startDate}
-                readOnly
-                className="w-full p-3 text-sm bg-gray-100 border border-gray-200 rounded-lg"
-              />
-            </div>
-
-            {/* End date*/}
-            <div className="relative">
-              <label
-                htmlFor="EndDate"
-                className="block mb-1 text-sm text-gray-600"
-              >
-                End Date
-              </label>
-              <div className="relative">
-                <Calendar
-                  className="absolute text-gray-400 transform -translate-y-1/2 left-3 top-1/2"
-                  size={20}
-                />
-                <input
-                  type="date"
-                  id="enddate"
-                  value={endDate}
-                  onChange={(e) => setEndDate(e.target.value)}
-                  placeholder="Enter the End Date of Internship"
-                  min={new Date().toISOString().split("T")[0]}
-                  className="w-full p-3 pl-10 text-sm transition-all duration-300 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
-                />
+              <div>
+                <label className="block mb-1 text-sm text-gray-600">End Date</label>
+                <div className="relative">
+                  <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <input value={endDate} onChange={e => setEndDate(e.target.value)}
+                    type="date" min={new Date().toISOString().split("T")[0]}
+                    className="w-full pl-10 p-3 border rounded-lg focus:ring-blue-300"
+                  />
+                </div>
               </div>
-            </div>
 
-            {/* Password */}
-            <div className="relative">
-              <label
-                htmlFor="password"
-                className="block mb-1 text-sm text-gray-600"
-              >
-                Password
-              </label>
-              <div className="relative">
-                <Lock
-                  className="absolute text-gray-400 transform -translate-y-1/2 left-3 top-1/2"
-                  size={20}
-                />
-                <input
-                  type={showPassword ? "text" : "password"}
-                  id="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter your password"
-                  className="w-full p-3 pl-10 text-sm transition-all duration-300 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute text-gray-400 transition-colors transform -translate-y-1/2 right-3 top-1/2 hover:text-blue-500"
-                >
-                  {showPassword ? "Hide" : "Show"}
-                </button>
+              <div>
+                <label className="block mb-1 text-sm text-gray-600">Password</label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <input value={password} onChange={e => setPassword(e.target.value)}
+                    type="password" placeholder="Password"
+                    className="w-full pl-10 p-3 border rounded-lg focus:ring-blue-300"
+                  />
+                </div>
               </div>
-            </div>
 
-            {/* Confirm Password */}
-            <div className="relative">
-              <label
-                htmlFor="confirmPassword"
-                className="block mb-1 text-sm text-gray-600"
-              >
-                Confirm Password
-              </label>
-              <div className="relative">
-                <Lock
-                  className="absolute text-gray-400 transform -translate-y-1/2 left-3 top-1/2"
-                  size={20}
-                />
-                <input
-                  type={showPassword ? "text" : "password"}
-                  id="confirmPassword"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="Confirm your password"
-                  className="w-full p-3 pl-10 text-sm transition-all duration-300 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
-                />
+              <div>
+                <label className="block mb-1 text-sm text-gray-600">Confirm Password</label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <input value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)}
+                    type="password" placeholder="Confirm Password"
+                    className="w-full pl-10 p-3 border rounded-lg focus:ring-blue-300"
+                  />
+                </div>
               </div>
-            </div>
+            </>}
 
-            {/* Error message */}
-            {error && (
-              <p className="p-2 text-sm text-center text-red-500 rounded-md bg-red-50">
-                {error}
-              </p>
-            )}
+            {step === 2 && <>
+              <div>
+                <label className="block mb-1 text-sm text-gray-600">OTP</label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <input value={otp} onChange={e => setOtp(e.target.value)}
+                    type="text" placeholder="Enter OTP"
+                    className="w-full pl-10 p-3 border rounded-lg focus:ring-blue-300"
+                  />
+                </div>
+              </div>
+            </>}
 
-            {/* Submit button with loading state */}
             <button
               type="submit"
               disabled={isLoading}
-              className="flex items-center justify-center w-full gap-2 p-3 text-sm font-semibold text-white transition-all duration-300 transform bg-blue-600 rounded-lg hover:bg-blue-700 hover:-translate-y-1 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full p-3 font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50"
             >
-              {isLoading ? (
-                <>
-                  <svg
-                    className="w-5 h-5 mr-3 -ml-1 text-white animate-spin"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
-                  Signing Up...
-                </>
-              ) : (
-                <>
-                  <UserPlus size={20} />
-                  Sign Up
-                </>
-              )}
+              {isLoading
+                ? step === 1 ? "Sending OTP..." : "Verifying..."
+                : step === 1 ? "Send OTP" : "Verify OTP"}
             </button>
           </form>
 
-          {/* Switch to Signin */}
-          <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600">
-              Already have an account?{" "}
-              <a
-                href="/login"
-                onClick={onSwitchToSignin}
-                className="font-semibold text-blue-700 hover:underline"
-              >
-                Log In
-              </a>
-            </p>
+          <div className="mt-4 text-center">
+            {step === 1 ? (
+              <p className="text-sm text-gray-500">
+                Already have an account?{" "}
+                <a href="/login" onClick={onSwitchToSignin} className="font-semibold text-blue-700">
+                  Log In
+                </a>
+              </p>
+            ) : (
+              <p className="text-sm text-gray-500">
+                Didn't receive OTP?{" "}
+                <button
+                  onClick={() => setStep(1)}
+                  className="font-semibold text-blue-700 underline"
+                >
+                  Try Again
+                </button>
+              </p>
+            )}
           </div>
         </div>
       </div>

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Card, CardHeader, CardTitle, CardContent } from "@/Components/ui/card";
-import { Navbar, SideNav, Footer, useTitle } from "@/Components/compIndex";
+import { Navbar, Footer, useTitle } from "@/Components/compIndex";
 import { Loader2 } from "lucide-react";
 
 const InternRanking = () => {
@@ -59,13 +59,12 @@ const InternRanking = () => {
   const renderIntern = (intern, index, highlight = false) => (
     <div
       key={intern._id}
-      className={`flex items-center justify-between border p-4 rounded-xl transition-all duration-300 transform hover:scale-[1.015] ${
-        highlight
+      className={`flex items-center justify-between border p-4 rounded-xl transition-all duration-300 transform hover:scale-[1.015] ${highlight
           ? "bg-yellow-100 border-yellow-300 shadow-lg"
           : index < 3
-          ? "bg-gradient-to-r from-indigo-100 via-white to-indigo-50 border-indigo-300 shadow-md"
-          : "bg-white hover:shadow-md border-gray-300 shadow-md"
-      }`}
+            ? "bg-gradient-to-r from-indigo-100 via-white to-indigo-50 border-indigo-300 shadow-md"
+            : "bg-white hover:shadow-md border-gray-300 shadow-md"
+        }`}
     >
       <div className="flex items-center space-x-4">
         <div className="text-lg font-bold text-gray-600 w-6 text-right">
@@ -90,7 +89,6 @@ const InternRanking = () => {
   return (
     <>
       <Navbar />
-      <SideNav />
       <div className="min-h-screen ml-0 md:ml-32 bg-gradient-to-br from-blue-50 to-white">
         <div className="p-6 max-w-5xl mx-auto">
           <Card className="shadow-2xl border border-gray-200 rounded-xl">

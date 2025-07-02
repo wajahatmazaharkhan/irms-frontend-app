@@ -53,13 +53,13 @@ const SideNav = () => {
   // Menu items
   const menuItems = [
     { id: 0, name: "Home", icon: "bi-house" },
-    { id: 2, name: "Projects", icon: "bi-people" },
-	{ id: 3, name: "Rankings", icon: "bi-trophy" },
-    { id: 4, name: "Setting", icon: "bi-gear" },
-    { id: 5, name: "Help", icon: "bi-question-circle" }
+    { id: 1, name: "Projects", icon: "bi-people" },
+    { id: 2, name: "Rankings", icon: "bi-trophy" },
+    { id: 3, name: "Setting", icon: "bi-gear" },
+    { id: 4, name: "Help", icon: "bi-question-circle" }
   ];
 
-  const redirectURLs = ["","projects","intern-rankings", "reports", "Setting", "help", "AskHR"];
+  const redirectURLs = ["", "projects", "intern-rankings", "Setting", "help"];
 
   const footerItems = [{ name: "Log Out", icon: "bi-box-arrow-left" }];
 
@@ -79,9 +79,8 @@ const SideNav = () => {
       {/* SideNav */}
       <div
         id="sidebar"
-        className={`bg-gradient-to-b from-blue-600 to-blue-700 h-screen fixed sidenav-container ${
-          isExpanded ? "w-64" : "w-16"
-        } duration-300 text-white flex flex-col justify-between shadow-lg z-50`}
+        className={`bg-gradient-to-b from-blue-600 to-blue-700 h-screen fixed sidenav-container ${isExpanded ? "w-64" : "w-16"
+          } duration-300 text-white flex flex-col justify-between shadow-lg z-50`}
       >
         {/* Logo/Brand section */}
         <div className="mt-6 mb-8 flex justify-center">
@@ -102,27 +101,24 @@ const SideNav = () => {
                     handleMenuClick(item.name);
                     navigate(`/${redirectURLs[item.id]}`);
                   }}
-                  className={`flex items-center py-3 px-3 cursor-pointer rounded-lg transition-all duration-200 ${
-                    isActive
+                  className={`flex items-center py-3 px-3 cursor-pointer rounded-lg transition-all duration-200 ${isActive
                       ? "bg-white/10 text-white shadow-sm"
                       : "text-blue-100 hover:bg-white/5"
-                  }`}
+                    }`}
                 >
                   <div className="relative flex items-center">
                     {isActive && (
                       <div className="absolute -left-3 w-1 h-6 bg-white rounded-full"></div>
                     )}
                     <i
-                      className={`bi ${item.icon} text-lg ${
-                        isActive ? "text-white" : "text-blue-100"
-                      }`}
+                      className={`bi ${item.icon} text-lg ${isActive ? "text-white" : "text-blue-100"
+                        }`}
                     ></i>
                     <span
-                      className={`ml-4 text-sm font-medium whitespace-nowrap transition-all duration-200 ${
-                        isExpanded
+                      className={`ml-4 text-sm font-medium whitespace-nowrap transition-all duration-200 ${isExpanded
                           ? "opacity-100 translate-x-0"
                           : "opacity-0 -translate-x-10 hidden"
-                      }`}
+                        }`}
                     >
                       {item.name}
                     </span>
@@ -135,9 +131,8 @@ const SideNav = () => {
 
         {/* Divider */}
         <div
-          className={`mx-4 my-4 border-t border-blue-400/30 ${
-            isExpanded ? "block" : "hidden"
-          }`}
+          className={`mx-4 my-4 border-t border-blue-400/30 ${isExpanded ? "block" : "hidden"
+            }`}
         ></div>
 
         {/* Footer Items */}
@@ -155,11 +150,10 @@ const SideNav = () => {
               >
                 <i className={`bi ${item.icon} text-lg`}></i>
                 <span
-                  className={`ml-4 text-sm whitespace-nowrap transition-all duration-200 ${
-                    isExpanded
+                  className={`ml-4 text-sm whitespace-nowrap transition-all duration-200 ${isExpanded
                       ? "opacity-100 translate-x-0"
                       : "opacity-0 -translate-x-10 hidden"
-                  }`}
+                    }`}
                 >
                   {item.name}
                 </span>

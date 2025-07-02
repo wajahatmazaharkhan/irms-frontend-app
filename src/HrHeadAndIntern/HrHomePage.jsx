@@ -106,6 +106,13 @@ function AdminHomePage() {
       description: "Direct messaging with interns",
       gradient: "from-pink-500 to-pink-700",
     },
+    {
+      title: "Intern Ranklist",
+      route: "/intern-rankings",
+      icon: TrendingUp,
+      description: "View intern rankings and performance",
+      gradient: "from-cyan-500 to-cyan-700",
+    },
   ];
 
   return (

@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Mail, Lock, UserPlus, Phone, Laptop, Calendar } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Mail, Lock, UserPlus, Phone, Laptop, Calendar, Layers } from "lucide-react";
 import { TopNavbar, Footer, useTitle } from "@/Components/compIndex";
 import toast from "react-hot-toast";
 import axios from "axios";
@@ -11,14 +11,13 @@ const countryCodes = [
   { code: "+44", name: "UK" },
   { code: "+91", name: "India" },
   { code: "+61", name: "Australia" },
-  // add more as needed
 ];
 
 const SignUp = ({ onSwitchToSignin }) => {
   useTitle('Register');
   const navigate = useNavigate();
 
-  const [step, setStep] = useState(1); // 1 = signup form, 2 = OTP verify
+  const [step, setStep] = useState(1);
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [countryCode, setCountryCode] = useState("+91");
@@ -29,6 +28,20 @@ const SignUp = ({ onSwitchToSignin }) => {
   const [endDate, setEndDate] = useState("");
   const [otp, setOtp] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [batches, setBatches] = useState([]);
+  const [selectedBatch, setSelectedBatch] = useState("");
+
+  useEffect(() => {
+    const fetchBatches = async () => {
+      try {
+        const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/batch/get-summary`);
+        setBatches(res.data);
+      } catch (err) {
+        console.error("Failed to fetch batches", err);
+      }
+    };
+    fetchBatches();
+  }, []);
 
   const sendSignupOtp = async () => {
     setIsLoading(true);
@@ -42,6 +55,7 @@ const SignUp = ({ onSwitchToSignin }) => {
         department,
         startDate: new Date().toISOString().split("T")[0],
         EndDate: endDate,
+        batchId: selectedBatch,
       });
       toast.success("OTP sent to your email");
       setStep(2);
@@ -68,7 +82,7 @@ const SignUp = ({ onSwitchToSignin }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (step === 1) {
-      if (!fullName || !email || !phone || !department || !password || !confirmPassword || !endDate) {
+      if (!fullName || !email || !phone || !department || !password || !confirmPassword || !endDate || !selectedBatch) {
         return toast.error("Please fill in all fields");
       }
       if (password !== confirmPassword) return toast.error("Passwords don't match");
@@ -153,6 +167,23 @@ const SignUp = ({ onSwitchToSignin }) => {
                     <option value="research">Research</option>
                     <option value="communication">Communication</option>
                     <option value="hr">HR</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block mb-1 text-sm text-gray-600">Batch</label>
+                <div className="relative">
+                  <Layers className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <select value={selectedBatch} onChange={e => setSelectedBatch(e.target.value)}
+                    className="w-full pl-10 p-3 border rounded-lg focus:ring-blue-300"
+                  >
+                    <option value="">Select Batch</option>
+                    {batches.map(batch => (
+                      <option key={batch._id} value={batch._id}>
+                        {batch.name} ({new Date(batch.startDate).toLocaleDateString()} - {new Date(batch.endDate).toLocaleDateString()})
+                      </option>
+                    ))}
                   </select>
                 </div>
               </div>

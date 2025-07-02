@@ -3,7 +3,7 @@ import useTitle from "@/Components/useTitle";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { Loader, AlertCircle } from "lucide-react";
+import { Loader, AlertCircle, Check, X } from "lucide-react";
 import {
   BatchStats,
   QuickActions,
@@ -39,7 +39,45 @@ function HRBatchManagement() {
   const [formLoading, setFormLoading] = useState(false);
   const [viewLoading, setViewLoading] = useState(null);
   const [editLoading, setEditLoading] = useState(null);
-  
+  const [joinRequests, setJoinRequests] = useState([]);
+  const [selectedRequests, setSelectedRequests] = useState([]);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [showRequestsPanel, setShowRequestsPanel] = useState(false);
+
+  const handleApproveInterns = async (batchId, internIds) => {
+    try {
+      setIsProcessing(true);
+      const baseUrl = import.meta.env.VITE_BASE_URL;
+
+      // First get the current batch data
+      const response = await axios.get(`${baseUrl}/batches/${batchId}`);
+      const currentBatch = response.data;
+
+      // Prepare updated batch data
+      const updatedBatch = {
+        name: currentBatch.name,
+        startDate: currentBatch.startDate,
+        endDate: currentBatch.endDate,
+        hr: currentBatch.hr.map((h) => h.hrId?._id || h.hrId || h._id || h),
+        interns: [
+          ...currentBatch.interns.map(i => i._id || i),
+          ...internIds
+        ]
+      };
+
+      // Update the batch
+      await axios.put(`${baseUrl}/batches/${batchId}`, updatedBatch);
+
+      return true;
+    } catch (err) {
+      console.error("Error updating batch with new interns:", err);
+      return false;
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+
   const [formData, setFormData] = useState({
     name: "",
     startDate: "",
@@ -48,7 +86,6 @@ function HRBatchManagement() {
     hr: [],
   });
   const userId = localStorage.getItem("userId");
-
   useEffect(() => {
     const fetchBatchData = async () => {
       try {
@@ -56,7 +93,7 @@ function HRBatchManagement() {
         let data = await batchService.fetchBatchData();
         const progressData = await batchService.fetchBatchProgress();
         const filteredIds = await getMatchingBatchedByUserId({ userId: userId });
-        const filteredBatches = data.filter((batch) => 
+        const filteredBatches = data.filter((batch) =>
           filteredIds.includes(batch._id)
         );
         data = filteredBatches;
@@ -78,9 +115,8 @@ function HRBatchManagement() {
             endDate: safeDate(batch.endDate),
             totalInterns: batch.totalInterns,
             activeInterns: batch.totalInterns,
-            completedInterns: `${batchProgress?.completedTasks ?? 0}/${
-              batchProgress?.allTasks ?? 0
-            }`,
+            completedInterns: `${batchProgress?.completedTasks ?? 0}/${batchProgress?.allTasks ?? 0
+              }`,
             totalHR: batch.totalHR,
             status: getStatusFromDates(batch.startDate, batch.endDate),
             coordinator: "TBD",
@@ -107,7 +143,105 @@ function HRBatchManagement() {
       fetchAvailableUsers();
     }
   }, [showCreateForm]);
-  
+
+  const fetchJoinRequests = async () => {
+    try {
+      setLoading(true);
+      const baseUrl = import.meta.env.VITE_BASE_URL;
+      const requests = [];
+
+      for (const batch of batchData) {
+        try {
+          const response = await axios.get(`${baseUrl}/api/batch/batch-requests/${batch.id}`);
+          if (response.data?.data?.length > 0) {
+            requests.push(...response.data.data.map(req => ({
+              ...req,
+              batchId: batch.id,
+              batchName: batch.batchName
+            })));
+          }
+        } catch (err) {
+          console.error(`Error fetching requests for batch ${batch.id}:`, err);
+        }
+      }
+
+      setJoinRequests(requests);
+      setShowRequestsPanel(true);
+    } catch (err) {
+      console.error("Error fetching join requests:", err);
+      alert("Failed to load join requests. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+  const handleRequestSelection = (userId) => {
+    setSelectedRequests(prev =>
+      prev.includes(userId)
+        ? prev.filter(id => id !== userId)
+        : [...prev, userId]
+    );
+  };
+
+  const handleSelectAll = () => {
+    if (selectedRequests.length === joinRequests.length) {
+      setSelectedRequests([]);
+    } else {
+      setSelectedRequests(joinRequests.map(req => req._id));
+    }
+  };
+
+  const processRequests = async (action) => {
+    if (selectedRequests.length === 0) {
+      alert(`Please select at least one request to ${action}`);
+      return;
+    }
+
+    setIsProcessing(true);
+    const baseUrl = import.meta.env.VITE_BASE_URL;
+    const results = [];
+
+    for (const userId of selectedRequests) {
+      try {
+        const request = joinRequests.find(req => req._id === userId);
+        if (!request) continue;
+
+        if (action === 'approve') {
+          // First approve the user's batch request
+          await axios.patch(`${baseUrl}/api/batch/approve-batch/${userId}`, {
+            batchId: request.unapprovedBatch
+          });
+
+          // Then update the batch with the new intern
+          const success = await handleApproveInterns(
+            request.unapprovedBatch,
+            [userId]
+          );
+
+          results.push({ userId, success });
+        } else {
+          await axios.patch(`${baseUrl}/reject-batch/${userId}`);
+          results.push({ userId, success: true });
+        }
+      } catch (err) {
+        console.error(`Error ${action}ing request for user ${userId}:`, err);
+        results.push({ userId, success: false });
+      }
+    }
+
+    setIsProcessing(false);
+    const successCount = results.filter(r => r.success).length;
+    if (successCount > 0) {
+      alert(`Successfully processed ${successCount} ${action} requests`);
+      fetchJoinRequests(); // Refresh the list
+      fetchBatchData(); // Refresh batch data
+    } else {
+      alert(`Failed to process ${action} requests`);
+    }
+    setSelectedRequests([]);
+  };
+
   const fetchAvailableUsers = async () => {
     try {
       setUsersLoading(true);
@@ -115,7 +249,7 @@ function HRBatchManagement() {
       const response = await axios.get(`${baseUrl}/allusers`);
       const data = response.data;
       const availUsersResponse = await axios.get(`${baseUrl}/available-interns`);
-      
+
       let allUsers;
       if (Array.isArray(data)) {
         allUsers = data;
@@ -127,7 +261,7 @@ function HRBatchManagement() {
         console.error("Unexpected API response structure:", data);
         throw new Error("Invalid response format: expected an array of users");
       }
-      
+
       const interns = availUsersResponse.data.data;
       const currentUserId = userId;
       const hrPersonnel = allUsers
@@ -150,18 +284,18 @@ function HRBatchManagement() {
       setUsersLoading(false);
     }
   };
-  
+
   const handleView = async (batchId, type = "simple") => {
     try {
       setViewLoading(batchId);
       setIsModalOpen(true);
       setModalType(type);
-      
+
       const response = await batchService.getBatchById(batchId);
       if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-      
+
       const batchData = await response.json();
-      
+
       if (type === "deep" && batchData.tasks?.length > 0) {
         const tasksWithDetails = await Promise.all(
           batchData.tasks.map(async (task) => {
@@ -183,7 +317,7 @@ function HRBatchManagement() {
         );
         batchData.tasks = tasksWithDetails;
       }
-      
+
       setSelectedBatch(batchData);
     } catch (error) {
       console.error("Failed to fetch batch details:", error);
@@ -254,12 +388,11 @@ function HRBatchManagement() {
     try {
       const baseUrl = import.meta.env.VITE_BASE_URL;
       await axios.post(`${baseUrl}/batches`, formData);
-      
-      // Refresh data without page reload
+
       const data = await batchService.fetchBatchData();
       const filteredIds = await getMatchingBatchedByUserId({ userId: userId });
       const filteredBatches = data.filter((batch) => filteredIds.includes(batch._id));
-      
+
       setBatchData(filteredBatches.map(batch => ({
         id: batch._id,
         batchName: batch.name,
@@ -295,12 +428,11 @@ function HRBatchManagement() {
     try {
       const baseUrl = import.meta.env.VITE_BASE_URL;
       await axios.put(`${baseUrl}/batches/${editBatchId}`, formData);
-      
-      // Refresh data without page reload
+
       const data = await batchService.fetchBatchData();
       const filteredIds = await getMatchingBatchedByUserId({ userId: userId });
       const filteredBatches = data.filter((batch) => filteredIds.includes(batch._id));
-      
+
       setBatchData(filteredBatches.map(batch => ({
         id: batch._id,
         batchName: batch.name,
@@ -410,9 +542,12 @@ function HRBatchManagement() {
           </div>
 
           <BatchStats batchData={batchData} />
-          <QuickActions setShowCreateForm={setShowCreateForm} />
-          
-          <Filters 
+          <QuickActions
+            setShowCreateForm={setShowCreateForm}
+            onViewRequests={fetchJoinRequests}
+          />
+
+          <Filters
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
             filterStatus={filterStatus}
@@ -492,6 +627,102 @@ function HRBatchManagement() {
           handleUpdateBatch={handleUpdateBatch}
           hideActions={true}
         />
+      )}
+
+      {showRequestsPanel && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold text-gray-800">
+                  Batch Join Requests
+                </h2>
+                <button
+                  onClick={() => {
+                    setShowRequestsPanel(false);
+                    setSelectedRequests([]);
+                  }}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  <X size={24} />
+                </button>
+              </div>
+
+              {joinRequests.length === 0 ? (
+                <div className="text-center py-8">
+                  <p className="text-gray-500">No pending join requests found</p>
+                </div>
+              ) : (
+                <>
+                  <div className="flex gap-4 mb-4">
+                    <button
+                      onClick={() => handleSelectAll()}
+                      className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
+                    >
+                      {selectedRequests.length === joinRequests.length ? 'Deselect All' : 'Select All'}
+                    </button>
+                    <button
+                      onClick={() => processRequests('approve')}
+                      disabled={isProcessing}
+                      className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50 flex items-center gap-2"
+                    >
+                      {isProcessing ? (
+                        <Loader className="animate-spin" size={18} />
+                      ) : (
+                        <Check size={18} />
+                      )}
+                      Approve Selected
+                    </button>
+                    <button
+                      onClick={() => processRequests('reject')}
+                      disabled={isProcessing}
+                      className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50 flex items-center gap-2"
+                    >
+                      {isProcessing ? (
+                        <Loader className="animate-spin" size={18} />
+                      ) : (
+                        <X size={18} />
+                      )}
+                      Reject Selected
+                    </button>
+                  </div>
+
+                  <div className="space-y-4">
+                    {joinRequests.map((request) => (
+                      <div
+                        key={request._id}
+                        className="border rounded-lg p-4 hover:bg-gray-50"
+                      >
+                        <div className="flex items-center gap-4">
+                          <input
+                            type="checkbox"
+                            checked={selectedRequests.includes(request._id)}
+                            onChange={() => handleRequestSelection(request._id)}
+                            className="h-5 w-5 text-blue-600 rounded"
+                          />
+                          <div className="flex-1">
+                            <div className="flex justify-between">
+                              <h3 className="font-medium text-gray-900">
+                                {request.name}
+                              </h3>
+                              <span className="text-sm text-gray-500">
+                                Batch: {request.batchName}
+                              </span>
+                            </div>
+                            <p className="text-gray-600">{request.email}</p>
+                            <p className="text-sm text-gray-500">
+                              Department: {request.department}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
       )}
     </>
   );

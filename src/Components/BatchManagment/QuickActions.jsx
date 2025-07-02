@@ -1,6 +1,6 @@
-import { Plus, Calendar as CalendarIcon, Download, Settings } from "lucide-react";
+import { Plus, Calendar as CalendarIcon, Download, Settings, Users } from "lucide-react";
 
-export function QuickActions({ setShowCreateForm }) {
+export function QuickActions({ setShowCreateForm, onViewRequests }) {
   const actions = [
     {
       title: "Create New Batch",
@@ -11,25 +11,28 @@ export function QuickActions({ setShowCreateForm }) {
       onClick: () => setShowCreateForm(true),
     },
     {
+      title: "Join Requests",
+      description: "Manage intern batch requests",
+      icon: Users,
+      color: "from-green-500 to-green-700",
+      action: "requests",
+      onClick: onViewRequests,
+    },
+    {
       title: "Schedule Sessions",
       description: "Plan upcoming batch sessions",
       icon: CalendarIcon,
-      color: "from-green-500 to-green-700",
+      color: "from-purple-500 to-purple-700",
       action: "schedule",
+      onClick: () => console.log("Schedule sessions clicked"),
     },
     {
       title: "Export Reports",
       description: "Download batch performance reports",
       icon: Download,
-      color: "from-purple-500 to-purple-700",
-      action: "export",
-    },
-    {
-      title: "Batch Settings",
-      description: "Configure batch parameters",
-      icon: Settings,
       color: "from-orange-500 to-orange-700",
-      action: "settings",
+      action: "export",
+      onClick: () => console.log("Export reports clicked"),
     },
   ];
 
@@ -42,6 +45,7 @@ export function QuickActions({ setShowCreateForm }) {
             key={index}
             onClick={action.onClick}
             className={`bg-gradient-to-br ${action.color} rounded-xl shadow-lg p-6 text-white hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 text-left`}
+            disabled={!action.onClick}
           >
             <div className="flex items-center justify-between mb-4">
               <IconComponent className="w-8 h-8" />

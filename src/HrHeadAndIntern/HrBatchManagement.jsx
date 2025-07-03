@@ -221,7 +221,7 @@ function HRBatchManagement() {
 
           results.push({ userId, success });
         } else {
-          await axios.patch(`${baseUrl}/reject-batch/${userId}`);
+          await axios.patch(`${baseUrl}/api/batch/reject-batch/${userId}`);
           results.push({ userId, success: true });
         }
       } catch (err) {

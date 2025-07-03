@@ -18,7 +18,8 @@ import DynamicCalendar from "./DynamicCalendar";
 import Loader from "./Loader";
 import SkeletonLoader from "./SkeletonLoader";
 import useTitle from "./useTitle";
-import {BatchCard, BatchStats, Filters, BatchForm,BatchModal,QuickActions} from "@/Components/BatchManagment/index.js";
+import { BatchCard, BatchStats, Filters, BatchForm, BatchModal, QuickActions } from "@/Components/BatchManagment/index.js";
+import InternNecessities from "./InternNecessities";
 
 export {
     useTitle,
@@ -45,6 +46,7 @@ export {
     BatchStats,
     Filters,
     BatchForm,
-	BatchModal,
-	QuickActions,
+    BatchModal,
+    QuickActions,
+    InternNecessities,
 };

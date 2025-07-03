@@ -90,7 +90,7 @@ function BatchManagement() {
           };
 
           const batchProgress = progressData.find((p) => p._id === batch._id);
-         
+
           return {
             id: batch._id,
             batchName: batch.name,
@@ -99,9 +99,8 @@ function BatchManagement() {
             endDate: safeDate(batch.endDate),
             totalInterns: batch.totalInterns,
             activeInterns: batch.totalInterns,
-            completedInterns: `${batchProgress?.completedTasks ?? 0}/${
-              batchProgress?.allTasks ?? 0
-            }`,
+            completedInterns: `${batchProgress?.completedTasks ?? 0}/${batchProgress?.allTasks ?? 0
+              }`,
             totalHR: batch.totalHR,
             status: getStatusFromDates(batch.startDate, batch.endDate),
             coordinator: "TBD",
@@ -172,7 +171,7 @@ function BatchManagement() {
           const firstName = user.firstName || "";
           const lastName = user.lastName || "";
           const fullName = `${firstName} ${lastName}`.trim();
-          
+
           return {
             id: user._id,
             name: user.name || fullName || user.email || "Unknown HR",
@@ -198,10 +197,10 @@ function BatchManagement() {
       setViewLoading(batchId);
       setIsModalOpen(true);
       setModalType(type);
-      
+
       const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/batches/${batchId}`);
       const batchData = response.data;
-      
+
       if (type === "deep" && batchData.tasks?.length > 0) {
         const tasksWithDetails = await Promise.all(
           batchData.tasks.map(async (task) => {
@@ -223,7 +222,7 @@ function BatchManagement() {
         );
         batchData.tasks = tasksWithDetails;
       }
-      
+
       setSelectedBatch(batchData);
     } catch (error) {
       console.error("Failed to fetch batch details:", error);
@@ -265,7 +264,7 @@ function BatchManagement() {
     try {
       setEditLoading(batch.id);
       const baseUrl = import.meta.env.VITE_BASE_URL;
-      
+
       // Fetch full batch details
       const res = await axios.get(`${baseUrl}/batches/${batch.id}`);
       const fullBatch = res.data;
@@ -359,6 +358,7 @@ function BatchManagement() {
       alert(`Failed to create batch: ${err.response?.data?.message || err.message}`);
     } finally {
       setFormLoading(false);
+      window.location.reload();
     }
   };
 
@@ -383,17 +383,17 @@ function BatchManagement() {
         endDate: updatedBatch.endDate?.split("T")[0] || "",
         totalInterns: updatedBatch.interns?.length || 0,
         activeInterns: updatedBatch.interns?.length || 0,
-        completedInterns: "0/0", // This would need proper calculation
+        completedInterns: "0/0",
         totalHR: updatedBatch.hr?.length || 0,
         status: getStatusFromDates(updatedBatch.startDate, updatedBatch.endDate),
         coordinator: "TBD",
         technologies: [],
-        progress: 0, // This would need proper calculation
+        progress: 0,
       };
 
       // Update state with the updated batch
-      setBatchData(prev => 
-        prev.map(batch => 
+      setBatchData(prev =>
+        prev.map(batch =>
           batch.id === editBatchId ? transformedBatch : batch
         )
       );
@@ -407,9 +407,10 @@ function BatchManagement() {
       console.error(err);
     } finally {
       setFormLoading(false);
+      window.location.reload();
     }
   };
-  
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -432,17 +433,21 @@ function BatchManagement() {
   };
 
   // Get unique months for filter dropdown
-  const uniqueMonths = [...new Set(batchData.map((batch) => batch.month))];
+  const uniqueMonths = [...new Set(batchData.map((batch) => batch.month || ''))];
 
+  // Filter batches with proper null checks
   const filteredBatches = batchData.filter((batch) => {
     const matchesSearch =
-      batch.batchName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      batch.coordinator.toLowerCase().includes(searchTerm.toLowerCase());
+      (batch.batchName?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+      (batch.coordinator?.toLowerCase() || '').includes(searchTerm.toLowerCase());
+
     const matchesStatus =
       filterStatus === "all" ||
-      batch.status.toLowerCase() === filterStatus.toLowerCase();
+      (batch.status?.toLowerCase() || '') === filterStatus.toLowerCase();
+
     const matchesMonth =
-      selectedMonth === "" || batch.month.includes(selectedMonth);
+      selectedMonth === "" ||
+      (batch.month?.includes(selectedMonth) || false);
 
     return matchesSearch && matchesStatus && matchesMonth;
   });
@@ -504,8 +509,8 @@ function BatchManagement() {
 
           <BatchStats batchData={batchData} />
           <QuickActions setShowCreateForm={setShowCreateForm} />
-          
-          <Filters 
+
+          <Filters
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
             filterStatus={filterStatus}

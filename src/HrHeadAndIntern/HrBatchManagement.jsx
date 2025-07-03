@@ -16,6 +16,7 @@ import {
 import { formatDate, formatMonth, getStatusFromDates } from "@/lib/batchUtils";
 import { batchService } from "@/services/batchService.js";
 import { getMatchingBatchedByUserId } from "@/lib/batchUtils";
+import { toast } from "react-hot-toast";
 
 function HRBatchManagement() {
   useTitle("My Batches");
@@ -43,6 +44,7 @@ function HRBatchManagement() {
   const [selectedRequests, setSelectedRequests] = useState([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [showRequestsPanel, setShowRequestsPanel] = useState(false);
+  const [requestsLoading, setRequestsLoading] = useState(false);
 
   const handleApproveInterns = async (batchId, internIds) => {
     try {
@@ -77,7 +79,6 @@ function HRBatchManagement() {
     }
   };
 
-
   const [formData, setFormData] = useState({
     name: "",
     startDate: "",
@@ -86,6 +87,7 @@ function HRBatchManagement() {
     hr: [],
   });
   const userId = localStorage.getItem("userId");
+
   useEffect(() => {
     const fetchBatchData = async () => {
       try {
@@ -146,7 +148,8 @@ function HRBatchManagement() {
 
   const fetchJoinRequests = async () => {
     try {
-      setLoading(true);
+      setRequestsLoading(true);
+      setShowRequestsPanel(true); // Show panel immediately when starting to load
       const baseUrl = import.meta.env.VITE_BASE_URL;
       const requests = [];
 
@@ -166,12 +169,11 @@ function HRBatchManagement() {
       }
 
       setJoinRequests(requests);
-      setShowRequestsPanel(true);
     } catch (err) {
       console.error("Error fetching join requests:", err);
       alert("Failed to load join requests. Please try again.");
     } finally {
-      setLoading(false);
+      setRequestsLoading(false);
     }
   };
 
@@ -387,25 +389,32 @@ function HRBatchManagement() {
 
     try {
       const baseUrl = import.meta.env.VITE_BASE_URL;
-      await axios.post(`${baseUrl}/batches`, formData);
+      const response = await axios.post(`${baseUrl}/batches`, formData);
+      setFormLoading(false);
+      toast.success("Batch Created Successfully");
+      const newBatch = response.data;
+      setFormLoading(true);
 
-      const data = await batchService.fetchBatchData();
-      const filteredIds = await getMatchingBatchedByUserId({ userId: userId });
-      const filteredBatches = data.filter((batch) => filteredIds.includes(batch._id));
-
-      setBatchData(filteredBatches.map(batch => ({
-        id: batch._id,
-        batchName: batch.name,
-        month: formatMonth(batch.startDate),
-        startDate: batch.startDate?.split("T")[0] || "",
-        endDate: batch.endDate?.split("T")[0] || "",
-        totalInterns: batch.totalInterns,
-        totalHR: batch.totalHR,
-        status: getStatusFromDates(batch.startDate, batch.endDate),
+      // Transform the new batch data to match the expected format
+      const transformedBatch = {
+        id: newBatch._id,
+        batchName: newBatch.name,
+        month: formatMonth(newBatch.startDate),
+        startDate: newBatch.startDate?.split("T")[0] || "",
+        endDate: newBatch.endDate?.split("T")[0] || "",
+        totalInterns: newBatch.interns?.length || 0,
+        activeInterns: newBatch.interns?.length || 0,
+        completedInterns: "0/0", // Default value
+        totalHR: newBatch.hr?.length || 0,
+        status: getStatusFromDates(newBatch.startDate, newBatch.endDate),
+        coordinator: "TBD",
+        technologies: [],
         progress: 0,
-      })));
+      };
 
+      setBatchData(prev => [...prev, transformedBatch]);
       setShowCreateForm(false);
+
       setFormData({
         name: "",
         startDate: "",
@@ -413,11 +422,13 @@ function HRBatchManagement() {
         interns: [],
         hr: [],
       });
+
     } catch (err) {
       console.error("Error creating batch:", err);
       alert(`Failed to create batch: ${err.response?.data?.message || err.message}`);
     } finally {
       setFormLoading(false);
+      window.location.reload();
     }
   };
 
@@ -427,24 +438,31 @@ function HRBatchManagement() {
 
     try {
       const baseUrl = import.meta.env.VITE_BASE_URL;
-      await axios.put(`${baseUrl}/batches/${editBatchId}`, formData);
+      const response = await axios.put(`${baseUrl}/batches/${editBatchId}`, formData);
+      const updatedBatch = response.data;
 
-      const data = await batchService.fetchBatchData();
-      const filteredIds = await getMatchingBatchedByUserId({ userId: userId });
-      const filteredBatches = data.filter((batch) => filteredIds.includes(batch._id));
-
-      setBatchData(filteredBatches.map(batch => ({
-        id: batch._id,
-        batchName: batch.name,
-        month: formatMonth(batch.startDate),
-        startDate: batch.startDate?.split("T")[0] || "",
-        endDate: batch.endDate?.split("T")[0] || "",
-        totalInterns: batch.totalInterns,
-        totalHR: batch.totalHR,
-        status: getStatusFromDates(batch.startDate, batch.endDate),
+      // Transform the updated batch data to match the expected format
+      const transformedBatch = {
+        id: updatedBatch._id,
+        batchName: updatedBatch.name,
+        month: formatMonth(updatedBatch.startDate),
+        startDate: updatedBatch.startDate?.split("T")[0] || "",
+        endDate: updatedBatch.endDate?.split("T")[0] || "",
+        totalInterns: updatedBatch.interns?.length || 0,
+        activeInterns: updatedBatch.interns?.length || 0,
+        completedInterns: "0/0", // Default value
+        totalHR: updatedBatch.hr?.length || 0,
+        status: getStatusFromDates(updatedBatch.startDate, updatedBatch.endDate),
+        coordinator: "TBD",
+        technologies: [],
         progress: 0,
-      })));
+      };
 
+      setBatchData(prev =>
+        prev.map(batch =>
+          batch.id === editBatchId ? transformedBatch : batch
+        )
+      );
       setShowCreateForm(false);
       setIsEditing(false);
       setEditBatchId(null);
@@ -453,6 +471,7 @@ function HRBatchManagement() {
       console.error(err);
     } finally {
       setFormLoading(false);
+      window.location.reload();
     }
   };
 
@@ -477,12 +496,14 @@ function HRBatchManagement() {
   const uniqueMonths = [...new Set(batchData.map((batch) => batch.month))];
   const filteredBatches = batchData.filter((batch) => {
     const matchesSearch =
-      batch.batchName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      batch.coordinator.toLowerCase().includes(searchTerm.toLowerCase());
+      (batch.batchName?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+      (batch.coordinator?.toLowerCase() || '').includes(searchTerm.toLowerCase());
     const matchesStatus =
-      filterStatus === "all" || batch.status.toLowerCase() === filterStatus.toLowerCase();
+      filterStatus === "all" ||
+      (batch.status?.toLowerCase() || '') === filterStatus.toLowerCase();
     const matchesMonth =
-      selectedMonth === "" || batch.month.includes(selectedMonth);
+      selectedMonth === "" ||
+      (batch.month?.includes(selectedMonth) || false);
 
     return matchesSearch && matchesStatus && matchesMonth;
   });
@@ -648,7 +669,12 @@ function HRBatchManagement() {
                 </button>
               </div>
 
-              {joinRequests.length === 0 ? (
+              {requestsLoading ? (
+                <div className="text-center py-8">
+                  <Loader className="w-8 h-8 text-blue-600 mx-auto mb-4 animate-spin" />
+                  <p className="text-gray-500">Loading join requests...</p>
+                </div>
+              ) : joinRequests.length === 0 ? (
                 <div className="text-center py-8">
                   <p className="text-gray-500">No pending join requests found</p>
                 </div>

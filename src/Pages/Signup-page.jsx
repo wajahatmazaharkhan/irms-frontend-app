@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Mail, Lock, UserPlus, Phone, Laptop, Calendar, Layers } from "lucide-react";
 import { TopNavbar, Footer, useTitle } from "@/Components/compIndex";
 import toast from "react-hot-toast";
@@ -6,12 +6,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import iispprLogo from "../assets/Images/iisprlogo.png";
 
-const countryCodes = [
-  { code: "+1", name: "USA" },
-  { code: "+44", name: "UK" },
-  { code: "+91", name: "India" },
-  { code: "+61", name: "Australia" },
-];
+import countryCodes from "@/Components/CountryCodes";
 
 const SignUp = ({ onSwitchToSignin }) => {
   useTitle('Register');
@@ -30,6 +25,8 @@ const SignUp = ({ onSwitchToSignin }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [batches, setBatches] = useState([]);
   const [selectedBatch, setSelectedBatch] = useState("");
+  const countrySelectRef = useRef(null);
+
 
   useEffect(() => {
     const fetchBatches = async () => {
@@ -66,6 +63,38 @@ const SignUp = ({ onSwitchToSignin }) => {
     }
   };
 
+  const useKeyboardSelect = (selectRef) => {
+    useEffect(() => {
+      const select = selectRef.current;
+      if (!select) return;
+
+      let searchString = '';
+      let searchTimeout;
+
+      const handleKeyDown = (e) => {
+        // Only handle letter keys
+        if (e.key.length === 1 && e.key.match(/[a-z]/i)) {
+          e.preventDefault();
+          searchString += e.key.toLowerCase();
+          clearTimeout(searchTimeout);
+          searchTimeout = setTimeout(() => (searchString = ''), 1000);
+
+          // Find option that starts with the search string
+          for (let i = 0; i < select.options.length; i++) {
+            const option = select.options[i];
+            if (option.text.toLowerCase().startsWith(searchString)) {
+              select.selectedIndex = i;
+              break;
+            }
+          }
+        }
+      };
+
+      select.addEventListener('keydown', handleKeyDown);
+      return () => select.removeEventListener('keydown', handleKeyDown);
+    }, [selectRef]);
+  };
+  useKeyboardSelect(countrySelectRef);
   const verifySignupOtp = async () => {
     setIsLoading(true);
     try {
@@ -137,20 +166,39 @@ const SignUp = ({ onSwitchToSignin }) => {
 
               <div>
                 <label className="block mb-1 text-sm text-gray-600">Phone</label>
-                <div className="flex space-x-2">
-                  <select value={countryCode} onChange={e => setCountryCode(e.target.value)}
-                    className="p-3 border rounded-lg bg-white"
-                  >
-                    {countryCodes.map(c => (
-                      <option key={c.code} value={c.code}>{c.name} {c.code}</option>
-                    ))}
-                  </select>
-                  <div className="relative flex-1">
-                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                    <input value={phone} onChange={e => setPhone(e.target.value)}
-                      type="text" placeholder="Phone number"
-                      className="w-full pl-10 p-3 border rounded-lg focus:ring-blue-300"
-                    />
+                <div className="space-y-2 p-3 border rounded-lg bg-gray-50">
+                  {/* Country Code Selector */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Country Code</label>
+                    <select
+                      ref={countrySelectRef}
+                      value={countryCode}
+                      onChange={(e) => setCountryCode(e.target.value)}
+                      className="w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
+                    >
+                      {countryCodes
+                        .sort((a, b) => a.name.localeCompare(b.name))
+                        .map((c) => (
+                          <option key={c.code} value={c.code}>
+                            {c.name} ({c.code})
+                          </option>
+                        ))}
+                    </select>
+                  </div>
+
+                  {/* Phone Number Input */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                    <div className="relative">
+                      <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                      <input
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        type="tel"
+                        placeholder="Enter phone number"
+                        className="w-full pl-10 p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>

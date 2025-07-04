@@ -60,6 +60,7 @@ const Signin = ({ onSwitchToSignup }) => {
       console.log("verified", user);
       if (user) {
         localStorage.setItem("isVerified", user.isVerified);
+        localStorage.setItem("role", user.role);
       }
 
       if (user.role === 'hr') {
@@ -76,6 +77,9 @@ const Signin = ({ onSwitchToSignup }) => {
       toast.success("Login successful");
       console.log("User: ", user);
       if (isAdminValue) {
+        navigate("/admin-access");
+      }
+      else if (user.role === "hrHead") {
         navigate("/admin-access");
       }
       else if (user.role === "hr") {

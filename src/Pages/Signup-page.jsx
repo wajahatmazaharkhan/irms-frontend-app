@@ -52,7 +52,7 @@ const SignUp = ({ onSwitchToSignin }) => {
         department,
         startDate: new Date().toISOString().split("T")[0],
         EndDate: endDate,
-        batchId: selectedBatch,
+        batchId: selectedBatch.length > 0 ? selectedBatch : null,
       });
       toast.success("OTP sent to your email");
       setStep(2);
@@ -111,7 +111,16 @@ const SignUp = ({ onSwitchToSignin }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (step === 1) {
-      if (!fullName || !email || !phone || !department || !password || !confirmPassword || !endDate || !selectedBatch) {
+      if (
+        !fullName ||
+        !email ||
+        !phone ||
+        !department ||
+        !password ||
+        !confirmPassword ||
+        !endDate ||
+        (department === "research" && !selectedBatch)
+      ) {
         return toast.error("Please fill in all fields");
       }
       if (password !== confirmPassword) return toast.error("Passwords don't match");
@@ -125,7 +134,7 @@ const SignUp = ({ onSwitchToSignin }) => {
 
   return (
     <>
-      <TopNavbar />
+      {/* <TopNavbar /> */}
       <div className="flex items-center justify-center min-h-screen px-4 bg-gradient-to-br from-blue-50 to-purple-50">
         <div className="w-full max-w-md p-8 bg-white border shadow-lg rounded-xl">
           <div className="text-center mb-6">
@@ -219,7 +228,7 @@ const SignUp = ({ onSwitchToSignin }) => {
                 </div>
               </div>
 
-              <div>
+              {department === "research" && <div>
                 <label className="block mb-1 text-sm text-gray-600">Batch</label>
                 <div className="relative">
                   <Layers className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -235,7 +244,7 @@ const SignUp = ({ onSwitchToSignin }) => {
                   </select>
                 </div>
               </div>
-
+              }
               <div>
                 <label className="block mb-1 text-sm text-gray-600">End Date</label>
                 <div className="relative">

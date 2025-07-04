@@ -21,6 +21,7 @@ import axios from "axios"
 import CustomNavbar from "./CustomNavbar"
 
 const UserManagement = () => {
+    const isAdmin = localStorage.getItem("isAdmin") === "true"
     const [users, setUsers] = useState([])
     const [availableInterns, setAvailableInterns] = useState([])
     const [searchTerm, setSearchTerm] = useState("")
@@ -65,6 +66,43 @@ const UserManagement = () => {
 
     const availablePermissions = {
         admin: [
+            {
+                id: "user_management",
+                label: "User Management",
+                description: "Manage all users and roles",
+            },
+            {
+                id: "system_settings",
+                label: "System Settings",
+                description: "Configure system settings",
+            },
+            {
+                id: "reports",
+                label: "Reports & Analytics",
+                description: "Access all reports and analytics",
+            },
+            {
+                id: "notifications",
+                label: "Send Notifications",
+                description: "Send system-wide notifications",
+            },
+            {
+                id: "leave_approval",
+                label: "Leave Approval",
+                description: "Approve/reject leave applications",
+            },
+            {
+                id: "attendance",
+                label: "Attendance Management",
+                description: "Manage employee attendance",
+            },
+            {
+                id: "data_export",
+                label: "Data Export",
+                description: "Export system data",
+            },
+        ],
+        hrHead: [
             {
                 id: "user_management",
                 label: "User Management",
@@ -187,7 +225,7 @@ const UserManagement = () => {
 
             if (selectedUser._id === userid) {
                 localStorage.setItem("permissions", JSON.stringify(permissions))
-                localStorage.setItem("isAdmin", selectedUser.role === "admin" ? "true" : "false")
+                localStorage.setItem("isAdmin", (selectedUser.role === "admin" || selectedUser.role === "hrHead") ? "true" : "false")
             }
 
             Object.keys(payload).forEach((key) => payload[key] == null && delete payload[key])
@@ -228,20 +266,20 @@ const UserManagement = () => {
         try {
             await axios.put(`${import.meta.env.VITE_BASE_URL}/update/${userId}`, {
                 role: newRole,
-                isAdmin: newRole === "admin" ? true : false,
+                isAdmin: (newRole === "admin" || newRole === "hrHead") ? true : false,
                 permissions: newPermissions,
             })
 
             const userid = localStorage.getItem("userId")
             if (userId === userid) {
                 localStorage.setItem("permissions", JSON.stringify(newPermissions))
-                localStorage.setItem("isAdmin", newRole === "admin" ? "true" : "false")
+                localStorage.setItem("isAdmin", (newRole === "admin" || newRole === "hrHead") ? "true" : "false")
             }
 
             const updatedUser = {
                 ...userToPromote,
                 role: newRole,
-                isAdmin: newRole === "admin" ? true : false,
+                isAdmin: (newRole === "admin" || newRole === "hrHead") ? true : false,
                 permissions: newPermissions,
             }
 
@@ -257,6 +295,8 @@ const UserManagement = () => {
         switch (role) {
             case "admin":
                 return Crown
+            case "hrHead":
+                return Crown  // Same as admin since they have same permissions
             case "hr":
                 return Briefcase
             default:
@@ -268,6 +308,8 @@ const UserManagement = () => {
         switch (role) {
             case "admin":
                 return "text-purple-600 bg-purple-100"
+            case "hrHead":
+                return "text-indigo-600 bg-indigo-100"  // Different color to distinguish from admin
             case "hr":
                 return "text-blue-600 bg-blue-100"
             default:
@@ -366,12 +408,22 @@ const UserManagement = () => {
                                                         >
                                                             Promote to HR
                                                         </button>
-                                                        <button
-                                                            onClick={() => promoteUser(user._id, "admin")}
-                                                            className="text-xs bg-purple-500 text-white px-2 py-1 rounded hover:bg-purple-600 transition-colors"
-                                                        >
-                                                            Promote to Admin
-                                                        </button>
+                                                        {isAdmin && (
+                                                            <>
+                                                                <button
+                                                                    onClick={() => promoteUser(user._id, "hrHead")}
+                                                                    className="text-xs bg-indigo-500 text-white px-2 py-1 rounded hover:bg-indigo-600 transition-colors"
+                                                                >
+                                                                    Promote to HR Head
+                                                                </button>
+                                                                <button
+                                                                    onClick={() => promoteUser(user._id, "admin")}
+                                                                    className="text-xs bg-purple-500 text-white px-2 py-1 rounded hover:bg-purple-600 transition-colors"
+                                                                >
+                                                                    Promote to Admin
+                                                                </button>
+                                                            </>
+                                                        )}
                                                     </div>
                                                 )}
                                             </div>
@@ -447,21 +499,25 @@ const UserManagement = () => {
                                                     <span>Accept</span>
                                                 </button>
                                             ) : (
+
                                                 <button
+                                                    disabled={isAdmin === false && user.role === "admin"}
                                                     onClick={() => handleEditUser(user)}
-                                                    className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors duration-200"
+                                                    className={`p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors duration-200${isAdmin === false && user.role === "admin" ? " cursor-not-allowed" : ""}`}
                                                     title="Edit User"
                                                 >
                                                     <Edit3 className="w-4 h-4" />
                                                 </button>
                                             )}
-                                            <button
-                                                onClick={() => handleDeleteUser(user._id)}
-                                                className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200"
-                                                title="Delete User"
-                                            >
-                                                <Trash2 className="w-4 h-4" />
-                                            </button>
+                                            {isAdmin &&
+                                                <button
+                                                    onClick={() => handleDeleteUser(user._id)}
+                                                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200"
+                                                    title="Delete User"
+                                                >
+                                                    <Trash2 className="w-4 h-4" />
+                                                </button>
+                                            }
                                         </div>
                                     </td>
                                 </tr>
@@ -499,7 +555,7 @@ const UserManagement = () => {
                     </div>
 
                     {/* Stats Cards */}
-                    <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
+                    <div className="grid grid-cols-1 md:grid-cols-6 gap-6 mb-8">
                         <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200">
                             <div className="flex items-center justify-between">
                                 <div>
@@ -549,6 +605,17 @@ const UserManagement = () => {
                                 <Briefcase className="w-8 h-8 text-blue-600" />
                             </div>
                         </div>
+                        <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-sm font-medium text-gray-600 mb-1">HR Heads</p>
+                                    <p className="text-2xl font-bold text-indigo-600">
+                                        {verifiedUsers.filter((u) => u.role === "hrHead")?.length}
+                                    </p>
+                                </div>
+                                <Crown className="w-8 h-8 text-indigo-600" />
+                            </div>
+                        </div>
                     </div>
 
                     {/* Controls Section */}
@@ -591,6 +658,7 @@ const UserManagement = () => {
                                     >
                                         <option value="all">All Roles</option>
                                         <option value="admin">Admin</option>
+                                        <option value="hrHead">HR Head</option>
                                         <option value="hr">HR</option>
                                         <option value="intern">Intern</option>
                                     </select>
@@ -679,7 +747,8 @@ const UserManagement = () => {
                                         >
                                             <option value="intern">Intern</option>
                                             <option value="hr">HR Personnel</option>
-                                            <option value="admin">Administrator</option>
+                                            <option value="hrHead">HR Head</option>
+                                            {isAdmin && <option value="admin">Administrator</option>}
                                         </select>
                                     </div>
                                 </div>

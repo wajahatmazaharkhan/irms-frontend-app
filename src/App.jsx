@@ -76,10 +76,11 @@ import BatchManagement from "./Admin/BatchManagement.jsx";
 import ChatInterface from "./HrHeadAndIntern/InternChat.jsx";
 import HRChatDashboard from "./HrHeadAndIntern/HrChatBox.jsx";
 
-import {CommHomePage,ManageTickets} from "./CommunicationTeam/commIndex";
+import { CommHomePage, ManageTickets } from "./CommunicationTeam/commIndex";
 
 const AdminRoute = ({ children }) => {
-  const isAdmin = localStorage.getItem("isAdmin") === "true";
+  const role = localStorage.getItem("role");
+  const isAdmin = localStorage.getItem("isAdmin") === "true" || role === "hrHead";
   return isAdmin ? children : <NotAuthorized />;
 };
 
@@ -209,9 +210,9 @@ const App = () => {
           path="/"
           element={
             <PrivateRoute>
-              {/* <VerifyRoute> */}
-              <BatchDashboard />
-              {/* </VerifyRoute> */}
+              <VerifyRoute>
+                <BatchDashboard />
+              </VerifyRoute>
 
             </PrivateRoute>
           }
@@ -288,7 +289,7 @@ const App = () => {
             </PrivateRoute>
           }
         />
-		<Route
+        <Route
           path="/internticket"
           element={
             <PrivateRoute>
@@ -296,7 +297,7 @@ const App = () => {
             </PrivateRoute>
           }
         />
-		<Route
+        <Route
           path="/viewmytickets"
           element={
             <PrivateRoute>
@@ -367,6 +368,14 @@ const App = () => {
             <HrRoute>
               <Internleaveapplication />
             </HrRoute>
+          }
+        />
+        <Route
+          path="/Internleaveapplications"  //add restriction to this route only hr or admin can access
+          element={
+            <AdminRoute>
+              <Internleaveapplication />
+            </AdminRoute>
           }
         />
         <Route
@@ -551,11 +560,11 @@ const App = () => {
           }
         />
 
-		
-		{/* Comm team routes  */}
-		<Route path="/commhomepage" element={<CommHomePage />} />
-		<Route path="/commtickets" element={<ManageTickets />} />
-		
+
+        {/* Comm team routes  */}
+        <Route path="/commhomepage" element={<CommHomePage />} />
+        <Route path="/commtickets" element={<ManageTickets />} />
+
       </Routes>
     </HrProvider>
   );

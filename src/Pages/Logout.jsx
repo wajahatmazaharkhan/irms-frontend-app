@@ -31,6 +31,7 @@ const Logout = () => {
         LogoutUser();
         toast.success(`Logged out`);
         localStorage.removeItem("sessionStart");
+        localStorage.removeItem("role");
         navigate("/");
       })
       .catch((error) => {

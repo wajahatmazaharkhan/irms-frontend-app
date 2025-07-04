@@ -172,13 +172,13 @@ export default function CustomNavbar() {
             </div>
             <div className="hidden sm:block">
               <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
-                {userData.role === "admin" ? "Admin" : "HR"} Portal
+                {userData.role === "admin" ? "Admin" : userData.role === "hrHead" ? "HR Head" : "HR"} Portal
               </h1>
             </div>
           </div>
           {/* Desktop Navigation */}
           <div className="hidden lg:flex lg:items-center lg:space-x-1">
-            {(userData.role === "admin"
+            {(userData.role === "admin" || userData.role === "hrHead"
               ? navigationItemsAdmin
               : navigationItemsHR
             ).map((item) => {
@@ -187,11 +187,10 @@ export default function CustomNavbar() {
                 <Link
                   key={item.name}
                   to={item.path}
-                  className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                    item.active
-                      ? "bg-blue-100 text-blue-700 shadow-sm"
-                      : "text-gray-600 hover:text-blue-600 hover:bg-gray-50"
-                  }`}
+                  className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${item.active
+                    ? "bg-blue-100 text-blue-700 shadow-sm"
+                    : "text-gray-600 hover:text-blue-600 hover:bg-gray-50"
+                    }`}
                 >
                   <IconComponent className="w-4 h-4" />
                   <span>{item.name}</span>
@@ -217,12 +216,12 @@ export default function CustomNavbar() {
                   </span>
                 </div>
                 <span className="text-sm font-medium">{userData.role === "admin"
-                        ? "Admin"
-                        : "HR"}</span>
+                  ? "Admin"
+                  : userData.role === "hrHead" ? "HR Head"
+                    : "HR"}</span>
                 <ChevronDown
-                  className={`w-4 h-4 transition-transform duration-200 ${
-                    profileDropdown ? "rotate-180" : ""
-                  }`}
+                  className={`w-4 h-4 transition-transform duration-200 ${profileDropdown ? "rotate-180" : ""
+                    }`}
                 />
               </button>
 
@@ -284,11 +283,10 @@ export default function CustomNavbar() {
                   <Link
                     key={item.name}
                     to={item.path}
-                    className={`flex items-center space-x-3 px-4 py-3 text-sm font-medium transition-colors duration-200 ${
-                      item.active
-                        ? "bg-blue-50 text-blue-700 border-r-4 border-blue-500"
-                        : "text-gray-600 hover:text-blue-600 hover:bg-gray-50"
-                    }`}
+                    className={`flex items-center space-x-3 px-4 py-3 text-sm font-medium transition-colors duration-200 ${item.active
+                      ? "bg-blue-50 text-blue-700 border-r-4 border-blue-500"
+                      : "text-gray-600 hover:text-blue-600 hover:bg-gray-50"
+                      }`}
                   >
                     <IconComponent className="w-5 h-5" />
                     <span>{item.name}</span>

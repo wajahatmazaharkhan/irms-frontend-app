@@ -307,10 +307,10 @@ function BatchManagement() {
       return;
     }
 
-    if (formData.interns.length === 0) {
-      alert("Please select at least one intern.");
-      return;
-    }
+    // if (formData.interns.length === 0) {
+    //   alert("Please select at least one intern.");
+    //   return;
+    // }
 
     if (formData.hr.length === 0) {
       alert("Please select at least one HR personnel.");

@@ -62,7 +62,7 @@ function AdminHomePage() {
     },
     {
       title: "Leave Applications",
-      route: "/internleaveapplication",
+      route: "/Internleaveapplications",
       icon: FileText,
       description: "Review leave requests",
       gradient: "from-purple-500 to-purple-700",
@@ -100,15 +100,15 @@ function AdminHomePage() {
       gradient: "from-red-500 to-red-700",
       permission: "notifications",
     },
-    {
+    // {
 
-      title: "Admin & HR System",
-      route: "/admin-hr-management",
-      icon: Settings,
-      description: "System administration",
-      gradient: "from-gray-500 to-gray-700",
-      permission: "system_settings",
-    },
+    //   title: "Admin & HR System",
+    //   route: "/admin-hr-management",
+    //   icon: Settings,
+    //   description: "System administration",
+    //   gradient: "from-gray-500 to-gray-700",
+    //   permission: "system_settings",
+    // },
     {
       title: "Batch Management",
       route: "/batch-management",

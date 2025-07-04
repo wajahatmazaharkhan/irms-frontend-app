@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom"
 import { motion, AnimatePresence } from "framer-motion"
 
 const BatchDashboard = () => {
+  const role = localStorage.getItem("role");
   useTitle("My Batch")
   const [batch, setBatch] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -18,6 +19,16 @@ const BatchDashboard = () => {
   const [isHovered, setIsHovered] = useState(null)
   const baseUrl = import.meta.env.VITE_BASE_URL
   const navigate = useNavigate()
+
+  useEffect(() => {
+    if (role === "admin" || role === "hrHead") {
+      navigate("/admin-access")
+    } else if (role === "hr") {
+      navigate("/hrhomepage")
+    }
+
+  }, [role])
+
 
   useEffect(() => {
     const fetchBatchData = async () => {
@@ -97,6 +108,9 @@ const BatchDashboard = () => {
 
     fetchBatchData()
   }, [baseUrl])
+
+
+
 
   // Calendar functions
   const getCalendarDays = () => {

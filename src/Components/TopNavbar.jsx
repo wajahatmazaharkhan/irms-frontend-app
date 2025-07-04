@@ -251,24 +251,24 @@ const TopNavbar = () => {
     },
   ];
 
-  useEffect(() => {
-    if (loggedIn) {
-      const fetchNotifications = async () => {
-        const userId = localStorage.getItem("userId");
-        try {
-          const response = await fetch(
-            `https://iisppr-backend.vercel.app/get-notifications?userId=${userId}`
-          );
-          if (!response.ok) throw new Error("Failed to fetch notifications");
-          const data = await response.json();
-          setNotiCounter(data.notifications.notifications.length);
-        } catch (error) {
-          console.error("Error fetching notifications:", error);
-        }
-      };
-      fetchNotifications();
-    }
-  }, [loggedIn]);
+  // useEffect(() => {
+  //   if (loggedIn) {
+  //     const fetchNotifications = async () => {
+  //       const userId = localStorage.getItem("userId");
+  //       try {
+  //         const response = await fetch(
+  //           `https://iisppr-backend.vercel.app/get-notifications?userId=${userId}`
+  //         );
+  //         if (!response.ok) throw new Error("Failed to fetch notifications");
+  //         const data = await response.json();
+  //         setNotiCounter(data.notifications.notifications.length);
+  //       } catch (error) {
+  //         console.error("Error fetching notifications:", error);
+  //       }
+  //     };
+  //     fetchNotifications();
+  //   }
+  // }, [loggedIn]);
 
   // Close dropdown when clicking outside
   useEffect(() => {

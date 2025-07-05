@@ -211,6 +211,7 @@ const App = () => {
           element={
             <PrivateRoute>
               <VerifyRoute>
+                {/* <CoreDashboard /> */}
                 <BatchDashboard />
               </VerifyRoute>
 

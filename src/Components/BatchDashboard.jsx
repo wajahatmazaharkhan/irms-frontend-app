@@ -19,7 +19,7 @@ import { useNavigate } from "react-router-dom"
 import { motion } from "framer-motion"
 import { useAppContext } from "@/context/AppContext"
 import TaskModal from "./TaskModal"
-import { Button } from "@/components/ui/button"
+import { Button } from "@/Components/ui/button"
 
 const BatchDashboard = () => {
   const role = localStorage.getItem("role")

@@ -1,13 +1,28 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Calendar, ChevronLeft, ChevronRight, Info, Check, Users, FileText, Zap } from "lucide-react"
+import {
+  Calendar,
+  ChevronLeft,
+  ChevronRight,
+  Info,
+  Check,
+  Users,
+  FileText,
+  Zap,
+  Clock,
+  CheckCircle,
+  AlertCircle,
+} from "lucide-react"
 import { Navbar, Wrapper, useTitle, InternNecessities } from "@/Components/compIndex"
 import { useNavigate } from "react-router-dom"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion } from "framer-motion"
+import { useAppContext } from "@/context/AppContext"
+import TaskModal from "./TaskModal"
+import { Button } from "@/components/ui/button"
 
 const BatchDashboard = () => {
-  const role = localStorage.getItem("role");
+  const role = localStorage.getItem("role")
   useTitle("My Batch")
   const [batch, setBatch] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -17,8 +32,11 @@ const BatchDashboard = () => {
   const [currentDate, setCurrentDate] = useState(new Date(2025, 5, 1)) // June 2025 to match image
   const [activeTab, setActiveTab] = useState("technical")
   const [isHovered, setIsHovered] = useState(null)
+  const [selectedTaskId, setSelectedTaskId] = useState(null)
+
   const baseUrl = import.meta.env.VITE_BASE_URL
   const navigate = useNavigate()
+  const { modalView, setModalView } = useAppContext()
 
   useEffect(() => {
     if (role === "admin" || role === "hrHead") {
@@ -26,15 +44,12 @@ const BatchDashboard = () => {
     } else if (role === "hr") {
       navigate("/hrhomepage")
     }
-
   }, [role])
-
 
   useEffect(() => {
     const fetchBatchData = async () => {
       try {
         setLoading(true)
-
         const userId = localStorage.getItem("userId")
         if (!userId) {
           throw new Error("User ID not found in localStorage")
@@ -44,9 +59,10 @@ const BatchDashboard = () => {
         if (!usersResponse.ok) {
           throw new Error("Failed to fetch user data")
         }
-        const usersData = await usersResponse.json()
 
+        const usersData = await usersResponse.json()
         const currentUser = usersData.data.find((user) => user._id === userId)
+
         if (!currentUser) {
           throw new Error("User not found")
         }
@@ -62,6 +78,7 @@ const BatchDashboard = () => {
         if (!batchResponse.ok) {
           throw new Error("Failed to fetch batch data")
         }
+
         const batchData = await batchResponse.json()
         setBatch(batchData)
 
@@ -109,8 +126,35 @@ const BatchDashboard = () => {
     fetchBatchData()
   }, [baseUrl])
 
+  // Task Status Badge Component
+  const TaskStatusBadge = ({ status }) => {
+    const statusConfig = {
+      completed: {
+        icon: CheckCircle,
+        className: "bg-green-100 text-green-700 border border-green-200",
+      },
+      pending: {
+        icon: Clock,
+        className: "bg-yellow-100 text-yellow-700 border border-yellow-200",
+      },
+      overdue: {
+        icon: AlertCircle,
+        className: "bg-red-100 text-red-700 border border-red-200",
+      },
+    }
 
+    const config = statusConfig[status?.toLowerCase()] || statusConfig.pending
+    const Icon = config.icon
 
+    return (
+      <div
+        className={`flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium capitalize ${config.className}`}
+      >
+        <Icon className="w-4 h-4" />
+        <span>{status || "pending"}</span>
+      </div>
+    )
+  }
 
   // Calendar functions
   const getCalendarDays = () => {
@@ -122,7 +166,6 @@ const BatchDashboard = () => {
 
     const days = []
     const current = new Date(startDate)
-
     for (let i = 0; i < 42; i++) {
       days.push(new Date(current))
       current.setDate(current.getDate() + 1)
@@ -168,9 +211,15 @@ const BatchDashboard = () => {
 
   const getFilteredTasks = (category) => {
     return tasksWithDetails.filter((task) => {
-      const taskCategory = task.details?.category || "technical"
+      const taskCategory = task.details?.category || task.details?.taskType || "technical"
       return taskCategory.toLowerCase() === category.toLowerCase()
     })
+  }
+
+  // Handle submit button click
+  const handleSubmitTask = (taskId) => {
+    setSelectedTaskId(taskId)
+    setModalView(true)
   }
 
   if (loading) {
@@ -180,11 +229,7 @@ const BatchDashboard = () => {
         <div id="mainContent">
           <Wrapper>
             <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="text-center"
-              >
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center">
                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mx-auto mb-4"></div>
                 <p className="text-gray-700">Loading your batch details...</p>
               </motion.div>
@@ -290,6 +335,9 @@ const BatchDashboard = () => {
 
   return (
     <>
+      {/* Task Modal */}
+      {modalView && selectedTaskId && <TaskModal taskId={selectedTaskId} />}
+
       <Navbar />
       <div id="mainContent">
         <Wrapper>
@@ -303,9 +351,7 @@ const BatchDashboard = () => {
             >
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20">
                 <div className="text-center">
-                  <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
-                    My Batch Dashboard
-                  </h1>
+                  <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">My Batch Dashboard</h1>
                   <p className="text-blue-100 text-lg md:text-xl max-w-2xl mx-auto">
                     Track your internship progress and stay updated with your batch
                   </p>
@@ -380,7 +426,9 @@ const BatchDashboard = () => {
                       <div className="flex justify-between items-center mb-6">
                         <h2 className="text-lg font-semibold text-gray-900">
                           Assigned Tasks
-                          <span className="ml-2 text-sm font-normal text-blue-600">{tasksWithDetails.length} active</span>
+                          <span className="ml-2 text-sm font-normal text-blue-600">
+                            {tasksWithDetails.length} active
+                          </span>
                         </h2>
                         <button className="text-blue-600 text-sm hover:text-blue-800 font-medium transition-colors">
                           View all →
@@ -433,43 +481,61 @@ const BatchDashboard = () => {
                                 className="p-4 border border-gray-200 rounded-lg hover:border-blue-300 transition-colors bg-gray-50 hover:bg-white"
                                 whileHover={{ scale: 1.01 }}
                               >
-                                <div className="flex justify-between items-start mb-2">
-                                  <h4 className="font-medium text-gray-900">
-                                    {task.details?.title || `Task ${index + 1}`}
-                                  </h4>
-                                  <span
-                                    className={`px-2 py-1 rounded-full text-xs font-medium ${task.details?.status === "completed"
-                                      ? "bg-green-100 text-green-800"
-                                      : task.details?.status === "in-progress"
-                                        ? "bg-yellow-100 text-yellow-800"
-                                        : "bg-gray-100 text-gray-800"
-                                      }`}
-                                  >
-                                    {task.details?.status || "pending"}
-                                  </span>
-                                </div>
-                                {task.details?.description && (
-                                  <p className="text-sm text-gray-600 mb-3">{task.details.description}</p>
-                                )}
-                                <div className="flex justify-between text-xs text-gray-500">
-                                  <span>
-                                    Due:{" "}
-                                    {task.details?.endDate
-                                      ? new Date(task.details.endDate).toLocaleDateString()
-                                      : "Not set"}
-                                  </span>
-                                  <span>Assigned to: {assignedIntern.name}</span>
+                                <div className="flex flex-col lg:flex-row items-start lg:items-center gap-4">
+                                  <div className="flex-1 space-y-3">
+                                    <div className="flex items-start justify-between">
+                                      <h4 className="font-semibold text-lg text-gray-900">
+                                        {task.details?.title || `Task ${index + 1}`}
+                                      </h4>
+                                      <TaskStatusBadge status={task.details?.status} />
+                                    </div>
+
+                                    {task.details?.description && (
+                                      <p className="text-gray-600 text-sm">{task.details.description}</p>
+                                    )}
+
+                                    <div className="flex flex-wrap gap-4 text-xs text-gray-500">
+                                      <div className="flex items-center gap-1.5 bg-gray-50 px-2.5 py-1 rounded-full">
+                                        <Calendar className="w-3.5 h-3.5" />
+                                        <span>
+                                          Start:{" "}
+                                          {task.details?.startDate
+                                            ? new Date(task.details.startDate).toLocaleDateString()
+                                            : "Not set"}
+                                        </span>
+                                      </div>
+                                      <div className="flex items-center gap-1.5 bg-gray-50 px-2.5 py-1 rounded-full">
+                                        <Calendar className="w-3.5 h-3.5" />
+                                        <span>
+                                          End:{" "}
+                                          {task.details?.endDate
+                                            ? new Date(task.details.endDate).toLocaleDateString()
+                                            : "Not set"}
+                                        </span>
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  <div className="flex flex-col gap-3 min-w-[120px] w-full lg:w-auto mt-4 lg:mt-0">
+                                    <Button
+                                      onClick={() => handleSubmitTask(task.details?._id)}
+                                      className={`w-full ${task.details?.status === "completed"
+                                        ? "bg-green-50 text-green-700 hover:bg-green-100 border border-green-200"
+                                        : "bg-blue-500 text-white hover:bg-blue-600"
+                                        }`}
+                                      variant={task.details?.status === "completed" ? "outline" : "default"}
+                                      disabled={!task.details?._id}
+                                    >
+                                      {task.details?.status === "completed" ? "Resubmit" : "Submit"}
+                                    </Button>
+                                  </div>
                                 </div>
                               </motion.div>
                             )
                           })}
                         </div>
                       ) : (
-                        <motion.div
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          className="text-center py-20"
-                        >
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-20">
                           <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                             <Info className="h-8 w-8 text-gray-400" />
                           </div>
@@ -574,7 +640,9 @@ const BatchDashboard = () => {
                                   {hrContact.hrId?.name?.charAt(0) || "H"}
                                 </div>
                                 <div className="flex-1">
-                                  <div className="font-medium text-gray-800">{hrContact.hrId?.name || "HR Contact"}</div>
+                                  <div className="font-medium text-gray-800">
+                                    {hrContact.hrId?.name || "HR Contact"}
+                                  </div>
                                   <div className="text-sm text-gray-500">
                                     {hrContact.hrId?.email || "No email provided"}
                                   </div>

@@ -222,7 +222,9 @@ const SignUp = ({ onSwitchToSignin }) => {
                     <option value="">Select department</option>
                     <option value="development">Development</option>
                     <option value="research">Research</option>
-                    <option value="communication">Communication</option>
+                    <option value="course">Course</option>
+                    <option value="communication">Communication for Interns</option>
+                    <option value="courseCommunication">Communication for Course Interns</option>
                     <option value="hr">HR</option>
                   </select>
                 </div>

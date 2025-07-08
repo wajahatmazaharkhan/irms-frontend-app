@@ -2,19 +2,19 @@ import { Calendar, Users, UserCheck, CheckCircle, Eye, Edit3, Trash2, Loader } f
 import { getStatusColor, getStatusIcon } from "@/lib/batchUtils";
 import { useState, useEffect } from "react";
 
-export function BatchCard({ 
-  batch, 
-  handleView, 
-  handleEditClick, 
-  handleDeleteBatch, 
+export function BatchCard({
+  batch,
+  handleView,
+  handleEditClick,
+  handleDeleteBatch,
   deleteLoading,
   viewLoading,
   editLoading,
 }) {
   const [hideActions, setHideActions] = useState(true);
-  
+
   useEffect(() => {
-    const isAdmin = localStorage.getItem("isAdmin") === "true";
+    const isAdmin = localStorage.getItem("isAdmin") === "true" || localStorage.getItem("role") === "hrHead";
     setHideActions(!isAdmin);
   }, []);
 
@@ -53,7 +53,7 @@ export function BatchCard({
               <Eye className="w-4 h-4" />
             )}
           </button>
-          
+
           {!hideActions && (
             <>
               <button

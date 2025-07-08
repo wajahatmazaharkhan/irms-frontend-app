@@ -9,6 +9,7 @@ import {
   Menu,
   X,
   ChevronDown,
+  Trophy
 } from "lucide-react";
 import axios from "axios";
 
@@ -67,6 +68,12 @@ export default function CommNavbar() {
       path: "/commtickets", // ✅ Your route
       icon: FolderOpen,
       active: location.pathname === "/commtickets",
+    },
+    {
+      name: "Rank",
+      path: "/commrank",
+      icon: Trophy,
+      active: location.pathname === "/commrank",
     },
   ];
 

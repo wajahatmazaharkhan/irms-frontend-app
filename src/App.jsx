@@ -76,7 +76,7 @@ import BatchManagement from "./Admin/BatchManagement.jsx";
 import ChatInterface from "./HrHeadAndIntern/InternChat.jsx";
 import HRChatDashboard from "./HrHeadAndIntern/HrChatBox.jsx";
 
-import { CommHomePage, ManageTickets } from "./CommunicationTeam/commIndex";
+import { CommHomePage, ManageTickets, CommRanking } from "./CommunicationTeam/commIndex";
 
 const AdminRoute = ({ children }) => {
   const role = localStorage.getItem("role");
@@ -565,6 +565,9 @@ const App = () => {
         {/* Comm team routes  */}
         <Route path="/commhomepage" element={<CommHomePage />} />
         <Route path="/commtickets" element={<ManageTickets />} />
+        <Route path="/commrank" element={<CommRanking />} />
+
+
 
       </Routes>
     </HrProvider>

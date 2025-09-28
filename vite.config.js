@@ -1,12 +1,10 @@
-import path from "path"
-import react from "@vitejs/plugin-react"
-import { defineConfig } from "vite"
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "./src"),
-    },
-  },
+  server: {
+    host: true, // Expose to all networks
+    port: process.env.PORT || 3000 // Use Railway's PORT or default to 3000
+  }
 })

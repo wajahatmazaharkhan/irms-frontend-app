@@ -15,7 +15,7 @@ const Internleaveapplication = () => {
   
   const Loader = () => (
 	  <div className="flex justify-center items-center py-20">
-		<div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+		<div className="animate-spin rounded-nonefull h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
 	  </div>
 	);
 
@@ -90,7 +90,7 @@ return (
         <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">All Leave Applications</h1>
         
         {message.text && (
-          <div className={`mb-6 p-3 rounded-lg text-center ${message.type === "success" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
+          <div className={`mb-6 p-3 rounded-nonelg text-center ${message.type === "success" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
             {message.text}
           </div>
         )}
@@ -100,7 +100,7 @@ return (
         ) : (
           <div className="space-y-6">
             {/* Pending Leaves */}
-            <div className="bg-white rounded-xl shadow-md overflow-hidden">
+            <div className="bg-white rounded-nonexl shadow-md overflow-hidden">
               <div className="bg-yellow-100 px-6 py-3 border-b border-yellow-200">
                 <h2 className="text-lg font-semibold text-yellow-800 flex items-center">
                   <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
@@ -118,10 +118,10 @@ return (
                         <div className="mb-4 sm:mb-0">
                           <h3 className="text-lg font-medium text-gray-900">{leave.internid?.name || "Deleted user"}</h3>
                           <div className="mt-1 flex flex-wrap gap-2">
-                            <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">
+                            <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-nonefull">
                               {leave.leaveType}
                             </span>
-                            <span className="px-2 py-1 bg-purple-100 text-purple-800 text-xs font-medium rounded-full">
+                            <span className="px-2 py-1 bg-purple-100 text-purple-800 text-xs font-medium rounded-nonefull">
                               {new Date(leave.startDate).toLocaleDateString()} - {new Date(leave.endDate).toLocaleDateString()}
                             </span>
                           </div>
@@ -129,7 +129,7 @@ return (
                         </div>
                         <button
                           onClick={() => setSelectedLeave(leave)}
-                          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-nonemd shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                         >
                           Review Application
                         </button>
@@ -145,7 +145,7 @@ return (
             </div>
 
             {/* Approved Leaves */}
-            <div className="bg-white rounded-xl shadow-md overflow-hidden">
+            <div className="bg-white rounded-nonexl shadow-md overflow-hidden">
               <div className="bg-green-100 px-6 py-3 border-b border-green-200">
                 <h2 className="text-lg font-semibold text-green-800 flex items-center">
                   <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
@@ -163,10 +163,10 @@ return (
                         <div className="mb-4 sm:mb-0">
                           <h3 className="text-lg font-medium text-gray-900">{leave.internid?.name || "Deleted user"}</h3>
                           <div className="mt-1 flex flex-wrap gap-2">
-                            <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">
+                            <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-nonefull">
                               {leave.leaveType}
                             </span>
-                            <span className="px-2 py-1 bg-purple-100 text-purple-800 text-xs font-medium rounded-full">
+                            <span className="px-2 py-1 bg-purple-100 text-purple-800 text-xs font-medium rounded-nonefull">
                               {new Date(leave.startDate).toLocaleDateString()} - {new Date(leave.endDate).toLocaleDateString()}
                             </span>
                           </div>
@@ -176,7 +176,7 @@ return (
                           )}
                         </div>
                         <div className="flex items-center">
-                          <span className="px-3 py-1 bg-green-100 text-green-800 text-sm font-medium rounded-full">
+                          <span className="px-3 py-1 bg-green-100 text-green-800 text-sm font-medium rounded-nonefull">
                             Approved
                           </span>
                         </div>
@@ -192,7 +192,7 @@ return (
             </div>
 
             {/* Rejected Leaves */}
-            <div className="bg-white rounded-xl shadow-md overflow-hidden">
+            <div className="bg-white rounded-nonexl shadow-md overflow-hidden">
               <div className="bg-red-100 px-6 py-3 border-b border-red-200">
                 <h2 className="text-lg font-semibold text-red-800 flex items-center">
                   <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
@@ -210,10 +210,10 @@ return (
                         <div className="mb-4 sm:mb-0">
                           <h3 className="text-lg font-medium text-gray-900">{leave.internid?.name || "Deleted user"}</h3>
                           <div className="mt-1 flex flex-wrap gap-2">
-                            <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">
+                            <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-nonefull">
                               {leave.leaveType}
                             </span>
-                            <span className="px-2 py-1 bg-purple-100 text-purple-800 text-xs font-medium rounded-full">
+                            <span className="px-2 py-1 bg-purple-100 text-purple-800 text-xs font-medium rounded-nonefull">
                               {new Date(leave.startDate).toLocaleDateString()} - {new Date(leave.endDate).toLocaleDateString()}
                             </span>
                           </div>
@@ -223,7 +223,7 @@ return (
                           )}
                         </div>
                         <div className="flex items-center">
-                          <span className="px-3 py-1 bg-red-100 text-red-800 text-sm font-medium rounded-full">
+                          <span className="px-3 py-1 bg-red-100 text-red-800 text-sm font-medium rounded-nonefull">
                             Rejected
                           </span>
                         </div>
@@ -243,7 +243,7 @@ return (
         {/* Status Update Modal */}
         {selectedLeave && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-            <div className="bg-white p-6 rounded-xl shadow-xl w-full max-w-md">
+            <div className="bg-white p-6 rounded-nonexl shadow-xl w-full max-w-md">
               <h2 className="text-2xl font-bold mb-4 text-gray-800">Update Leave Status</h2>
               <div className="space-y-4">
                 <div>
@@ -255,7 +255,7 @@ return (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
                   <select
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-nonemd shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                     value={status}
                     onChange={(e) => setStatus(e.target.value)}
                   >
@@ -269,7 +269,7 @@ return (
                   <label className="block text-sm font-medium text-gray-700 mb-1">Your Name</label>
                   <input
                     type="text"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-nonemd shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                     value={adminName}
                     onChange={(e) => setAdminName(e.target.value)}
                     placeholder="Enter your name"
@@ -283,13 +283,13 @@ return (
                       setAdminName("");
                       setStatus("");
                     }}
-                    className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                    className="px-4 py-2 border border-gray-300 rounded-nonemd shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={handleUpdateStatus}
-                    className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                    className="px-4 py-2 border border-transparent rounded-nonemd shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                   >
                     Update Status
                   </button>

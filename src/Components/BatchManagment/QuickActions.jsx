@@ -44,12 +44,12 @@ export function QuickActions({ setShowCreateForm, onViewRequests }) {
           <button
             key={index}
             onClick={action.onClick}
-            className={`bg-gradient-to-br ${action.color} rounded-xl shadow-lg p-6 text-white hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 text-left`}
+            className={`bg-gradient-to-br ${action.color} rounded-nonexl shadow-lg p-6 text-white hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 text-left`}
             disabled={!action.onClick}
           >
             <div className="flex items-center justify-between mb-4">
               <IconComponent className="w-8 h-8" />
-              <div className="w-2 h-2 bg-white rounded-full opacity-70"></div>
+              <div className="w-2 h-2 bg-white rounded-nonefull opacity-70"></div>
             </div>
             <h3 className="text-lg font-semibold mb-2">{action.title}</h3>
             <p className="text-sm opacity-90">{action.description}</p>

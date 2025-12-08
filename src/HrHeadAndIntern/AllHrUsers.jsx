@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 import { HrAllUsersInterns } from "@/HrHeadAndIntern/HrIndex";
 
 function AllUsers() {
-  useTitle('User Management')
+  useTitle("User Management");
   const [users, setUsers] = useState([]);
   const [hrusernames, sethrusernames] = useState([]);
   const [error, setError] = useState("");
@@ -68,7 +68,7 @@ function AllUsers() {
       if (response.status === 200) {
         toast.success("user successfully assigned to hr ");
         togglemodal();
-        setIsAssigned(prev => !prev);
+        setIsAssigned((prev) => !prev);
       }
     } catch (error) {
       console.log(error.message);
@@ -79,13 +79,15 @@ function AllUsers() {
   const fetchHrBatchData = async () => {
     try {
       const hrId = localStorage.getItem("userId");
-      const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/batch/get-ids`);
-      const hrBatches = response.data.data.filter(batch =>
-        batch.hr.some(hr => hr._id === hrId)
+      const response = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/api/batch/get-ids`
+      );
+      const hrBatches = response.data.data.filter((batch) =>
+        batch.hr.some((hr) => hr._id === hrId)
       );
 
-      const hrInternIds = hrBatches.flatMap(batch =>
-        batch.interns.map(intern => intern._id)
+      const hrInternIds = hrBatches.flatMap((batch) =>
+        batch.interns.map((intern) => intern._id)
       );
 
       return hrInternIds;
@@ -111,8 +113,8 @@ function AllUsers() {
       const result = await response.json();
 
       // Filter users to only show HR's batch interns
-      const filteredUsers = result.data.filter(user =>
-        hrInternIds.includes(user._id) && user.role === "intern"
+      const filteredUsers = result.data.filter(
+        (user) => hrInternIds.includes(user._id) && user.role === "intern"
       );
 
       setUsers(filteredUsers || []);
@@ -124,7 +126,6 @@ function AllUsers() {
       const userIds = filteredUsers.map((user) => user._id);
       setinternIds(userIds);
       sethrusernames(hrUsernames);
-
     } catch (err) {
       setError(err.message);
     } finally {
@@ -135,7 +136,7 @@ function AllUsers() {
   // Rest of your existing functions remain the same...
   const deleteUser = async (userId, userName) => {
     const message =
-      `Are you sure you want to delete user ${userName.toUpperCase()}?` +
+      `Are you sure you want to delete account of the intern ${userName.toUpperCase()}?` +
       ` This action cannot be undone.` +
       ` Do you want to proceed?`;
     if (window.confirm(message)) {
@@ -157,7 +158,7 @@ function AllUsers() {
           const errorData = await response.json();
           throw new Error(
             errorData.message ||
-            `Failed to delete user (Status: ${response.status})`
+              `Failed to delete user (Status: ${response.status})`
           );
         }
         setUsers((prevUsers) =>
@@ -220,14 +221,13 @@ function AllUsers() {
     });
   };
 
-  // Your existing JSX remains exactly the same...
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-100 dark:from-gray-900 dark:to-gray-950">
       <CustomHrNavbar />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+        <div className="bg-white dark:bg-gray-900 rounded-nonexl shadow-lg dark:shadow-none overflow-hidden border border-gray-200 dark:border-gray-700">
           {/* Header Section */}
-          <div className="px-6 py-5 border-b border-gray-200 bg-gradient-to-r from-blue-600 to-blue-800">
+          <div className="px-6 py-5 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-blue-600 to-blue-800 dark:from-blue-700 dark:to-blue-900">
             <div className="flex flex-col md:flex-row justify-between items-center">
               <h1 className="text-2xl font-bold text-white mb-4 md:mb-0">
                 My Batch Interns
@@ -236,7 +236,7 @@ function AllUsers() {
                 <input
                   type="text"
                   placeholder="Search interns..."
-                  className="w-full px-4 py-2 rounded-md bg-blue-700 bg-opacity-20 text-white placeholder-blue-200 focus:ring-2 focus:ring-white focus:outline-none"
+                  className="w-full px-4 py-2 rounded-nonemd bg-blue-700 bg-opacity-20 text-white placeholder-blue-200 focus:ring-2 focus:ring-white focus:outline-none dark:bg-blue-900 dark:bg-opacity-40 dark:placeholder-blue-300"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
@@ -245,9 +245,11 @@ function AllUsers() {
           </div>
 
           {error && (
-            <Alert variant="destructive" className="mx-6 mt-4">
+            <Alert variant="destructive" className="mx-6 mt-4 dark:bg-red-900/40 dark:border-red-800">
               <AlertCircle className="h-4 w-4" />
-              <AlertDescription>{error}</AlertDescription>
+              <AlertDescription className="dark:text-red-100">
+                {error}
+              </AlertDescription>
             </Alert>
           )}
 
@@ -259,7 +261,7 @@ function AllUsers() {
             <div className="p-6">
               {getSortedUsers().length === 0 ? (
                 <div className="text-center py-12">
-                  <div className="mx-auto h-24 w-24 text-gray-400">
+                  <div className="mx-auto h-24 w-24 text-gray-400 dark:text-gray-500">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
@@ -274,10 +276,10 @@ function AllUsers() {
                       />
                     </svg>
                   </div>
-                  <h3 className="mt-2 text-lg font-medium text-gray-900">
+                  <h3 className="mt-2 text-lg font-medium text-gray-900 dark:text-gray-100">
                     No interns found
                   </h3>
-                  <p className="mt-1 text-sm text-gray-500">
+                  <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                     {searchTerm
                       ? "Try adjusting your search query"
                       : "There are currently no interns in your batch"}
@@ -288,39 +290,55 @@ function AllUsers() {
                   {getSortedUsers().map((user) => (
                     <div
                       key={user._id}
-                      className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 hover:shadow-lg transition-shadow duration-300"
+                      className="bg-white dark:bg-gray-900 rounded-nonelg shadow-md dark:shadow-none overflow-hidden border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow duration-300"
                     >
                       <div className="p-5">
                         <div className="flex items-center space-x-4 mb-4">
                           <div className="flex-shrink-0">
-                            <div className="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-lg">
+                            <div className="h-12 w-12 rounded-nonefull bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-blue-600 dark:text-blue-300 font-bold text-lg">
                               {user.name.charAt(0).toUpperCase()}
                             </div>
                           </div>
                           <div>
-                            <h3 className="text-lg font-medium text-gray-900">
+                            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
                               {user.name}
                             </h3>
-                            <p className="text-sm text-blue-600">{user.email}</p>
+                            <p className="text-sm text-blue-600 dark:text-blue-400">
+                              {user.email}
+                            </p>
                           </div>
                         </div>
 
                         <div className="grid grid-cols-2 gap-4 text-sm">
                           <div>
-                            <p className="text-gray-500">Role</p>
-                            <p className="font-medium capitalize">{user.role}</p>
+                            <p className="text-gray-500 dark:text-gray-400">
+                              Role
+                            </p>
+                            <p className="font-medium capitalize text-gray-900 dark:text-gray-100">
+                              {user.role}
+                            </p>
                           </div>
                           <div>
-                            <p className="text-gray-500">Department</p>
-                            <p className="font-medium">{user.department || "-"}</p>
+                            <p className="text-gray-500 dark:text-gray-400">
+                              Department
+                            </p>
+                            <p className="font-medium text-gray-900 dark:text-gray-100">
+                              {user.department || "-"}
+                            </p>
                           </div>
                           <div>
-                            <p className="text-gray-500">Phone</p>
-                            <p className="font-medium">{user.mnumber || "-"}</p>
+                            <p className="text-gray-500 dark:text-gray-400">
+                              Phone
+                            </p>
+                            <p className="font-medium text-gray-900 dark:text-gray-100">
+                              {user.mnumber || "-"}
+                            </p>
                           </div>
                           <div>
-                            <p className="text-gray-500">Start Date</p>
-                            <p className="font-medium">
+                            <p className="text-gray-500 dark:text-gray-400">
+                              Start Date
+                            </p>
+                            <p className="font-medium text-gray-900 dark:text-gray-100">
                               {formatDate(user.startDate)}
                             </p>
                           </div>
@@ -332,7 +350,7 @@ function AllUsers() {
                               href={user.linkedInURL}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="inline-flex items-center px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-xs hover:bg-blue-100"
+                              className="inline-flex items-center px-3 py-1 bg-blue-50 text-blue-600 rounded-nonefull text-xs hover:bg-blue-100 dark:bg-blue-900/40 dark:text-blue-300 dark:hover:bg-blue-900/70"
                             >
                               <svg
                                 className="h-4 w-4 mr-1"
@@ -349,7 +367,7 @@ function AllUsers() {
                               href={user.githubURL}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="inline-flex items-center px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-xs hover:bg-gray-200"
+                              className="inline-flex items-center px-3 py-1 bg-gray-100 text-gray-800 rounded-nonefull text-xs hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-gray-700"
                             >
                               <svg
                                 className="h-4 w-4 mr-1"
@@ -365,8 +383,10 @@ function AllUsers() {
 
                         <div className="mt-4 flex justify-end">
                           <button
-                            onClick={() => deleteUser(user._id, user.name)}
-                            className="inline-flex items-center px-3 py-1 bg-red-50 text-red-600 rounded-md text-sm hover:bg-red-100 transition-colors"
+                            onClick={() => {
+                              deleteUser(user._id, user.name)
+                            }}
+                            className="inline-flex items-center px-3 py-1 bg-red-50 text-red-600 rounded-nonemd text-sm hover:bg-red-100 dark:bg-red-900/30 dark:text-red-300 dark:hover:bg-red-900/60 transition-colors"
                           >
                             <svg
                               className="h-4 w-4 mr-1"

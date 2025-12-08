@@ -302,7 +302,7 @@ const AdminHRManagement = () => {
           {/* Header Section */}
           <div className="text-center mb-8">
             <div className="flex items-center justify-center mb-4">
-              <div className="p-3 bg-blue-100 rounded-full">
+              <div className="p-3 bg-blue-100 rounded-nonefull">
                 <Shield className="w-8 h-8 text-blue-600" />
               </div>
             </div>
@@ -317,7 +317,7 @@ const AdminHRManagement = () => {
 
           {/* Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200">
+            <div className="bg-white rounded-nonexl shadow-md p-6 border border-gray-200">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600 mb-1">
@@ -330,7 +330,7 @@ const AdminHRManagement = () => {
                 <Users className="w-8 h-8 text-blue-600" />
               </div>
             </div>
-            <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200">
+            <div className="bg-white rounded-nonexl shadow-md p-6 border border-gray-200">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600 mb-1">
@@ -343,7 +343,7 @@ const AdminHRManagement = () => {
                 <Crown className="w-8 h-8 text-purple-600" />
               </div>
             </div>
-            <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200">
+            <div className="bg-white rounded-nonexl shadow-md p-6 border border-gray-200">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600 mb-1">
@@ -356,7 +356,7 @@ const AdminHRManagement = () => {
                 <Briefcase className="w-8 h-8 text-blue-600" />
               </div>
             </div>
-            <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200">
+            <div className="bg-white rounded-nonexl shadow-md p-6 border border-gray-200">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600 mb-1">
@@ -372,7 +372,7 @@ const AdminHRManagement = () => {
           </div>
 
           {/* Controls Section */}
-          <div className="bg-white rounded-xl shadow-md p-6 mb-8 border border-gray-200">
+          <div className="bg-white rounded-nonexl shadow-md p-6 mb-8 border border-gray-200">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
               {/* Search and Filters */}
               <div className="flex flex-col sm:flex-row gap-4 flex-1">
@@ -383,14 +383,14 @@ const AdminHRManagement = () => {
                     placeholder="Search users..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-nonelg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
 
                 <select
                   value={filterRole}
                   onChange={(e) => setFilterRole(e.target.value)}
-                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="px-4 py-2 border border-gray-300 rounded-nonelg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 >
                   <option value="all">All Roles</option>
                   <option value="admin">Admin</option>
@@ -400,7 +400,7 @@ const AdminHRManagement = () => {
                 <select
                   value={filterStatus}
                   onChange={(e) => setFilterStatus(e.target.value)}
-                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="px-4 py-2 border border-gray-300 rounded-nonelg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 >
                   <option value="all">All Status</option>
                   <option value="active">Active</option>
@@ -411,7 +411,7 @@ const AdminHRManagement = () => {
               {/* Add User Button */}
               <button
                 onClick={() => setShowAddModal(true)}
-                className="flex items-center space-x-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-2 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                className="flex items-center space-x-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-2 rounded-nonelg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
               >
                 <UserPlus className="w-5 h-5" />
                 <span>Add User</span>
@@ -420,7 +420,7 @@ const AdminHRManagement = () => {
           </div>
 
           {/* Users Table */}
-          <div className="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
+          <div className="bg-white rounded-nonexl shadow-md border border-gray-200 overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-gray-50 border-b border-gray-200">
@@ -455,7 +455,7 @@ const AdminHRManagement = () => {
                       >
                         <td className="px-6 py-4">
                           <div className="flex items-center space-x-3">
-                            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
+                            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-nonefull flex items-center justify-center">
                               <span className="text-white font-semibold text-sm">
                                 {user.name
                                   .split(" ")
@@ -480,7 +480,7 @@ const AdminHRManagement = () => {
                         </td>
                         <td className="px-6 py-4">
                           <div
-                            className={`inline-flex items-center space-x-2 px-3 py-1 rounded-full text-sm font-medium ${getRoleColor(
+                            className={`inline-flex items-center space-x-2 px-3 py-1 rounded-nonefull text-sm font-medium ${getRoleColor(
                               user.role
                             )}`}
                           >
@@ -490,7 +490,7 @@ const AdminHRManagement = () => {
                         </td>
                         <td className="px-6 py-4">
                           <div
-                            className={`inline-flex items-center space-x-2 px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
+                            className={`inline-flex items-center space-x-2 px-3 py-1 rounded-nonefull text-sm font-medium ${getStatusColor(
                               user.status
                             )}`}
                           >
@@ -515,14 +515,14 @@ const AdminHRManagement = () => {
                           <div className="flex items-center space-x-2">
                             <button
                               onClick={() => handleEditUser(user)}
-                              className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors duration-200"
+                              className="p-2 text-blue-600 hover:bg-blue-50 rounded-nonelg transition-colors duration-200"
                               title="Edit User"
                             >
                               <Edit3 className="w-4 h-4" />
                             </button>
                             <button
                               onClick={() => toggleUserStatus(user.id)}
-                              className={`p-2 rounded-lg transition-colors duration-200 ${
+                              className={`p-2 rounded-nonelg transition-colors duration-200 ${
                                 user.status === "active"
                                   ? "text-red-600 hover:bg-red-50"
                                   : "text-green-600 hover:bg-green-50"
@@ -541,7 +541,7 @@ const AdminHRManagement = () => {
                             </button>
                             <button
                               onClick={() => handleDeleteUser(user.id)}
-                              className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200"
+                              className="p-2 text-red-600 hover:bg-red-50 rounded-nonelg transition-colors duration-200"
                               title="Delete User"
                             >
                               <Trash2 className="w-4 h-4" />
@@ -571,7 +571,7 @@ const AdminHRManagement = () => {
       {/* Add User Modal */}
       {showAddModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl max-w-2xl w-full max-h-screen overflow-y-auto">
+          <div className="bg-white rounded-nonexl max-w-2xl w-full max-h-screen overflow-y-auto">
             <div className="p-6 border-b border-gray-200">
               <h3 className="text-xl font-bold text-gray-800">Add New User</h3>
               <p className="text-gray-600">
@@ -591,7 +591,7 @@ const AdminHRManagement = () => {
                     onChange={(e) =>
                       setNewUser({ ...newUser, name: e.target.value })
                     }
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full p-3 border border-gray-300 rounded-nonelg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Enter full name"
                   />
                 </div>
@@ -606,7 +606,7 @@ const AdminHRManagement = () => {
                     onChange={(e) =>
                       setNewUser({ ...newUser, email: e.target.value })
                     }
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full p-3 border border-gray-300 rounded-nonelg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Enter email address"
                   />
                 </div>
@@ -623,7 +623,7 @@ const AdminHRManagement = () => {
                     onChange={(e) =>
                       setNewUser({ ...newUser, phone: e.target.value })
                     }
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full p-3 border border-gray-300 rounded-nonelg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Enter phone number"
                   />
                 </div>
@@ -641,7 +641,7 @@ const AdminHRManagement = () => {
                         permissions: [],
                       })
                     }
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full p-3 border border-gray-300 rounded-nonelg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   >
                     <option value="hr">HR Personnel</option>
                     <option value="admin">Administrator</option>
@@ -658,7 +658,7 @@ const AdminHRManagement = () => {
                   {availablePermissions[newUser.role]?.map((permission) => (
                     <div
                       key={permission.id}
-                      className="flex items-start space-x-3 p-3 border border-gray-200 rounded-lg"
+                      className="flex items-start space-x-3 p-3 border border-gray-200 rounded-nonelg"
                     >
                       <input
                         type="checkbox"
@@ -707,7 +707,7 @@ const AdminHRManagement = () => {
                   setShowEditModal(false);
                   setSelectedUser(null);
                 }}
-                className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200"
+                className="px-6 py-2 border border-gray-300 text-gray-700 rounded-nonelg hover:bg-gray-50 transition-colors duration-200"
                 disabled={isLoading}
               >
                 Cancel
@@ -715,7 +715,7 @@ const AdminHRManagement = () => {
               <button
                 onClick={handleUpdateUser}
                 disabled={isLoading}
-                className="px-6 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-6 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-nonelg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isLoading ? "Updating..." : "Update User"}
               </button>

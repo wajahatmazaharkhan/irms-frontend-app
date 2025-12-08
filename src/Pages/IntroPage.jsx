@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"; 
 import {
   GraduationCap,
   Users,
@@ -19,9 +19,9 @@ import useTitle from "@/Components/useTitle";
 const IntroPage = () => {
   useTitle('Home')
   return (
-    <div className="min-h-screen bg-[#F8F9FD]">
+    <div className="min-h-screen bg-[#F8F9FD] dark:bg-slate-950 dark:text-slate-100">
       {/* Hero Section */}
-      <header className="relative bg-[#2463EB] text-white overflow-hidden">
+      <header className="relative bg-[#2463EB] text-white overflow-hidden dark:bg-[#1D4ED8]">
         {/* Logo */}
         <div className="absolute top-4 left-4 md:top-6 md:left-6">
           <img
@@ -59,7 +59,7 @@ const IntroPage = () => {
             className="flex flex-wrap justify-center gap-4"
           >
             <button
-              className="bg-white text-[#2463EB] px-8 py-3 rounded-lg hover:bg-[#F8F9FD] transition-colors flex items-center gap-2 shadow-md font-semibold"
+              className="bg-white text-[#2463EB] px-8 py-3 rounded-nonelg hover:bg-[#F8F9FD] transition-colors flex items-center gap-2 shadow-md font-semibold dark:bg-slate-900 dark:text-white dark:hover:bg-slate-800"
               onClick={() => (window.location.href = "/login")}
             >
               <GraduationCap className="w-5 h-5" />
@@ -70,13 +70,13 @@ const IntroPage = () => {
       </header>
 
       {/* Bio/Introduction Section */}
-      <section className="bg-white py-16 px-6 md:px-12 lg:px-20">
+      <section className="bg-white py-16 px-6 md:px-12 lg:px-20 dark:bg-slate-900">
         <div className="container mx-auto">
           <motion.h2 
             initial={{ opacity: 0, y: -20 }} 
             animate={{ opacity: 1, y: 0 }} 
             transition={{ duration: 0.8 }}
-            className="text-3xl md:text-4xl font-bold text-center text-[#1E293B] mb-6"
+            className="text-3xl md:text-4xl font-bold text-center text-[#1E293B] mb-6 dark:text-slate-100"
           >
             About IISPPR
           </motion.h2>
@@ -84,7 +84,7 @@ const IntroPage = () => {
             initial={{ opacity: 0, y: 20 }} 
             animate={{ opacity: 1, y: 0 }} 
             transition={{ duration: 0.8, delay: 0.3 }}
-            className="text-lg text-[#64748B] leading-relaxed text-justify"
+            className="text-lg text-[#64748B] leading-relaxed text-justify dark:text-slate-400"
           >
             International Institute of SDGs and Public Policy Research specializes in Research and Development.
             Our major work includes comprehensive baselines studies concerning Education and Development. Our
@@ -99,7 +99,7 @@ const IntroPage = () => {
             initial={{ opacity: 0, y: 20 }} 
             animate={{ opacity: 1, y: 0 }} 
             transition={{ duration: 0.8, delay: 0.5 }}
-            className="text-lg text-[#64748B] leading-relaxed mt-4 text-justify"
+            className="text-lg text-[#64748B] leading-relaxed mt-4 text-justify dark:text-slate-400"
           >
             By fostering collaboration and partnerships, we strive to create a network of change agents who can drive
             sustainable development and make a lasting impact on society. We engage in activities such as writing articles,
@@ -112,7 +112,7 @@ const IntroPage = () => {
             initial={{ opacity: 0, y: 20 }} 
             animate={{ opacity: 1, y: 0 }} 
             transition={{ duration: 0.8, delay: 0.7 }}
-            className="text-lg text-[#64748B] leading-relaxed mt-4 text-justify"
+            className="text-lg text-[#64748B] leading-relaxed mt-4 text-justify dark:text-slate-400"
           >
             We also emphasize building within the framework of SDG Goal 4 - Quality Education. Our agenda is to provide
             quality education to students, helping them develop essential skills and secure better employment opportunities.
@@ -124,7 +124,7 @@ const IntroPage = () => {
             initial={{ opacity: 0, y: 20 }} 
             animate={{ opacity: 1, y: 0 }} 
             transition={{ duration: 0.8, delay: 0.9 }}
-            className="text-lg text-[#64748B] leading-relaxed mt-4 text-justify"
+            className="text-lg text-[#64748B] leading-relaxed mt-4 text-justify dark:text-slate-400"
           >
             We believe in holistic development, including sustainability, gender equality, and humanitarian assistance.
             Our efforts in gender equality focus on SDG Goal 5, where we provide training and work opportunities for women
@@ -134,7 +134,7 @@ const IntroPage = () => {
           
           <div className="flex justify-center mt-8">
             <button
-              className="bg-[#2463EB] text-white px-8 py-3 rounded-lg hover:bg-[#1E4DB7] transition-colors flex items-center gap-2 shadow-lg font-semibold"
+              className="bg-[#2463EB] text-white px-8 py-3 rounded-nonelg hover:bg-[#1E4DB7] transition-colors flex items-center gap-2 shadow-lg font-semibold dark:bg-blue-500 dark:hover:bg-blue-400"
               onClick={() => (window.location.href = "/aboutus")}
             >
               <span>Read More</span>
@@ -145,16 +145,16 @@ const IntroPage = () => {
 
 
       {/* Stats Section */}
-      <section className="bg-[#F8F9FD] py-16">
+      <section className="bg-[#F8F9FD] py-16 dark:bg-slate-950">
         <div className="container mx-auto px-6">
           <div className="text-center mb-12">
-            <span className="bg-[#EEF2FF] text-[#2463EB] px-4 py-1.5 rounded-full text-sm font-medium">
+            <span className="bg-[#EEF2FF] text-[#2463EB] px-4 py-1.5 rounded-nonefull text-sm font-medium dark:bg-slate-800 dark:text-blue-400">
               Our Achievements
             </span>
-            <h2 className="text-4xl font-bold mt-4 mb-6 text-[#1E293B]">
-              Trusted by <span className="text-[#2463EB]">1000+ Students</span>
+            <h2 className="text-4xl font-bold mt-4 mb-6 text-[#1E293B] dark:text-slate-100">
+              Trusted by <span className="text-[#2463EB] dark:text-blue-400">1000+ Students</span>
             </h2>
-            <p className="text-[#64748B] max-w-3xl mx-auto text-lg">
+            <p className="text-[#64748B] max-w-3xl mx-auto text-lg dark:text-slate-400">
               Join 1000+ of learners around the globe who trust our platform to
               achieve their educational goals and build their future.
             </p>
@@ -169,12 +169,12 @@ const IntroPage = () => {
               <motion.div
                 key={index}
                 whileHover={{ scale: 1.05 }}
-                className="bg-[#F8F9FD] p-8 rounded-xl shadow-sm text-center"
+                className="bg-[#F8F9FD] p-8 rounded-nonexl shadow-sm text-center dark:bg-slate-900 dark:shadow-none"
               >
-                <h2 className="text-5xl font-bold text-[#2463EB] mb-3">
+                <h2 className="text-5xl font-bold text-[#2463EB] mb-3 dark:text-blue-400">
                   {stat.number}
                 </h2>
-                <p className="text-[#64748B] font-medium">{stat.label}</p>
+                <p className="text-[#64748B] font-medium dark:text-slate-400">{stat.label}</p>
               </motion.div>
             ))}
           </div>
@@ -182,21 +182,21 @@ const IntroPage = () => {
       </section>
 
       {/* Features Grid */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-white dark:bg-slate-900">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 bg-[#EEF2FF] p-2 rounded-full mb-4">
-              <span className="bg-[#2463EB] p-2 rounded-full">
+            <div className="inline-flex items-center gap-2 bg-[#EEF2FF] p-2 rounded-nonefull mb-4 dark:bg-slate-800">
+              <span className="bg-[#2463EB] p-2 rounded-nonefull dark:bg-blue-500">
                 <Award className="w-5 h-5 text-white" />
               </span>
-              <span className="text-[#2463EB] pr-2 font-medium">
+              <span className="text-[#2463EB] pr-2 font-medium dark:text-blue-400">
                 Research Excellence
               </span>
             </div>
-            <h2 className="text-4xl font-bold text-[#1E293B] mb-4">
+            <h2 className="text-4xl font-bold text-[#1E293B] mb-4 dark:text-slate-100">
               Become a Research Leader
             </h2>
-            <p className="text-[#64748B] max-w-2xl mx-auto">
+            <p className="text-[#64748B] max-w-2xl mx-auto dark:text-slate-400">
               Connect with fellow researchers, share insights, and participate
               in groundbreaking studies. Enjoy comprehensive training and the
               opportunity to make real impact!
@@ -207,17 +207,17 @@ const IntroPage = () => {
               <motion.div
                 key={index}
                 whileHover={{ scale: 1.03 }}
-                className="bg-[#F8F9FD] p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow"
+                className="bg-[#F8F9FD] p-6 rounded-nonexl shadow-sm hover:shadow-md transition-shadow dark:bg-slate-900 dark:shadow-none dark:hover:shadow-md"
               >
-                <div className="bg-[#EEF2FF] w-12 h-12 rounded-lg flex items-center justify-center mb-4">
+                <div className="bg-[#EEF2FF] w-12 h-12 rounded-nonelg flex items-center justify-center mb-4 dark:bg-slate-800">
                   {React.cloneElement(feature.icon, {
-                    className: "w-6 h-6 text-[#2463EB]",
+                    className: "w-6 h-6 text-[#2463EB] dark:text-blue-400",
                   })}
                 </div>
-                <h3 className="text-xl font-semibold text-[#1E293B] mb-2">
+                <h3 className="text-xl font-semibold text-[#1E293B] mb-2 dark:text-slate-100">
                   {feature.title}
                 </h3>
-                <p className="text-[#64748B]">{feature.description}</p>
+                <p className="text-[#64748B] dark:text-slate-400">{feature.description}</p>
               </motion.div>
             ))}
           </div>
@@ -225,9 +225,9 @@ const IntroPage = () => {
       </section>
 
       {/* Why Join Section */}
-      <section className="py-20 bg-[#F8F9FD]">
+      <section className="py-20 bg-[#F8F9FD] dark:bg-slate-950">
         <div className="container mx-auto px-4">
-          <h2 className="text-4xl font-bold text-center mb-16 text-[#1E293B]">
+          <h2 className="text-4xl font-bold text-center mb-16 text-[#1E293B] dark:text-slate-100">
             WHY YOU SHOULD JOIN IISPPR?
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -235,13 +235,13 @@ const IntroPage = () => {
               <motion.div
                 key={index}
                 whileHover={{ scale: 1.02 }}
-                className="bg-white p-8 rounded-xl shadow-sm"
+                className="bg-white p-8 rounded-nonexl shadow-sm dark:bg-slate-900"
               >
-                <h3 className="text-2xl font-bold mb-4 text-[#1E293B]">
+                <h3 className="text-2xl font-bold mb-4 text-[#1E293B] dark:text-slate-100">
                   {reason.title}
                 </h3>
-                <div className="h-1 w-16 bg-[#2463EB] mb-6"></div>
-                <p className="text-[#64748B] leading-relaxed">
+                <div className="h-1 w-16 bg-[#2463EB] mb-6 dark:bg-blue-500"></div>
+                <p className="text-[#64748B] leading-relaxed dark:text-slate-400">
                   {reason.description}
                 </p>
               </motion.div>
@@ -251,12 +251,12 @@ const IntroPage = () => {
       </section>
 
       {/* Footer */}
-      <footer className="bg-[#1E293B] text-[#94A3B8] py-16">
+      <footer className="bg-[#1E293B] text-[#94A3B8] py-16 dark:bg-slate-950 dark:text-slate-400">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center gap-2 text-white mb-4">
-                <div className="bg-[#2463EB] p-2 rounded">II</div>
+                <div className="bg-[#2463EB] p-2 rounded dark:bg-blue-500">II</div>
                 <span className="font-bold">IISPPR</span>
               </div>
               <p className="text-sm">
@@ -297,7 +297,7 @@ const IntroPage = () => {
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`w-6 h-6 text-[#94A3B8] ${social.hoverColor} transition-colors`}
+                    className={`w-6 h-6 text-[#94A3B8] ${social.hoverColor} transition-colors dark:text-slate-400`}
                   >
                     {social.icon}
                   </a>
@@ -345,7 +345,7 @@ const IntroPage = () => {
               </ul>
             </div>
           </div>
-          <div className="border-t border-[#2D3748] mt-12 pt-8 text-center">
+          <div className="border-t border-[#2D3748] mt-12 pt-8 text-center dark:border-slate-700">
             <p>
               ©️ 2025 International Institute Of SDGS & Public Policy Research.
               All rights reserved.

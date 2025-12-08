@@ -75,7 +75,7 @@ const Reports = () => {
       <Wrapper>
         <div className="min-h-screen p-4 bg-gradient-to-b bg-white md:p-8">
           <Card className="max-w-4xl mx-auto transition-all duration-300 border shadow-xl hover:shadow-2xl">
-            <CardHeader className="space-y-4 text-white rounded-t-lg bg-gradient-to-r from-blue-600 to-blue-700">
+            <CardHeader className="space-y-4 text-white rounded-nonet-lg bg-gradient-to-r from-blue-600 to-blue-700">
               <CardTitle className="text-3xl font-bold tracking-tight text-center">
                 Progress Report Form
               </CardTitle>
@@ -100,7 +100,7 @@ const Reports = () => {
                       name={name}
                       value={formData[name]}
                       onChange={handleInputChange}
-                      className="w-full p-2 transition-all duration-200 border-2 border-gray-200 rounded-md focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 group-hover:border-blue-300"
+                      className="w-full p-2 transition-all duration-200 border-2 border-gray-200 rounded-nonemd focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 group-hover:border-blue-300"
                     />
                   </div>
                 ))}
@@ -111,7 +111,7 @@ const Reports = () => {
     name="department"
     value={formData.department}
     onChange={handleInputChange}
-    className="w-full p-2 transition-all duration-200 border-2 border-gray-200 rounded-md focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 group-hover:border-blue-300"
+    className="w-full p-2 transition-all duration-200 border-2 border-gray-200 rounded-nonemd focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 group-hover:border-blue-300"
   >
     <option value="" disabled>
       Select Department
@@ -139,7 +139,7 @@ const Reports = () => {
               ].map((section) => (
                 <div key={section.name} className="space-y-4 group">
                   <div
-                    className="p-4 transition-all duration-200 rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 group-hover:from-blue-700 group-hover:to-blue-800"
+                    className="p-4 transition-all duration-200 rounded-nonelg bg-gradient-to-r from-blue-600 to-blue-700 group-hover:from-blue-700 group-hover:to-blue-800"
                   >
                     <h2 className="text-lg font-semibold text-white">
                       {section.label}
@@ -149,7 +149,7 @@ const Reports = () => {
                     name={section.name}
                     value={formData[section.name]}
                     onChange={handleInputChange}
-                    className="min-h-[150px] w-full rounded-md border-2 border-gray-200 p-4 transition-all duration-200
+                    className="min-h-[150px] w-full rounded-nonemd border-2 border-gray-200 p-4 transition-all duration-200
                              focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200
                              group-hover:border-blue-300"
                     placeholder={`Enter your ${section.label.toLowerCase()}...`}
@@ -160,7 +160,7 @@ const Reports = () => {
 
             {message && (
               <div
-                className={`mx-6 mb-4 flex items-center justify-center gap-2 rounded-lg p-4 text-center transition-all duration-300
+                className={`mx-6 mb-4 flex items-center justify-center gap-2 rounded-nonelg p-4 text-center transition-all duration-300
                               ${
                                 message.type === "success"
                                   ? "bg-green-100 text-green-700"
@@ -180,7 +180,7 @@ const Reports = () => {
               <button
                 onClick={handleSave}
                 disabled={loading}
-                className="relative inline-flex items-center gap-2 px-8 py-3 text-lg font-semibold text-white transition-all duration-300 bg-blue-600 rounded-lg group hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-70"
+                className="relative inline-flex items-center gap-2 px-8 py-3 text-lg font-semibold text-white transition-all duration-300 bg-blue-600 rounded-nonelg group hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-70"
               >
                 {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : null}
                 {loading ? "Saving..." : "Save Report"}

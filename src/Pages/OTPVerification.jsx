@@ -104,7 +104,7 @@ const OTPVerification = () => {
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-blue-50 to-blue-100 flex items-center justify-center p-4">
-            <div className="max-w-md w-full space-y-6 bg-white p-8 rounded-xl shadow-lg">
+            <div className="max-w-md w-full space-y-6 bg-white p-8 rounded-nonexl shadow-lg">
                 {/* Logo and Header */}
                 <div className="text-center">
                     <img src={iispprLogo} alt="IISPPR Logo" className="mx-auto h-16 w-auto mb-4" />
@@ -128,7 +128,7 @@ const OTPVerification = () => {
                                     value={otp[index]}
                                     onChange={(e) => handleChange(index, e.target.value)}
                                     onKeyDown={(e) => handleKeyDown(index, e)}
-                                    className="w-12 h-12 text-center text-xl border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    className="w-12 h-12 text-center text-xl border border-gray-300 rounded-nonemd focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                     autoFocus={index === 0}
                                 />
                             ))}
@@ -143,7 +143,7 @@ const OTPVerification = () => {
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-nonemd shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {isLoading ? (
                                 <span className="flex items-center">

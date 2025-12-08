@@ -44,7 +44,7 @@ const Signin = () => {
 
   return (
     <div className="flex justify-center items-center min-h-screen px-4 bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600">
-      <div className="bg-white p-6 rounded-lg w-full max-w-md shadow-lg">
+      <div className="bg-white p-6 rounded-nonelg w-full max-w-md shadow-lg">
         <h1 className="text-2xl font-semibold text-blue-800 text-center mb-1">
           LOG-IN
         </h1>
@@ -64,7 +64,7 @@ const Signin = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="p-2 border border-gray-300 rounded-md text-sm w-full"
+              className="p-2 border border-gray-300 rounded-nonemd text-sm w-full"
             />
           </div>
 
@@ -78,7 +78,7 @@ const Signin = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="p-2 border border-gray-300 rounded-md text-sm w-full"
+              className="p-2 border border-gray-300 rounded-nonemd text-sm w-full"
             />
           </div>
 
@@ -89,7 +89,7 @@ const Signin = () => {
           <input
             type="submit"
             value={loading ? "Processing..." : "Login"}
-            className="mt-2 bg-blue-500 text-white p-2 rounded-lg text-sm cursor-pointer transition duration-300 ease-in-out hover:bg-blue-600"
+            className="mt-2 bg-blue-500 text-white p-2 rounded-nonelg text-sm cursor-pointer transition duration-300 ease-in-out hover:bg-blue-600"
           />
         </form>
 

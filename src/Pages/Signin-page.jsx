@@ -12,7 +12,6 @@ import useTitle from "@/Components/useTitle";
 
 // import { HrAllUsersInterns } from "@/HrHeadAndIntern/HrIndex";
 
-
 const Signin = ({ onSwitchToSignup }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
@@ -21,7 +20,7 @@ const Signin = ({ onSwitchToSignup }) => {
   const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
-  useTitle('Login')
+  useTitle("Login");
   const {
     loggedIn,
     setIsLoggedIn,
@@ -29,7 +28,7 @@ const Signin = ({ onSwitchToSignup }) => {
     storeIsHrState,
     storeTokenInLocalStorage,
     storeUserId,
-    storePermissions
+    storePermissions,
   } = useAuthContext();
   const { storeUsername } = useAppContext();
 
@@ -63,13 +62,12 @@ const Signin = ({ onSwitchToSignup }) => {
         localStorage.setItem("role", user.role);
       }
 
-      if (user.role === 'hr') {
+      if (user.role === "hr") {
         await storeIsHrState(true);
       }
 
       const isAdminValue = Boolean(user.isAdmin);
       console.log("Converting isAdmin to boolean:", isAdminValue);
-
 
       await storeIsAdminState(isAdminValue);
       setIsLoggedIn(true);
@@ -78,22 +76,18 @@ const Signin = ({ onSwitchToSignup }) => {
       console.log("User: ", user);
       if (isAdminValue) {
         navigate("/admin-access");
-      }
-      else if (user.role === "hrHead") {
+      } else if (user.role === "hrHead") {
         navigate("/admin-access");
-      }
-      else if (user.role === "hr") {
+      } else if (user.role === "hr") {
         navigate("/hrhomepage");
-      }
-      else if (user.department === "communication") {
+      } else if (user.department === "communication") {
         navigate("/commhomepage");
-      }
-      else {
+      } else {
         navigate("/");
       }
 
       console.log(`response for checking role :- ${JSON.stringify(response.data.user)}
-}`)
+}`);
     } catch (error) {
       console.error("Login error:", error);
       console.error("Error response:", error.response?.data);
@@ -106,11 +100,6 @@ const Signin = ({ onSwitchToSignup }) => {
       }
     }
   };
-
-
-
-
-
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -125,9 +114,8 @@ const Signin = ({ onSwitchToSignup }) => {
 
   return (
     <>
-
-      <div className="flex items-center justify-center min-h-screen px-4 bg-gradient-to-br from-blue-50 to-purple-50">
-        <div className="w-full max-w-md p-8 transition-all duration-300 bg-white border border-gray-100 shadow-2xl rounded-xl hover:shadow-3xl">
+      <div className="flex items-center justify-center min-h-screen px-4 bg-gradient-to-br from-blue-50 to-purple-50 dark:bg-gradient-to-br dark:from-gray-900 dark:to-gray-950 dark:text-gray-100">
+        <div className="w-full max-w-md p-8 transition-all duration-300 bg-white border border-gray-100 shadow-2xl rounded-nonexl hover:shadow-3xl dark:bg-gray-900 dark:border-gray-700">
           <div className="mb-6 text-center">
             <div className="mx-auto mb-4 w-28 h-28">
               <img
@@ -136,10 +124,10 @@ const Signin = ({ onSwitchToSignup }) => {
                 className="object-contain w-full h-full"
               />
             </div>
-            <h1 className="mb-2 text-3xl font-bold text-blue-800">
+            <h1 className="mb-2 text-3xl font-bold text-blue-800 dark:text-blue-300">
               Welcome Back
             </h1>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-gray-500 dark:text-gray-400">
               Log in to continue to your account
             </p>
           </div>
@@ -148,13 +136,13 @@ const Signin = ({ onSwitchToSignup }) => {
             <div className="relative">
               <label
                 htmlFor="email"
-                className="block mb-1 text-sm text-gray-600"
+                className="block mb-1 text-sm text-gray-600 dark:text-gray-300"
               >
                 Email Address
               </label>
               <div className="relative">
                 <Mail
-                  className="absolute text-gray-400 transform -translate-y-1/2 left-3 top-1/2"
+                  className="absolute text-gray-400 transform -translate-y-1/2 left-3 top-1/2 dark:text-gray-500"
                   size={20}
                 />
                 <input
@@ -164,7 +152,7 @@ const Signin = ({ onSwitchToSignup }) => {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   placeholder="Enter your email"
-                  className="w-full p-3 pl-10 text-sm transition-all duration-300 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+                  className="w-full p-3 pl-10 text-sm transition-all duration-300 border border-gray-200 rounded-nonelg focus:outline-none focus:ring-2 focus:ring-blue-300 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100 dark:placeholder-gray-500 dark:focus:ring-blue-500"
                 />
               </div>
             </div>
@@ -172,13 +160,13 @@ const Signin = ({ onSwitchToSignup }) => {
             <div className="relative">
               <label
                 htmlFor="password"
-                className="block mb-1 text-sm text-gray-600"
+                className="block mb-1 text-sm text-gray-600 dark:text-gray-300"
               >
                 Password
               </label>
               <div className="relative">
                 <Lock
-                  className="absolute text-gray-400 transform -translate-y-1/2 left-3 top-1/2"
+                  className="absolute text-gray-400 transform -translate-y-1/2 left-3 top-1/2 dark:text-gray-500"
                   size={20}
                 />
                 <input
@@ -188,26 +176,26 @@ const Signin = ({ onSwitchToSignup }) => {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   placeholder="Enter your password"
-                  className="w-full p-3 pl-10 text-sm transition-all duration-300 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+                  className="w-full p-3 pl-10 text-sm transition-all duration-300 border border-gray-200 rounded-nonelg focus:outline-none focus:ring-2 focus:ring-blue-300 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100 dark:placeholder-gray-500 dark:focus:ring-blue-500"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute text-gray-400 transition-colors transform -translate-y-1/2 right-3 top-1/2 hover:text-blue-500"
+                  className="absolute text-gray-400 transition-colors transform -translate-y-1/2 right-3 top-1/2 hover:text-blue-500 dark:text-gray-400 dark:hover:text-blue-400"
                 >
                   {showPassword ? "Hide" : "Show"}
                 </button>
               </div>
               <a
                 href="/reset-account-password"
-                className="block mt-1 text-xs text-right text-blue-500 hover:underline"
+                className="block mt-1 text-xs text-right text-blue-500 hover:underline dark:text-blue-400"
               >
                 Forgot Password?
               </a>
             </div>
 
             {error && (
-              <p className="p-2 text-sm text-center text-red-500 rounded-md bg-red-50">
+              <p className="p-2 text-sm text-center text-red-500 rounded-nonemd bg-red-50 dark:bg-red-950 dark:text-red-400">
                 {error}
               </p>
             )}
@@ -216,7 +204,7 @@ const Signin = ({ onSwitchToSignup }) => {
             <button
               type="submit"
               disabled={isLoading}
-              className="flex items-center justify-center w-full gap-2 p-3 text-sm font-semibold text-white transition-all duration-300 transform bg-blue-600 rounded-lg hover:bg-blue-700 hover:-translate-y-1 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex items-center justify-center w-full gap-2 p-3 text-sm font-semibold text-white transition-all duration-300 transform bg-blue-600 rounded-nonelg hover:bg-blue-700 hover:-translate-y-1 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed dark:bg-blue-500 dark:hover:bg-blue-400"
             >
               {isLoading ? (
                 <>
@@ -252,12 +240,12 @@ const Signin = ({ onSwitchToSignup }) => {
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-600 dark:text-gray-300">
               {`Don't`} have an account?{" "}
               <a
                 href="/signup"
                 onClick={onSwitchToSignup}
-                className="font-semibold text-blue-700 hover:underline"
+                className="font-semibold text-blue-700 hover:underline dark:text-blue-400"
               >
                 Sign Up
               </a>

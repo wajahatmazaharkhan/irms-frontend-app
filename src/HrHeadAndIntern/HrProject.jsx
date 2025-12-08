@@ -128,7 +128,7 @@ const AdminProject = () => {
       <CustomNavbar />
       <div className="flex flex-col w-full h-auto md:flex-row md:h-screen">
         {/* Left Side (Form for Admin) */}
-        <div className="w-full p-6 mx-auto mt-6 bg-white border-2 rounded-lg shadow-lg md:w-1/2 md:ml-5 md:mr-2">
+        <div className="w-full p-6 mx-auto mt-6 bg-white border-2 rounded-nonelg shadow-lg md:w-1/2 md:ml-5 md:mr-2">
           <h2 className="mb-4 text-2xl font-semibold text-center text-blue-600">
             Create New Project
           </h2>
@@ -142,7 +142,7 @@ const AdminProject = () => {
               type="file"
               name="image"
               onChange={handleChange}
-              className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-3 border border-gray-300 rounded-nonemd focus:outline-none focus:ring-2 focus:ring-blue-500"
               accept="image/*"
             />
           </div>
@@ -157,7 +157,7 @@ const AdminProject = () => {
               name="title"
               value={project.title}
               onChange={handleChange}
-              className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-3 border border-gray-300 rounded-nonemd focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Write title for project"
             />
           </div>
@@ -172,7 +172,7 @@ const AdminProject = () => {
               name="subTitle"
               value={project.subTitle}
               onChange={handleChange}
-              className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-3 border border-gray-300 rounded-nonemd focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Write a short description"
             />
           </div>
@@ -187,7 +187,7 @@ const AdminProject = () => {
               value={project.description}
               onChange={handleChange}
               rows="4"
-              className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-3 border border-gray-300 rounded-nonemd focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Write description about the project"
             />
           </div>
@@ -202,7 +202,7 @@ const AdminProject = () => {
               name="createdBy"
               value={project.createdBy}
               onChange={handleChange}
-              className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-3 border border-gray-300 rounded-nonemd focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="By the team"
             />
           </div>
@@ -211,7 +211,7 @@ const AdminProject = () => {
           <div className="text-center">
             <button
               onClick={handlePostProject}
-              className="px-6 py-3 text-white transition duration-300 bg-blue-600 rounded-md hover:bg-blue-700"
+              className="px-6 py-3 text-white transition duration-300 bg-blue-600 rounded-nonemd hover:bg-blue-700"
             >
               Post Project
             </button>
@@ -219,7 +219,7 @@ const AdminProject = () => {
         </div>
 
         {/* Right Side (Posted Projects) */}
-        <div className="w-full p-6 mx-auto mt-6 overflow-auto bg-white border-2 rounded-lg shadow-lg md:w-1/2 md:ml-2 md:mr-5">
+        <div className="w-full p-6 mx-auto mt-6 overflow-auto bg-white border-2 rounded-nonelg shadow-lg md:w-1/2 md:ml-2 md:mr-5">
           <h2 className="mb-4 text-2xl font-semibold text-center text-blue-600 ">
             Posted Projects
           </h2>
@@ -233,7 +233,7 @@ const AdminProject = () => {
               postedProjects.map((project) => (
                 <div
                   key={project._id}
-                  className="p-4 border border-gray-300 rounded-md shadow-md"
+                  className="p-4 border border-gray-300 rounded-nonemd shadow-md"
                 >
                   <h3 className="text-xl font-semibold text-blue-600">
                     {project.title}
@@ -241,7 +241,7 @@ const AdminProject = () => {
                   <div className="flex justify-start space-x-2 ">
                     <button
                       onClick={() => handleDelete(project._id)}
-                      className="px-4 py-1 text-white transition duration-300 bg-red-500 rounded-md hover:bg-red-600"
+                      className="px-4 py-1 text-white transition duration-300 bg-red-500 rounded-nonemd hover:bg-red-600"
                     >
                       Delete
                     </button>

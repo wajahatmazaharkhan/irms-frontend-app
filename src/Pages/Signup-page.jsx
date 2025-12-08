@@ -136,7 +136,7 @@ const SignUp = ({ onSwitchToSignin }) => {
     <>
       {/* <TopNavbar /> */}
       <div className="flex items-center justify-center min-h-screen px-4 bg-gradient-to-br from-blue-50 to-purple-50">
-        <div className="w-full max-w-md p-8 bg-white border shadow-lg rounded-xl">
+        <div className="w-full max-w-md p-8 bg-white border shadow-lg rounded-nonexl">
           <div className="text-center mb-6">
             <img src={iispprLogo} alt="Logo" className="mx-auto mb-4 w-28 h-28" />
             <h1 className="text-3xl font-bold text-blue-800">
@@ -157,7 +157,7 @@ const SignUp = ({ onSwitchToSignin }) => {
                   <UserPlus className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                   <input value={fullName} onChange={e => setFullName(e.target.value)}
                     type="text" placeholder="Full Name"
-                    className="w-full pl-10 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+                    className="w-full pl-10 p-3 border rounded-nonelg focus:outline-none focus:ring-2 focus:ring-blue-300"
                   />
                 </div>
               </div>
@@ -168,14 +168,14 @@ const SignUp = ({ onSwitchToSignin }) => {
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                   <input value={email} onChange={e => setEmail(e.target.value)}
                     type="email" placeholder="Enter Email"
-                    className="w-full pl-10 p-3 border rounded-lg focus:ring-blue-300"
+                    className="w-full pl-10 p-3 border rounded-nonelg focus:ring-blue-300"
                   />
                 </div>
               </div>
 
               <div>
                 <label className="block mb-1 text-sm text-gray-600">Phone</label>
-                <div className="space-y-2 p-3 border rounded-lg bg-gray-50">
+                <div className="space-y-2 p-3 border rounded-nonelg bg-gray-50">
                   {/* Country Code Selector */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Country Code</label>
@@ -183,7 +183,7 @@ const SignUp = ({ onSwitchToSignin }) => {
                       ref={countrySelectRef}
                       value={countryCode}
                       onChange={(e) => setCountryCode(e.target.value)}
-                      className="w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full p-2 border rounded-nonemd focus:ring-blue-500 focus:border-blue-500"
                     >
                       {countryCodes
                         .sort((a, b) => a.name.localeCompare(b.name))
@@ -205,7 +205,7 @@ const SignUp = ({ onSwitchToSignin }) => {
                         onChange={(e) => setPhone(e.target.value)}
                         type="tel"
                         placeholder="Enter phone number"
-                        className="w-full pl-10 p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full pl-10 p-2 border rounded-nonemd focus:ring-blue-500 focus:border-blue-500"
                       />
                     </div>
                   </div>
@@ -217,7 +217,7 @@ const SignUp = ({ onSwitchToSignin }) => {
                 <div className="relative">
                   <Laptop className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                   <select value={department} onChange={e => setDepartment(e.target.value)}
-                    className="w-full pl-10 p-3 border rounded-lg focus:ring-blue-300"
+                    className="w-full pl-10 p-3 border rounded-nonelg focus:ring-blue-300"
                   >
                     <option value="">Select department</option>
                     <option value="development">Development</option>
@@ -235,7 +235,7 @@ const SignUp = ({ onSwitchToSignin }) => {
                 <div className="relative">
                   <Layers className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                   <select value={selectedBatch} onChange={e => setSelectedBatch(e.target.value)}
-                    className="w-full pl-10 p-3 border rounded-lg focus:ring-blue-300"
+                    className="w-full pl-10 p-3 border rounded-nonelg focus:ring-blue-300"
                   >
                     <option value="">Select Batch</option>
                     {batches.map(batch => (
@@ -253,7 +253,7 @@ const SignUp = ({ onSwitchToSignin }) => {
                   <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                   <input value={endDate} onChange={e => setEndDate(e.target.value)}
                     type="date" min={new Date().toISOString().split("T")[0]}
-                    className="w-full pl-10 p-3 border rounded-lg focus:ring-blue-300"
+                    className="w-full pl-10 p-3 border rounded-nonelg focus:ring-blue-300"
                   />
                 </div>
               </div>
@@ -264,7 +264,7 @@ const SignUp = ({ onSwitchToSignin }) => {
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                   <input value={password} onChange={e => setPassword(e.target.value)}
                     type="password" placeholder="Password"
-                    className="w-full pl-10 p-3 border rounded-lg focus:ring-blue-300"
+                    className="w-full pl-10 p-3 border rounded-nonelg focus:ring-blue-300"
                   />
                 </div>
               </div>
@@ -275,7 +275,7 @@ const SignUp = ({ onSwitchToSignin }) => {
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                   <input value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)}
                     type="password" placeholder="Confirm Password"
-                    className="w-full pl-10 p-3 border rounded-lg focus:ring-blue-300"
+                    className="w-full pl-10 p-3 border rounded-nonelg focus:ring-blue-300"
                   />
                 </div>
               </div>
@@ -288,7 +288,7 @@ const SignUp = ({ onSwitchToSignin }) => {
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                   <input value={otp} onChange={e => setOtp(e.target.value)}
                     type="text" placeholder="Enter OTP"
-                    className="w-full pl-10 p-3 border rounded-lg focus:ring-blue-300"
+                    className="w-full pl-10 p-3 border rounded-nonelg focus:ring-blue-300"
                   />
                 </div>
               </div>
@@ -297,7 +297,7 @@ const SignUp = ({ onSwitchToSignin }) => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full p-3 font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50"
+              className="w-full p-3 font-semibold text-white bg-blue-600 rounded-nonelg hover:bg-blue-700 disabled:opacity-50"
             >
               {isLoading
                 ? step === 1 ? "Sending OTP..." : "Verifying..."

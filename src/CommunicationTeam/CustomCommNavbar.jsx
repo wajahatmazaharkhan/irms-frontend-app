@@ -82,7 +82,7 @@ export default function CommNavbar() {
       <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gray-200 rounded-lg animate-pulse"></div>
+            <div className="w-10 h-10 bg-gray-200 rounded-nonelg animate-pulse"></div>
             <div className="hidden sm:block w-32 h-6 bg-gray-200 rounded animate-pulse"></div>
           </div>
           <div className="hidden lg:flex lg:items-center lg:space-x-4">
@@ -94,7 +94,7 @@ export default function CommNavbar() {
             ))}
           </div>
           <div className="flex items-center space-x-4">
-            <div className="w-10 h-10 bg-gray-200 rounded-full animate-pulse"></div>
+            <div className="w-10 h-10 bg-gray-200 rounded-nonefull animate-pulse"></div>
           </div>
         </div>
       </div>
@@ -127,7 +127,7 @@ export default function CommNavbar() {
                 <Link
                   key={item.name}
                   to={item.path}
-                  className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                  className={`flex items-center space-x-2 px-4 py-2 rounded-nonelg text-sm font-medium transition-all duration-200 ${
                     item.active
                       ? "bg-blue-100 text-blue-700 shadow-sm"
                       : "text-gray-600 hover:text-blue-600 hover:bg-gray-50"
@@ -148,9 +148,9 @@ export default function CommNavbar() {
                   e.stopPropagation();
                   setProfileDropdown(!profileDropdown);
                 }}
-                className="flex items-center space-x-2 p-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-gray-50 transition"
+                className="flex items-center space-x-2 p-2 rounded-nonelg text-gray-600 hover:text-blue-600 hover:bg-gray-50 transition"
               >
-                <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
+                <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-nonefull flex items-center justify-center">
                   <span className="text-white text-sm font-semibold">C</span>
                 </div>
                 <span className="text-sm font-medium">Comm</span>
@@ -161,7 +161,7 @@ export default function CommNavbar() {
                 />
               </button>
               {profileDropdown && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-50">
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-nonexl shadow-lg border border-gray-200 py-2 z-50">
                   <div className="px-4 py-2 border-b border-gray-200">
                     <p className="text-sm font-medium text-gray-800">Comm Team</p>
                     <p className="text-xs text-gray-500">{userData.email}</p>
@@ -180,7 +180,7 @@ export default function CommNavbar() {
             {/* Mobile Logout */}
             <button
               onClick={handleLogout}
-              className="md:hidden flex items-center space-x-2 px-3 py-2 text-white bg-gradient-to-r from-red-500 to-red-600 rounded-lg hover:from-red-600 hover:to-red-700 transition shadow-md"
+              className="md:hidden flex items-center space-x-2 px-3 py-2 text-white bg-gradient-to-r from-red-500 to-red-600 rounded-nonelg hover:from-red-600 hover:to-red-700 transition shadow-md"
             >
               <LogOut className="w-4 h-4" />
               <span className="text-sm font-medium">Logout</span>
@@ -189,7 +189,7 @@ export default function CommNavbar() {
             {/* Mobile Menu Toggle */}
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="lg:hidden p-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-gray-50 transition"
+              className="lg:hidden p-2 rounded-nonelg text-gray-600 hover:text-blue-600 hover:bg-gray-50 transition"
             >
               {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -221,7 +221,7 @@ export default function CommNavbar() {
               {/* Profile Mobile */}
               <div className="px-4 py-3 border-t border-gray-200 mt-2">
                 <div className="flex items-center space-x-3 mb-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-nonefull flex items-center justify-center">
                     <span className="text-white font-semibold">C</span>
                   </div>
                   <div>
@@ -231,7 +231,7 @@ export default function CommNavbar() {
                 </div>
                 <button
                   onClick={handleLogout}
-                  className="flex items-center space-x-2 w-full px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition"
+                  className="flex items-center space-x-2 w-full px-3 py-2 text-red-600 hover:bg-red-50 rounded-nonelg transition"
                 >
                   <LogOut className="w-4 h-4" />
                   <span className="text-sm font-medium">Logout</span>

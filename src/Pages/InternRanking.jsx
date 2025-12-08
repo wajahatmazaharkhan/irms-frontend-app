@@ -133,7 +133,7 @@ const InternRanking = () => {
     const userTime = getUserTimeSpent(intern._id);
 
     return (
-      <div key={intern._id} className={`flex justify-between items-center border p-4 rounded-xl shadow-md
+      <div key={intern._id} className={`flex justify-between items-center border p-4 rounded-nonexl shadow-md
         ${highlight ? "bg-yellow-100 border-yellow-300" : index < 3 ? "bg-indigo-50" : "bg-white"}`}>
         <div className="flex space-x-4">
           <div className="font-bold text-gray-600 w-6 text-right">{index + 1}</div>
@@ -167,11 +167,11 @@ const InternRanking = () => {
 
           {/* Show Active Users Only to Admin or HR */}
           {isAdminOrHr && (
-            <Card className="shadow-lg border border-gray-200 rounded-xl mb-6">
+            <Card className="shadow-lg border border-gray-200 rounded-nonexl mb-6">
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
-                    <div className="p-2 bg-green-100 rounded-full">
+                    <div className="p-2 bg-green-100 rounded-nonefull">
                       <Users className="w-5 h-5 text-green-600" />
                     </div>
                     <div>
@@ -193,11 +193,11 @@ const InternRanking = () => {
           )}
 
           {/* Intern Rankings */}
-          <Card className="shadow-2xl border border-gray-200 rounded-xl">
-            <CardHeader className="border-b bg-white rounded-t-xl">
+          <Card className="shadow-2xl border border-gray-200 rounded-nonexl">
+            <CardHeader className="border-b bg-white rounded-nonet-xl">
               <CardTitle className="text-3xl font-bold text-blue-700">🌟 Intern Rankings</CardTitle>
             </CardHeader>
-            <CardContent className="p-6 bg-white rounded-b-xl">
+            <CardContent className="p-6 bg-white rounded-noneb-xl">
               {loading ? (
                 <div className="flex justify-center py-8">
                   <Loader2 className="animate-spin w-8 h-8 text-gray-500" />

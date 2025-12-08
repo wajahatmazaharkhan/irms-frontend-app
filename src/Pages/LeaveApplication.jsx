@@ -139,7 +139,7 @@ const LeaveApplication = () => {
 
     return (
       <div
-        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium ${styles[status]}`}
+        className={`inline-flex items-center px-2.5 py-0.5 rounded-nonefull text-sm font-medium ${styles[status]}`}
       >
         {icons[status]}
         {status}
@@ -162,7 +162,7 @@ const LeaveApplication = () => {
                 <Card className="shadow-lg">
                   <CardHeader className="border-b bg-white">
                     <div className="flex items-center gap-3">
-                      <div className="p-2 bg-blue-100 rounded-lg">
+                      <div className="p-2 bg-blue-100 rounded-nonelg">
                         <FileText className="w-6 h-6 text-blue-600" />
                       </div>
                       <CardTitle className="text-2xl font-bold">
@@ -213,7 +213,7 @@ const LeaveApplication = () => {
                                     startDate: e.target.value,
                                   })
                                 }
-                                className="w-full pl-10 border rounded-md h-11"
+                                className="w-full pl-10 border rounded-nonemd h-11"
                               />
                             </div>
                             <div className="relative">
@@ -227,7 +227,7 @@ const LeaveApplication = () => {
                                     endDate: e.target.value,
                                   })
                                 }
-                                className="w-full pl-10 border rounded-md h-11"
+                                className="w-full pl-10 border rounded-nonemd h-11"
                               />
                             </div>
                           </div>
@@ -292,7 +292,7 @@ const LeaveApplication = () => {
                         {leaveHistory.map((leave) => (
                           <div
                             key={leave._id}
-                            className="p-4 border rounded-lg space-y-3"
+                            className="p-4 border rounded-nonelg space-y-3"
                           >
                             <div className="flex justify-between items-start">
                               <div className="space-y-1">

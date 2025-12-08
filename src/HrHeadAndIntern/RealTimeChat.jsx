@@ -322,7 +322,7 @@ export default function RealtimeChat({ ReceiverId }) {
                 {/* Empty State */}
                 <div className="flex-1 flex items-center justify-center">
                     <div className="text-center max-w-md mx-auto p-8">
-                        <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <div className="w-20 h-20 bg-blue-100 rounded-nonefull flex items-center justify-center mx-auto mb-4">
                             <svg className="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path
                                     strokeLinecap="round"
@@ -337,7 +337,7 @@ export default function RealtimeChat({ ReceiverId }) {
                             Select an employee from the sidebar to start a conversation. You can search by name or filter by
                             department.
                         </p>
-                        <div className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
+                        <div className="bg-white rounded-nonelg p-4 border border-gray-200 shadow-sm">
                             <h3 className="font-medium text-gray-900 mb-2">Quick Tips:</h3>
                             <ul className="text-sm text-gray-600 space-y-1 text-left">
                                 <li>• Use the search bar to find employees quickly</li>
@@ -360,7 +360,7 @@ export default function RealtimeChat({ ReceiverId }) {
                     <img
                         src={""}
                         alt={"User Avatar"}
-                        className="w-10 h-10 rounded-full object-cover"
+                        className="w-10 h-10 rounded-nonefull object-cover"
                     />
 
                 </div>
@@ -378,7 +378,7 @@ export default function RealtimeChat({ ReceiverId }) {
 
             {/* Error Message */}
             {error && (
-                <div className="mx-4 mt-4 px-4 py-3 bg-red-100 border border-red-300 rounded-lg text-red-700">
+                <div className="mx-4 mt-4 px-4 py-3 bg-red-100 border border-red-300 rounded-nonelg text-red-700">
                     <div className="flex items-center">
                         <AlertCircle className="w-4 h-4 mr-2 flex-shrink-0" />
                         <span className="text-sm flex-1">{error}</span>
@@ -412,14 +412,14 @@ export default function RealtimeChat({ ReceiverId }) {
                                     <img
                                         src={`https://i.pravatar.cc/32?u=${msg.sender}`}
                                         alt="User"
-                                        className="w-6 h-6 sm:w-8 sm:h-8 rounded-full flex-shrink-0"
+                                        className="w-6 h-6 sm:w-8 sm:h-8 rounded-nonefull flex-shrink-0"
                                     />
                                 )}
 
                                 <div
-                                    className={`max-w-[75%] sm:max-w-sm px-3 sm:px-4 py-2 rounded-2xl text-sm shadow-sm ${msg.sender === senderId
-                                        ? "bg-blue-600 text-white rounded-br-md"
-                                        : "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white rounded-bl-md"
+                                    className={`max-w-[75%] sm:max-w-sm px-3 sm:px-4 py-2 rounded-none2xl text-sm shadow-sm ${msg.sender === senderId
+                                        ? "bg-blue-600 text-white rounded-nonebr-md"
+                                        : "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white rounded-nonebl-md"
                                         }`}
                                 >
                                     <p className="break-words">{msg.content}</p>
@@ -433,7 +433,7 @@ export default function RealtimeChat({ ReceiverId }) {
                                     <img
                                         src={`https://i.pravatar.cc/32?u=${senderId}`}
                                         alt="You"
-                                        className="w-6 h-6 sm:w-8 sm:h-8 rounded-full flex-shrink-0"
+                                        className="w-6 h-6 sm:w-8 sm:h-8 rounded-nonefull flex-shrink-0"
                                     />
                                 )}
                             </div>
@@ -442,7 +442,7 @@ export default function RealtimeChat({ ReceiverId }) {
                         {/* Typing indicator */}
                         {isReceiverTyping && (
                             <div className="flex items-center space-x-2  text-sm text-gray-500 dark:text-gray-400">
-                                <img src={`https://i.pravatar.cc/24?u=${receiverId}`} alt="User" className="w-6 h-6 rounded-full" />
+                                <img src={`https://i.pravatar.cc/24?u=${receiverId}`} alt="User" className="w-6 h-6 rounded-nonefull" />
                                 <div className="flex items-center space-x-1">
                                     <Dot className="animate-bounce text-blue-500" />
                                     <Dot className="animate-bounce text-blue-500" style={{ animationDelay: "0.1s" }} />
@@ -466,12 +466,12 @@ export default function RealtimeChat({ ReceiverId }) {
                         type="text"
                         placeholder="Type a message..."
                         disabled={isSending || !isConnected}
-                        className="flex-1 px-4 py-2 sm:py-3 rounded-full border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-400 focus:border-transparent dark:bg-gray-800 dark:text-white disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
+                        className="flex-1 px-4 py-2 sm:py-3 rounded-nonefull border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-400 focus:border-transparent dark:bg-gray-800 dark:text-white disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
                     />
                     <button
                         onClick={handleSend}
                         disabled={isSending || !content.trim() || !isConnected}
-                        className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-2 sm:p-3 rounded-full hover:scale-105 transition-transform disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex-shrink-0"
+                        className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-2 sm:p-3 rounded-nonefull hover:scale-105 transition-transform disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex-shrink-0"
                     >
                         {isSending ? (
                             <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />

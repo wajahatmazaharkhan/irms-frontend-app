@@ -30,8 +30,8 @@ const TopNavbar = () => {
   const isIntern = !(isAdmin || isHr);
   const availableRoutes = [
     // Public Routes
-    { path: "/login", label: "Login", public: true },
-    { path: "/signup", label: "Sign Up", public: true },
+    // { path: "/login", label: "Login", public: true },
+    // { path: "/signup", label: "Sign Up", public: true },
     { path: "/aboutus", label: "About Us", public: true },
     { path: "/privacypolicy", label: "Privacy Policy", public: true },
     { path: "/frequently-asked-questions", label: "FAQ", public: true },
@@ -66,15 +66,15 @@ const TopNavbar = () => {
       label: "View All Attendance",
       adminOnly: true,
     },
-	
-	//HR Routes
-	{ path: "/hrhomepage", label: "HR Dashboard", hrOnly: true},
+
+    //HR Routes
+    { path: "/hrhomepage", label: "HR Dashboard", hrOnly: true },
   ];
 
   const filteredRoutes = availableRoutes.filter((route) => {
     if (!loggedIn) return route.public;
     if (isAdmin) return true;
-	if(isHr) return true;
+    if (isHr) return true;
     return !route.adminOnly;
   });
 
@@ -182,7 +182,7 @@ const TopNavbar = () => {
         </svg>
       ),
     },
-	{
+    {
       label: "FAQs",
       path: "/frequently-asked-questions",
       icon: (
@@ -202,7 +202,7 @@ const TopNavbar = () => {
         </svg>
       ),
     },
-	...(isIntern
+    ...(isIntern
       ? [
           {
             label: "Help",
@@ -256,11 +256,10 @@ const TopNavbar = () => {
       const fetchNotifications = async () => {
         const userId = localStorage.getItem("userId");
         try {
-          const response = await fetch(
-            `https://iisppr-backend.vercel.app/get-notifications?userId=${userId}`
-          );
+          const response = await fetch(`${import.meta.env.VITE_BASE_URL}/get-notifications?userId=${userId}`);
           if (!response.ok) throw new Error("Failed to fetch notifications");
           const data = await response.json();
+          console.log("🚀 ~ fetchNotifications ~ data:", data)
           setNotiCounter(data.notifications.notifications.length);
         } catch (error) {
           console.error("Error fetching notifications:", error);
@@ -285,12 +284,12 @@ const TopNavbar = () => {
   }, [isDropdownOpen]);
 
   return (
-    <div className="sticky top-0 z-50 bg-white shadow-md">
-      <div className="flex items-center justify-between p-4 border-b relative">
+    <div className="sticky top-0 z-50 bg-white shadow-md border-b border-gray-100 dark:bg-slate-900 dark:text-slate-100 dark:shadow-lg dark:border-slate-800">
+      <div className="flex items-center justify-between p-4 border-b relative border-gray-100 dark:border-slate-800">
         {/* Mobile Header */}
         <div className="md:hidden flex items-center justify-between w-full">
           <button
-            className="text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50 rounded-md p-1 transition-colors"
+            className="text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50 rounded-nonemd p-1 transition-colors dark:text-gray-300 dark:hover:text-white"
             onClick={() => setIsSidebarOpen((prev) => !prev)}
           >
             <Menu className="w-6 h-6" />
@@ -298,9 +297,8 @@ const TopNavbar = () => {
 
           <Link to="/" className="flex items-center">
             <div className="flex flex-row items-center">
-              <Building2 className="w-6 h-6 text-blue-600" />
-              <span className="text-lg font-semibold ml-2 text-gray-800">
-                IISPPR Intern Hub
+              <span className="text-lg font-semibold ml-2 text-gray-800 dark:text-slate-100">
+                IISPPR | Intern Resource Management
               </span>
             </div>
           </Link>
@@ -310,7 +308,7 @@ const TopNavbar = () => {
             <Button
               variant="ghost"
               size="icon"
-              className="text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50 rounded-md p-1 transition-colors"
+              className="text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50 rounded-nonemd p-1 transition-colors dark:text-gray-300 dark:hover:text-white"
               onClick={() => setIsSearchVisible(!isSearchVisible)}
             >
               {!isSearchVisible ? (
@@ -326,27 +324,26 @@ const TopNavbar = () => {
         <div className="hidden md:flex items-center justify-between w-full">
           <Link to="/" className="flex items-center group">
             <div className="flex flex-row items-center">
-              <Building2 className="w-6 h-6 text-blue-600 group-hover:text-blue-700 transition-colors" />
-              <span className="text-lg font-semibold ml-2 text-gray-800 group-hover:text-black transition-colors">
-                IISPPR Intern Hub
+              <span className="text-lg font-semibold ml-2 text-gray-800 group-hover:text-black transition-colors dark:text-slate-100 dark:group-hover:text-white">
+                IISPPR | Intern Resource Management
               </span>
             </div>
           </Link>
 
           <div className="relative w-1/3">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => handleSearch(e.target.value)}
                 placeholder="Search pages..."
-                className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all"
+                className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-nonefull focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all bg-white text-gray-900 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-400"
               />
             </div>
 
             {searchResults.length > 0 && (
-              <div className="absolute w-full mt-1 bg-white border rounded-lg shadow-lg z-50 max-h-80 overflow-y-auto">
+              <div className="absolute w-full mt-1 bg-white border rounded-nonelg shadow-lg z-50 max-h-80 overflow-y-auto dark:bg-slate-800 dark:border-slate-700">
                 {searchResults.map((result) => (
                   <div
                     key={result.path}
@@ -355,9 +352,9 @@ const TopNavbar = () => {
                       setSearchQuery("");
                       setSearchResults([]);
                     }}
-                    className="px-4 py-3 hover:bg-blue-50 cursor-pointer transition-colors flex items-center"
+                    className="px-4 py-3 hover:bg-blue-50 cursor-pointer transition-colors flex items-center dark:hover:bg-slate-700 dark:text-slate-100"
                   >
-                    <div className="w-1 h-6 bg-blue-500 rounded-full mr-3 opacity-0 hover:opacity-100 transition-opacity"></div>
+                    <div className="w-1 h-6 bg-blue-500 rounded-nonefull mr-3 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     {result.label}
                   </div>
                 ))}
@@ -372,7 +369,7 @@ const TopNavbar = () => {
                   to="/notifications"
                   className="relative p-2 rounded-full transition-colors"
                 >
-                  <Bell className="w-5 h-5 text-gray-600" />
+                  <Bell className="w-5 h-5 text-gray-600 dark:text-slate-200" />
                   {notiCounter > 0 && (
                     <span className="absolute top-0 right-0 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-red-500 rounded-full">
                       {notiCounter > 9 ? "9+" : notiCounter}
@@ -385,26 +382,26 @@ const TopNavbar = () => {
             {loggedIn ? (
               <div className="relative user-dropdown">
                 <div
-                  className="flex items-center space-x-2 cursor-pointer p-1 rounded-full hover:bg-gray-100 transition-colors"
+                  className="flex items-center space-x-2 cursor-pointer p-1 rounded-nonefull hover:bg-gray-100 transition-colors dark:hover:bg-slate-800"
                   onClick={() => setIsDropdownOpen((prev) => !prev)}
                 >
-                  <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
-                    <UserRound className="w-5 h-5 text-blue-600" />
+                  <div className="w-8 h-8 rounded-nonefull bg-blue-100 flex items-center justify-center dark:bg-blue-900">
+                    <UserRound className="w-5 h-5 text-blue-600 dark:text-blue-300" />
                   </div>
                   <ChevronDown
                     className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${
                       isDropdownOpen ? "rotate-180" : ""
-                    }`}
+                    } dark:text-gray-300`}
                   />
                 </div>
 
                 {isDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-56 bg-white border rounded-lg shadow-lg z-10 overflow-hidden">
-                    <div className="p-3 border-b border-gray-100">
-                      <p className="text-sm font-medium text-gray-900">
+                  <div className="absolute right-0 mt-2 w-56 bg-white border rounded-nonelg shadow-lg z-10 overflow-hidden dark:bg-slate-800 dark:border-slate-700">
+                    <div className="p-3 border-b border-gray-100 dark:border-slate-700">
+                      <p className="text-sm font-medium text-gray-900 dark:text-slate-100">
                         User Menu
                       </p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-gray-500 dark:text-slate-400">
                         Manage your account
                       </p>
                     </div>
@@ -418,11 +415,11 @@ const TopNavbar = () => {
                           }}
                           className={`flex items-center px-4 py-2 hover:bg-blue-50 cursor-pointer transition-colors ${
                             option.label === "Logout"
-                              ? "text-red-500 mt-2 border-t border-gray-100"
-                              : "text-gray-700"
+                              ? "text-red-500 mt-2 border-t border-gray-100 dark:border-slate-700 dark:hover:bg-red-950"
+                              : "text-gray-700 dark:text-slate-100 dark:hover:bg-slate-700"
                           }`}
                         >
-                          <span className="mr-3 text-gray-500">
+                          <span className="mr-3 text-gray-500 dark:text-slate-300">
                             {option.icon}
                           </span>
                           {option.label}
@@ -436,14 +433,14 @@ const TopNavbar = () => {
               <div className="flex items-center space-x-3">
                 <Button
                   variant="outline"
-                  className="px-4 py-2 text-blue-600 border border-blue-600 hover:bg-blue-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition-colors"
+                  className="px-4 py-2 text-blue-600 border border-blue-600 hover:bg-blue-50 rounded-nonelg focus:outline-none focus:ring-2 focus:ring-blue-400 transition-colors dark:text-blue-300 dark:border-blue-400 dark:hover:bg-slate-800"
                   onClick={() => navigate("/signup")}
                 >
                   Sign Up
                 </Button>
                 <Button
                   variant="primary"
-                  className="px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition-colors"
+                  className="px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-nonelg focus:outline-none focus:ring-2 focus:ring-blue-400 transition-colors dark:bg-blue-500 dark:hover:bg-blue-400"
                   onClick={() => navigate("/login")}
                 >
                   Login
@@ -455,20 +452,20 @@ const TopNavbar = () => {
 
         {/* Mobile Search */}
         {isSearchVisible && (
-          <div className="absolute top-full left-0 w-full p-3 bg-white border-b shadow-md md:hidden">
+          <div className="absolute top-full left-0 w-full p-3 bg-white border-b shadow-md md:hidden dark:bg-slate-900 dark:border-slate-800">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => handleSearch(e.target.value)}
                 placeholder="Search pages..."
-                className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-nonelg focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-400"
                 autoFocus
               />
 
               {searchResults.length > 0 && (
-                <div className="absolute w-full mt-1 bg-white border rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                <div className="absolute w-full mt-1 bg-white border rounded-nonelg shadow-lg max-h-60 overflow-y-auto dark:bg-slate-800 dark:border-slate-700">
                   {searchResults.map((result) => (
                     <div
                       key={result.path}
@@ -478,7 +475,7 @@ const TopNavbar = () => {
                         setSearchResults([]);
                         setIsSearchVisible(false);
                       }}
-                      className="px-4 py-3 hover:bg-blue-50 cursor-pointer border-b border-gray-100 last:border-0"
+                      className="px-4 py-3 hover:bg-blue-50 cursor-pointer border-b border-gray-100 last:border-0 dark:hover:bg-slate-700 dark:border-slate-700 dark:text-slate-100"
                     >
                       {result.label}
                     </div>
@@ -492,16 +489,15 @@ const TopNavbar = () => {
         {/* Mobile Sidebar */}
         {isSidebarOpen && (
           <div className="fixed inset-0 bg-black bg-opacity-50 z-40 flex">
-            <div className="bg-white w-72 h-full shadow-lg flex flex-col">
-              <div className="p-4 border-b border-gray-200 flex items-center justify-between">
+            <div className="bg-white w-72 h-full shadow-lg flex flex-col dark:bg-slate-900 dark:border-r dark:border-slate-800">
+              <div className="p-4 border-b border-gray-200 flex items-center justify-between dark:border-slate-800">
                 <div className="flex items-center">
-                  <Building2 className="w-6 h-6 text-blue-600" />
-                  <span className="text-lg font-semibold ml-2 text-gray-800">
-                    IISPPR Intern Hub
+                  <span className="text-lg font-semibold ml-2 text-gray-800 dark:text-slate-100">
+                    IISPPR | Intern Resource Management
                   </span>
                 </div>
                 <button
-                  className="text-gray-500 hover:text-gray-700 focus:outline-none"
+                  className="text-gray-500 hover:text-gray-700 focus:outline-none dark:text-gray-300 dark:hover:text-white"
                   onClick={() => setIsSidebarOpen(false)}
                 >
                   <X className="w-6 h-6" />
@@ -509,14 +505,18 @@ const TopNavbar = () => {
               </div>
 
               {loggedIn && (
-                <div className="p-4 border-b border-gray-200">
+                <div className="p-4 border-b border-gray-200 dark:border-slate-800">
                   <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
-                      <UserRound className="w-6 h-6 text-blue-600" />
+                    <div className="w-10 h-10 rounded-nonefull bg-blue-100 flex items-center justify-center dark:bg-blue-900">
+                      <UserRound className="w-6 h-6 text-blue-600 dark:text-blue-300" />
                     </div>
                     <div>
-                      <p className="font-medium text-gray-800">Welcome</p>
-                      <p className="text-sm text-gray-500">User Account</p>
+                      <p className="font-medium text-gray-800 dark:text-slate-100">
+                        Welcome
+                      </p>
+                      <p onClick={()=> navigate("/your-profile")} className="text-sm text-gray-500 dark:text-slate-400">
+                        Your Account
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -529,14 +529,14 @@ const TopNavbar = () => {
                       key={route.path}
                       to={route.path}
                       onClick={() => setIsSidebarOpen(false)}
-                      className={`flex items-center px-4 py-3 hover:bg-blue-50 rounded-lg transition-colors ${
+                      className={`flex items-center px-4 py-3 hover:bg-blue-50 rounded-nonelg transition-colors ${
                         location.pathname === route.path
-                          ? "bg-blue-50 text-blue-600 font-medium"
-                          : "text-gray-700"
+                          ? "bg-blue-50 text-blue-600 font-medium dark:bg-slate-800 dark:text-blue-400"
+                          : "text-gray-700 dark:text-slate-100 dark:hover:bg-slate-800"
                       }`}
                     >
                       {location.pathname === route.path && (
-                        <div className="w-1 h-5 bg-blue-500 rounded-full mr-3"></div>
+                        <div className="w-1 h-5 bg-blue-500 rounded-nonefull mr-3 dark:bg-blue-400"></div>
                       )}
                       {route.label}
                     </Link>
@@ -545,11 +545,11 @@ const TopNavbar = () => {
               </nav>
 
               {loggedIn && (
-                <div className="p-4 border-t border-gray-200">
+                <div className="p-4 border-t border-gray-200 dark:border-slate-800">
                   <Link
                     to="/logout"
                     onClick={() => setIsSidebarOpen(false)}
-                    className="flex items-center text-red-500 px-4 py-2 hover:bg-red-50 rounded-lg transition-colors"
+                    className="flex items-center text-red-500 px-4 py-2 hover:bg-red-50 rounded-nonelg transition-colors dark:hover:bg-red-950"
                   >
                     <svg
                       className="w-5 h-5 mr-3"

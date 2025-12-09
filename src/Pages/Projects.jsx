@@ -44,14 +44,14 @@ const Projects = () => {
             projects.map((project, index) => (
               <div
                 key={index}
-                className="flex flex-col w-full h-auto mx-auto mb-6 border-2 rounded-lg shadow-lg project-container md:flex-row md:w-128 bg-slate-500 text-black-90"
+                className="flex flex-col w-full h-auto mx-auto mb-6 border-2 rounded-nonelg shadow-lg project-container md:flex-row md:w-128 bg-slate-500 text-black-90"
               >
                 {/* Left side: Image */}
                 <div className="w-full project-image md:w-1/3">
                   <img
                     src={project.image} // Assuming 'image' is the correct field
                     alt="Project"
-                    className="object-cover w-full h-64 rounded-t-lg md:h-full md:rounded-l-lg"
+                    className="object-cover w-full h-64 rounded-nonet-lg md:h-full md:rounded-nonel-lg"
                   />
                 </div>
 

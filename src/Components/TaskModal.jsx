@@ -24,7 +24,7 @@ export default function TaskModal({ taskId }) {
   const [image, setImage] = useState(null);
   const [comments, setComments] = useState("");
   const [loading, setLoading] = useState(false);
-  const [status, setStatus] = useState("");
+  const [status, setStatus] = useState("pending");
   const [dragActive, setDragActive] = useState(false);
   const { modalView, setModalView } = useAppContext();
 
@@ -57,29 +57,21 @@ export default function TaskModal({ taskId }) {
         formData.append("comments", comments);
         formData.append("taskId", taskId);
 
-        const response = await axios.post(
-          `${baseUrl}/submitTask`,
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await axios.post(`${baseUrl}/submitTask`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
+        });
         const taskComplete = {
           status: status,
         };
         if (response.status === 201) {
           toast.success("Task submitted successfully!");
           axios
-            .put(
-              `${baseUrl}/task/update-task/${taskId}`,
-              taskComplete,
-              {
-                headers: { Authorization: `Bearer ${token}` },
-              }
-            )
+            .put(`${baseUrl}/task/update-task/${taskId}`, taskComplete, {
+              headers: { Authorization: `Bearer ${token}` },
+            })
             .then((response) => {
               console.log("Task status updated successfully:", response.data);
             })
@@ -141,11 +133,11 @@ export default function TaskModal({ taskId }) {
 
   if (loading) {
     return (
-      <Dialog open={true} onClose={() => { }} className="relative z-50">
+      <Dialog open={true} onClose={() => {}} className="relative z-50">
         <DialogBackdrop className="fixed inset-0 bg-gray-500/75" />
         <div className="fixed inset-0 z-50 overflow-y-auto">
           <div className="flex min-h-full items-center justify-center p-4">
-            <DialogPanel className="relative w-full max-w-lg rounded-lg bg-white p-8 text-center">
+            <DialogPanel className="relative w-full max-w-lg rounded-nonelg bg-white p-8 text-center">
               <div className="flex flex-col items-center space-y-4">
                 <Loader2 className="h-12 w-12 animate-spin text-blue-600" />
                 <p className="text-xl font-semibold text-gray-900">
@@ -154,8 +146,8 @@ export default function TaskModal({ taskId }) {
                 <p className="text-sm text-gray-500">
                   Please wait while we process your submission
                 </p>
-                <div className="mt-4 w-full bg-gray-200 rounded-full h-2">
-                  <div className="bg-blue-600 h-2 rounded-full animate-pulse"></div>
+                <div className="mt-4 w-full bg-gray-200 rounded-nonefull h-2">
+                  <div className="bg-blue-600 h-2 rounded-nonefull animate-pulse"></div>
                 </div>
               </div>
             </DialogPanel>
@@ -170,7 +162,7 @@ export default function TaskModal({ taskId }) {
       <DialogBackdrop className="fixed inset-0 bg-gray-500/75" />
       <div className="fixed inset-0 z-50 overflow-y-auto">
         <div className="flex min-h-screen items-start justify-center pt-16 px-4">
-          <DialogPanel className="w-full max-w-lg rounded-lg bg-white shadow-xl">
+          <DialogPanel className="w-full max-w-lg rounded-nonelg bg-white shadow-xl">
             <div className="max-h-[80vh] overflow-y-auto">
               <div className="relative p-6">
                 <button
@@ -188,27 +180,6 @@ export default function TaskModal({ taskId }) {
                 </p>
 
                 <div className="mt-6 space-y-6">
-                  {/* Label */}
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Status
-                  </label>
-
-                  {/* Input Field */}
-                  <div className="relative group w-full">
-                    <input
-                      type="text"
-                      onChange={(e) => setStatus(e.target.value)}
-                      maxLength={20}
-                      placeholder="Eg. completed or pending ..."
-                      className="block w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-700 focus:border-blue-500 focus:ring-blue-500"
-                    />
-                    {/* Tooltip */}
-                    <div className="absolute left-1/2 bottom-full mb-2 w-64 -translate-x-1/2 rounded bg-gray-700 px-3 py-2 text-xs text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100 pointer-events-none">
-                      Make sure to write <b>completed</b> in lowercase to mark
-                      the task as completed. However, HR and admin will verify
-                      the task before it is finalized.
-                    </div>
-                  </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700">
                       Task Description
@@ -218,7 +189,7 @@ export default function TaskModal({ taskId }) {
                       value={comments}
                       onChange={(e) => setComments(e.target.value)}
                       placeholder="Provide details about your task completion..."
-                      className="mt-2 block w-full rounded-md border border-gray-300 px-4 py-3 text-sm placeholder:text-gray-400 focus:border-blue-500 focus:ring-blue-500"
+                      className="mt-2 block w-full rounded-none border border-gray-300 px-4 py-3 text-sm placeholder:text-gray-400 focus:border-blue-500 focus:ring-blue-500"
                       rows="4"
                     />
                     {!comments.trim() && (
@@ -238,15 +209,16 @@ export default function TaskModal({ taskId }) {
                       onDragLeave={handleDrag}
                       onDragOver={handleDrag}
                       onDrop={(e) => handleDrop(e, "image")}
-                      className={`mt-2 flex justify-center rounded-lg border-2 border-dashed p-6 ${dragActive
-                        ? "border-blue-500 bg-blue-50"
-                        : "border-gray-300"
-                        }`}
+                      className={`mt-2 flex justify-center rounded-nonelg border-2 border-dashed p-6 ${
+                        dragActive
+                          ? "border-blue-500 bg-blue-50"
+                          : "border-gray-300"
+                      }`}
                     >
                       <div className="text-center">
                         <ImageIcon className="mx-auto h-12 w-12 text-gray-400" />
                         <div className="mt-4 flex text-sm leading-6 text-gray-600">
-                          <label className="relative cursor-pointer rounded-md bg-white font-semibold text-blue-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-600 focus-within:ring-offset-2 hover:text-blue-500">
+                          <label className="relative cursor-pointer rounded-nonemd bg-white font-semibold text-blue-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-600 focus-within:ring-offset-2 hover:text-blue-500">
                             <span>Upload an image</span>
                             <input
                               type="file"
@@ -278,17 +250,17 @@ export default function TaskModal({ taskId }) {
                 </div>
               </div>
 
-              <div className="sticky bottom-0 bg-gray-50 px-6 py-4 flex justify-end space-x-3 rounded-b-lg">
+              <div className="sticky bottom-0 bg-gray-50 px-6 py-4 flex justify-end space-x-3 rounded-noneb-lg">
                 <button
                   onClick={() => setModalView(false)}
-                  className="rounded-md px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-300"
+                  className="rounded-nonemd px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-300"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleSubmit}
                   disabled={!comments.trim()}
-                  className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="rounded-nonemd bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Submit Task
                 </button>

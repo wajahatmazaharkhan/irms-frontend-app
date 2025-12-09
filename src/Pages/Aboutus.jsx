@@ -55,7 +55,7 @@ const Aboutus = () => {
           <img
             src={""} 
             alt="CEO"
-            className="w-32 h-32 mr-6 rounded-full ceo-image"
+            className="w-32 h-32 mr-6 rounded-nonefull ceo-image"
           />
           <div className="ceo-info text-center md:text-left">
             <h3 className="text-2xl font-semibold">Nikhil Surjuse</h3>
@@ -77,7 +77,7 @@ const Aboutus = () => {
             { name: "Anupma Joshirao", title: "Counsellor", experience: "Experienced counsellor" },
             { name: "Shweta Surjuse", title: "Counsellor", experience: "Having Experience of 2.5 years in Counselling." }
           ].map((person, index) => (
-            <div key={index} className="aboutus-card p-4 shadow-md rounded-lg bg-white">
+            <div key={index} className="aboutus-card p-4 shadow-md rounded-nonelg bg-white">
               <img
                 src={""} 
                 alt={person.name}

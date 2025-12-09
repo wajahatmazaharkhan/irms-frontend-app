@@ -297,12 +297,12 @@ const InternTasksSubmissions = () => {
         {/* Tabs */}
         <div className="mb-8">
           <div className="flex justify-center">
-            <div className="inline-flex bg-gray-100 p-1 rounded-xl shadow-inner">
+            <div className="inline-flex bg-gray-100 p-1 rounded-nonexl shadow-inner">
               {["all", "technical", "social"].map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`relative px-6 py-2 rounded-lg font-medium text-sm transition-all duration-300 ${
+                  className={`relative px-6 py-2 rounded-nonelg font-medium text-sm transition-all duration-300 ${
                     activeTab === tab
                       ? "text-white"
                       : "text-gray-600 hover:text-gray-800"
@@ -311,7 +311,7 @@ const InternTasksSubmissions = () => {
                   {activeTab === tab && (
                     <motion.span
                       layoutId="tabIndicator"
-                      className="absolute inset-0 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg shadow-md"
+                      className="absolute inset-0 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-nonelg shadow-md"
                       initial={false}
                       transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                     />
@@ -362,7 +362,7 @@ const InternTasksSubmissions = () => {
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.5 }}
                 >
-                  <Alert className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 rounded-xl shadow-sm">
+                  <Alert className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 rounded-nonexl shadow-sm">
                     <div className="flex items-center gap-3">
                       <InfoIcon className="text-blue-500 flex-shrink-0" />
                       <AlertDescription className="text-gray-700">
@@ -439,7 +439,7 @@ const TaskCard = ({
       onHoverStart={() => setIsHovering(true)}
       onHoverEnd={() => setIsHovering(false)}
     >
-      <Card className={`border ${statusStyles.border} rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 h-full flex flex-col ${statusStyles.hoverBg}`}>
+      <Card className={`border ${statusStyles.border} rounded-nonexl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 h-full flex flex-col ${statusStyles.hoverBg}`}>
         {/* Card Header */}
         <div className={`p-4 border-b ${statusStyles.border}`}>
           <div className="flex justify-between items-start">
@@ -453,7 +453,7 @@ const TaskCard = ({
                 {submission.taskDetails?.title || "N/A"}
               </p>
             </div>
-            <span className={`px-2 py-1 text-xs font-medium rounded-full flex items-center gap-1 ${statusStyles.bg} ${statusStyles.text}`}>
+            <span className={`px-2 py-1 text-xs font-medium rounded-nonefull flex items-center gap-1 ${statusStyles.bg} ${statusStyles.text}`}>
               {statusStyles.icon}
               {effectiveReviewStatus}
             </span>
@@ -516,7 +516,7 @@ const TaskCard = ({
                     <img
                       src={submission.image}
                       alt="Task Submission"
-                      className="rounded-lg w-full h-32 object-cover border border-gray-200 shadow-sm transition-all duration-300 hover:shadow-md"
+                      className="rounded-nonelg w-full h-32 object-cover border border-gray-200 shadow-sm transition-all duration-300 hover:shadow-md"
                     />
                   </motion.div>
                 ) : (
@@ -534,7 +534,7 @@ const TaskCard = ({
                   whileHover={{ scale: 1.03, boxShadow: "0 4px 14px rgba(16, 185, 129, 0.3)" }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => markAsComplete(submissionId, userId, taskId)}
-                  className="bg-gradient-to-r from-green-500 to-green-600 text-white px-4 py-2 rounded-lg text-sm flex items-center gap-1.5 transition-all shadow-md flex-1 min-w-[100px]"
+                  className="bg-gradient-to-r from-green-500 to-green-600 text-white px-4 py-2 rounded-nonelg text-sm flex items-center gap-1.5 transition-all shadow-md flex-1 min-w-[100px]"
                 >
                   <Check size={16} /> Approve
                 </motion.button>
@@ -542,14 +542,14 @@ const TaskCard = ({
                   whileHover={{ scale: 1.03, boxShadow: "0 4px 14px rgba(239, 68, 68, 0.3)" }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => markAsIncomplete(submissionId, userId, taskId)}
-                  className="bg-gradient-to-r from-red-500 to-red-600 text-white px-4 py-2 rounded-lg text-sm flex items-center gap-1.5 transition-all shadow-md flex-1 min-w-[100px]"
+                  className="bg-gradient-to-r from-red-500 to-red-600 text-white px-4 py-2 rounded-nonelg text-sm flex items-center gap-1.5 transition-all shadow-md flex-1 min-w-[100px]"
                 >
                   <XIcon size={16} /> Reject
                 </motion.button>
               </>
             ) : (
               <motion.div
-                className="w-full text-center py-2 px-4 rounded-lg text-sm font-medium"
+                className="w-full text-center py-2 px-4 rounded-nonelg text-sm font-medium"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
               >
@@ -569,7 +569,7 @@ const TaskCard = ({
               whileHover={{ scale: 1.03, boxShadow: "0 4px 14px rgba(107, 114, 128, 0.3)" }}
               whileTap={{ scale: 0.98 }}
               onClick={() => deleteTask(submissionId, taskId)}
-              className="bg-gradient-to-r from-gray-500 to-gray-600 text-white px-4 py-2 rounded-lg text-sm flex items-center gap-1.5 transition-all shadow-md flex-1 min-w-[100px]"
+              className="bg-gradient-to-r from-gray-500 to-gray-600 text-white px-4 py-2 rounded-nonelg text-sm flex items-center gap-1.5 transition-all shadow-md flex-1 min-w-[100px]"
             >
               <Trash2 size={16} /> Delete
             </motion.button>

@@ -55,7 +55,7 @@ const SignUp = () => {
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-[#69385C] via-[#C08497] to-[#F7AF9D] bg-[length:300%_300%] animate-bg-ease px-4 sm:px-6 md:px-8">
-      <div className="bg-white p-6 rounded-lg w-full max-w-lg shadow-lg">
+      <div className="bg-white p-6 rounded-nonelg w-full max-w-lg shadow-lg">
         <h1 className="text-2xl font-semibold text-blue-800 text-center mb-1">
           REGISTER
         </h1>
@@ -76,7 +76,7 @@ const SignUp = () => {
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
                 required
-                className="p-2 border rounded-md text-sm border-gray-300"
+                className="p-2 border rounded-nonemd text-sm border-gray-300"
               />
             </div>
 
@@ -90,7 +90,7 @@ const SignUp = () => {
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
                 required
-                className="p-2 border rounded-md text-sm border-gray-300"
+                className="p-2 border rounded-nonemd text-sm border-gray-300"
               />
             </div>
           </div>
@@ -105,7 +105,7 @@ const SignUp = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="p-2 border rounded-md text-sm border-gray-300"
+              className="p-2 border rounded-nonemd text-sm border-gray-300"
             />
           </div>
 
@@ -119,7 +119,7 @@ const SignUp = () => {
               value={dob}
               onChange={(e) => setDob(e.target.value)}
               required
-              className="p-2 border rounded-md text-sm border-gray-300"
+              className="p-2 border rounded-nonemd text-sm border-gray-300"
             />
           </div>
 
@@ -133,7 +133,7 @@ const SignUp = () => {
               value={mNumber}
               onChange={(e) => setMNumber(Number(e.target.value))}
               required
-              className="p-2 border rounded-md text-sm border-gray-300"
+              className="p-2 border rounded-nonemd text-sm border-gray-300"
             />
           </div>
 
@@ -149,7 +149,7 @@ const SignUp = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="p-2 border rounded-md text-sm border-gray-300 w-full"
+                className="p-2 border rounded-nonemd text-sm border-gray-300 w-full"
               />
               <button
                 type="button"
@@ -173,7 +173,7 @@ const SignUp = () => {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
-                className="p-2 border rounded-md text-sm border-gray-300 w-full"
+                className="p-2 border rounded-nonemd text-sm border-gray-300 w-full"
               />
               <button
                 type="button"
@@ -191,7 +191,7 @@ const SignUp = () => {
           <input
             type="submit"
             value={loading ? "Processing..." : "Sign Up"}
-            className="mt-2 p-2 bg-blue-500 text-white rounded-lg cursor-pointer transition-all duration-300 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="mt-2 p-2 bg-blue-500 text-white rounded-nonelg cursor-pointer transition-all duration-300 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </form>
 

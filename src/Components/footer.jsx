@@ -115,7 +115,7 @@ const Footer = () => {
         <div className="pt-4 mt-4 border-t border-gray-200 sm:text-center">
           <div className="sm:flex sm:justify-between">
             <p className="text-xs text-gray-600 sm:text-sm">
-              &copy; 2024 Intern Management System. All rights reserved.
+              &copy; 2024 Intern Resource Management. All rights reserved.
             </p>
             <ul className="flex flex-wrap justify-start gap-6 mt-2 text-xs sm:mt-0 sm:text-sm lg:justify-end">
               <li>

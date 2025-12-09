@@ -56,7 +56,7 @@ export function UserList({ users, selectedUser, setSelectedUser }) {
                             placeholder="Search employees..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-nonelg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         />
                     </div>
 
@@ -64,7 +64,7 @@ export function UserList({ users, selectedUser, setSelectedUser }) {
                     <select
                         value={selectedDepartment}
                         onChange={(e) => setSelectedDepartment(e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-nonelg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     >
                         {departments.map((dept) => (
                             <option key={dept} value={dept}>
@@ -98,17 +98,17 @@ export function UserList({ users, selectedUser, setSelectedUser }) {
                                     setSelectedUser(user)
                                     navigate(`/hrchat/${user?._id}`)
                                 }}
-                                className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all hover:bg-gray-50 ${selectedUser?._id === user?._id ? "bg-blue-50 border-l-4 border-blue-500" : ""
+                                className={`flex items-center gap-3 p-3 rounded-nonelg cursor-pointer transition-all hover:bg-gray-50 ${selectedUser?._id === user?._id ? "bg-blue-50 border-l-4 border-blue-500" : ""
                                     }`}
                             >
                                 <div className="relative flex-shrink-0">
                                     <img
                                         src={user?.avatar}
                                         alt={user?.name}
-                                        className="w-10 h-10 rounded-full object-cover"
+                                        className="w-10 h-10 rounded-nonefull object-cover"
                                     />
                                     <div
-                                        className={`absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-white ${getStatusColor(user?.status)}`}
+                                        className={`absolute -bottom-1 -right-1 w-3 h-3 rounded-nonefull border-2 border-white ${getStatusColor(user?.status)}`}
                                     />
                                 </div>
 
@@ -116,7 +116,7 @@ export function UserList({ users, selectedUser, setSelectedUser }) {
                                     {/* <div className="flex items-center justify-between">
                                         <h3 className="font-medium text-gray-900 truncate">{user?.name}</h3>
                                         {user?.unreadCount || 2 > 0 && (
-                                            <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full min-w-[20px] text-center">
+                                            <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-nonefull min-w-[20px] text-center">
                                                 {user?.unreadCount || 2}
                                             </span>
                                         )}

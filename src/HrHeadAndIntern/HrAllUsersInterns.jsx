@@ -42,7 +42,7 @@ function HrAllUsersInterns() {
             <h2 className="text-2xl font-semibold text-center mb-4 text-gray-700">Interns List for HR ID: {hrid}</h2>
 
             {interns.length > 0 ? (
-                <div className="overflow-x-auto shadow-lg rounded-lg">
+                <div className="overflow-x-auto shadow-lg rounded-nonelg">
                     <table className="w-full border-collapse bg-white shadow-md">
                         <thead className="bg-gray-200 text-gray-700">
                             <tr className="text-left">

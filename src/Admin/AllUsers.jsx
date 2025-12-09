@@ -192,7 +192,7 @@ function AllUsers() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-100">
       <CustomNavbar />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+        <div className="bg-white rounded-nonexl shadow-lg overflow-hidden">
           {/* Header Section */}
           <div className="px-6 py-5 border-b border-gray-200 bg-gradient-to-r from-blue-600 to-blue-800">
             <div className="flex flex-col md:flex-row justify-between items-center">
@@ -203,7 +203,7 @@ function AllUsers() {
                 <input
                   type="text"
                   placeholder="Search interns..."
-                  className="w-full px-4 py-2 rounded-md bg-blue-700 bg-opacity-20 text-white placeholder-blue-200 focus:ring-2 focus:ring-white focus:outline-none"
+                  className="w-full px-4 py-2 rounded-nonemd bg-blue-700 bg-opacity-20 text-white placeholder-blue-200 focus:ring-2 focus:ring-white focus:outline-none"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
@@ -255,12 +255,12 @@ function AllUsers() {
                   {getSortedUsers().map((user) => (
                     <div
                       key={user._id}
-                      className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 hover:shadow-lg transition-shadow duration-300"
+                      className="bg-white rounded-nonelg shadow-md overflow-hidden border border-gray-200 hover:shadow-lg transition-shadow duration-300"
                     >
                       <div className="p-5">
                         <div className="flex items-center space-x-4 mb-4">
                           <div className="flex-shrink-0">
-                            <div className="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-lg">
+                            <div className="h-12 w-12 rounded-nonefull bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-lg">
                               {user.name.charAt(0).toUpperCase()}
                             </div>
                           </div>
@@ -299,7 +299,7 @@ function AllUsers() {
                               href={user.linkedInURL}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="inline-flex items-center px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-xs hover:bg-blue-100"
+                              className="inline-flex items-center px-3 py-1 bg-blue-50 text-blue-600 rounded-nonefull text-xs hover:bg-blue-100"
                             >
                               <svg
                                 className="h-4 w-4 mr-1"
@@ -316,7 +316,7 @@ function AllUsers() {
                               href={user.githubURL}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="inline-flex items-center px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-xs hover:bg-gray-200"
+                              className="inline-flex items-center px-3 py-1 bg-gray-100 text-gray-800 rounded-nonefull text-xs hover:bg-gray-200"
                             >
                               <svg
                                 className="h-4 w-4 mr-1"
@@ -333,7 +333,7 @@ function AllUsers() {
                         {isAdmin && <div className="mt-4 flex justify-end">
                           <button
                             onClick={() => deleteUser(user._id, user.name)}
-                            className="inline-flex items-center px-3 py-1 bg-red-50 text-red-600 rounded-md text-sm hover:bg-red-100 transition-colors"
+                            className="inline-flex items-center px-3 py-1 bg-red-50 text-red-600 rounded-nonemd text-sm hover:bg-red-100 transition-colors"
                           >
                             <svg
                               className="h-4 w-4 mr-1"

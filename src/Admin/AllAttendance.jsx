@@ -163,7 +163,7 @@ const AllAttendance = () => {
             <input
               type="text"
               placeholder="Search users..."
-              className="px-4 py-2 border rounded-md"
+              className="px-4 py-2 border rounded-nonemd"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -230,9 +230,9 @@ const AllAttendance = () => {
                         <td className="p-2">{user.role || "N/A"}</td>
                         <td className="p-2">
                           <div className="flex items-center space-x-2">
-                            <div className="w-24 bg-gray-200 rounded-full h-2">
+                            <div className="w-24 bg-gray-200 rounded-nonefull h-2">
                               <div
-                                className={`h-2 rounded-full ${
+                                className={`h-2 rounded-nonefull ${
                                   parseFloat(attendancePercentage) >= 75
                                     ? "bg-green-600"
                                     : "bg-red-600"

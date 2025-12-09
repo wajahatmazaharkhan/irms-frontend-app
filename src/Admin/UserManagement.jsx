@@ -327,7 +327,7 @@ const UserManagement = () => {
     }
 
     const UserTable = ({ users, isVerified = true, title }) => (
-        <div className="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden mb-8">
+        <div className="bg-white rounded-nonexl shadow-md border border-gray-200 overflow-hidden mb-8">
             <div className="bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-4 border-b border-gray-200">
                 <div className="flex items-center justify-between">
                     <h2 className="text-xl font-bold text-gray-800 flex items-center">
@@ -338,7 +338,7 @@ const UserManagement = () => {
                         )}
                         {title}
                     </h2>
-                    <span className="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full">
+                    <span className="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-nonefull">
                         {users.length} users
                     </span>
                 </div>
@@ -364,7 +364,7 @@ const UserManagement = () => {
                                     <td className="px-6 py-4">
                                         <div className="flex items-center space-x-3">
                                             <div
-                                                className={`w-10 h-10 rounded-full flex items-center justify-center ${isVerified
+                                                className={`w-10 h-10 rounded-nonefull flex items-center justify-center ${isVerified
                                                     ? "bg-gradient-to-br from-blue-500 to-blue-600"
                                                     : "bg-gradient-to-br from-orange-500 to-orange-600"
                                                     }`}
@@ -393,7 +393,7 @@ const UserManagement = () => {
                                         <td className="px-6 py-4">
                                             <div className="space-y-2">
                                                 <div
-                                                    className={`inline-flex items-center space-x-2 px-3 py-1 rounded-full text-sm font-medium ${getRoleColor(
+                                                    className={`inline-flex items-center space-x-2 px-3 py-1 rounded-nonefull text-sm font-medium ${getRoleColor(
                                                         user.role,
                                                     )}`}
                                                 >
@@ -433,7 +433,7 @@ const UserManagement = () => {
                                         <td className="px-6 py-4">
                                             <div className="space-y-2">
                                                 <div
-                                                    className={`inline-flex items-center space-x-2 px-3 py-1 rounded-full text-sm font-medium ${getRoleColor(
+                                                    className={`inline-flex items-center space-x-2 px-3 py-1 rounded-nonefull text-sm font-medium ${getRoleColor(
                                                         user.role,
                                                     )}`}
                                                 >
@@ -454,7 +454,7 @@ const UserManagement = () => {
                                                 const status = isActive ? "active" : "inactive"
                                                 return (
                                                     <div
-                                                        className={`inline-flex items-center space-x-2 px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(status)}`}
+                                                        className={`inline-flex items-center space-x-2 px-3 py-1 rounded-nonefull text-sm font-medium ${getStatusColor(status)}`}
                                                     >
                                                         {isActive ? <CheckCircle className="w-4 h-4" /> : <XCircle className="w-4 h-4" />}
                                                         <span className="capitalize">{status}</span>
@@ -503,7 +503,7 @@ const UserManagement = () => {
                                                 <button
                                                     disabled={isAdmin === false && user.role === "admin"}
                                                     onClick={() => handleEditUser(user)}
-                                                    className={`p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors duration-200${isAdmin === false && user.role === "admin" ? " cursor-not-allowed" : ""}`}
+                                                    className={`p-2 text-blue-600 hover:bg-blue-50 rounded-nonelg transition-colors duration-200${isAdmin === false && user.role === "admin" ? " cursor-not-allowed" : ""}`}
                                                     title="Edit User"
                                                 >
                                                     <Edit3 className="w-4 h-4" />
@@ -512,7 +512,7 @@ const UserManagement = () => {
                                             {isAdmin &&
                                                 <button
                                                     onClick={() => handleDeleteUser(user._id)}
-                                                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200"
+                                                    className="p-2 text-red-600 hover:bg-red-50 rounded-nonelg transition-colors duration-200"
                                                     title="Delete User"
                                                 >
                                                     <Trash2 className="w-4 h-4" />
@@ -546,7 +546,7 @@ const UserManagement = () => {
                     {/* Header Section */}
                     <div className="text-center mb-8">
                         <div className="flex items-center justify-center mb-4">
-                            <div className="p-3 bg-blue-100 rounded-full">
+                            <div className="p-3 bg-blue-100 rounded-nonefull">
                                 <Shield className="w-8 h-8 text-blue-600" />
                             </div>
                         </div>
@@ -556,7 +556,7 @@ const UserManagement = () => {
 
                     {/* Stats Cards */}
                     <div className="grid grid-cols-1 md:grid-cols-6 gap-6 mb-8">
-                        <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200">
+                        <div className="bg-white rounded-nonexl shadow-md p-6 border border-gray-200">
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="text-sm font-medium text-gray-600 mb-1">Total Users</p>
@@ -565,7 +565,7 @@ const UserManagement = () => {
                                 <Users className="w-8 h-8 text-blue-600" />
                             </div>
                         </div>
-                        <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200">
+                        <div className="bg-white rounded-nonexl shadow-md p-6 border border-gray-200">
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="text-sm font-medium text-gray-600 mb-1">Verified</p>
@@ -574,7 +574,7 @@ const UserManagement = () => {
                                 <CheckCircle className="w-8 h-8 text-green-600" />
                             </div>
                         </div>
-                        <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200">
+                        <div className="bg-white rounded-nonexl shadow-md p-6 border border-gray-200">
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="text-sm font-medium text-gray-600 mb-1">Pending</p>
@@ -583,7 +583,7 @@ const UserManagement = () => {
                                 <Clock className="w-8 h-8 text-orange-600" />
                             </div>
                         </div>
-                        <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200">
+                        <div className="bg-white rounded-nonexl shadow-md p-6 border border-gray-200">
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="text-sm font-medium text-gray-600 mb-1">Admins</p>
@@ -594,7 +594,7 @@ const UserManagement = () => {
                                 <Crown className="w-8 h-8 text-purple-600" />
                             </div>
                         </div>
-                        <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200">
+                        <div className="bg-white rounded-nonexl shadow-md p-6 border border-gray-200">
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="text-sm font-medium text-gray-600 mb-1">HR Personnel</p>
@@ -605,7 +605,7 @@ const UserManagement = () => {
                                 <Briefcase className="w-8 h-8 text-blue-600" />
                             </div>
                         </div>
-                        <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200">
+                        <div className="bg-white rounded-nonexl shadow-md p-6 border border-gray-200">
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="text-sm font-medium text-gray-600 mb-1">HR Heads</p>
@@ -619,7 +619,7 @@ const UserManagement = () => {
                     </div>
 
                     {/* Controls Section */}
-                    <div className="bg-white rounded-xl shadow-lg p-6 mb-8 border border-gray-200">
+                    <div className="bg-white rounded-nonexl shadow-lg p-6 mb-8 border border-gray-200">
                         <div className="flex flex-col lg:flex-row lg:items-center gap-4">
                             <div className="flex flex-col sm:flex-row gap-4 flex-1">
                                 <div className="relative flex-1 max-w-md">
@@ -629,7 +629,7 @@ const UserManagement = () => {
                                         placeholder="Search users by name or email..."
                                         value={searchTerm}
                                         onChange={(e) => setSearchTerm(e.target.value)}
-                                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-gray-50 focus:bg-white"
+                                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-nonelg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-gray-50 focus:bg-white"
                                     />
                                 </div>
                                 <style jsx>{`
@@ -654,7 +654,7 @@ const UserManagement = () => {
                                     <select
                                         value={filterRole}
                                         onChange={(e) => setFilterRole(e.target.value)}
-                                        className="px-4 pr-8 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-gray-50 focus:bg-white appearance-none"
+                                        className="px-4 pr-8 py-3 border border-gray-300 rounded-nonelg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-gray-50 focus:bg-white appearance-none"
                                     >
                                         <option value="all">All Roles</option>
                                         <option value="admin">Admin</option>
@@ -667,7 +667,7 @@ const UserManagement = () => {
                                     <select
                                         value={filterStatus}
                                         onChange={(e) => setFilterStatus(e.target.value)}
-                                        className="px-4 pr-8 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-gray-50 focus:bg-white appearance-none"
+                                        className="px-4 pr-8 py-3 border border-gray-300 rounded-nonelg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-gray-50 focus:bg-white appearance-none"
                                     >
                                         <option value="all">All Status</option>
                                         <option value="active">Active</option>
@@ -675,7 +675,7 @@ const UserManagement = () => {
                                     </select>
                                 </div>
                             </div>
-                            <div className="text-sm text-gray-600 bg-gray-100 px-4 py-2 rounded-lg">
+                            <div className="text-sm text-gray-600 bg-gray-100 px-4 py-2 rounded-nonelg">
                                 Showing {filteredVerifiedUsers.length + filteredUnverifiedUsers.length} of {users?.length} users
                             </div>
                         </div>
@@ -693,7 +693,7 @@ const UserManagement = () => {
                 {/* Edit User Modal */}
                 {showEditModal && selectedUser && (
                     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                        <div className="bg-white rounded-xl max-w-2xl w-full max-h-screen overflow-y-auto">
+                        <div className="bg-white rounded-nonexl max-w-2xl w-full max-h-screen overflow-y-auto">
                             <div className="p-6 border-b border-gray-200">
                                 <h3 className="text-xl font-bold text-gray-800">Edit User</h3>
                                 <p className="text-gray-600">Update user information and permissions</p>
@@ -706,7 +706,7 @@ const UserManagement = () => {
                                             type="text"
                                             value={selectedUser.name}
                                             onChange={(e) => setSelectedUser({ ...selectedUser, name: e.target.value })}
-                                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                            className="w-full p-3 border border-gray-300 rounded-nonelg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                             placeholder="Enter full name"
                                         />
                                     </div>
@@ -716,7 +716,7 @@ const UserManagement = () => {
                                             type="email"
                                             value={selectedUser.email}
                                             onChange={(e) => setSelectedUser({ ...selectedUser, email: e.target.value })}
-                                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                            className="w-full p-3 border border-gray-300 rounded-nonelg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                             placeholder="Enter email address"
                                         />
                                     </div>
@@ -728,7 +728,7 @@ const UserManagement = () => {
                                             type="tel"
                                             value={selectedUser.mnumber}
                                             onChange={(e) => setSelectedUser({ ...selectedUser, mnumber: e.target.value })}
-                                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                            className="w-full p-3 border border-gray-300 rounded-nonelg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                             placeholder="Enter phone number"
                                         />
                                     </div>
@@ -743,7 +743,7 @@ const UserManagement = () => {
                                                     permissions: e.target.value === "intern" ? [] : selectedUser?.permissions,
                                                 })
                                             }
-                                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                            className="w-full p-3 border border-gray-300 rounded-nonelg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                         >
                                             <option value="intern">Intern</option>
                                             <option value="hr">HR Personnel</option>
@@ -759,7 +759,7 @@ const UserManagement = () => {
                                             {availablePermissions[selectedUser.role]?.map((permission) => (
                                                 <div
                                                     key={permission.id}
-                                                    className="flex items-start space-x-3 p-3 border border-gray-200 rounded-lg"
+                                                    className="flex items-start space-x-3 p-3 border border-gray-200 rounded-nonelg"
                                                 >
                                                     <input
                                                         type="checkbox"
@@ -801,7 +801,7 @@ const UserManagement = () => {
                                         setShowEditModal(false)
                                         setSelectedUser(null)
                                     }}
-                                    className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200"
+                                    className="px-6 py-2 border border-gray-300 text-gray-700 rounded-nonelg hover:bg-gray-50 transition-colors duration-200"
                                     disabled={isLoading}
                                 >
                                     Cancel
@@ -809,7 +809,7 @@ const UserManagement = () => {
                                 <button
                                     onClick={handleUpdateUser}
                                     disabled={isLoading}
-                                    className="px-6 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="px-6 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-nonelg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     {isLoading ? "Updating..." : "Update User"}
                                 </button>

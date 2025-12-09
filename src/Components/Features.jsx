@@ -57,7 +57,7 @@ const Features = () => {
           {features.map((feature, index) => (
             <div 
               key={index} 
-              className="stats-card p-8 hover:-translate-y-2 transition-transform bg-gray-800 rounded-lg shadow-lg"
+              className="stats-card p-8 hover:-translate-y-2 transition-transform bg-gray-800 rounded-nonelg shadow-lg"
             >
               <div className="mb-4">{feature.icon}</div>
               <h3 className="text-xl font-semibold mb-2 text-white">{feature.title}</h3>

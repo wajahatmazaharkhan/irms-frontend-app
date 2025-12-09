@@ -144,7 +144,9 @@ function BatchManagement() {
       ]);
 
       const allUsers = allUsersResponse.data?.data ?? allUsersResponse.data ?? [];
-      const availableInternsFromAPI = availUsersResponse.data?.data ?? availUsersResponse.data ?? [];
+      console.log("🚀 ~ fetchAvailableUsers ~ allUsers:", allUsers)
+      const availableInternsFromAPI = availUsersResponse.data?.data ?? availUsersResponse.data ?? []
+      console.log("🚀 ~ fetchAvailableUsers ~ availableInternsFromAPI:", availableInternsFromAPI)
 
       // Process current batch interns if provided
       let currentBatchInterns = [];
@@ -482,7 +484,7 @@ function BatchManagement() {
             <p className="text-gray-500 mb-4">{error}</p>
             <button
               onClick={() => window.location.reload()}
-              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+              className="bg-blue-600 text-white px-6 py-2 rounded-nonelg hover:bg-blue-700 transition-colors"
             >
               Retry
             </button>

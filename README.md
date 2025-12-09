@@ -1,4 +1,4 @@
-# IISPPR's Intern Management System (Frontend)
+# IISPPR's Intern Resource Management (Frontend)
 
 
 

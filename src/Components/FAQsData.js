@@ -1,6 +1,6 @@
 const FAQsData = [
     {
-      question: "How do I log in to the Intern Management System?",
+      question: "How do I log in to the Intern Resource Management?",
       answer:
         "You can log in using the credentials provided to you via email. If you experience issues, please contact your supervisor or HR.",
     },

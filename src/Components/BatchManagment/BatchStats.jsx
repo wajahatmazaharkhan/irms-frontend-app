@@ -49,7 +49,7 @@ export function BatchStats({ batchData }) {
         return (
           <div
             key={index}
-            className={`bg-white rounded-xl shadow-md p-6 border ${stat.borderColor} hover:shadow-lg transition-shadow duration-300`}
+            className={`bg-white rounded-nonexl shadow-md p-6 border ${stat.borderColor} hover:shadow-lg transition-shadow duration-300`}
           >
             <div className="flex items-center justify-between">
               <div>
@@ -60,7 +60,7 @@ export function BatchStats({ batchData }) {
                   {stat.value}
                 </p>
               </div>
-              <div className={`p-3 rounded-full ${stat.bgColor}`}>
+              <div className={`p-3 rounded-nonefull ${stat.bgColor}`}>
                 <IconComponent className={`w-6 h-6 ${stat.color}`} />
               </div>
             </div>

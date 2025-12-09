@@ -38,7 +38,7 @@ export default function CommRanking() {
         <>
         <NavBar />
         <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white p-8">
-            <div className="max-w-3xl mx-auto bg-white shadow-xl rounded-2xl p-6">
+            <div className="max-w-3xl mx-auto bg-white shadow-xl rounded-none2xl p-6">
                 <h2 className="text-3xl font-bold text-center text-blue-700 mb-8">
                     🎖️ Communication Team Rankings
                 </h2>
@@ -55,11 +55,11 @@ export default function CommRanking() {
                             return (
                                 <li
                                     key={item.userId}
-                                    className="flex items-center justify-between px-4 py-3 bg-gray-50 hover:bg-blue-50 rounded-xl shadow-sm transition"
+                                    className="flex items-center justify-between px-4 py-3 bg-gray-50 hover:bg-blue-50 rounded-nonexl shadow-sm transition"
                                 >
                                     <div className="flex items-center space-x-4">
                                         {index < 3 ? (
-                                            <Medal className={`w-8 h-8 ${medalColors[index]} text-white rounded-full p-1`} />
+                                            <Medal className={`w-8 h-8 ${medalColors[index]} text-white rounded-nonefull p-1`} />
                                         ) : (
                                             <span className="text-xl font-bold text-gray-500">{index + 1}</span>
                                         )}

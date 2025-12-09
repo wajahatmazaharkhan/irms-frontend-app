@@ -538,7 +538,7 @@ function HRBatchManagement() {
             <p className="text-gray-500 mb-4">{error}</p>
             <button
               onClick={() => window.location.reload()}
-              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+              className="bg-blue-600 text-white px-6 py-2 rounded-nonelg hover:bg-blue-700 transition-colors"
             >
               Retry
             </button>
@@ -652,7 +652,7 @@ function HRBatchManagement() {
 
       {showRequestsPanel && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-nonelg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-bold text-gray-800">
@@ -717,7 +717,7 @@ function HRBatchManagement() {
                     {joinRequests.map((request) => (
                       <div
                         key={request._id}
-                        className="border rounded-lg p-4 hover:bg-gray-50"
+                        className="border rounded-nonelg p-4 hover:bg-gray-50"
                       >
                         <div className="flex items-center gap-4">
                           <input

@@ -26,13 +26,13 @@ export function NotFound() {
         <div className="space-y-4">
           <button
             onClick={() => navigate(-1)}
-            icon={<ArrowLeft className="h-5 w-5 mr-2 rounded-full" />}
+            icon={<ArrowLeft className="h-5 w-5 mr-2 rounded-nonefull" />}
           >
             Go Back
           </button>
 
           <div>
-            <button onClick={() => navigate("/")} className="rounded-full ...">
+            <button onClick={() => navigate("/")} className="rounded-nonefull ...">
               Go To Dashboard
             </button>
           </div>

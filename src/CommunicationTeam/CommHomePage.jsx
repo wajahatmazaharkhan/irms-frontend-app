@@ -74,7 +74,7 @@ const CommTeamDashboard = () => {
         {statusOptions.map((status) => (
           <div
             key={status}
-            className={`rounded-xl shadow-sm p-4 ${
+            className={`rounded-nonexl shadow-sm p-4 ${
               selectedTab === status ? "bg-blue-100" : "bg-white"
             } hover:shadow-md cursor-pointer border`}
             onClick={() => setSelectedTab(status)}
@@ -96,12 +96,12 @@ const CommTeamDashboard = () => {
             {filteredTickets.map((ticket) => (
               <div
                 key={ticket._id}
-                className="border rounded-xl p-5 shadow-sm bg-white hover:shadow-md transition"
+                className="border rounded-nonexl p-5 shadow-sm bg-white hover:shadow-md transition"
               >
                 <div className="flex justify-between items-center mb-2">
                   <h3 className="text-lg font-semibold">{ticket.title}</h3>
                   <span
-                    className={`px-3 py-1 rounded-full text-sm ${
+                    className={`px-3 py-1 rounded-nonefull text-sm ${
                       ticket.status === "Open"
                         ? "bg-green-100 text-green-700"
                         : ticket.status === "In Progress"

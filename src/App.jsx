@@ -2,14 +2,12 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { HrProvider } from "./context/HrContext.jsx";
 import AskHR from "./Pages/AskHR";
 
-
 import {
   Aboutus,
   FAQ,
   Help,
   Home,
   Notifications,
-  PrivacyPolicy,
   Profile,
   Projects,
   Reports,
@@ -47,6 +45,7 @@ import {
   CoreDashboard,
   Footer,
   Navbar,
+  Privacypolicy,
 } from "./Components/compIndex";
 import "./App.css";
 import { NotFound } from "./Components/Notfound";
@@ -75,12 +74,19 @@ import UserManagement from "./Admin/UserManagement.jsx";
 import BatchManagement from "./Admin/BatchManagement.jsx";
 import ChatInterface from "./HrHeadAndIntern/InternChat.jsx";
 import HRChatDashboard from "./HrHeadAndIntern/HrChatBox.jsx";
+import "react-calendar/dist/Calendar.css";
 
-import { CommHomePage, ManageTickets, CommRanking } from "./CommunicationTeam/commIndex";
+import {
+  CommHomePage,
+  ManageTickets,
+  CommRanking,
+} from "./CommunicationTeam/commIndex";
+import { useEffect } from "react";
 
 const AdminRoute = ({ children }) => {
   const role = localStorage.getItem("role");
-  const isAdmin = localStorage.getItem("isAdmin") === "true" || role === "hrHead";
+  const isAdmin =
+    localStorage.getItem("isAdmin") === "true" || role === "hrHead";
   return isAdmin ? children : <NotAuthorized />;
 };
 
@@ -97,9 +103,23 @@ const HrRoute = ({ children }) => {
 const VerifyRoute = ({ children }) => {
   const isVerified = localStorage.getItem("isVerified") === "true";
   return isVerified ? children : <NotVerified />;
-}
+};
 
 const App = () => {
+  
+  useEffect(() => {
+    // Check for stored preference on page load
+    if (
+      localStorage.getItem("theme") === "dark" ||
+      (!("theme" in localStorage) &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches)
+    ) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, []);
+
   return (
     <HrProvider>
       <Routes>
@@ -109,7 +129,7 @@ const App = () => {
         <Route path="/reset-account-password" element={<ResetPassword />} />
         <Route path="/verify-otp" element={<OTPVerification />} />
         <Route path="/aboutus" element={<Aboutus />} />
-        <Route path="/privacypolicy" element={<PrivacyPolicy />} />
+        <Route path="/privacypolicy" element={<Privacypolicy />} />
         <Route path="/frequently-asked-questions" element={<FAQ />} />
         <Route path="*" element={<NotFound />} />
 
@@ -214,7 +234,6 @@ const App = () => {
                 {/* <CoreDashboard /> */}
                 <BatchDashboard />
               </VerifyRoute>
-
             </PrivateRoute>
           }
         />
@@ -243,7 +262,6 @@ const App = () => {
           element={
             <PrivateRoute>
               <VerifyRoute>
-
                 <Notifications />
               </VerifyRoute>
             </PrivateRoute>
@@ -254,7 +272,6 @@ const App = () => {
           element={
             <PrivateRoute>
               <VerifyRoute>
-
                 <Reports />
               </VerifyRoute>
             </PrivateRoute>
@@ -310,7 +327,6 @@ const App = () => {
           path="/internchat/:receiverId"
           element={
             <PrivateRoute>
-
               <ChatInterface />
             </PrivateRoute>
           }
@@ -364,7 +380,7 @@ const App = () => {
           }
         />
         <Route
-          path="/Internleaveapplication"  //add restriction to this route only hr or admin can access
+          path="/Internleaveapplication" //add restriction to this route only hr or admin can access
           element={
             <HrRoute>
               <Internleaveapplication />
@@ -372,7 +388,7 @@ const App = () => {
           }
         />
         <Route
-          path="/Internleaveapplications"  //add restriction to this route only hr or admin can access
+          path="/Internleaveapplications" //add restriction to this route only hr or admin can access
           element={
             <AdminRoute>
               <Internleaveapplication />
@@ -389,7 +405,7 @@ const App = () => {
         />
 
         <Route
-          path="/notify-all"   //add restriction to this route only admin can access
+          path="/notify-all" //add restriction to this route only admin can access
           element={
             <AdminRoute>
               <AdminNotify />
@@ -397,7 +413,7 @@ const App = () => {
           }
         />
         <Route
-          path="/admin-hr-management"  //add restriction to this route only admin can access
+          path="/admin-hr-management" //add restriction to this route only admin can access
           element={
             <AdminRoute>
               <AdminHRManagement />
@@ -405,7 +421,7 @@ const App = () => {
           }
         />
         <Route
-          path="/user-management"  //add restriction to this route only admin can access
+          path="/user-management" //add restriction to this route only admin can access
           element={
             <AdminRoute>
               <UserManagement />
@@ -561,14 +577,10 @@ const App = () => {
           }
         />
 
-
         {/* Comm team routes  */}
         <Route path="/commhomepage" element={<CommHomePage />} />
         <Route path="/commtickets" element={<ManageTickets />} />
         <Route path="/commrank" element={<CommRanking />} />
-
-
-
       </Routes>
     </HrProvider>
   );

@@ -106,7 +106,7 @@ export default function AccountDetails() {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-50">
         <div className="flex flex-col items-center text-center space-y-4">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-indigo-600 border-opacity-75"></div>
+          <div className="animate-spin rounded-nonefull h-12 w-12 border-t-4 border-indigo-600 border-opacity-75"></div>
           <p className="text-lg font-medium text-gray-700">
             Loading your profile...
           </p>
@@ -133,7 +133,7 @@ export default function AccountDetails() {
             <Card className="bg-white shadow-sm border-0 overflow-hidden">
               <div className="bg-gradient-to-r from-indigo-500 to-purple-600 h-24"></div>
               <div className="px-6 pb-6 -mt-12 flex flex-col items-center">
-                <Avatar className="w-24 h-24 rounded-full border-4 border-white bg-white text-indigo-600 flex items-center justify-center font-bold text-3xl overflow-hidden shadow-md">
+                <Avatar className="w-24 h-24 rounded-nonefull border-4 border-white bg-white text-indigo-600 flex items-center justify-center font-bold text-3xl overflow-hidden shadow-md">
                   {profilePicture ? (
                     <img
                       src={profilePicture}
@@ -187,7 +187,7 @@ export default function AccountDetails() {
                       onChange={(e) =>
                         handleInputChange("fullName", e.target.value)
                       }
-                      className="border-gray-300 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md"
+                      className="border-gray-300 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-nonemd"
                     />
                   </div>
 
@@ -202,7 +202,7 @@ export default function AccountDetails() {
                       onChange={(e) =>
                         handleInputChange("currentRole", e.target.value)
                       }
-                      className="border-gray-300 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md"
+                      className="border-gray-300 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-nonemd"
                     />
                   </div>
 
@@ -221,7 +221,7 @@ export default function AccountDetails() {
                         }
                         handleInputChange("phoneNumber", value);
                       }}
-                      className="border-gray-300 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md"
+                      className="border-gray-300 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-nonemd"
                     />
                   </div>
                 </div>
@@ -230,7 +230,7 @@ export default function AccountDetails() {
                   <div className="mt-8 flex justify-end">
                     <Button
                       onClick={handleSave}
-                      className="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-6 rounded-md transition-colors"
+                      className="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-6 rounded-nonemd transition-colors"
                     >
                       Save Changes
                     </Button>
@@ -239,7 +239,7 @@ export default function AccountDetails() {
 
                 {saveStatus && (
                   <div
-                    className={`mt-4 p-3 rounded-md ${
+                    className={`mt-4 p-3 rounded-nonemd ${
                       saveStatus.includes("successfully")
                         ? "bg-green-50 text-green-800 border border-green-200"
                         : "bg-red-50 text-red-800 border border-red-200"

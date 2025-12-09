@@ -36,17 +36,17 @@ const Main_DashB = () => {
         <AdminTopNav />
         <div className="p-6">
           {/* Manage User Roles Section */}
-          <div className="bg-white shadow-md rounded-lg p-4 mb-6">
+          <div className="bg-white shadow-md rounded-nonelg p-4 mb-6">
             <h2 className="text-lg font-semibold mb-4">Manage User Roles</h2>
             <div className="flex flex-col md:flex-row items-start">
               <input
                 type="text"
                 placeholder="Search user roles"
-                className="flex-1 p-2 border rounded-md md:mr-4 mb-2 md:mb-0"
+                className="flex-1 p-2 border rounded-nonemd md:mr-4 mb-2 md:mb-0"
               />
               <button
                 onClick={() => setShowRoleInput(true)}
-                className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md"
+                className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-nonemd"
               >
                 Add New Role
               </button>
@@ -58,11 +58,11 @@ const Main_DashB = () => {
                   placeholder="Enter role name"
                   value={newRole}
                   onChange={(e) => setNewRole(e.target.value)}
-                  className="flex-1 p-2 border rounded-md"
+                  className="flex-1 p-2 border rounded-nonemd"
                 />
                 <button
                   onClick={addNewRole}
-                  className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md"
+                  className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-nonemd"
                 >
                   Add
                 </button>
@@ -108,7 +108,7 @@ const Main_DashB = () => {
           ].map((section, index) => (
             <div
               key={index}
-              className="bg-white shadow-md rounded-lg p-4 mb-6 hover:shadow-lg"
+              className="bg-white shadow-md rounded-nonelg p-4 mb-6 hover:shadow-lg"
             >
               <h3 className="text-md font-semibold mb-2">{section.title}</h3>
               <p className="text-gray-600 text-sm">{section.description}</p>
@@ -116,11 +116,11 @@ const Main_DashB = () => {
           ))}
 
           {/* Intern Management */}
-          <div className="bg-white shadow-md rounded-lg p-4">
+          <div className="bg-white shadow-md rounded-nonelg p-4">
             <h2 className="text-lg font-semibold mb-4">Intern Management</h2>
             <button
               onClick={() => setShowInternInput(true)}
-              className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md mb-4"
+              className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-nonemd mb-4"
             >
               Add New Intern
             </button>
@@ -131,11 +131,11 @@ const Main_DashB = () => {
                   placeholder="Enter Intern Name"
                   value={newIntern}
                   onChange={(e) => setNewIntern(e.target.value)}
-                  className="flex-1 p-2 border rounded-md"
+                  className="flex-1 p-2 border rounded-nonemd"
                 />
                 <button
                   onClick={addNewIntern}
-                  className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md"
+                  className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-nonemd"
                 >
                   Add
                 </button>

@@ -55,7 +55,7 @@ const DynamicCalendar = () => {
             {calendarDays.map((date, index) => (
               <div
                 key={`${date}-${index}`}
-                className={`p-3 rounded-lg transition-colors ${
+                className={`p-3 rounded-nonelg transition-colors ${
                   date === null
                     ? "bg-transparent"
                     : date === currentDate.getDate() &&

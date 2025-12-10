@@ -55,11 +55,11 @@ const SideNav = () => {
     { id: 0, name: "Home", icon: "bi-house" },
     { id: 1, name: "Projects", icon: "bi-people" },
     { id: 2, name: "Rankings", icon: "bi-trophy" },
-    { id: 3, name: "Setting", icon: "bi-gear" },
+    { id: 3, name: "Settings", icon: "bi-gear" },
     { id: 4, name: "Help", icon: "bi-question-circle" },
   ];
 
-  const redirectURLs = ["", "projects", "intern-rankings", "Setting", "help"];
+  const redirectURLs = ["", "projects", "intern-rankings", "settings", "help"];
 
   const footerItems = [{ name: "Log Out", icon: "bi-box-arrow-left" }];
 

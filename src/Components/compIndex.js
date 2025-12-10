@@ -21,6 +21,7 @@ import useTitle from "./useTitle";
 import { BatchCard, BatchStats, Filters, BatchForm, BatchModal, QuickActions } from "@/Components/BatchManagment/index.js";
 import InternNecessities from "./InternNecessities";
 import Privacypolicy from "@/Pages/Privacypolicy";
+import InternTasksPage from "./InternTasks";
 
 export {
     useTitle,
@@ -50,5 +51,6 @@ export {
     BatchModal,
     QuickActions,
     InternNecessities,
-    Privacypolicy
+    Privacypolicy,
+    InternTasksPage
 };

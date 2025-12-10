@@ -1,4 +1,4 @@
-import { useState } from "react"; 
+import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/Components/ui/card";
 import { Navbar, useTitle } from "@/Components/compIndex";
 import { Switch } from "@/Components/ui/switch";
@@ -10,6 +10,7 @@ import {
   Bell,
   Lock,
   Moon,
+  Sun,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAppContext } from "@/context/AppContext";
@@ -20,6 +21,7 @@ const SettingsPage = () => {
   const navigate = useNavigate();
   const { setDashboard } = useAppContext();
   const [notifications] = useState(true);
+  const [currentMode, setCurrentMode] = useState("");
 
   const menuItems = [
     {
@@ -57,12 +59,18 @@ const SettingsPage = () => {
       localStorage.setItem("theme", "light");
       toast("Light Mode ☀️");
     }
+    window.location.reload();
   };
+
+  useEffect(() => {
+    let current = localStorage.getItem("theme");
+    setCurrentMode(current);
+  }, []);
 
   return (
     <>
       <Navbar />
-      <div className="p-6 max-w-7xl mx-auto taskContainer sm:pl-8 md:pl-10 lg:pl-[10rem] bg-gray-50 text-gray-900 dark:bg-slate-950 dark:text-slate-100">
+      <div className="p-6 max-w-7xl mx-auto taskContainer sm:pl-8 md:pl-10 lg:pl-[10rem] text-gray-900 dark:bg-slate-950 dark:text-slate-100">
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-2xl font-bold mb-2">Dashboard Settings</h1>
@@ -72,8 +80,10 @@ const SettingsPage = () => {
           </div>
         </div>
 
+        {/* Cards row with Notifications, Theme toggle (as a switch), Profile, Password */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <Card className="hover:shadow-xl transition-all duration-300 bg-white dark:bg-slate-900 dark:border dark:border-slate-700">
+          {/* Notifications Card (unchanged) */}
+          {/* <Card className="hover:shadow-xl transition-all duration-300 bg-white dark:bg-slate-900 dark:border dark:border-slate-700">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
@@ -105,8 +115,42 @@ const SettingsPage = () => {
                 </div>
               </div>
             </CardContent>
+          </Card> */}
+
+          {/* NEW: Dark Mode Toggle Card (using a Switch like Notifications) */}
+          <Card className="hover:shadow-xl transition-all duration-300 bg-white dark:bg-slate-900 dark:border dark:border-slate-700">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <div className="p-3 rounded-nonelg bg-blue-50 text-blue-600 dark:bg-slate-800 dark:text-blue-400">
+                    {currentMode === "dark" ? (
+                      <Sun size={24} />
+                    ) : (
+                      <Moon size={24} />
+                    )}
+                  </div>
+                  <div className="ml-4">
+                    <h3 className="text-lg font-semibold text-gray-800 dark:text-slate-100">
+                      Appearance
+                    </h3>
+                    <p className="text-sm text-gray-500 mt-1 dark:text-slate-400 capitalize">
+                      {`Switch to ${
+                        currentMode === "dark" ? "light" : "dark"
+                      } mode`}
+                    </p>
+                  </div>
+                </div>
+                <div onClick={toggleDarkMode}>
+                  <Switch
+                    checked={currentMode === "dark"}
+                    className="data-[state=checked]:bg-blue-600"
+                  />
+                </div>
+              </div>
+            </CardContent>
           </Card>
 
+          {/* Other settings cards (unchanged) */}
           {menuItems.slice(1).map((item) => (
             <Card
               key={item.path}
@@ -133,18 +177,10 @@ const SettingsPage = () => {
           ))}
         </div>
 
+        {/* Bottom cards: FAQs & Contact Us (Dark mode card removed here) */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
           <Card
-            className="bg-blue-500 text-white cursor-pointer hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-500"
-            onClick={() => toggleDarkMode()}
-          >
-            <CardContent className="p-6 flex items-center justify-center">
-              <Moon className="h-8 w-8 mr-4" />
-              <p className="text-xl font-semibold">Dark mode</p>
-            </CardContent>
-          </Card>
-          <Card
-            className="bg-blue-500 text-white cursor-pointer hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-500"
+            className="bg-blue-500 text-white cursor-pointer hover:bg-blue-600"
             onClick={() => navigate("/frequently-asked-questions")}
           >
             <CardContent className="p-6 flex items-center justify-center">
@@ -153,7 +189,7 @@ const SettingsPage = () => {
             </CardContent>
           </Card>
           <Card
-            className="bg-blue-500 text-white cursor-pointer hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-500"
+            className="bg-blue-500 text-white cursor-pointer hover:bg-blue-600"
             onClick={() => navigate("/help")}
           >
             <CardContent className="p-6 flex items-center justify-center">

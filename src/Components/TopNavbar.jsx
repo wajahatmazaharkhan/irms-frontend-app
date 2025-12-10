@@ -1,3 +1,4 @@
+// TopNavbar.jsx
 import { useState, useEffect } from "react";
 import { Button } from "@/Components/ui/button.jsx";
 import {
@@ -8,6 +9,11 @@ import {
   ChevronDown,
   Building2,
   Bell,
+  Home,
+  Users,
+  Trophy,
+  Settings as SettingsIcon,
+  HelpCircle,
 } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAppContext } from "@/context/AppContext.jsx";
@@ -17,58 +23,91 @@ import { useAuthContext } from "@/context/AuthContext.jsx";
 const TopNavbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { notiCounter, setNotiCounter } = useAppContext();
+
+  // App context
+  const { notiCounter, setNotiCounter, dashboard, setDashboard } = useAppContext();
+  const { loggedIn } = useAuthContext();
+
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const { loggedIn } = useAuthContext();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // mobile drawer
+
   const isAdmin = localStorage.getItem("isAdmin") === "true";
   const isHr = localStorage.getItem("isHr") === "true";
-
   const isIntern = !(isAdmin || isHr);
+
+  // 🔹 Main nav (merged from old SideNav)
+  const mainNavItems = [
+    {
+      label: "Home",
+      path: "/",
+      icon: <Home className="w-4 h-4" />,
+    },
+    {
+      label: "Projects",
+      path: "/projects",
+      icon: <Users className="w-4 h-4" />,
+    },
+    {
+      label: "Rankings",
+      path: "/intern-rankings",
+      icon: <Trophy className="w-4 h-4" />,
+    },
+    {
+      label: "Settings",
+      path: "/settings", 
+      icon: <SettingsIcon className="w-4 h-4" />,
+    },
+    {
+      label: "Help",
+      path: "/help",
+      icon: <HelpCircle className="w-4 h-4" />,
+    },
+  ];
+
+  // 🔹 All available routes for search and mobile drawer
   const availableRoutes = [
-    // Public Routes
-    // { path: "/login", label: "Login", public: true },
-    // { path: "/signup", label: "Sign Up", public: true },
     { path: "/aboutus", label: "About Us", public: true },
     { path: "/privacypolicy", label: "Privacy Policy", public: true },
     { path: "/frequently-asked-questions", label: "FAQ", public: true },
 
     // Protected User Routes
-    { path: "/", label: "Home", public: false },
-    { path: "/dashboard", label: "Dashboard", public: false },
+    // { path: "/", label: "Home", public: false },
+    // { path: "/dashboard", label: "Dashboard", public: false },
     { path: "/your-profile", label: "Profile", public: false },
     { path: "/notifications", label: "Notifications", public: false },
     { path: "/reports", label: "Reports", public: false },
     { path: "/projects", label: "Projects", public: false },
     { path: "/help", label: "Help", public: false },
-    { path: "/my-attendance", label: "My Attendance", public: false },
+    { path: "/my-attendance", label: "Attendance", public: false },
     { path: "/stores", label: "Stores", public: false },
+    { path: "/settings", label: "Settings", public: false },
     { path: "/leave-application", label: "Leave Application", public: false },
-    { path: "/setting", label: "Settings", public: false },
     { path: "/help-request", label: "Harassment Form", public: false },
 
     // Admin Routes
     { path: "/admin-access", label: "Admin Dashboard", adminOnly: true },
-    {
-      path: "/projectmanagement",
-      label: "Project Management",
-      adminOnly: true,
-    },
+    { path: "/projectmanagement", label: "Project Management", adminOnly: true },
     { path: "/admintask", label: "Admin Tasks", adminOnly: true },
     { path: "/weeklyreport", label: "Weekly Reports", adminOnly: true },
     { path: "/allusers", label: "All Users", adminOnly: true },
-    { path: "/intern-attendance", label: "Intern Attendance", adminOnly: true },
+    {
+      path: "/intern-attendance",
+      label: "Intern Attendance",
+      adminOnly: true,
+    },
     {
       path: "/view-attendance-all",
       label: "View All Attendance",
       adminOnly: true,
     },
 
-    //HR Routes
+    // HR Routes
     { path: "/hrhomepage", label: "HR Dashboard", hrOnly: true },
+    // from old SideNav
+    { path: "/intern-rankings", label: "Rankings", public: false },
   ];
 
   const filteredRoutes = availableRoutes.filter((route) => {
@@ -158,7 +197,7 @@ const TopNavbar = () => {
     },
     {
       label: "Settings",
-      path: "/setting",
+      path: "/settings",
       icon: (
         <svg
           className="w-4 h-4"
@@ -251,15 +290,17 @@ const TopNavbar = () => {
     },
   ];
 
+  // Fetch notifications
   useEffect(() => {
     if (loggedIn) {
       const fetchNotifications = async () => {
         const userId = localStorage.getItem("userId");
         try {
-          const response = await fetch(`${import.meta.env.VITE_BASE_URL}/get-notifications?userId=${userId}`);
+          const response = await fetch(
+            `${import.meta.env.VITE_BASE_URL}/get-notifications?userId=${userId}`
+          );
           if (!response.ok) throw new Error("Failed to fetch notifications");
           const data = await response.json();
-          console.log("🚀 ~ fetchNotifications ~ data:", data)
           setNotiCounter(data.notifications.notifications.length);
         } catch (error) {
           console.error("Error fetching notifications:", error);
@@ -267,7 +308,7 @@ const TopNavbar = () => {
       };
       fetchNotifications();
     }
-  }, [loggedIn]);
+  }, [loggedIn, setNotiCounter]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -286,7 +327,7 @@ const TopNavbar = () => {
   return (
     <div className="sticky top-0 z-50 bg-white shadow-md border-b border-gray-100 dark:bg-slate-900 dark:text-slate-100 dark:shadow-lg dark:border-slate-800">
       <div className="flex items-center justify-between p-4 border-b relative border-gray-100 dark:border-slate-800">
-        {/* Mobile Header */}
+        {/* 📱 Mobile Header */}
         <div className="md:hidden flex items-center justify-between w-full">
           <button
             className="text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50 rounded-nonemd p-1 transition-colors dark:text-gray-300 dark:hover:text-white"
@@ -298,7 +339,7 @@ const TopNavbar = () => {
           <Link to="/" className="flex items-center">
             <div className="flex flex-row items-center">
               <span className="text-lg font-semibold ml-2 text-gray-800 dark:text-slate-100">
-                IISPPR | Intern Resource Management
+                IISPPR
               </span>
             </div>
           </Link>
@@ -320,17 +361,45 @@ const TopNavbar = () => {
           </div>
         </div>
 
-        {/* Desktop Header */}
-        <div className="hidden md:flex items-center justify-between w-full">
-          <Link to="/" className="flex items-center group">
-            <div className="flex flex-row items-center">
-              <span className="text-lg font-semibold ml-2 text-gray-800 group-hover:text-black transition-colors dark:text-slate-100 dark:group-hover:text-white">
-                IISPPR | Intern Resource Management
-              </span>
-            </div>
-          </Link>
+        {/* 🖥️ Desktop Header */}
+        <div className="hidden md:flex items-center justify-between w-full gap-6">
+          {/* Logo + main nav */}
+          <div className="flex items-center gap-8">
+            <Link to="/" className="flex items-center group">
+              <div className="flex flex-row items-center">
+                <span className="text-lg font-semibold ml-2 text-gray-800 group-hover:text-black transition-colors dark:text-slate-100 dark:group-hover:text-white">
+                  IISPPR
+                </span>
+              </div>
+            </Link>
 
-          <div className="relative w-1/3">
+            {/* 🔹 Main top nav (merged from SideNav) */}
+            <nav className="hidden lg:flex items-center space-x-1">
+              {mainNavItems.map((item) => {
+                const isActive = location.pathname === item.path;
+                return (
+                  <button
+                    key={item.path}
+                    onClick={() => {
+                      if (setDashboard) setDashboard(item.label);
+                      navigate(item.path);
+                    }}
+                    className={`flex items-center px-3 py-2 rounded-nonelg text-sm font-medium transition-colors ${
+                      isActive
+                        ? "bg-blue-50 text-blue-600 dark:bg-slate-800 dark:text-blue-400"
+                        : "text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-slate-100"
+                    }`}
+                  >
+                    <span className="mr-2">{item.icon}</span>
+                    <span>{item.label}</span>
+                  </button>
+                );
+              })}
+            </nav>
+          </div>
+
+          {/* Search */}
+          <div className="relative w-1/3 min-w-[220px]">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
               <input
@@ -362,6 +431,7 @@ const TopNavbar = () => {
             )}
           </div>
 
+          {/* Right side: notifications + user menu / auth buttons */}
           <div className="flex items-center space-x-5">
             {loggedIn && (
               <div className="relative">
@@ -450,7 +520,7 @@ const TopNavbar = () => {
           </div>
         </div>
 
-        {/* Mobile Search */}
+        {/* 📱 Mobile Search dropdown */}
         {isSearchVisible && (
           <div className="absolute top-full left-0 w-full p-3 bg-white border-b shadow-md md:hidden dark:bg-slate-900 dark:border-slate-800">
             <div className="relative">
@@ -486,9 +556,9 @@ const TopNavbar = () => {
           </div>
         )}
 
-        {/* Mobile Sidebar */}
+        {/* 📱 Mobile Drawer (menu) */}
         {isSidebarOpen && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 z-40 flex">
+          <div className="fixed inset-0 bg-black bg-opacity-50 z-40 flex md:hidden">
             <div className="bg-white w-72 h-full shadow-lg flex flex-col dark:bg-slate-900 dark:border-r dark:border-slate-800">
               <div className="p-4 border-b border-gray-200 flex items-center justify-between dark:border-slate-800">
                 <div className="flex items-center">
@@ -514,7 +584,10 @@ const TopNavbar = () => {
                       <p className="font-medium text-gray-800 dark:text-slate-100">
                         Welcome
                       </p>
-                      <p onClick={()=> navigate("/your-profile")} className="text-sm text-gray-500 dark:text-slate-400">
+                      <p
+                        onClick={() => navigate("/your-profile")}
+                        className="text-sm text-gray-500 dark:text-slate-400"
+                      >
                         Your Account
                       </p>
                     </div>
@@ -524,6 +597,33 @@ const TopNavbar = () => {
 
               <nav className="flex-1 overflow-y-auto p-2">
                 <div className="space-y-1">
+                  {/* Main nav items first (like old SideNav) */}
+                  {mainNavItems.map((item) => {
+                    const isActive = location.pathname === item.path;
+                    return (
+                      <button
+                        key={item.path}
+                        onClick={() => {
+                          if (setDashboard) setDashboard(item.label);
+                          navigate(item.path);
+                          setIsSidebarOpen(false);
+                        }}
+                        className={`w-full flex items-center px-4 py-3 rounded-nonelg text-left transition-colors ${
+                          isActive
+                            ? "bg-blue-50 text-blue-600 font-medium dark:bg-slate-800 dark:text-blue-400"
+                            : "text-gray-700 dark:text-slate-100 hover:bg-blue-50 dark:hover:bg-slate-800"
+                        }`}
+                      >
+                        <span className="mr-3">{item.icon}</span>
+                        <span>{item.label}</span>
+                      </button>
+                    );
+                  })}
+
+                  {/* Divider */}
+                  <div className="my-3 border-t border-gray-200 dark:border-slate-800" />
+
+                  {/* All other routes (searchable items) */}
                   {filteredRoutes.map((route) => (
                     <Link
                       key={route.path}
@@ -535,9 +635,6 @@ const TopNavbar = () => {
                           : "text-gray-700 dark:text-slate-100 dark:hover:bg-slate-800"
                       }`}
                     >
-                      {location.pathname === route.path && (
-                        <div className="w-1 h-5 bg-blue-500 rounded-nonefull mr-3 dark:bg-blue-400"></div>
-                      )}
                       {route.label}
                     </Link>
                   ))}

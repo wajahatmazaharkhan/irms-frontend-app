@@ -100,7 +100,7 @@ function Sidebar() {
           <div className="user-section">
             <div className="user-info">
               <div className="user-avatar">
-                <img src="https://i.pravatar.cc/100" alt="User Avatar" />
+                <img src="https://cdn-icons-png.flaticon.com/512/3177/3177440.png" alt="User Avatar" />
               </div>
               <div className="user-details">
                 <p className="user-name">John Doe</p>

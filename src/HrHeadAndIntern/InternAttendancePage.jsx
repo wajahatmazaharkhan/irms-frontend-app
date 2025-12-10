@@ -255,7 +255,7 @@ const deleteAttendance = async (userId) => {
                     Total Interns: {users.length}
                   </Badge>
                 </div>
-                <div className="flex justify-end space-x-4">
+                <div className="hidden justify-end space-x-4">
                   <Button
                     variant="outline"
                     className="bg-green-500 hover:bg-green-600 text-white"
@@ -282,7 +282,7 @@ const deleteAttendance = async (userId) => {
             <CardContent className="p-0">
               {loading ? (
                 <div className="flex justify-center items-center h-64">
-                  <div className="animate-spin rounded-nonefull h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
+                  <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
                 </div>
               ) : (
                 <Table>

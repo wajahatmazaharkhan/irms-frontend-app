@@ -284,7 +284,7 @@ const CoreDashboard = () => {
               className="bg-white/95 text-blue-700 hover:bg-white md:w-auto w-full mt-2 md:mt-0 shadow-sm flex items-center gap-2"
               onClick={() => {
                 setDashboard("Settings");
-                navigate("/setting");
+                navigate("/settings");
               }}
             >
               <Settings className="h-4 w-4" />

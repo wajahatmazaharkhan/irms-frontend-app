@@ -1,12 +1,8 @@
-import { SideNav, TopNavbar } from "./compIndex";
+// Navbar.jsx
+import TopNavbar from "./TopNavbar";
 
 const Navbar = () => {
-  return (
-    <>
-      <TopNavbar />
-      <SideNav />
-    </>
-  );
+  return <TopNavbar />;
 };
 
 export default Navbar;

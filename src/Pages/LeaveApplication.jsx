@@ -10,7 +10,7 @@ import {
   XCircle,
   Clock3,
 } from "lucide-react";
-import { Navbar, SideNav, Footer, useTitle } from "@/Components/compIndex";
+import { Navbar, Footer, useTitle } from "@/Components/compIndex";
 import {
   Select,
   SelectContent,
@@ -126,9 +126,11 @@ const LeaveApplication = () => {
 
   const getStatusBadge = (status) => {
     const styles = {
-      Approved: "bg-green-100 text-green-800",
-      Pending: "bg-yellow-100 text-yellow-800",
-      Rejected: "bg-red-100 text-red-800",
+      Approved:
+        "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100",
+      Pending:
+        "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100",
+      Rejected: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100",
     };
 
     const icons = {
@@ -138,208 +140,316 @@ const LeaveApplication = () => {
     };
 
     return (
-      <div
-        className={`inline-flex items-center px-2.5 py-0.5 rounded-nonefull text-sm font-medium ${styles[status]}`}
+      <span
+        className={`inline-flex items-center px-2.5 py-0.5 text-xs font-medium uppercase tracking-wide rounded-none ${styles[status] ||
+          styles.Pending
+          }`}
       >
-        {icons[status]}
-        {status}
-      </div>
+        {icons[status] || icons.Pending}
+        {status || "Pending"}
+      </span>
     );
+  };
+
+  const formatDate = (date) => {
+    if (!date) return "-";
+    return new Date(date).toLocaleDateString();
   };
 
   return (
     <>
       <Navbar />
-      <SideNav />
       <Toaster position="top-center" />
 
-      <div className="relative min-h-screen ml-0 bg-gray-50 md:ml-32">
-        <div className="p-6">
-          <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Leave Application Form */}
-              <div className="lg:col-span-2">
-                <Card className="shadow-lg">
-                  <CardHeader className="border-b bg-white">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-blue-100 rounded-nonelg">
-                        <FileText className="w-6 h-6 text-blue-600" />
-                      </div>
-                      <CardTitle className="text-2xl font-bold">
+      <div className="relative min-h-screen ml-0 bg-gray-50 dark:bg-slate-950 md:ml-32">
+        <div className="px-6 pt-6 pb-12">
+          <div className="max-w-7xl mx-auto space-y-6">
+            {/* PAGE HEADER */}
+            <Card className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm rounded-none">
+              <CardHeader className="border-b border-slate-200 dark:border-slate-800 pb-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 flex items-center justify-center bg-blue-100 dark:bg-blue-900/40 rounded-none border border-blue-200 dark:border-blue-800">
+                      <FileText className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-xl font-semibold text-gray-900 dark:text-gray-100 tracking-wide">
                         Leave Application
                       </CardTitle>
+                      <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                        Submit a new leave request and view the status of your
+                        previous applications.
+                      </p>
                     </div>
-                  </CardHeader>
+                  </div>
+                  <div className="hidden md:flex items-center gap-6 text-xs text-gray-600 dark:text-gray-300">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-600" />
+                      <span>Approved</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Clock3 className="w-4 h-4 text-yellow-600" />
+                      <span>Pending</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <XCircle className="w-4 h-4 text-red-600" />
+                      <span>Rejected</span>
+                    </div>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="py-3">
+                <div className="flex flex-wrap gap-4 text-xs text-gray-600 dark:text-gray-300">
+                  <div className="flex items-center gap-2">
+                    <Clock className="w-4 h-4" />
+                    <span>Processing time: 24–48 hours</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
 
-                  <CardContent className="p-6">
-                    <form onSubmit={handleSubmit} className="space-y-6">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="space-y-2">
-                          <label className="text-sm font-medium text-gray-700">
-                            Leave Type *
-                          </label>
-                          <Select
-                            value={formData.leaveType}
-                            onValueChange={(value) =>
-                              setFormData({ ...formData, leaveType: value })
-                            }
-                          >
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select leave type" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {leaveTypes.map((type) => (
-                                <SelectItem key={type.value} value={type.value}>
-                                  {type.label}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
+            {/* MAIN CONTENT: FORM + TABLE */}
+            <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+              {/* FORM */}
+              <Card className="xl:col-span-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm rounded-none">
+                <CardHeader className="border-b border-slate-200 dark:border-slate-800 pb-3">
+                  <CardTitle className="text-base font-semibold text-gray-900 dark:text-gray-100">
+                    New Leave Request
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="pt-4">
+                  <form onSubmit={handleSubmit} className="space-y-5">
+                    {/* Leave type */}
+                    <div className="space-y-1.5">
+                      <label className="block text-xs font-medium text-gray-700 dark:text-gray-200 uppercase tracking-wide">
+                        Leave Type <span className="text-red-500">*</span>
+                      </label>
+                      <Select
+                        value={formData.leaveType}
+                        onValueChange={(value) =>
+                          setFormData({ ...formData, leaveType: value })
+                        }
+                      >
+                        <SelectTrigger className="w-full h-10 text-sm bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-700 text-gray-900 dark:text-gray-100 rounded-none">
+                          <SelectValue placeholder="Select leave type" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-700 rounded-none">
+                          {leaveTypes.map((type) => (
+                            <SelectItem
+                              key={type.value}
+                              value={type.value}
+                              className="text-sm dark:focus:bg-slate-800"
+                            >
+                              {type.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {/* Dates */}
+                    <div className="space-y-1.5">
+                      <label className="block text-xs font-medium text-gray-700 dark:text-gray-200 uppercase tracking-wide">
+                        Duration <span className="text-red-500">*</span>
+                      </label>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="space-y-1">
+                          <span className="text-[11px] text-gray-600 dark:text-gray-400">
+                            Start Date
+                          </span>
+                          <div className="relative">
+                            <Calendar className="absolute left-3 top-2.5 w-4 h-4 text-gray-400 dark:text-gray-500" />
+                            <input
+                              type="date"
+                              value={formData.startDate}
+                              onChange={(e) =>
+                                setFormData({
+                                  ...formData,
+                                  startDate: e.target.value,
+                                })
+                              }
+                              className="w-full h-10 pl-9 pr-3 text-sm bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-700 text-gray-900 dark:text-gray-100 rounded-none outline-none"
+                            />
+                          </div>
                         </div>
-
-                        <div className="space-y-2">
-                          <label className="text-sm font-medium text-gray-700">
-                            Duration *
-                          </label>
-                          <div className="grid grid-cols-2 gap-4">
-                            <div className="relative">
-                              <Calendar className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
-                              <input
-                                type="date"
-                                value={formData.startDate}
-                                onChange={(e) =>
-                                  setFormData({
-                                    ...formData,
-                                    startDate: e.target.value,
-                                  })
-                                }
-                                className="w-full pl-10 border rounded-nonemd h-11"
-                              />
-                            </div>
-                            <div className="relative">
-                              <Calendar className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
-                              <input
-                                type="date"
-                                value={formData.endDate}
-                                onChange={(e) =>
-                                  setFormData({
-                                    ...formData,
-                                    endDate: e.target.value,
-                                  })
-                                }
-                                className="w-full pl-10 border rounded-nonemd h-11"
-                              />
-                            </div>
+                        <div className="space-y-1">
+                          <span className="text-[11px] text-gray-600 dark:text-gray-400">
+                            End Date
+                          </span>
+                          <div className="relative">
+                            <Calendar className="absolute left-3 top-2.5 w-4 h-4 text-gray-400 dark:text-gray-500" />
+                            <input
+                              type="date"
+                              value={formData.endDate}
+                              onChange={(e) =>
+                                setFormData({
+                                  ...formData,
+                                  endDate: e.target.value,
+                                })
+                              }
+                              className="w-full h-10 pl-9 pr-3 text-sm bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-700 text-gray-900 dark:text-gray-100 rounded-none outline-none"
+                            />
                           </div>
                         </div>
                       </div>
+                    </div>
 
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-700">
-                          Reason for Leave *
-                        </label>
-                        <Textarea
-                          value={formData.reason}
-                          onChange={(e) =>
-                            setFormData({ ...formData, reason: e.target.value })
-                          }
-                          placeholder="Please provide a detailed reason for your leave request..."
-                          className="min-h-[120px]"
-                        />
-                      </div>
+                    {/* Reason */}
+                    <div className="space-y-1.5">
+                      <label className="block text-xs font-medium text-gray-700 dark:text-gray-200 uppercase tracking-wide">
+                        Reason for Leave{" "}
+                        <span className="text-red-500">*</span>
+                      </label>
+                      <Textarea
+                        value={formData.reason}
+                        onChange={(e) =>
+                          setFormData({ ...formData, reason: e.target.value })
+                        }
+                        placeholder="Enter a clear and concise reason for your leave request."
+                        className="w-full min-h-[110px] text-sm bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 rounded-none"
+                      />
+                    </div>
 
-                      <div className="flex justify-end gap-4">
+                    {/* Actions */}
+                    <div className="flex justify-between items-center pt-2">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => navigate(-1)}
+                        className="h-9 px-4 text-xs border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-800 dark:text-gray-100 rounded-none"
+                      >
+                        Back
+                      </Button>
+                      <div className="flex gap-3">
                         <Button
                           type="button"
                           variant="outline"
-                          onClick={() => navigate(-1)}
+                          onClick={() =>
+                            setFormData({
+                              leaveType: "",
+                              startDate: "",
+                              endDate: "",
+                              reason: "",
+                            })
+                          }
+                          className="h-9 px-4 text-xs border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-800 dark:text-gray-100 rounded-none"
                         >
-                          Cancel
+                          Clear
                         </Button>
                         <Button
                           type="submit"
-                          className="bg-blue-600 hover:bg-blue-700"
                           disabled={loading}
+                          className="h-9 px-5 text-xs font-medium bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-none"
                         >
                           {loading ? (
                             <>
                               <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                              Submitting...
+                              Submitting
                             </>
                           ) : (
-                            "Submit Application"
+                            "Submit Request"
                           )}
                         </Button>
                       </div>
-                    </form>
-                  </CardContent>
-                </Card>
-              </div>
+                    </div>
+                  </form>
+                </CardContent>
+              </Card>
 
-              {/* Leave Status Section */}
-              <div className="lg:col-span-1">
-                <Card className="shadow-lg">
-                  <CardHeader className="border-b">
-                    <CardTitle className="text-xl font-semibold">
-                      Leave Status
+              {/* TABLE + INFO */}
+              <div className="xl:col-span-2 space-y-6">
+                {/* Leave History Table */}
+                <Card className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm rounded-none">
+                  <CardHeader className="border-b border-slate-200 dark:border-slate-800 pb-3 flex flex-row items-center justify-between">
+                    <CardTitle className="text-base font-semibold text-gray-900 dark:text-gray-100">
+                      Leave History
                     </CardTitle>
+                    <span className="text-[11px] text-gray-500 dark:text-gray-400">
+                      Total Requests: {leaveHistory.length}
+                    </span>
                   </CardHeader>
-                  <CardContent className="p-6">
+                  <CardContent className="p-0">
                     {leaveHistory.length === 0 ? (
-                      <p className="text-gray-500">No leave records found.</p>
+                      <div className="px-6 py-6 text-sm text-gray-500 dark:text-gray-400">
+                        No leave records found. Submit a new request to see it
+                        listed here.
+                      </div>
                     ) : (
-                      <div className="space-y-6">
-                        {leaveHistory.map((leave) => (
-                          <div
-                            key={leave._id}
-                            className="p-4 border rounded-nonelg space-y-3"
-                          >
-                            <div className="flex justify-between items-start">
-                              <div className="space-y-1">
-                                <h3 className="font-medium">
-                                  {leave.leaveType}
-                                </h3>
-                                <p className="text-sm text-gray-500">
-                                  {new Date(
-                                    leave.startDate
-                                  ).toLocaleDateString()}{" "}
-                                  -{" "}
-                                  {new Date(
-                                    leave.endDate
-                                  ).toLocaleDateString()}
-                                </p>
-                              </div>
-                              {getStatusBadge(leave.status)}
-                            </div>
-
-                            {leave.updatedBy && (
-                              <div className="pt-2 border-t">
-                                <p className="text-sm text-gray-600">
-                                  Updated by{" "}
-                                  <span className="font-medium">
-                                    {leave.updatedBy}
-                                  </span>
-                                </p>
-                              </div>
-                            )}
-                          </div>
-                        ))}
+                      <div className="overflow-x-auto">
+                        <table className="min-w-full text-sm">
+                          <thead className="bg-gray-100 dark:bg-slate-800 border-b border-gray-200 dark:border-slate-700">
+                            <tr>
+                              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 dark:text-gray-200 tracking-wide">
+                                #
+                              </th>
+                              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 dark:text-gray-200 tracking-wide">
+                                Type
+                              </th>
+                              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 dark:text-gray-200 tracking-wide">
+                                Start Date
+                              </th>
+                              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 dark:text-gray-200 tracking-wide">
+                                End Date
+                              </th>
+                              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 dark:text-gray-200 tracking-wide">
+                                Status
+                              </th>
+                              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 dark:text-gray-200 tracking-wide">
+                                Updated By
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {leaveHistory.map((leave, index) => (
+                              <tr
+                                key={leave._id || index}
+                                className={
+                                  index % 2 === 0
+                                    ? "bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-slate-800"
+                                    : "bg-gray-50 dark:bg-slate-950 border-b border-gray-200 dark:border-slate-800"
+                                }
+                              >
+                                <td className="px-4 py-3 text-xs text-gray-700 dark:text-gray-200">
+                                  {index + 1}
+                                </td>
+                                <td className="px-4 py-3 text-xs text-gray-900 dark:text-gray-100">
+                                  {leave.leaveType || "-"}
+                                </td>
+                                <td className="px-4 py-3 text-xs text-gray-700 dark:text-gray-300">
+                                  {formatDate(leave.startDate)}
+                                </td>
+                                <td className="px-4 py-3 text-xs text-gray-700 dark:text-gray-300">
+                                  {formatDate(leave.endDate)}
+                                </td>
+                                <td className="px-4 py-3">
+                                  {getStatusBadge(leave.status)}
+                                </td>
+                                <td className="px-4 py-3 text-xs text-gray-700 dark:text-gray-300">
+                                  {leave.updatedBy || "-"}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
                       </div>
                     )}
                   </CardContent>
                 </Card>
 
-                <Card className="mt-6 shadow-lg bg-blue-50 border-blue-200">
-                  <CardContent className="p-4">
-                    <div className="flex gap-3">
-                      <Clock className="w-5 h-5 text-blue-500 mt-0.5" />
-                      <div>
-                        <h3 className="font-medium text-blue-900">
-                          Processing Time
+                {/* Info Banner */}
+                <Card className="bg-blue-50 border-blue-200 dark:bg-slate-900 dark:border-slate-700 shadow-sm rounded-none">
+                  <CardContent className="px-4 py-3">
+                    <div className="flex gap-3 items-start">
+                      <Clock className="w-5 h-5 text-blue-500 dark:text-blue-400 mt-0.5" />
+                      <div className="space-y-1">
+                        <h3 className="text-sm font-medium text-blue-900 dark:text-blue-100">
+                          Processing Information
                         </h3>
-                        <p className="mt-1 text-sm text-blue-700">
+                        <p className="text-xs text-blue-800 dark:text-blue-200 leading-relaxed">
                           Leave applications are typically processed within
-                          24–48 hours.
+                          24–48 hours. You will be notified once your request
+                          has been approved or rejected. Please ensure your
+                          contact details are up to date in your profile.
                         </p>
                       </div>
                     </div>
@@ -350,6 +460,7 @@ const LeaveApplication = () => {
           </div>
         </div>
       </div>
+
       <Footer />
     </>
   );

@@ -4,7 +4,7 @@ import { Search } from "lucide-react";
 
 const Help = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  useTitle('Help')
+  useTitle("IRMS | Help Section");
   const cards = [
     {
       title: "Submit a Query",
@@ -19,7 +19,7 @@ const Help = () => {
           Visit our{" "}
           <a
             href="https://iisppr.org.in/internship-jd/"
-            className="text-purple-600 hover:text-purple-800 transition-colors"
+            className="text-purple-600 hover:text-purple-800 transition-colors dark:text-purple-300 dark:hover:text-purple-400"
           >
             <u>website</u>
           </a>
@@ -72,10 +72,10 @@ const Help = () => {
   return (
     <>
       <Navbar />
-      <div className="flex flex-col min-h-screen bg-gray-50">
-        <div className="flex-grow ml-0 lg:ml-36">
+      <div className="flex flex-col min-h-screen dark:bg-slate-950 text-gray-900 dark:text-slate-100 transition-colors duration-300">
+        <div className="flex-grow ml-0">
           <main className="min-h-screen p-8">
-            <div className="relative px-8 mb-8 text-center bg-gradient-to-r from-blue-500 to-blue-600 rounded-nonelg shadow-lg py-14">
+            <div className="relative px-8 mb-8 text-center bg-gradient-to-r from-blue-500 to-blue-600 dark:from-slate-800 dark:to-slate-900 rounded-nonelg shadow-lg py-14">
               <h2 className="mb-6 text-4xl font-bold text-white">
                 Hello, How can we Help?
               </h2>
@@ -86,9 +86,9 @@ const Help = () => {
                     placeholder="Search for help..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full px-4 py-3 pl-12 text-lg bg-white rounded-nonelg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    className="w-full px-4 py-3 pl-12 text-lg bg-white dark:bg-slate-900 dark:text-slate-100 dark:placeholder-slate-400 rounded-nonelg focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-500"
                   />
-                  <Search className="absolute w-6 h-6 text-gray-400 transform -translate-y-1/2 left-4 top-1/2" />
+                  <Search className="absolute w-6 h-6 text-gray-400 dark:text-gray-500 transform -translate-y-1/2 left-4 top-1/2" />
                 </div>
               </div>
             </div>
@@ -97,16 +97,16 @@ const Help = () => {
               {filteredCards.map((card, index) => (
                 <div
                   key={index}
-                  className="flex flex-col items-center p-6 bg-white rounded-nonexl shadow-md hover:shadow-lg transition-shadow duration-300 h-64"
+                  className="flex flex-col items-center p-6 bg-white dark:bg-slate-900 rounded-nonexl shadow-md hover:shadow-lg dark:hover:shadow-slate-900/60 transition-shadow duration-300 h-64 border border-gray-100 dark:border-slate-700"
                 >
                   <div className="mb-4 text-5xl">{card.icon}</div>
-                  <h3 className="mb-3 text-xl font-semibold text-gray-800">
+                  <h3 className="mb-3 text-xl font-semibold text-gray-800 dark:text-slate-100 text-center">
                     {card.title}
                   </h3>
-                  <p className="text-gray-600 text-center">
+                  <p className="text-gray-600 dark:text-slate-300 text-center">
                     {card.description}
                   </p>
-                  <span className="mt-4 px-3 py-1 text-xs font-medium text-blue-600 bg-blue-100 rounded-nonefull">
+                  <span className="mt-4 px-3 py-1 text-xs font-medium text-blue-600 bg-blue-100 dark:text-blue-300 dark:bg-blue-950 rounded-nonefull">
                     {card.category}
                   </span>
                 </div>

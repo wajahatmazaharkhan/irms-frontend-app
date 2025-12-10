@@ -3,20 +3,23 @@ import { Navbar, SideNav, useTitle } from "@/Components/compIndex";
 import axios from "axios";
 import { Card, CardContent, CardHeader, CardTitle } from "@/Components/ui/card";
 import {
-  Calendar,
+  Calendar as CalendarIcon,
   Clock,
   CheckCircle,
   XCircle,
   Users,
   Percent,
 } from "lucide-react";
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
 
 const UserAttendance = () => {
-  useTitle('User Attendance')
+  useTitle("User Attendance");
   const [attendanceData, setAttendanceData] = useState([]);
   const [attendancePercentage, setAttendancePercentage] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   useEffect(() => {
     const fetchData = async () => {
@@ -29,7 +32,7 @@ const UserAttendance = () => {
 
       try {
         const response = await axios.get(
-          `https://iisppr-backend.vercel.app/attendance/${userId}`
+          `${import.meta.env.VITE_BASE_URL}/attendance/${userId}`
         );
         setAttendanceData(response.data);
 
@@ -82,14 +85,24 @@ const UserAttendance = () => {
     });
   };
 
+  const getRecordForDate = (date) => {
+    const target = new Date(date);
+    target.setHours(0, 0, 0, 0);
+
+    return attendanceData.find((record) => {
+      const recDate = new Date(record.date);
+      recDate.setHours(0, 0, 0, 0);
+      return recDate.getTime() === target.getTime();
+    });
+  };
+
   if (loading) {
     return (
-      <div className="flex min-h-screen">
-        <SideNav />
-        <div className="flex-1">
+      <div className="flex min-h-screen bg-gray-50 dark:bg-slate-950">
+        <div className="flex-1 flex flex-col">
           <Navbar />
-          <div className="flex items-center justify-center min-h-screen">
-            <div className="text-xl text-gray-600">
+          <div className="flex items-center justify-center flex-1">
+            <div className="text-xl text-gray-600 dark:text-gray-300">
               Loading attendance data...
             </div>
           </div>
@@ -100,123 +113,153 @@ const UserAttendance = () => {
 
   if (error) {
     return (
-      <div className="flex min-h-screen">
-        <SideNav />
-        <div className="flex-1">
+      <div className="flex min-h-screen bg-gray-50 dark:bg-slate-950">
+        <div className="flex-1 flex flex-col">
           <Navbar />
-          <div className="flex items-center justify-center min-h-screen">
-            <div className="text-xl text-red-600">{error}</div>
+          <div className="flex items-center justify-center flex-1">
+            <div className="text-xl text-red-600 dark:text-red-400">
+              {error}
+            </div>
           </div>
         </div>
       </div>
     );
   }
 
+  const selectedRecord = getRecordForDate(selectedDate);
+
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      <SideNav />
-      <div className="flex-1">
+    <div className="flex min-h-screen dark:bg-slate-950">
+      <div className="flex-1 flex flex-col">
         <Navbar />
-        <div className="max-w-6xl mx-auto px-4 py-8">
-          <h1 className="text-3xl font-bold text-gray-800 mb-8 text-center">
+        <div className="max-w-6xl mx-auto px-4 py-8 w-full">
+          <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-8 text-center">
             Attendance Dashboard
           </h1>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <Card className="bg-white shadow-lg hover:shadow-xl transition-shadow">
+            <Card className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 shadow-lg hover:shadow-xl transition-shadow">
               <CardHeader className="pb-2">
-                <CardTitle className="text-lg text-gray-600 flex items-center gap-2">
+                <CardTitle className="text-lg text-gray-600 dark:text-gray-300 flex items-center gap-2">
                   <Percent className="w-5 h-5" />
                   Attendance Rate
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-4xl font-bold text-blue-600">
+                <div className="text-4xl font-bold text-blue-600 dark:text-blue-400">
                   {attendancePercentage}%
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="bg-white shadow-lg hover:shadow-xl transition-shadow">
+            <Card className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 shadow-lg hover:shadow-xl transition-shadow">
               <CardHeader className="pb-2">
-                <CardTitle className="text-lg text-gray-600 flex items-center gap-2">
+                <CardTitle className="text-lg text-gray-600 dark:text-gray-300 flex items-center gap-2">
                   <Users className="w-5 h-5" />
                   Total Records
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-4xl font-bold text-blue-600">
+                <div className="text-4xl font-bold text-blue-600 dark:text-blue-400">
                   {attendanceData.length}
                 </div>
               </CardContent>
             </Card>
           </div>
 
-          <Card className="bg-white shadow-lg">
+          <Card className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 shadow-lg">
             <CardHeader>
-              <CardTitle className="text-xl text-gray-800">
-                Attendance History
+              <CardTitle className="text-xl text-gray-800 dark:text-gray-100">
+                Attendance Calendar
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="bg-gray-50">
-                      <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600">
-                        Date
-                      </th>
-                      <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600">
-                        Day
-                      </th>
-                      <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600">
-                        Check-in Time
-                      </th>
-                      <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600">
-                        Status
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {attendanceData.map((record) => (
-                      <tr
-                        key={record._id}
-                        className="border-b hover:bg-gray-50 transition-colors"
-                      >
-                        <td className="px-6 py-4 flex items-center gap-2">
-                          <Calendar className="w-4 h-4 text-gray-400" />
-                          {formatDate(record.date)}
-                        </td>
-                        <td className="px-6 py-4 text-gray-600">
-                          {getDayOfWeek(record.date)}
-                        </td>
-                        <td className="px-6 py-4 flex items-center gap-2">
-                          <Clock className="w-4 h-4 text-gray-400" />
-                          {formatTime(record.CheckInTime)}
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="flex items-center gap-2">
-                            {record.status.toLowerCase() === "present" ? (
-                              <>
-                                <CheckCircle className="w-5 h-5 text-green-500" />
-                                <span className="text-green-500 font-medium">
-                                  Present
-                                </span>
-                              </>
-                            ) : (
-                              <>
-                                <XCircle className="w-5 h-5 text-red-500" />
-                                <span className="text-red-500 font-medium">
-                                  Absent
-                                </span>
-                              </>
-                            )}
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+                {/* Calendar View */}
+                <div className="bg-gray-50 dark:bg-slate-950/50 rounded-lg p-4 border border-gray-200 dark:border-slate-700">
+                  <Calendar
+                    onChange={setSelectedDate}
+                    value={selectedDate}
+                    className="react-calendar border-none bg-transparent text-sm"
+                    tileClassName={({ date, view }) => {
+                      if (view !== "month") return "";
+
+                      const record = getRecordForDate(date);
+                      if (!record) return "";
+
+                      if (record.status.toLowerCase() === "present") {
+                        return "relative after:content-[''] after:block after:w-1.5 after:h-1.5 after:rounded-full after:bg-green-500 after:mx-auto after:mt-1";
+                      }
+
+                      return "relative after:content-[''] after:block after:w-1.5 after:h-1.5 after:rounded-full after:bg-red-500 after:mx-auto after:mt-1";
+                    }}
+                  />
+                </div>
+
+                {/* Selected Day Details */}
+                <div className="bg-gray-50 dark:bg-slate-950/50 rounded-lg p-4 border border-gray-200 dark:border-slate-700">
+                  <h2 className="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-100">
+                    {selectedRecord
+                      ? "Selected Day Details"
+                      : "No Record for Selected Day"}
+                  </h2>
+
+                  {selectedRecord ? (
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-3">
+                        <CalendarIcon className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+                        <div>
+                          <p className="text-sm text-gray-500 dark:text-gray-400">
+                            Date
+                          </p>
+                          <p className="text-base font-medium text-gray-800 dark:text-gray-100">
+                            {formatDate(selectedRecord.date)} (
+                            {getDayOfWeek(selectedRecord.date)})
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-3">
+                        <Clock className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+                        <div>
+                          <p className="text-sm text-gray-500 dark:text-gray-400">
+                            Check-in Time
+                          </p>
+                          <p className="text-base font-medium text-gray-800 dark:text-gray-100">
+                            {formatTime(selectedRecord.CheckInTime)}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-3">
+                        {selectedRecord.status.toLowerCase() === "present" ? (
+                          <>
+                            <CheckCircle className="w-6 h-6 text-green-500" />
+                            <span className="text-green-600 dark:text-green-400 font-semibold text-base">
+                              Present
+                            </span>
+                          </>
+                        ) : (
+                          <>
+                            <XCircle className="w-6 h-6 text-red-500" />
+                            <span className="text-red-600 dark:text-red-400 font-semibold text-base">
+                              Absent
+                            </span>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="text-sm text-gray-600 dark:text-gray-300">
+                      There is no attendance record for{" "}
+                      <span className="font-semibold">
+                        {formatDate(selectedDate)}
+                      </span>
+                      . Select another date with a dot indicator on the
+                      calendar to view details.
+                    </p>
+                  )}
+                </div>
               </div>
             </CardContent>
           </Card>

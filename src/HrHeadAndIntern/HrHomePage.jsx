@@ -141,6 +141,13 @@ function AdminHomePage() {
       description: "View intern rankings and performance",
       gradient: "from-cyan-500 to-cyan-700",
     },
+    {
+      title: "Settings",
+      route: "/settings",
+      icon: Settings,
+      description: "Dark Mode | Update Password",
+      gradient: "from-gray-500 to-gray-700",
+    },
   ];
 
   return (

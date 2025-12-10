@@ -224,15 +224,15 @@ export default function AdminTask() {
   return (
     <>
       <CustomNavbar />
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 p-6">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 dark:bg-gradient-to-br dark:from-gray-900 dark:to-slate-900 p-6">
         <div className="max-w-4xl mx-auto">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
-            className="shadow-xl rounded-none2xl overflow-hidden bg-white/90 backdrop-blur-sm"
+            className="shadow-xl dark:shadow-2xl rounded-none2xl overflow-hidden bg-white/90 dark:bg-gray-900/80 backdrop-blur-sm border border-gray-100 dark:border-gray-800"
           >
-            <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 p-6 relative">
+            <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-700 dark:to-indigo-800 p-6 relative">
               <div className="absolute inset-0 bg-noise opacity-10"></div>
               <CardTitle className="text-3xl font-bold text-white relative">Task Management</CardTitle>
               
@@ -275,7 +275,7 @@ export default function AdminTask() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0 }}
                 >
-                  <Alert className="mb-6 bg-green-50 border-green-200 text-green-700">
+                  <Alert className="mb-6 bg-green-50 border-green-200 text-green-700 dark:bg-green-900/40 dark:border-green-700 dark:text-green-200">
                     <AlertDescription>{successMessage}</AlertDescription>
                   </Alert>
                 </motion.div>
@@ -293,12 +293,12 @@ export default function AdminTask() {
                   {activeTab === 'technical' ? (
                     <form onSubmit={handleTechnicalSubmit} className="space-y-6">
                       <div className="space-y-2">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Assign To</label>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Assign To</label>
                         <select
                           name="assignedTo"
                           value={technicalTask.assignedTo}
                           onChange={handleTechnicalChange}
-                          className="w-full px-4 py-3 border border-gray-300 rounded-nonexl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 shadow-sm"
+                          className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-nonexl focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-all duration-200 shadow-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
                           required
                         >
                           <option value="">Select a user</option>
@@ -311,50 +311,50 @@ export default function AdminTask() {
                       </div>
 
                       <div className="space-y-2">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Task Title</label>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Task Title</label>
                         <input
                           type="text"
                           name="title"
                           value={technicalTask.title}
                           onChange={handleTechnicalChange}
                           placeholder="Enter task title"
-                          className="w-full px-4 py-3 border border-gray-300 rounded-nonexl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 shadow-sm"
+                          className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-nonexl focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-all duration-200 shadow-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
                           required
                         />
                       </div>
 
                       <div className="space-y-2">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Task Description</label>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Task Description</label>
                         <textarea
                           name="description"
                           value={technicalTask.description}
                           onChange={handleTechnicalChange}
                           placeholder="Enter task description"
-                          className="w-full px-4 py-3 border border-gray-300 rounded-nonexl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-h-[120px] transition-all duration-200 shadow-sm"
+                          className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-nonexl focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 min-h-[120px] transition-all duration-200 shadow-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
                           required
                         />
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Start Date</label>
                           <input
                             type="datetime-local"
                             name="startDate"
                             value={technicalTask.startDate}
                             onChange={handleTechnicalChange}
-                            className="w-full px-4 py-3 border border-gray-300 rounded-nonexl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 shadow-sm"
+                            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-nonexl focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-all duration-200 shadow-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
                             required
                           />
                         </div>
                         <div className="space-y-2">
-                          <label className="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">End Date</label>
                           <input
                             type="datetime-local"
                             name="endDate"
                             value={technicalTask.endDate}
                             onChange={handleTechnicalChange}
-                            className="w-full px-4 py-3 border border-gray-300 rounded-nonexl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 shadow-sm"
+                            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-nonexl focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-all duration-200 shadow-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
                             required
                           />
                         </div>
@@ -363,7 +363,7 @@ export default function AdminTask() {
                       <Button 
                         type="submit" 
                         disabled={isSubmitting}
-                        className="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white py-3.5 rounded-nonexl transition-all duration-300 transform hover:scale-[1.01] shadow-lg hover:shadow-blue-200"
+                        className="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white py-3.5 rounded-nonexl transition-all duration-300 transform hover:scale-[1.01] shadow-lg hover:shadow-blue-200 dark:hover:shadow-blue-900/40"
                       >
                         {isSubmitting ? (
                           <span className="flex items-center justify-center">
@@ -388,11 +388,11 @@ export default function AdminTask() {
                     <form onSubmit={handleSocialSubmit} className="space-y-6">
                       <div className="space-y-2">
                         <div className="flex justify-between items-center">
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Assign To (Multiple)</label>
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Assign To (Multiple)</label>
                           <button
                             type="button"
                             onClick={toggleSelectAllUsers}
-                            className="text-xs font-medium text-blue-600 hover:text-blue-800 transition-colors flex items-center"
+                            className="text-xs font-medium text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors flex items-center"
                           >
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
                               <path fillRule="evenodd" d="M3 5a2 2 0 012-2h10a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V5zm11 1H6v8h8V6z" clipRule="evenodd" />
@@ -400,15 +400,15 @@ export default function AdminTask() {
                             {socialTask.assignedTo.length === users.length ? 'Deselect All' : 'Select All'}
                           </button>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-60 overflow-y-auto p-3 border border-gray-200 rounded-nonexl bg-gray-50">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-60 overflow-y-auto p-3 border border-gray-200 dark:border-gray-700 rounded-nonexl bg-gray-50 dark:bg-gray-900/40">
                           {users.map(user => (
                             <motion.div 
                               key={user._id} 
                               whileHover={{ scale: 1.01 }}
                               className={`flex items-center p-2 rounded-nonelg transition-all ${
                                 socialTask.assignedTo.includes(user._id) 
-                                  ? 'bg-blue-50 border border-blue-200' 
-                                  : 'hover:bg-gray-100'
+                                  ? 'bg-blue-50 border border-blue-200 dark:bg-blue-900/40 dark:border-blue-700' 
+                                  : 'hover:bg-gray-100 dark:hover:bg-gray-800'
                               }`}
                             >
                               <input
@@ -416,11 +416,11 @@ export default function AdminTask() {
                                 id={`user-${user._id}`}
                                 checked={socialTask.assignedTo.includes(user._id)}
                                 onChange={() => handleUserSelection(user._id)}
-                                className="h-4 w-4 text-blue-600 rounded focus:ring-blue-500 border-gray-300"
+                                className="h-4 w-4 text-blue-600 dark:text-blue-400 rounded focus:ring-blue-500 dark:focus:ring-blue-400 border-gray-300 dark:border-gray-600"
                               />
-                              <label htmlFor={`user-${user._id}`} className="ml-3 text-sm text-gray-700">
+                              <label htmlFor={`user-${user._id}`} className="ml-3 text-sm text-gray-700 dark:text-gray-200">
                                 <span className="font-medium">{user.name}</span>
-                                <span className="block text-xs text-gray-500">{user.email}</span>
+                                <span className="block text-xs text-gray-500 dark:text-gray-400">{user.email}</span>
                               </label>
                             </motion.div>
                           ))}
@@ -428,7 +428,7 @@ export default function AdminTask() {
                       </div>
 
                       <div className="space-y-4">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Select Social Tasks</label>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Select Social Tasks</label>
                         <div className="space-y-3">
                           {socialTask.tasks.map((task, index) => (
                             <motion.div 
@@ -436,8 +436,8 @@ export default function AdminTask() {
                               whileHover={{ scale: 1.005 }}
                               className={`border rounded-nonexl p-4 transition-all duration-200 ${
                                 task.selected 
-                                  ? 'border-blue-300 bg-blue-50 shadow-sm' 
-                                  : 'border-gray-200 hover:border-gray-300'
+                                  ? 'border-blue-300 bg-blue-50 shadow-sm dark:border-blue-600 dark:bg-blue-900/30' 
+                                  : 'border-gray-200 hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-500 dark:bg-gray-900/40'
                               }`}
                             >
                               <div className="flex items-center mb-3">
@@ -445,11 +445,11 @@ export default function AdminTask() {
                                   type="checkbox"
                                   checked={task.selected}
                                   onChange={() => handleSocialTaskToggle(index)}
-                                  className="h-4 w-4 text-blue-600 rounded focus:ring-blue-500 border-gray-300"
+                                  className="h-4 w-4 text-blue-600 dark:text-blue-400 rounded focus:ring-blue-500 dark:focus:ring-blue-400 border-gray-300 dark:border-gray-600"
                                 />
-                                <span className="ml-3 font-medium text-gray-800">
+                                <span className="ml-3 font-medium text-gray-800 dark:text-gray-100">
                                   {task.title}
-                                  <span className="ml-2 px-2 py-1 text-xs rounded-nonefull bg-blue-100 text-blue-800">
+                                  <span className="ml-2 px-2 py-1 text-xs rounded-nonefull bg-blue-100 text-blue-800 dark:bg-blue-900/60 dark:text-blue-100">
                                     {task.title.includes("LinkedIn") ? "💼 Professional" : "🐦 Social"}
                                   </span>
                                 </span>
@@ -464,7 +464,7 @@ export default function AdminTask() {
                                     placeholder={`Enter description for ${task.title}...`}
                                     value={task.description}
                                     onChange={(e) => handleSocialTaskDescription(index, e.target.value)}
-                                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-nonelg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-h-[80px] transition-all mt-2"
+                                    className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-700 rounded-nonelg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 min-h-[80px] transition-all mt-2 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
                                   />
                                 </motion.div>
                               )}
@@ -475,24 +475,24 @@ export default function AdminTask() {
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Start Date</label>
                           <input
                             type="datetime-local"
                             name="startDate"
                             value={socialTask.startDate}
                             onChange={handleSocialChange}
-                            className="w-full px-4 py-3 border border-gray-300 rounded-nonexl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 shadow-sm"
+                            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-nonexl focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-all duration-200 shadow-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
                             required
                           />
                         </div>
                         <div className="space-y-2">
-                          <label className="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">End Date</label>
                           <input
                             type="datetime-local"
                             name="endDate"
                             value={socialTask.endDate}
                             onChange={handleSocialChange}
-                            className="w-full px-4 py-3 border border-gray-300 rounded-nonexl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 shadow-sm"
+                            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-nonexl focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-all duration-200 shadow-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
                             required
                           />
                         </div>
@@ -501,7 +501,7 @@ export default function AdminTask() {
                       <Button 
                         type="submit" 
                         disabled={isSubmitting}
-                        className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white py-3.5 rounded-nonexl transition-all duration-300 transform hover:scale-[1.01] shadow-lg hover:shadow-purple-200"
+                        className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white py-3.5 rounded-nonexl transition-all duration-300 transform hover:scale-[1.01] shadow-lg hover:shadow-purple-200 dark:hover:shadow-purple-900/40"
                       >
                         {isSubmitting ? (
                           <span className="flex items-center justify-center">
@@ -535,6 +535,10 @@ export default function AdminTask() {
         }
         .bg-dots {
           background-image: radial-gradient(#ddd 1px, transparent 1px);
+          background-size: 15px 15px;
+        }
+        .dark .bg-dots {
+          background-image: radial-gradient(#444 1px, transparent 1px);
           background-size: 15px 15px;
         }
       `}</style>

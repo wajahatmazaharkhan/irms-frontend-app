@@ -1,4 +1,4 @@
-"use client"; 
+"use client";
 
 import { useState, useEffect } from "react";
 import {
@@ -29,7 +29,7 @@ import { Calendar as CalendarUI } from "react-calendar";
 
 const BatchDashboard = () => {
   const role = localStorage.getItem("role");
-  useTitle("My Batch");
+  useTitle("IRMS | Intern Dashboard");
   const [batch, setBatch] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -167,57 +167,10 @@ const BatchDashboard = () => {
     );
   };
 
-  // Calendar functions
-  const getCalendarDays = () => {
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth();
-    const firstDay = new Date(year, month, 1);
-    const startDate = new Date(firstDay);
-    startDate.setDate(startDate.getDate() - firstDay.getDay());
-
-    const days = [];
-    const current = new Date(startDate);
-    for (let i = 0; i < 42; i++) {
-      days.push(new Date(current));
-      current.setDate(current.getDate() + 1);
-    }
-
-    return days;
-  };
-
-  const navigateMonth = (direction) => {
-    const newDate = new Date(currentDate);
-    newDate.setMonth(newDate.getMonth() + direction);
-    setCurrentDate(newDate);
-  };
-
-  const isCurrentMonth = (date) => {
-    return date.getMonth() === currentDate.getMonth();
-  };
-
-  const isHighlighted = (date) => {
-    // Highlight the 27th as shown in the image
-    return date.getDate() === 27 && isCurrentMonth(date);
-  };
-
   // Helper functions
   const calculateCompletionPercentage = () => {
     if (!batch || batch.allTasks === 0) return 0;
     return Math.round((batch.completedTasks / batch.allTasks) * 100);
-  };
-
-  const calculatePendingTasks = () => {
-    if (!batch) return 0;
-    return (batch.allTasks || 0) - (batch.completedTasks || 0);
-  };
-
-  const calculateOverdueTasks = () => {
-    if (!tasksWithDetails.length) return 0;
-    const now = new Date();
-    return tasksWithDetails.filter((task) => {
-      const endDate = new Date(task.details?.endDate);
-      return endDate < now && task.details?.status !== "completed";
-    }).length;
   };
 
   const getFilteredTasks = (category) => {
@@ -240,7 +193,7 @@ const BatchDashboard = () => {
         <Navbar />
         <div id="mainContent">
           <Wrapper>
-            <div className="min-h-screen flex flex-row items-center justify-center mx-auto place-content-center bg-gray-50 dark:bg-slate-900">
+            <div className="min-h-screen flex flex-row items-center justify-center mx-auto place-content-center dark:bg-slate-900">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -318,7 +271,7 @@ const BatchDashboard = () => {
         <Navbar />
         <div id="mainContent">
           <Wrapper>
-            <div className="min-h-screen bg-gray-50 dark:bg-slate-900 flex items-center justify-center">
+            <div className="min-h-screen dark:bg-slate-900 flex items-center justify-center">
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -370,7 +323,7 @@ const BatchDashboard = () => {
       <Navbar />
       <div id="mainContent">
         <Wrapper>
-          <div className="min-h-screen bg-gray-50 dark:bg-slate-950 dark:text-slate-100">
+          <div className="min-h-screen dark:bg-slate-950 dark:text-slate-100">
             {/* Header Section */}
             <motion.div
               initial={{ opacity: 0, y: -20 }}
@@ -486,7 +439,10 @@ const BatchDashboard = () => {
                             {tasksWithDetails.length} active
                           </span>
                         </h2>
-                        <button className="text-blue-600 dark:text-blue-400 text-sm hover:text-blue-800 dark:hover:text-blue-300 font-medium transition-colors">
+                        <button
+                          onClick={() => navigate("/view-all-tasks")}
+                          className="text-blue-600 dark:text-blue-400 text-sm hover:text-blue-800 dark:hover:text-blue-300 font-medium transition-colors"
+                        >
                           View all →
                         </button>
                       </div>
@@ -524,93 +480,96 @@ const BatchDashboard = () => {
                         </div>
                       ) : filteredTasks.length > 0 ? (
                         <div className="space-y-4">
-                          {filteredTasks.map((task, index) => {
-                            const assignedIntern = batch.interns?.find(
-                              (intern) => intern._id === task.assignedTo
-                            ) || {
-                              name: "Unassigned",
-                              email: "",
-                            };
+                          {filteredTasks
+                            .toReversed()
+                            .map((task, index) => {
+                              const assignedIntern = batch.interns?.find(
+                                (intern) => intern._id === task.assignedTo
+                              ) || {
+                                name: "Unassigned",
+                                email: "",
+                              };
 
-                            return (
-                              <motion.div
-                                key={index}
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: index * 0.05 }}
-                                className="p-4 border border-gray-200 dark:border-slate-700 rounded-nonelg hover:border-blue-300 dark:hover:border-blue-500 transition-colors bg-gray-50 dark:bg-slate-800 hover:bg-white dark:hover:bg-slate-700"
-                                whileHover={{ scale: 1.01 }}
-                              >
-                                <div className="flex flex-col lg:flex-row items-start lg:items-center gap-4">
-                                  <div className="flex-1 space-y-3">
-                                    <div className="flex items-start justify-between">
-                                      <h4 className="font-semibold text-lg text-gray-900 dark:text-slate-100">
-                                        {task.details?.title ||
-                                          `Task ${index + 1}`}
-                                      </h4>
-                                      <TaskStatusBadge
-                                        status={task.details?.status}
-                                      />
+                              return (
+                                <motion.div
+                                  key={index}
+                                  initial={{ opacity: 0, y: 10 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  transition={{ delay: index * 0.05 }}
+                                  className="p-4 border border-gray-200 dark:border-slate-700 rounded-nonelg hover:border-blue-300 dark:hover:border-blue-500 transition-colors bg-gray-50 dark:bg-slate-800 hover:bg-white dark:hover:bg-slate-700"
+                                  whileHover={{ scale: 1.01 }}
+                                >
+                                  <div className="flex flex-col lg:flex-row items-start lg:items-center gap-4">
+                                    <div className="flex-1 space-y-3">
+                                      <div className="flex items-start justify-between">
+                                        <h4 className="font-semibold text-lg text-gray-900 dark:text-slate-100">
+                                          {task.details?.title ||
+                                            `Task ${index + 1}`}
+                                        </h4>
+                                        <TaskStatusBadge
+                                          status={task.details?.status}
+                                        />
+                                      </div>
+
+                                      {task.details?.description && (
+                                        <p className="text-gray-600 dark:text-slate-300 text-sm">
+                                          {task.details.description}
+                                        </p>
+                                      )}
+
+                                      <div className="flex flex-wrap gap-4 text-xs text-gray-500 dark:text-slate-400">
+                                        <div className="flex items-center gap-1.5 bg-gray-50 dark:bg-slate-800 px-2.5 py-1 rounded-nonefull">
+                                          <Calendar className="w-3.5 h-3.5" />
+                                          <span>
+                                            Start:{" "}
+                                            {task.details?.startDate
+                                              ? new Date(
+                                                  task.details.startDate
+                                                ).toLocaleDateString()
+                                              : "Not set"}
+                                          </span>
+                                        </div>
+                                        <div className="flex items-center gap-1.5 bg-gray-50 dark:bg-slate-800 px-2.5 py-1 rounded-nonefull">
+                                          <Calendar className="w-3.5 h-3.5" />
+                                          <span>
+                                            End:{" "}
+                                            {task.details?.endDate
+                                              ? new Date(
+                                                  task.details.endDate
+                                                ).toLocaleDateString()
+                                              : "Not set"}
+                                          </span>
+                                        </div>
+                                      </div>
                                     </div>
 
-                                    {task.details?.description && (
-                                      <p className="text-gray-600 dark:text-slate-300 text-sm">
-                                        {task.details.description}
-                                      </p>
-                                    )}
-
-                                    <div className="flex flex-wrap gap-4 text-xs text-gray-500 dark:text-slate-400">
-                                      <div className="flex items-center gap-1.5 bg-gray-50 dark:bg-slate-800 px-2.5 py-1 rounded-nonefull">
-                                        <Calendar className="w-3.5 h-3.5" />
-                                        <span>
-                                          Start:{" "}
-                                          {task.details?.startDate
-                                            ? new Date(
-                                                task.details.startDate
-                                              ).toLocaleDateString()
-                                            : "Not set"}
-                                        </span>
-                                      </div>
-                                      <div className="flex items-center gap-1.5 bg-gray-50 dark:bg-slate-800 px-2.5 py-1 rounded-nonefull">
-                                        <Calendar className="w-3.5 h-3.5" />
-                                        <span>
-                                          End:{" "}
-                                          {task.details?.endDate
-                                            ? new Date(
-                                                task.details.endDate
-                                              ).toLocaleDateString()
-                                            : "Not set"}
-                                        </span>
-                                      </div>
+                                    <div className="flex flex-col gap-3 min-w-[120px] w-full lg:w-auto mt-4 lg:mt-0">
+                                      <Button
+                                        onClick={() =>
+                                          handleSubmitTask(task.details?._id)
+                                        }
+                                        className={`w-full ${
+                                          task.details?.status === "completed"
+                                            ? "bg-green-50 text-green-700 hover:bg-green-100 border border-green-200 dark:bg-green-900 dark:text-green-100 dark:hover:bg-green-800 dark:border-green-800"
+                                            : "bg-blue-500 text-white hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-500"
+                                        }`}
+                                        variant={
+                                          task.details?.status === "completed"
+                                            ? "outline"
+                                            : "default"
+                                        }
+                                        disabled={!task.details?._id}
+                                      >
+                                        {task.details?.status === "completed"
+                                          ? "Resubmit"
+                                          : "Submit"}
+                                      </Button>
                                     </div>
                                   </div>
-
-                                  <div className="flex flex-col gap-3 min-w-[120px] w-full lg:w-auto mt-4 lg:mt-0">
-                                    <Button
-                                      onClick={() =>
-                                        handleSubmitTask(task.details?._id)
-                                      }
-                                      className={`w-full ${
-                                        task.details?.status === "completed"
-                                          ? "bg-green-50 text-green-700 hover:bg-green-100 border border-green-200 dark:bg-green-900 dark:text-green-100 dark:hover:bg-green-800 dark:border-green-800"
-                                          : "bg-blue-500 text-white hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-500"
-                                      }`}
-                                      variant={
-                                        task.details?.status === "completed"
-                                          ? "outline"
-                                          : "default"
-                                      }
-                                      disabled={!task.details?._id}
-                                    >
-                                      {task.details?.status === "completed"
-                                        ? "Resubmit"
-                                        : "Submit"}
-                                    </Button>
-                                  </div>
-                                </div>
-                              </motion.div>
-                            );
-                          })}
+                                </motion.div>
+                              );
+                            })
+                            .slice(0, 3)}
                         </div>
                       ) : (
                         <motion.div
@@ -625,7 +584,8 @@ const BatchDashboard = () => {
                             No {activeTab} tasks found
                           </h3>
                           <p className="text-gray-600 dark:text-slate-300 text-sm">
-                            You {`don't`} have any {activeTab} tasks assigned yet.
+                            You {`don't`} have any {activeTab} tasks assigned
+                            yet.
                           </p>
                         </motion.div>
                       )}

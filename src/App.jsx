@@ -44,6 +44,7 @@ import {
   AdminTask,
   CoreDashboard,
   Footer,
+  InternTasksPage,
   Navbar,
   Privacypolicy,
 } from "./Components/compIndex";
@@ -238,6 +239,17 @@ const App = () => {
           }
         />
         <Route
+          path="/view-all-tasks"
+          element={
+            <PrivateRoute>
+              <VerifyRoute>
+                {/* <CoreDashboard /> */}
+                <InternTasksPage />
+              </VerifyRoute>
+            </PrivateRoute>
+          }
+        />
+        <Route
           path="/dashboard"
           element={
             <PrivateRoute>
@@ -370,7 +382,7 @@ const App = () => {
           }
         />
         <Route
-          path="/setting"
+          path="/settings"
           element={
             <PrivateRoute>
               <VerifyRoute>
@@ -383,7 +395,7 @@ const App = () => {
           path="/Internleaveapplication" //add restriction to this route only hr or admin can access
           element={
             <HrRoute>
-              <Internleaveapplication />
+              <Internleaveapplication mode="hr" />
             </HrRoute>
           }
         />
@@ -391,7 +403,7 @@ const App = () => {
           path="/Internleaveapplications" //add restriction to this route only hr or admin can access
           element={
             <AdminRoute>
-              <Internleaveapplication />
+              <Internleaveapplication mode="admin" />
             </AdminRoute>
           }
         />

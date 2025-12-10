@@ -18,6 +18,7 @@ import {
   ComputerIcon,
   TrendingDown,
   LineChartIcon,
+  Settings2,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -155,6 +156,13 @@ function AdminHomePage() {
       icon: TrendingUp,
       description: "View intern rankings and performance",
       gradient: "from-cyan-500 to-cyan-700",
+    },
+     {
+      title: "Settings",
+      route: "/settings",
+      icon: Settings,
+      description: "Dark Mode | Update Password",
+      gradient: "from-gray-500 to-gray-700",
     },
   ];
 

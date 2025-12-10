@@ -340,7 +340,7 @@ export default function RealtimeChat() {
                                 >
                                     {msg.sender !== senderId && (
                                         <img
-                                            src={`https://i.pravatar.cc/32?u=${msg.sender}`}
+                                            src={`https://cdn-icons-png.flaticon.com/512/3177/3177440.png`}
                                             alt="User"
                                             className="w-6 h-6 sm:w-8 sm:h-8 rounded-nonefull flex-shrink-0"
                                         />
@@ -361,7 +361,7 @@ export default function RealtimeChat() {
 
                                     {msg.sender === senderId && (
                                         <img
-                                            src={`https://i.pravatar.cc/32?u=${senderId}`}
+                                            src={`https://cdn-icons-png.flaticon.com/512/3177/3177440.png`}
                                             alt="You"
                                             className="w-6 h-6 sm:w-8 sm:h-8 rounded-nonefull flex-shrink-0"
                                         />
@@ -372,7 +372,7 @@ export default function RealtimeChat() {
                             {/* Typing indicator */}
                             {isReceiverTyping && (
                                 <div className="flex items-center space-x-2  text-sm text-gray-500 dark:text-gray-400">
-                                    <img src={`https://i.pravatar.cc/24?u=${receiverId}`} alt="User" className="w-6 h-6 rounded-nonefull" />
+                                    <img src={`https://cdn-icons-png.flaticon.com/512/3177/3177440.png`} alt="User" className="w-6 h-6 rounded-nonefull" />
                                     <div className="flex items-center space-x-1">
                                         <Dot className="animate-bounce text-blue-500" />
                                         <Dot className="animate-bounce text-blue-500" style={{ animationDelay: "0.1s" }} />

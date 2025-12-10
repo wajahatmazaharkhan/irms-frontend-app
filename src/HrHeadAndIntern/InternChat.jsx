@@ -20,6 +20,9 @@ export default function RealtimeChat() {
     const [isSending, setIsSending] = useState(false)
     const [isConnected, setIsConnected] = useState(false)
 
+    // ✅ receiver (intern) details
+    const [receiver, setReceiver] = useState(null)
+
     const socketRef = useRef(null)
     const typingTimeoutRef = useRef(null)
     const messagesEndRef = useRef(null)
@@ -147,9 +150,28 @@ export default function RealtimeChat() {
             setTimeout(scrollToBottom, 100)
         } catch (err) {
             console.error("Error fetching messages", err)
-            setError("Failed to load messages. Please try again.")
+
+            // ✅ If no messages yet (404) → empty chat, no error banner
+            if (err.response?.status === 404) {
+                setMessages([])
+                setError(null)
+            } else {
+                setError("Failed to load messages. Please try again.")
+            }
         } finally {
             setIsLoading(false)
+        }
+    }
+
+    // fetch intern / receiver details
+    const fetchReceiverDetails = async () => {
+        try {
+            const res = await axios.get(
+                `${import.meta.env.VITE_BASE_URL}/api/auth/user/${receiverId}`
+            )
+            setReceiver(res.data)
+        } catch (err) {
+            console.error("Failed to fetch receiver details", err)
         }
     }
 
@@ -263,12 +285,13 @@ export default function RealtimeChat() {
         }
     }
 
-    // Initialize socket and fetch messages
+    // Initialize socket and fetch messages + receiver details
     useEffect(() => {
         if (!senderId || !receiverId) return
 
         const socket = initializeSocket()
         fetchMessages()
+        fetchReceiverDetails()
 
         return () => {
             if (typingTimeoutRef.current) {
@@ -304,7 +327,22 @@ export default function RealtimeChat() {
         <>
             <TopNavbar />
             <div className=" max-h-screen h-[84.3vh]   flex flex-col bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:to-gray-800">
-                {/* Header */}
+                {/* Header with intern details */}
+                <div className="px-4 sm:px-6 py-3 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 flex items-center gap-3">
+                    <img
+                        src="https://cdn-icons-png.flaticon.com/512/3177/3177440.png"
+                        alt="Intern"
+                        className="w-8 h-8 sm:w-10 sm:h-10 rounded-nonefull flex-shrink-0"
+                    />
+                    <div className="min-w-0">
+                        <p className="font-semibold text-gray-900 dark:text-gray-100 truncate">
+                            {receiver?.name || "Intern"}
+                        </p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                            {receiver?.email || receiver?.role || ""}
+                        </p>
+                    </div>
+                </div>
 
                 {/* Error Message */}
                 {error && (
@@ -413,6 +451,5 @@ export default function RealtimeChat() {
                 </div>
             </div>
         </>
-
     )
 }

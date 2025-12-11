@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react'; 
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { ArrowLeft } from 'lucide-react';
@@ -142,12 +142,17 @@ const OTPVerification = () => {
     // outer container: light gradient and dark gradient for dark mode
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-blue-100 dark:from-slate-900 dark:to-slate-800 flex items-center justify-center p-4">
       {/* card: white in light, slate-800 in dark; no rounded corners (rounded-none) */}
-      <div className="max-w-md w-full space-y-6 bg-white dark:bg-slate-800 p-8 rounded-none shadow-lg">
+      <div className="max-w-md w-full space-y-6 bg-white dark:bg-slate-800 p-8 rounded-none shadow-lg border border-transparent dark:border-slate-700">
         <div className="text-center">
-          <img src={iispprLogo} alt="IISPPR Logo" className="mx-auto h-16 w-auto mb-4" />
+          <img
+            src={iispprLogo}
+            alt="IISPPR Logo"
+            className="mx-auto h-16 w-auto mb-4 filter-none dark:filter-none"
+          />
           <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Verify OTP</h2>
           <p className="text-gray-600 dark:text-gray-300 mt-2">
-            Enter the 6-digit code sent to <span className="font-medium">{email}</span>
+            Enter the 6-digit code sent to{' '}
+            <span className="font-medium text-gray-800 dark:text-gray-100 break-words">{email}</span>
           </p>
         </div>
 
@@ -166,21 +171,36 @@ const OTPVerification = () => {
                   onChange={(e) => handleChange(index, e.target.value)}
                   onKeyDown={(e) => handleKeyDown(index, e)}
                   onPaste={handlePaste}
-                  className="w-12 h-12 text-center text-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100 rounded-none focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent"
+                  className={
+                    'w-12 h-12 text-center text-xl rounded-none focus:outline-none ' +
+                    'border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-700 ' +
+                    'text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 ' +
+                    'focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent ' +
+                    'transition-shadow duration-150'
+                  }
                   autoFocus={index === 0}
                   aria-label={`OTP digit ${index + 1}`}
                 />
               ))}
             </div>
 
-            {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+            {error && (
+              <p className="text-red-500 text-sm text-center bg-red-50 dark:bg-red-900/20 px-2 py-1 rounded-sm">
+                {error}
+              </p>
+            )}
           </div>
 
           <div className="space-y-4">
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-none shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className={
+                'w-full flex justify-center py-2 px-4 border border-transparent rounded-none shadow-sm text-sm font-medium text-white ' +
+                'bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 ' +
+                'focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-slate-900 ' +
+                'disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150'
+              }
             >
               {isLoading ? (
                 <span className="flex items-center">
@@ -199,7 +219,11 @@ const OTPVerification = () => {
               <button
                 type="button"
                 onClick={() => navigate('/reset-account-password')}
-                className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 font-medium flex items-center justify-center w-full"
+                className={
+                  'text-sm font-medium flex items-center justify-center w-full ' +
+                  'text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 ' +
+                  'focus:outline-none focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-400 focus:ring-offset-0'
+                }
               >
                 <ArrowLeft className="w-4 h-4 mr-1" />
                 Back to Reset Password
@@ -215,7 +239,12 @@ const OTPVerification = () => {
               type="button"
               onClick={handleResendOTP}
               disabled={resendDisabled}
-              className={`font-medium ${resendDisabled ? 'text-gray-400 dark:text-gray-500' : 'text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300'}`}
+              className={
+                'font-medium focus:outline-none ' +
+                (resendDisabled
+                  ? 'text-gray-400 dark:text-gray-500 cursor-not-allowed'
+                  : 'text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300')
+              }
             >
               {resendDisabled ? `Resend OTP (${countdown}s)` : 'Resend OTP'}
             </button>

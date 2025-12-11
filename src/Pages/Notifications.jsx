@@ -268,7 +268,9 @@ const Notifications = () => {
     const userId = localStorage.getItem("userId");
     try {
       const repsonse = await axios.delete(
-        `${import.meta.env.VITE_BASE_URL}/delete-notification/?notificationId=${noteId}&userId=${userId}`,
+        `${
+          import.meta.env.VITE_BASE_URL
+        }/delete-notification/?notificationId=${noteId}&userId=${userId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -441,7 +443,7 @@ const Notifications = () => {
               onClick={() => deleteNoti(selectedNotification._id)}
               className="flex items-center space-x-2 text-red-500 outline-none dark:text-red-400"
             >
-              delete
+              DELETE
               <span className="ml-2">
                 <Trash size={17} />
               </span>

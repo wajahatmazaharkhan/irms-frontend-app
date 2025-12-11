@@ -119,6 +119,7 @@ export default function TaskModal({ taskId }) {
       } finally {
         setLoading(false);
         setModalView(false);
+        window.location.reload();
       }
     }
   };

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from "react"; 
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import CustomNavbar from "./CustomHrNavbar";
@@ -220,37 +220,37 @@ const deleteAttendance = async (userId) => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <CustomNavbar />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid gap-6">
           {/* Header Section */}
-          <Card>
+          <Card className="bg-white dark:bg-gray-800">
             <CardHeader className="space-y-1">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-2xl font-bold">
+                <CardTitle className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                   IISPPR Attendance Management
                 </CardTitle>
-                <Badge variant="secondary" className="flex items-center gap-2">
+                <Badge variant="secondary" className="flex items-center gap-2 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-100">
                   <Calendar className="h-4 w-4" />
                   {displayDate}
                 </Badge>
               </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="dark:bg-gray-800">
               <div className="flex flex-col space-y-4">
                 <div className="flex items-center space-x-4">
                   <div className="relative flex-1">
                     <input
                       type="text"
                       placeholder="Search users..."
-                      className="w-full px-4 py-2 rounded-nonemd border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-4 py-2 rounded-nonemd border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-100 dark:border-gray-600"
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                     />
-                    <Search className="absolute right-3 top-2.5 h-5 w-5 text-gray-400" />
+                    <Search className="absolute right-3 top-2.5 h-5 w-5 text-gray-400 dark:text-gray-300" />
                   </div>
-                  <Badge variant="outline" className="flex items-center gap-2">
+                  <Badge variant="outline" className="flex items-center gap-2 bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-100">
                     <Users className="h-4 w-4" />
                     Total Interns: {users.length}
                   </Badge>
@@ -258,7 +258,7 @@ const deleteAttendance = async (userId) => {
                 <div className="hidden justify-end space-x-4">
                   <Button
                     variant="outline"
-                    className="bg-green-500 hover:bg-green-600 text-white"
+                    className="bg-green-500 hover:bg-green-600 text-white dark:bg-green-600 dark:hover:bg-green-500"
                     onClick={() => handleBulkAction("present")}
                     disabled={processing || filteredUsers.length === 0}
                   >
@@ -266,7 +266,7 @@ const deleteAttendance = async (userId) => {
                   </Button>
                   <Button
                     variant="outline"
-                    className="bg-red-500 hover:bg-red-600 text-white"
+                    className="bg-red-500 hover:bg-red-600 text-white dark:bg-red-600 dark:hover:bg-red-500"
                     onClick={() => handleBulkAction("absent")}
                     disabled={processing || filteredUsers.length === 0}
                   >
@@ -278,84 +278,86 @@ const deleteAttendance = async (userId) => {
           </Card>
 
           {/* Table Section */}
-          <Card>
-            <CardContent className="p-0">
+          <Card className="bg-white dark:bg-gray-800">
+            <CardContent className="p-0 dark:bg-gray-800">
               {loading ? (
                 <div className="flex justify-center items-center h-64">
-                  <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
+                  <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent dark:border-blue-300 dark:border-t-transparent"></div>
                 </div>
               ) : (
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Email</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead className="text-right">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredUsers.length > 0 ? (
-                      filteredUsers.map((user) => (
-                        <TableRow key={user._id}>
-                          <TableCell className="font-medium">
-                            {user.name}
-                          </TableCell>
-                          <TableCell>{user.email}</TableCell>
-                          <TableCell>
-                            <Badge
-                              className={`pointer-events-none ${
-                                attendanceMap[user._id] === "present"
-                                  ? "bg-green-100 text-green-700"
-                                  : attendanceMap[user._id] === "absent"
-                                  ? "bg-red-100 text-red-700"
-                                  : "bg-yellow-100 text-yellow-700"
-                              }`}
-                            >
-                              {attendanceMap[user._id] || "not marked"}
-                            </Badge>
-                          </TableCell>
-                          <TableCell className="text-right">
-                            <div className="flex justify-end space-x-2">
-                              {attendanceMap[user._id] && (
+                <div className="overflow-x-auto">
+                  <Table className="min-w-full bg-white dark:bg-gray-800">
+                    <TableHeader>
+                      <TableRow className="bg-gray-50 dark:bg-gray-700">
+                        <TableHead className="text-left text-sm font-medium text-gray-700 dark:text-gray-200">Name</TableHead>
+                        <TableHead className="text-left text-sm font-medium text-gray-700 dark:text-gray-200">Email</TableHead>
+                        <TableHead className="text-left text-sm font-medium text-gray-700 dark:text-gray-200">Status</TableHead>
+                        <TableHead className="text-right text-sm font-medium text-gray-700 dark:text-gray-200">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody className="divide-y divide-gray-200 dark:divide-gray-700">
+                      {filteredUsers.length > 0 ? (
+                        filteredUsers.map((user) => (
+                          <TableRow key={user._id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                            <TableCell className="font-medium text-gray-900 dark:text-gray-100">
+                              {user.name}
+                            </TableCell>
+                            <TableCell className="text-gray-700 dark:text-gray-300">{user.email}</TableCell>
+                            <TableCell>
+                              <Badge
+                                className={`pointer-events-none ${
+                                  attendanceMap[user._id] === "present"
+                                    ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-200"
+                                    : attendanceMap[user._id] === "absent"
+                                    ? "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-200"
+                                    : "bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-200"
+                                }`}
+                              >
+                                {attendanceMap[user._id] || "not marked"}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="text-right">
+                              <div className="flex justify-end space-x-2">
+                                {attendanceMap[user._id] && (
+                                  <Button
+                                    variant="ghost"
+                                    className="text-red-500 hover:bg-red-100 p-2 dark:text-red-300 dark:hover:bg-red-900/30"
+                                    onClick={() => deleteAttendance(user._id)}
+                                  >
+                                    <Trash2 className="w-5 h-5" />
+                                  </Button>
+                                )}
                                 <Button
-                                  variant="ghost"
-                                  className="text-red-500 hover:bg-red-100 p-2"
-                                  onClick={() => deleteAttendance(user._id)}
+                                  variant="outline"
+                                  className="bg-green-500 hover:bg-green-600 text-white dark:bg-green-600 dark:hover:bg-green-500"
+                                  onClick={() => updateStatus(user._id, "present")}
+                                  disabled={processing || attendanceMap[user._id] === "present" || attendanceMap[user._id] === "absent"}
                                 >
-                                  <Trash2 className="w-5 h-5" />
+                                  Present
                                 </Button>
-                              )}
-                              <Button
-                                variant="outline"
-                                className="bg-green-500 hover:bg-green-600 text-white"
-                                onClick={() => updateStatus(user._id, "present")}
-                                disabled={processing || attendanceMap[user._id] === "present" || attendanceMap[user._id] === "absent"}
-                              >
-                                Present
-                              </Button>
-                              <Button
-                                variant="outline"
-                                className="bg-red-500 hover:bg-red-600 text-white"
-                                onClick={() => updateStatus(user._id, "absent")}
-                                disabled={processing || attendanceMap[user._id] === "present" || attendanceMap[user._id] === "absent"}
-                              >
-                                Absent
-                              </Button>
-                            </div>
+                                <Button
+                                  variant="outline"
+                                  className="bg-red-500 hover:bg-red-600 text-white dark:bg-red-600 dark:hover:bg-red-500"
+                                  onClick={() => updateStatus(user._id, "absent")}
+                                  disabled={processing || attendanceMap[user._id] === "present" || attendanceMap[user._id] === "absent"}
+                                >
+                                  Absent
+                                </Button>
+                              </div>
 
+                            </TableCell>
+                          </TableRow>
+                        ))
+                      ) : (
+                        <TableRow>
+                          <TableCell colSpan={4} className="text-center py-8 text-gray-700 dark:text-gray-300">
+                            No users found
                           </TableCell>
                         </TableRow>
-                      ))
-                    ) : (
-                      <TableRow>
-                        <TableCell colSpan={3} className="text-center py-8">
-                          No users found
-                        </TableCell>
-                      </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
+                      )}
+                    </TableBody>
+                  </Table>
+                </div>
               )}
             </CardContent>
           </Card>
@@ -363,10 +365,10 @@ const deleteAttendance = async (userId) => {
       </main>
 
       <AlertDialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
-        <AlertDialogContent>
+        <AlertDialogContent className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
           <AlertDialogHeader>
-            <AlertDialogTitle>Confirm Bulk Action</AlertDialogTitle>
-            <AlertDialogDescription>
+            <AlertDialogTitle className="text-lg font-semibold">Confirm Bulk Action</AlertDialogTitle>
+            <AlertDialogDescription className="text-sm text-gray-700 dark:text-gray-300">
               You are about to mark <strong>
                 {
                   filteredUsers.filter(user => !attendanceMap[user._id]).length
@@ -374,21 +376,21 @@ const deleteAttendance = async (userId) => {
               </strong>{" "}
               out of <strong>{filteredUsers.length}</strong> users as <strong>{bulkAction}</strong>.
               <br />
-              <span className="text-sm text-gray-600">
+              <span className="text-sm text-gray-600 dark:text-gray-400">
                 Already marked users will be skipped.
               </span>
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={processing}>Cancel</AlertDialogCancel>
+            <AlertDialogCancel disabled={processing} className="dark:text-gray-200">Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={executeBulkAction}
               disabled={processing}
-              className={
+              className={`${
                 bulkAction === "present"
-                  ? "bg-green-500 hover:bg-green-600"
-                  : "bg-red-500 hover:bg-red-600"
-              }
+                  ? "bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-500"
+                  : "bg-red-500 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-500"
+              } text-white`}
             >
               {processing ? "Processing..." : "Confirm"}
             </AlertDialogAction>

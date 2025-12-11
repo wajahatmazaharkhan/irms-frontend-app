@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { UserList } from "./UserList"
-import RealtimeChat from "./RealTimeChat"
-import CustomHrNavbar from "./CustomHrNavbar"
-import axios from "axios"
-import { useParams } from "react-router-dom"
+import { useState, useEffect } from "react";
+import { UserList } from "./UserList";
+import RealtimeChat from "./RealTimeChat";
+import CustomHrNavbar from "./CustomHrNavbar";
+import axios from "axios";
+import { useParams } from "react-router-dom";
 
 /**
  * HRChatDashboard
@@ -14,62 +14,67 @@ import { useParams } from "react-router-dom"
  */
 
 export default function HRChatDashboard() {
-  const [selectedUser, setSelectedUser] = useState(null)
-  const [currentUserId] = useState(localStorage.getItem("userId") || null)
-  const [users, setUsers] = useState([])
-  const { receiverId } = useParams()
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [currentUserId] = useState(localStorage.getItem("userId") || null);
+  const [users, setUsers] = useState([]);
+  const { receiverId } = useParams();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const fetchHrBatchData = async () => {
     try {
-      const hrId = localStorage.getItem("userId")
-      const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/batch/get-ids`)
-      const hrBatches = (response?.data?.data || []).filter(batch =>
-        Array.isArray(batch.hr) && batch.hr.some(hr => hr._id === hrId)
-      )
+      const hrId = localStorage.getItem("userId");
+      const response = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/api/batch/get-ids`
+      );
+      const hrBatches = (response?.data?.data || []).filter(
+        (batch) =>
+          Array.isArray(batch.hr) && batch.hr.some((hr) => hr._id === hrId)
+      );
 
-      const hrInternIds = hrBatches.flatMap(batch =>
-        Array.isArray(batch.interns) ? batch.interns.map(intern => intern._id) : []
-      )
+      const hrInternIds = hrBatches.flatMap((batch) =>
+        Array.isArray(batch.interns)
+          ? batch.interns.map((intern) => intern._id)
+          : []
+      );
 
-      return hrInternIds
+      return hrInternIds;
     } catch (error) {
-      console.error("Error fetching HR batch data:", error)
-      return []
+      console.error("Error fetching HR batch data:", error);
+      return [];
     }
-  }
+  };
 
   const fetchUsers = async () => {
     try {
-      const hrInternIds = await fetchHrBatchData()
-      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/allusers`)
+      const hrInternIds = await fetchHrBatchData();
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/allusers`);
       if (!response.ok) {
-        throw new Error(`Failed to fetch users (Status: ${response.status})`)
+        throw new Error(`Failed to fetch users (Status: ${response.status})`);
       }
-      const result = await response.json()
-      const filteredUsers = (result?.data || []).filter(user =>
-        hrInternIds.includes(user._id) && user.role === "intern"
-      )
-      setUsers(filteredUsers || [])
+      const result = await response.json();
+      const filteredUsers = (result?.data || []).filter(
+        (user) => hrInternIds.includes(user._id) && user.role === "intern"
+      );
+      setUsers(filteredUsers || []);
       // If a receiverId param exists, set selectedUser from users if available
       if (receiverId) {
-        const match = filteredUsers.find(u => u._id === receiverId)
-        if (match) setSelectedUser(match)
+        const match = filteredUsers.find((u) => u._id === receiverId);
+        if (match) setSelectedUser(match);
       }
     } catch (err) {
-      console.error("Error fetching users:", err)
+      console.error("Error fetching users:", err);
     }
-  }
+  };
 
   useEffect(() => {
-    fetchUsers()
+    fetchUsers();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, []);
 
   // close sidebar on desktop when user navigates
   useEffect(() => {
-    setSidebarOpen(false)
-  }, [receiverId])
+    setSidebarOpen(false);
+  }, [receiverId]);
 
   return (
     <>
@@ -80,12 +85,16 @@ export default function HRChatDashboard() {
           {/* Sidebar (md+: visible, sm: toggled) */}
           <div
             className={`fixed inset-y-0 left-0 z-30 w-80 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 transform transition-transform duration-300 md:static md:translate-x-0 ${
-              sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+              sidebarOpen
+                ? "translate-x-0"
+                : "-translate-x-full md:translate-x-0"
             }`}
             aria-hidden={!sidebarOpen && window && window.innerWidth < 768}
           >
             <div className="flex items-center justify-between p-3 border-b border-gray-200 dark:border-gray-800">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Interns</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                Interns
+              </h3>
               <button
                 className="md:hidden px-2 py-1 text-sm text-gray-600 dark:text-gray-300"
                 onClick={() => setSidebarOpen(false)}
@@ -100,7 +109,7 @@ export default function HRChatDashboard() {
                 users={users}
                 selectedUser={selectedUser}
                 setSelectedUser={(user) => {
-                  setSelectedUser(user)
+                  setSelectedUser(user);
                 }}
               />
             </div>
@@ -137,5 +146,5 @@ export default function HRChatDashboard() {
         </div>
       </div>
     </>
-  )
+  );
 }

@@ -43,7 +43,7 @@ const NewPasswordForm = () => {
             { test: /[A-Z]/.test(password), message: "One uppercase letter" },
             { test: /[a-z]/.test(password), message: "One lowercase letter" },
             { test: /\d/.test(password), message: "One number" },
-            { test: /[!@#$%^&*(),.?":{}|<>]/.test(password), message: "One special character" },
+            { test: /[!@#$%^&*(),.?\":{}|<>]/.test(password), message: "One special character" },
         ]
 
         const passedChecks = checks.filter((check) => check.test)
@@ -163,31 +163,39 @@ const NewPasswordForm = () => {
 
     // Get strength text color
     const getStrengthTextColor = () => {
-        if (passwordStrength.score <= 2) return "text-red-600"
-        if (passwordStrength.score <= 3) return "text-yellow-600"
-        return "text-green-600"
+        if (passwordStrength.score <= 2) return "text-red-600 dark:text-red-400"
+        if (passwordStrength.score <= 3) return "text-yellow-600 dark:text-yellow-400"
+        return "text-green-600 dark:text-green-400"
     }
 
     if (!email) return null
 
     const strengthStyles = getStrengthStyles()
 
+    // helper: pick a dark variant for the dynamic strength bar color
+    const getDarkVariantForStrength = (baseClass) => {
+        if (baseClass === "bg-red-500") return "dark:bg-red-400"
+        if (baseClass === "bg-yellow-500") return "dark:bg-yellow-400"
+        if (baseClass === "bg-green-500") return "dark:bg-green-400"
+        return ""
+    }
+
     return (
-        <div className="min-h-screen bg-gradient-to-b from-blue-50 to-blue-100 flex items-center justify-center p-4">
-            <div className="max-w-md w-full space-y-6 bg-white p-8 rounded-nonexl shadow-lg">
+        <div className="min-h-screen bg-gradient-to-b from-blue-50 to-blue-100 dark:from-slate-900 dark:to-slate-800 flex items-center justify-center p-4">
+            <div className="max-w-md w-full space-y-6 bg-white dark:bg-slate-800 p-8 rounded-nonexl shadow-lg">
                 {/* Logo and Header */}
                 <div className="text-center">
                     <img src={iispprLogo || "/placeholder.svg"} alt="IISPPR Logo" className="mx-auto h-16 w-auto mb-4" />
-                    <h2 className="text-2xl font-bold text-gray-900">Set New Password</h2>
-                    <p className="text-gray-600 mt-2">
-                        Create a strong password for <span className="font-medium">{email}</span>
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Set New Password</h2>
+                    <p className="text-gray-600 dark:text-gray-300 mt-2">
+                        Create a strong password for <span className="font-medium text-gray-900 dark:text-gray-100">{email}</span>
                     </p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
                     {/* New Password Field */}
                     <div className="space-y-2">
-                        <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700">
+                        <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
                             New Password
                         </label>
                         <div className="relative">
@@ -197,35 +205,38 @@ const NewPasswordForm = () => {
                                 type={showPassword.new ? "text" : "password"}
                                 value={formData.newPassword}
                                 onChange={handleChange}
-                                className={`w-full px-3 py-2 pr-10 border rounded-nonemd shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${errors.newPassword ? "border-red-500" : "border-gray-300"
+                                className={`w-full px-3 py-2 pr-10 border rounded-nonemd shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent ${errors.newPassword ? "border-red-500 dark:border-red-400 bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100" : "border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100"
                                     }`}
                                 placeholder="Enter your new password"
+                                aria-invalid={!!errors.newPassword}
+                                aria-describedby={errors.newPassword ? "newPassword-error" : undefined}
                             />
                             <button
                                 type="button"
-                                className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-gray-500 hover:text-gray-700"
+                                className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-gray-100"
                                 onClick={() => togglePasswordVisibility("new")}
+                                aria-label={showPassword.new ? "Hide new password" : "Show new password"}
                             >
                                 {showPassword.new ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                             </button>
                         </div>
-                        {errors.newPassword && <p className="text-red-500 text-sm">{errors.newPassword}</p>}
+                        {errors.newPassword && <p id="newPassword-error" className="text-red-500 text-sm">{errors.newPassword}</p>}
 
                         {/* Password Strength Indicator */}
                         {formData.newPassword && (
                             <div className="space-y-2">
                                 <div className="flex items-center justify-between">
-                                    <span className="text-sm text-gray-600">Password strength:</span>
+                                    <span className="text-sm text-gray-600 dark:text-gray-300">Password strength:</span>
                                     <span className={`text-sm font-medium ${getStrengthTextColor()}`}>{getStrengthText()}</span>
                                 </div>
-                                <div className="w-full bg-gray-200 rounded-nonefull h-2">
+                                <div className="w-full bg-gray-200 dark:bg-slate-700 rounded-nonefull h-2">
                                     <div
-                                        className={`h-2 rounded-nonefull transition-all duration-300 ${strengthStyles.color}`}
+                                        className={`h-2 rounded-nonefull transition-all duration-300 ${strengthStyles.color} ${getDarkVariantForStrength(strengthStyles.color)}`}
                                         style={{ width: strengthStyles.width }}
                                     />
                                 </div>
                                 {passwordStrength.feedback.length > 0 && (
-                                    <div className="text-sm text-gray-600">
+                                    <div className="text-sm text-gray-600 dark:text-gray-300">
                                         <p className="font-medium">Password must include:</p>
                                         <ul className="list-disc list-inside space-y-1 mt-1">
                                             {passwordStrength.feedback.map((item, index) => (
@@ -240,7 +251,7 @@ const NewPasswordForm = () => {
 
                     {/* Confirm Password Field */}
                     <div className="space-y-2">
-                        <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+                        <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
                             Confirm Password
                         </label>
                         <div className="relative">
@@ -250,21 +261,24 @@ const NewPasswordForm = () => {
                                 type={showPassword.confirm ? "text" : "password"}
                                 value={formData.confirmPassword}
                                 onChange={handleChange}
-                                className={`w-full px-3 py-2 pr-10 border rounded-nonemd shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${errors.confirmPassword ? "border-red-500" : "border-gray-300"
+                                className={`w-full px-3 py-2 pr-10 border rounded-nonemd shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent ${errors.confirmPassword ? "border-red-500 dark:border-red-400 bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100" : "border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100"
                                     }`}
                                 placeholder="Confirm your new password"
+                                aria-invalid={!!errors.confirmPassword}
+                                aria-describedby={errors.confirmPassword ? "confirmPassword-error" : undefined}
                             />
                             <button
                                 type="button"
-                                className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-gray-500 hover:text-gray-700"
+                                className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-gray-100"
                                 onClick={() => togglePasswordVisibility("confirm")}
+                                aria-label={showPassword.confirm ? "Hide confirm password" : "Show confirm password"}
                             >
                                 {showPassword.confirm ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                             </button>
                         </div>
-                        {errors.confirmPassword && <p className="text-red-500 text-sm">{errors.confirmPassword}</p>}
+                        {errors.confirmPassword && <p id="confirmPassword-error" className="text-red-500 text-sm">{errors.confirmPassword}</p>}
                         {formData.confirmPassword && formData.newPassword === formData.confirmPassword && (
-                            <div className="flex items-center text-green-600 text-sm">
+                            <div className="flex items-center text-green-600 dark:text-green-400 text-sm">
                                 <CheckCircle className="w-4 h-4 mr-1" />
                                 Passwords match
                             </div>
@@ -276,7 +290,8 @@ const NewPasswordForm = () => {
                         <button
                             type="submit"
                             disabled={isLoading || passwordStrength.score < 4}
-                            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-nonemd shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-nonemd shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                            aria-disabled={isLoading || passwordStrength.score < 4}
                         >
                             {isLoading ? (
                                 <span className="flex items-center">
@@ -285,6 +300,7 @@ const NewPasswordForm = () => {
                                         xmlns="http://www.w3.org/2000/svg"
                                         fill="none"
                                         viewBox="0 0 24 24"
+                                        aria-hidden="true"
                                     >
                                         <circle
                                             className="opacity-25"
@@ -312,7 +328,7 @@ const NewPasswordForm = () => {
                             <button
                                 type="button"
                                 onClick={() => navigate("/verify-otp")}
-                                className="text-sm text-blue-600 hover:text-blue-500 font-medium flex items-center justify-center w-full"
+                                className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 font-medium flex items-center justify-center w-full"
                             >
                                 <ArrowLeft className="w-4 h-4 mr-1" />
                                 Back to OTP Verification
@@ -322,15 +338,15 @@ const NewPasswordForm = () => {
                 </form>
 
                 {/* Security Tips */}
-                <div className="mt-6 p-4 bg-blue-50 rounded-nonelg">
+                <div className="mt-6 p-4 bg-blue-50 dark:bg-slate-700 rounded-nonelg">
                     <div className="flex items-start">
-                        <Lock className="w-5 h-5 text-blue-600 mt-0.5 mr-2 flex-shrink-0" />
-                        <div className="text-sm text-blue-800">
+                        <Lock className="w-5 h-5 text-blue-600 dark:text-blue-300 mt-0.5 mr-2 flex-shrink-0" />
+                        <div className="text-sm text-blue-800 dark:text-blue-200">
                             <p className="font-medium mb-1">Security Tips:</p>
-                            <ul className="space-y-1 text-blue-700">
-                                <li>• Use a unique password you haven't used before</li>
+                            <ul className="space-y-1 text-blue-700 dark:text-blue-100">
+                                <li>• Use a unique password you {`haven't`} used before</li>
                                 <li>• Consider using a password manager</li>
-                                <li>• Don't share your password with anyone</li>
+                                <li>• {`Don't`} share your password with anyone</li>
                             </ul>
                         </div>
                     </div>

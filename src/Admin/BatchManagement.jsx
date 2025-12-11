@@ -1,4 +1,4 @@
-import CustomNavbar from "./CustomNavbar";
+import CustomNavbar from "./CustomNavbar"; 
 import useTitle from "@/Components/useTitle";
 import { useState, useEffect } from "react";
 import axios from "axios";
@@ -458,13 +458,13 @@ function BatchManagement() {
     return (
       <>
         <CustomNavbar />
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
           <div className="text-center">
-            <Loader className="w-12 h-12 text-blue-600 mx-auto mb-4 animate-spin" />
-            <h3 className="text-lg font-medium text-gray-700 mb-2">
+            <Loader className="w-12 h-12 text-blue-600 dark:text-blue-400 mx-auto mb-4 animate-spin" />
+            <h3 className="text-lg font-medium text-gray-700 dark:text-gray-200 mb-2">
               Loading batches...
             </h3>
-            <p className="text-gray-500">Please wait while we fetch the data</p>
+            <p className="text-gray-500 dark:text-gray-400">Please wait while we fetch the data</p>
           </div>
         </div>
       </>
@@ -475,16 +475,16 @@ function BatchManagement() {
     return (
       <>
         <CustomNavbar />
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
           <div className="text-center">
-            <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-700 mb-2">
+            <AlertCircle className="w-12 h-12 text-red-500 dark:text-red-400 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-700 dark:text-gray-200 mb-2">
               Error Loading Data
             </h3>
-            <p className="text-gray-500 mb-4">{error}</p>
+            <p className="text-gray-500 dark:text-gray-400 mb-4">{error}</p>
             <button
               onClick={() => window.location.reload()}
-              className="bg-blue-600 text-white px-6 py-2 rounded-nonelg hover:bg-blue-700 transition-colors"
+              className="bg-blue-600 dark:bg-blue-500 text-white px-6 py-2 rounded-nonelg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors"
             >
               Retry
             </button>
@@ -497,54 +497,64 @@ function BatchManagement() {
   return (
     <>
       <CustomNavbar />
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
         <div className="container mx-auto p-6">
           {/* Header Section */}
           <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-gray-800 mb-2">
+            <h1 className="text-4xl font-bold text-gray-800 dark:text-gray-100 mb-2">
               Batch Management
             </h1>
-            <p className="text-gray-600 text-lg">
+            <p className="text-gray-600 dark:text-gray-300 text-lg">
               Manage month-wise intern sessions and track batch performance
             </p>
           </div>
 
-          <BatchStats batchData={batchData} />
-          <QuickActions setShowCreateForm={setShowCreateForm} />
+          <div className="mb-6">
+            {/* Pass a wrapper to allow BatchStats and QuickActions to remain unchanged.
+                They should adopt dark mode if they use Tailwind dark: classes. */}
+            <BatchStats batchData={batchData} />
+          </div>
 
-          <Filters
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-            filterStatus={filterStatus}
-            setFilterStatus={setFilterStatus}
-            selectedMonth={selectedMonth}
-            setSelectedMonth={setSelectedMonth}
-            uniqueMonths={uniqueMonths}
-          />
+          <div className="mb-6">
+            <QuickActions setShowCreateForm={setShowCreateForm} />
+          </div>
+
+          <div className="mb-6">
+            <Filters
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
+              filterStatus={filterStatus}
+              setFilterStatus={setFilterStatus}
+              selectedMonth={selectedMonth}
+              setSelectedMonth={setSelectedMonth}
+              uniqueMonths={uniqueMonths}
+            />
+          </div>
 
           {/* Batch Cards */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {filteredBatches.map((batch) => (
-              <BatchCard
-                key={batch.id}
-                batch={batch}
-                handleView={handleView}
-                handleEditClick={handleEditClick}
-                handleDeleteBatch={handleDeleteBatch}
-                deleteLoading={deleteLoading}
-                viewLoading={viewLoading === batch.id}
-                editLoading={editLoading === batch.id}
-              />
+              <div key={batch.id} className="rounded-2xl shadow-sm dark:shadow-none">
+                <BatchCard
+                  batch={batch}
+                  handleView={handleView}
+                  handleEditClick={handleEditClick}
+                  handleDeleteBatch={handleDeleteBatch}
+                  deleteLoading={deleteLoading}
+                  viewLoading={viewLoading === batch.id}
+                  editLoading={editLoading === batch.id}
+                />
+              </div>
             ))}
           </div>
 
           {filteredBatches.length === 0 && !loading && (
             <div className="text-center py-12">
-              <AlertCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-700 mb-2">
+              <AlertCircle className="w-12 h-12 text-gray-400 dark:text-gray-400 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-700 dark:text-gray-200 mb-2">
                 No batches found
               </h3>
-              <p className="text-gray-500">
+              <p className="text-gray-500 dark:text-gray-400">
                 {batchData.length === 0
                   ? "No batch data available. Create your first batch to get started."
                   : "Try adjusting your search or filter criteria"}

@@ -512,13 +512,13 @@ function HRBatchManagement() {
     return (
       <>
         <CustomNavbar />
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-slate-900 dark:to-slate-800 flex items-center justify-center">
           <div className="text-center">
-            <Loader className="w-12 h-12 text-blue-600 mx-auto mb-4 animate-spin" />
-            <h3 className="text-lg font-medium text-gray-700 mb-2">
+            <Loader className="w-12 h-12 text-blue-600 mx-auto mb-4 animate-spin dark:text-blue-400" />
+            <h3 className="text-lg font-medium text-gray-700 dark:text-gray-200 mb-2">
               Loading batches...
             </h3>
-            <p className="text-gray-500">Please wait while we fetch the data</p>
+            <p className="text-gray-500 dark:text-gray-400">Please wait while we fetch the data</p>
           </div>
         </div>
       </>
@@ -529,16 +529,16 @@ function HRBatchManagement() {
     return (
       <>
         <CustomNavbar />
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-slate-900 dark:to-slate-800 flex items-center justify-center">
           <div className="text-center">
             <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-700 mb-2">
+            <h3 className="text-lg font-medium text-gray-700 dark:text-gray-200 mb-2">
               Error Loading Data
             </h3>
-            <p className="text-gray-500 mb-4">{error}</p>
+            <p className="text-gray-500 dark:text-gray-400 mb-4">{error}</p>
             <button
               onClick={() => window.location.reload()}
-              className="bg-blue-600 text-white px-6 py-2 rounded-nonelg hover:bg-blue-700 transition-colors"
+              className="bg-blue-600 text-white px-6 py-2 rounded-nonelg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
             >
               Retry
             </button>
@@ -551,32 +551,37 @@ function HRBatchManagement() {
   return (
     <>
       <CustomNavbar />
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-slate-900 dark:to-slate-800">
         <div className="container mx-auto p-6">
           <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-gray-800 mb-2">
+            <h1 className="text-4xl font-bold text-gray-800 dark:text-gray-100 mb-2">
               Batch Management
             </h1>
-            <p className="text-gray-600 text-lg">
+            <p className="text-gray-600 dark:text-gray-300 text-lg">
               Manage month-wise intern sessions and track batch performance
             </p>
           </div>
 
-          <BatchStats batchData={batchData} />
-          <QuickActions
-            setShowCreateForm={setShowCreateForm}
-            onViewRequests={fetchJoinRequests}
-          />
+          <div className="mb-6">
+            {/* BatchStats & QuickActions are external components - ensure they receive same props */}
+            <BatchStats batchData={batchData} />
+            <QuickActions
+              setShowCreateForm={setShowCreateForm}
+              onViewRequests={fetchJoinRequests}
+            />
+          </div>
 
-          <Filters
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-            filterStatus={filterStatus}
-            setFilterStatus={setFilterStatus}
-            selectedMonth={selectedMonth}
-            setSelectedMonth={setSelectedMonth}
-            uniqueMonths={uniqueMonths}
-          />
+          <div className="mb-6">
+            <Filters
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
+              filterStatus={filterStatus}
+              setFilterStatus={setFilterStatus}
+              selectedMonth={selectedMonth}
+              setSelectedMonth={setSelectedMonth}
+              uniqueMonths={uniqueMonths}
+            />
+          </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {filteredBatches.map((batch) => (
@@ -595,11 +600,11 @@ function HRBatchManagement() {
 
           {filteredBatches.length === 0 && !loading && (
             <div className="text-center py-12">
-              <AlertCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-700 mb-2">
+              <AlertCircle className="w-12 h-12 text-gray-400 dark:text-gray-500 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-700 dark:text-gray-200 mb-2">
                 No batches found
               </h3>
-              <p className="text-gray-500">
+              <p className="text-gray-500 dark:text-gray-400">
                 {batchData.length === 0
                   ? "No batch data available. Create your first batch to get started."
                   : "Try adjusting your search or filter criteria"}
@@ -652,10 +657,10 @@ function HRBatchManagement() {
 
       {showRequestsPanel && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-nonelg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+          <div className="bg-white dark:bg-slate-800 rounded-nonelg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-800">
+                <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
                   Batch Join Requests
                 </h2>
                 <button
@@ -663,7 +668,7 @@ function HRBatchManagement() {
                     setShowRequestsPanel(false);
                     setSelectedRequests([]);
                   }}
-                  className="text-gray-500 hover:text-gray-700"
+                  className="text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-200 focus:outline-none"
                 >
                   <X size={24} />
                 </button>
@@ -671,26 +676,26 @@ function HRBatchManagement() {
 
               {requestsLoading ? (
                 <div className="text-center py-8">
-                  <Loader className="w-8 h-8 text-blue-600 mx-auto mb-4 animate-spin" />
-                  <p className="text-gray-500">Loading join requests...</p>
+                  <Loader className="w-8 h-8 text-blue-600 mx-auto mb-4 animate-spin dark:text-blue-400" />
+                  <p className="text-gray-500 dark:text-gray-400">Loading join requests...</p>
                 </div>
               ) : joinRequests.length === 0 ? (
                 <div className="text-center py-8">
-                  <p className="text-gray-500">No pending join requests found</p>
+                  <p className="text-gray-500 dark:text-gray-400">No pending join requests found</p>
                 </div>
               ) : (
                 <>
                   <div className="flex gap-4 mb-4">
                     <button
                       onClick={() => handleSelectAll()}
-                      className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
+                      className="px-4 py-2 bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-200 rounded hover:bg-gray-300 dark:hover:bg-slate-600 focus:outline-none"
                     >
                       {selectedRequests.length === joinRequests.length ? 'Deselect All' : 'Select All'}
                     </button>
                     <button
                       onClick={() => processRequests('approve')}
                       disabled={isProcessing}
-                      className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50 flex items-center gap-2"
+                      className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50 flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-green-500 dark:focus:ring-green-400"
                     >
                       {isProcessing ? (
                         <Loader className="animate-spin" size={18} />
@@ -702,7 +707,7 @@ function HRBatchManagement() {
                     <button
                       onClick={() => processRequests('reject')}
                       disabled={isProcessing}
-                      className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50 flex items-center gap-2"
+                      className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50 flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-red-500 dark:focus:ring-red-400"
                     >
                       {isProcessing ? (
                         <Loader className="animate-spin" size={18} />
@@ -717,26 +722,26 @@ function HRBatchManagement() {
                     {joinRequests.map((request) => (
                       <div
                         key={request._id}
-                        className="border rounded-nonelg p-4 hover:bg-gray-50"
+                        className="border rounded-nonelg p-4 hover:bg-gray-50 dark:hover:bg-slate-700 border-gray-200 dark:border-slate-700"
                       >
                         <div className="flex items-center gap-4">
                           <input
                             type="checkbox"
                             checked={selectedRequests.includes(request._id)}
                             onChange={() => handleRequestSelection(request._id)}
-                            className="h-5 w-5 text-blue-600 rounded"
+                            className="h-5 w-5 text-blue-600 rounded focus:ring-blue-500"
                           />
                           <div className="flex-1">
                             <div className="flex justify-between">
-                              <h3 className="font-medium text-gray-900">
+                              <h3 className="font-medium text-gray-900 dark:text-gray-100">
                                 {request.name}
                               </h3>
-                              <span className="text-sm text-gray-500">
+                              <span className="text-sm text-gray-500 dark:text-gray-300">
                                 Batch: {request.batchName}
                               </span>
                             </div>
-                            <p className="text-gray-600">{request.email}</p>
-                            <p className="text-sm text-gray-500">
+                            <p className="text-gray-600 dark:text-gray-300">{request.email}</p>
+                            <p className="text-sm text-gray-500 dark:text-gray-400">
                               Department: {request.department}
                             </p>
                           </div>

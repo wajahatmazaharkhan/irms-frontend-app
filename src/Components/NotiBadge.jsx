@@ -17,13 +17,13 @@ const NotiBadge = ({ count }) => {
         <>
           <span
             className="absolute -top-1 left-7 bg-red-500 text-white text-xs 
-            rounded-nonefull w-4 h-4 flex items-center justify-center"
+            rounded-full w-4 h-4 flex items-center justify-center"
           >
             {count}
           </span>
           <span
             className="absolute -top-1 left-7 bg-red-500 text-white text-xs 
-            rounded-nonefull w-4 h-4 animate-ping opacity-75"
+            rounded-full w-4 h-4 animate-ping opacity-75"
           ></span>
         </>
       )}

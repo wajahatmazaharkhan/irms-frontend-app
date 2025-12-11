@@ -25,7 +25,8 @@ const TopNavbar = () => {
   const location = useLocation();
 
   // App context
-  const { notiCounter, setNotiCounter, dashboard, setDashboard } = useAppContext();
+  const { notiCounter, setNotiCounter, dashboard, setDashboard } =
+    useAppContext();
   const { loggedIn } = useAuthContext();
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -57,7 +58,7 @@ const TopNavbar = () => {
     },
     {
       label: "Settings",
-      path: "/settings", 
+      path: "/settings",
       icon: <SettingsIcon className="w-4 h-4" />,
     },
     {
@@ -89,7 +90,11 @@ const TopNavbar = () => {
 
     // Admin Routes
     { path: "/admin-access", label: "Admin Dashboard", adminOnly: true },
-    { path: "/projectmanagement", label: "Project Management", adminOnly: true },
+    {
+      path: "/projectmanagement",
+      label: "Project Management",
+      adminOnly: true,
+    },
     { path: "/admintask", label: "Admin Tasks", adminOnly: true },
     { path: "/weeklyreport", label: "Weekly Reports", adminOnly: true },
     { path: "/allusers", label: "All Users", adminOnly: true },
@@ -295,10 +300,19 @@ const TopNavbar = () => {
     if (loggedIn) {
       const fetchNotifications = async () => {
         const userId = localStorage.getItem("userId");
+        const reqBody = { userId: userId };
         try {
           const response = await fetch(
-            `${import.meta.env.VITE_BASE_URL}/get-notifications?userId=${userId}`
+            `${import.meta.env.VITE_BASE_URL}/get-notifications`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(reqBody),
+            }
           );
+          console.log("🚀 ~ fetchNotifications ~ response:", response);
           if (!response.ok) throw new Error("Failed to fetch notifications");
           const data = await response.json();
           setNotiCounter(data.notifications.notifications.length);
@@ -435,15 +449,30 @@ const TopNavbar = () => {
           <div className="flex items-center space-x-5">
             {loggedIn && (
               <div className="relative">
+                {/* Tight wrapper: inline-flex so absolute badge anchors to icon box */}
                 <Link
                   to="/notifications"
-                  className="relative p-2 rounded-full transition-colors"
+                  className="relative inline-flex items-center justify-center p-2 rounded-full transition-colors"
+                  aria-label={`Notifications (${notiCounter})`}
                 >
+                  {/* Icon (same size as mobile NotiBadge) */}
                   <Bell className="w-5 h-5 text-gray-600 dark:text-slate-200" />
+
+                  {/* Badge anchored to the wrapper's top-right, slightly outside */}
                   {notiCounter > 0 && (
-                    <span className="absolute top-0 right-0 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-red-500 rounded-full">
-                      {notiCounter > 9 ? "9+" : notiCounter}
-                    </span>
+                    <>
+                      <span
+                        className="absolute -top-1 -right-5 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-red-500 rounded-full"
+                        aria-hidden="true"
+                      >
+                        {notiCounter > 9 ? "9+" : notiCounter}
+                      </span>
+                      {/* optional ping behind number */}
+                      <span
+                        className="absolute -top-1 -right-5 rounded-full w-5 h-5 animate-ping opacity-75 bg-red-500"
+                        aria-hidden="true"
+                      />
+                    </>
                   )}
                 </Link>
               </div>

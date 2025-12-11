@@ -293,7 +293,6 @@ const Notifications = () => {
   return (
     <>
       <Navbar />
-      <SideNav />
       <div className="relative bg-gray-50 dark:bg-slate-950 min-h-screen ml-0 md:ml-32 dark:text-slate-100">
         <div className="p-6">
           <div className="max-w-5xl mx-auto">

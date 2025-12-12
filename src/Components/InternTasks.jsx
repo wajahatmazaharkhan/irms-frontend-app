@@ -57,6 +57,8 @@ const InternTasksPage = () => {
       try {
         setLoading(true);
         const userId = localStorage.getItem("userId");
+        const role = localStorage.getItem("role");
+
         if (!userId) throw new Error("User ID not found in localStorage");
 
         const usersResponse = await fetch(`${baseUrl}/allusers`);
@@ -80,7 +82,8 @@ const InternTasksPage = () => {
         setBatch(batchData);
 
         if (batchData.tasks?.length > 0) {
-          await fetchTaskDetails(batchData.tasks);
+          // Pass userId and role so fetchTaskDetails can filter appropriately
+          await fetchTaskDetails(batchData.tasks, userId, role);
         }
 
         setLoading(false);
@@ -91,11 +94,21 @@ const InternTasksPage = () => {
       }
     };
 
-    const fetchTaskDetails = async (tasks) => {
+    const fetchTaskDetails = async (tasks, userId, role) => {
       try {
         setTasksLoading(true);
+
+        // Roles that can see all tasks
+        const privilegedRoles = ["admin", "hr", "hrHead"];
+
+        // If user is not privileged, only keep tasks assigned to them
+        const tasksToFetch =
+          privilegedRoles.includes(role) || !role
+            ? tasks
+            : tasks.filter((t) => String(t.assignedTo) === String(userId));
+
         const detailed = await Promise.all(
-          tasks.map(async (t) => {
+          tasksToFetch.map(async (t) => {
             try {
               const res = await fetch(`${baseUrl}/task/get-task/${t.taskId}`);
               if (!res.ok) throw new Error("Failed to fetch task");
@@ -110,6 +123,7 @@ const InternTasksPage = () => {
             }
           })
         );
+
         setTasksWithDetails(detailed);
       } catch (err) {
         console.error("Error fetching task details:", err);
@@ -119,6 +133,7 @@ const InternTasksPage = () => {
     };
 
     fetchBatchData();
+    // keep baseUrl as dependency; you may add role if role can change during session
   }, [baseUrl]);
 
   // Helper: compute completion stats
@@ -450,9 +465,7 @@ const InternTasksPage = () => {
                     </div>
                     <div className="flex flex-col">
                       <span className="opacity-80">Overdue</span>
-                      <span className="text-xl font-bold">
-                        {stats.overdue}
-                      </span>
+                      <span className="text-xl font-bold">{stats.overdue}</span>
                     </div>
                     <div className="flex flex-col">
                       <span className="opacity-80">Completion</span>

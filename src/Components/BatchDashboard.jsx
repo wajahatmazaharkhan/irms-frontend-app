@@ -89,7 +89,7 @@ const BatchDashboard = () => {
         setBatch(batchData);
 
         if (batchData.tasks?.length > 0) {
-          await fetchTaskDetails(batchData.tasks);
+          await fetchTaskDetails(batchData.tasks, userId);
         }
 
         setLoading(false);
@@ -99,17 +99,25 @@ const BatchDashboard = () => {
       }
     };
 
-    const fetchTaskDetails = async (tasks) => {
+    const fetchTaskDetails = async (tasks, currentUserId) => {
       try {
         setTasksLoading(true);
+
+        // Option A: Filter tasks array first to only those assigned to current user
+        // Compare as strings because one side might be ObjectId
+        const tasksForUser = tasks.filter(
+          (t) => String(t.assignedTo) === String(currentUserId)
+        );
+
         const tasksWithDetails = await Promise.all(
-          tasks.map(async (task) => {
+          tasksForUser.map(async (task) => {
             try {
               const response = await fetch(
                 `${baseUrl}/task/get-task/${task.taskId}`
               );
               if (!response.ok) throw new Error("Failed to fetch task");
               const data = await response.json();
+              // combine both batch-level metadata and full details
               return {
                 ...task,
                 details: data.taskDetails,
@@ -123,6 +131,7 @@ const BatchDashboard = () => {
             }
           })
         );
+
         setTasksWithDetails(tasksWithDetails);
       } catch (err) {
         console.error("Error fetching task details:", err);
@@ -130,7 +139,6 @@ const BatchDashboard = () => {
         setTasksLoading(false);
       }
     };
-
     fetchBatchData();
   }, [baseUrl]);
 

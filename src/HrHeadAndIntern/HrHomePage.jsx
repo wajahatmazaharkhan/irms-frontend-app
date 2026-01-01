@@ -23,7 +23,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 function AdminHomePage() {
-  useTitle("IRMS | HR Dashboard");
+  useTitle("HR Dashboard");
 
   const [uptime, setUptime] = useState("");
 

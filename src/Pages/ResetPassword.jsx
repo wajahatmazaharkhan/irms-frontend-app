@@ -1,4 +1,4 @@
-import React, { useState } from "react"; 
+import React, { useState } from "react";
 import { Mail, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
@@ -34,20 +34,22 @@ const PasswordResetPage = () => {
 
     try {
       // Simulate API call to send OTP
-      await axios.post(`${import.meta.env.VITE_BASE_URL}/user/sendresetotp`, { email });
+      await axios.post(`${import.meta.env.VITE_BASE_URL}/user/sendresetotp`, {
+        email,
+      });
 
       // Store email in session storage for OTP verification
-      sessionStorage.setItem('resetEmail', email);
+      sessionStorage.setItem("resetEmail", email);
 
       // Show success message
       toast.success("OTP sent to your email!");
 
       // Redirect to OTP verification
-      navigate('/verify-otp');
+      navigate("/verify-otp");
     } catch (error) {
       console.error("Error sending OTP:", error);
-      setError("Failed to send OTP. Please try again later.");
-      toast.error("Failed to send OTP. Please try again later.");
+      setError(error?.response?.data?.message);
+      toast.error(error?.response?.data?.message);
     } finally {
       setIsLoading(false);
     }

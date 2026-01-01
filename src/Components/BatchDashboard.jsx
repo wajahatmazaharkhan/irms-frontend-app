@@ -29,7 +29,7 @@ import { Calendar as CalendarUI } from "react-calendar";
 
 const BatchDashboard = () => {
   const role = localStorage.getItem("role");
-  useTitle("IRMS | Intern Dashboard");
+  useTitle("Intern Dashboard");
   const [batch, setBatch] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -342,7 +342,7 @@ const BatchDashboard = () => {
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20">
                 <div className="text-center">
                   <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-nowrap">
-                    IRMS | Dashboard
+                    Dashboard
                   </h1>
                   <p className="text-blue-100 text-lg md:text-xl max-w-2xl mx-auto">
                     Track your internship progress and stay updated with your

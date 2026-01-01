@@ -172,7 +172,7 @@ export default function CustomHrNavbar() {
             </div>
             <div className="hidden sm:block hover:cursor-default">
               <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
-                IRMS | {userData.role === "admin" ? "Admin" : "HR"} Portal
+                {userData.role === "admin" ? "Admin" : "HR"} Portal
               </h1>
             </div>
           </div>

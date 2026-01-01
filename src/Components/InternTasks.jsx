@@ -19,7 +19,7 @@ import TaskModal from "./TaskModal";
 import { Button } from "@/Components/ui/button";
 
 const InternTasksPage = () => {
-  useTitle("IRMS | Tasks");
+  useTitle("Tasks");
   const navigate = useNavigate();
   const { modalView, setModalView } = useAppContext();
 

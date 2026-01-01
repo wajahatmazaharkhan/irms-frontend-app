@@ -94,7 +94,7 @@ const Signin = ({ onSwitchToSignup }) => {
       setIsLoading(false);
 
       if (error.response) {
-        toast.error(error.response.data.message || "Login failed");
+        toast.error(error?.response?.data?.message || "Login failed");
       } else {
         toast.error("Login failed. Please try again.");
       }

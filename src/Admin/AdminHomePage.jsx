@@ -24,7 +24,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 function AdminHomePage() {
-  useTitle("IRMS | Admin Dashboard");
+  useTitle("Admin Dashboard");
   const permissions = JSON.parse(localStorage.getItem("permissions") || "[]");
   const [uptime, setUptime] = useState("");
 

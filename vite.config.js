@@ -9,7 +9,12 @@ export default defineConfig(({ mode }) => {
     plugins: [react()],
     server: {
       host: true, // Expose to all networks
-      port: parseInt(env.PORT) || 3000 // Use Railway's PORT or default to 3000
+      port: parseInt(env.PORT) || 3000, // Use Railway's PORT or default to 3000
+      allowedHosts: [
+        'ims-frontend-app-production.up.railway.app',
+        '.railway.app', // Allow all Railway subdomains
+        'localhost'
+      ]
     },
     resolve: {
       alias: {

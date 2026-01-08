@@ -10,7 +10,13 @@ export default defineConfig(({ mode }) => {
     server: {
       host: true, // Expose to all networks
       port: parseInt(env.PORT) || 3000, // Use Railway's PORT or default to 3000
-      allowedHosts: ["www.iisppr.com", "iisppr.com"],
+      allowedHosts: [
+        "www.iisppr.com",
+        "iisppr.com",
+        "ims-frontend-app-production.up.railway.app",
+        ".railway.app", // Allow all Railway subdomains
+        "localhost",
+      ],
     },
     resolve: {
       alias: {

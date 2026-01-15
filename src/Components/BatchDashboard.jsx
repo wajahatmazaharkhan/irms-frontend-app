@@ -80,6 +80,8 @@ const BatchDashboard = () => {
           return;
         }
 
+        console.log(batchId)
+
         const batchResponse = await fetch(`${baseUrl}/batches/${batchId}`);
         if (!batchResponse.ok) {
           throw new Error("Failed to fetch batch data");

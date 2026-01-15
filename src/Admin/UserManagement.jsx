@@ -720,6 +720,8 @@ const UserManagement = () => {
     </div>
   );
 
+  const userid = localStorage.getItem("userId");
+
   return (
     <>
       <CustomNavbar />

@@ -11,6 +11,7 @@ import {
   Menu,
   X,
   ChevronDown,
+  User,
 } from "lucide-react";
 import { Logout } from "@/Pages/pageIndex";
 import axios from "axios";
@@ -79,6 +80,12 @@ export default function CustomHrNavbar() {
       path: "/hrhomepage",
       icon: Home,
       active: location.pathname === "/HrHomepage",
+    },
+    {
+      name: "User Management",
+      path: "/user-management",
+      icon: User,
+      active: location.pathname === "/user-management",
     },
     {
       name: "Project Management",

@@ -26,39 +26,62 @@ import axios from "axios";
 function AdminHomePage() {
   useTitle("Admin Dashboard");
   const permissions = JSON.parse(localStorage.getItem("permissions") || "[]");
-  const [uptime, setUptime] = useState("");
+  const [uptimeSeconds, setUptimeSeconds] = useState(0);
 
+  const hhmmssToSeconds = (time) => {
+    if (!time) return 0;
+    const [h, m, s] = time.split(":").map(Number);
+    return h * 3600 + m * 60 + s;
+  };
+  const secondsToHHMMSS = (seconds) => {
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = seconds % 60;
+
+    return `${String(h).padStart(2, "0")}:${String(m).padStart(
+      2,
+      "0"
+    )}:${String(s).padStart(2, "0")}`;
+  };
   const getProcessUptime = async () => {
     try {
       const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/uptime`);
-      console.log("🚀 ~ getProcessUptime ~ res:", res);
-      setUptime(res.data.upTime);
+      const serverTime = res.data.upTime; // "04:47:08"
+      setUptimeSeconds(hhmmssToSeconds(serverTime));
     } catch (error) {
-      console.log("🚀 ~ getProcessUptime ~ error:", error);
+      console.log("Uptime error:", error);
     }
   };
 
   useEffect(() => {
     getProcessUptime();
+
+    const interval = setInterval(() => {
+      setUptimeSeconds((prev) => prev + 1);
+    }, 1000);
+
+    return () => clearInterval(interval);
   }, []);
 
   const dashboardStats = [
     {
-      icon: uptime ? LineChartIcon : TrendingDown,
+      icon: uptimeSeconds ? LineChartIcon : TrendingDown,
       label: "Performance",
-      value: uptime ? "Excellent" : "Normal",
+      value: uptimeSeconds ? "Excellent" : "Normal",
       color: "text-green-600 dark:text-green-400",
     },
     {
       icon: ComputerIcon,
       label: "Server Status",
-      value: uptime ? "Active" : "Inactive",
-      color: uptime ? "text-blue-600 dark:text-blue-400" : "text-red-600 dark:text-red-400",
+      value: uptimeSeconds ? "Active" : "Inactive",
+      color: uptimeSeconds
+        ? "text-blue-600 dark:text-blue-400"
+        : "text-red-600 dark:text-red-400",
     },
     {
       icon: Clock,
       label: "Uptime",
-      value: uptime,
+      value: secondsToHHMMSS(uptimeSeconds),
       color: "text-purple-600 dark:text-purple-400",
     },
     {
@@ -157,7 +180,7 @@ function AdminHomePage() {
       description: "View intern rankings and performance",
       gradient: "from-cyan-500 to-cyan-700",
     },
-     {
+    {
       title: "Settings",
       route: "/settings",
       icon: Settings,
@@ -179,6 +202,10 @@ function AdminHomePage() {
             <p className="text-gray-600 dark:text-gray-300 text-lg">
               Manage your system efficiently with our comprehensive dashboard
             </p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              Access Level:{" "}
+              {permissions.length > 3 ? "Super Admin" : "Limited Admin"}
+            </p>
           </div>
 
           {/* Stats Cards */}
@@ -192,6 +219,20 @@ function AdminHomePage() {
                 >
                   <div className="flex items-center justify-between">
                     <div>
+                      <div className="flex">
+                        <span className="inline-flex mb-1 items-center px-2 py-0.5 text-xs rounded-full bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
+                          Live
+                        </span>
+                        {stat.label === "Uptime" && (
+                          <div
+                            className={`w-2 h-2 rounded-full mt-1 ${
+                              uptimeSeconds
+                                ? "bg-green-500 animate-pulse"
+                                : "bg-red-500"
+                            }`}
+                          ></div>
+                        )}
+                      </div>
                       <p className="text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">
                         {stat.label}
                       </p>
@@ -240,8 +281,18 @@ function AdminHomePage() {
                         {card.title}
                       </h3>
                       <p className="text-sm opacity-90">{card.description}</p>
+                      <div className="mt-4 text-sm font-medium opacity-0 group-hover:opacity-100 transition">
+                        Open →
+                      </div>
                     </div>
                   </Link>
+                  {!allowed && (
+                    <div className="absolute inset-0 bg-black/40 rounded-lg flex items-center justify-center text-white text-sm font-medium pointer-events-none">
+                      <span className="bg-black/60 px-3 py-1 rounded-full">
+                        No Access
+                      </span>
+                    </div>
+                  )}
                 </div>
               );
             })}

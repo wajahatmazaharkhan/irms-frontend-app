@@ -80,7 +80,7 @@ const BatchDashboard = () => {
           return;
         }
 
-        console.log(batchId)
+        console.log(batchId);
 
         const batchResponse = await fetch(`${baseUrl}/batches/${batchId._id}`);
         if (!batchResponse.ok) {

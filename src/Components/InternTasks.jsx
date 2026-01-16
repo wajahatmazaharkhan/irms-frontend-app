@@ -75,7 +75,7 @@ const InternTasksPage = () => {
           return;
         }
 
-        const batchResponse = await fetch(`${baseUrl}/batches/${batchId}`);
+        const batchResponse = await fetch(`${baseUrl}/batches/${batchId?._id}`);
         if (!batchResponse.ok) throw new Error("Failed to fetch batch data");
         const batchData = await batchResponse.json();
 

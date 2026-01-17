@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Bell,
   Send,
@@ -10,6 +10,7 @@ import {
 import Swal from "sweetalert2";
 import CustomNavbar from "./CustomHrNavbar";
 import useTitle from "@/Components/useTitle";
+import axios from "axios";
 
 const AdminNotify = () => {
   useTitle("Notification Management");
@@ -18,9 +19,12 @@ const AdminNotify = () => {
     status: "",
     message: "",
     userId: userId,
+    batchIds: [],
   });
 
   const [isLoading, setIsLoading] = useState(false);
+  const [batches, setBatches] = useState([]);
+  const [multiSelect, setMultiSelect] = useState([]);
 
   const statusOptions = [
     {
@@ -100,9 +104,88 @@ const AdminNotify = () => {
     }
   };
 
+  const handleSendNotificationToAll = async () => {
+    const result = await Swal.fire({
+      icon: "warning",
+      title: "Are you sure?",
+      text: "This will send notification to ALL users",
+      showCancelButton: true,
+      confirmButtonText: "Yes, Send",
+      cancelButtonText: "Cancel",
+      confirmButtonColor: "#ef233c",
+      cancelButtonColor: "#6b7280",
+    });
+
+    if (!result.isConfirmed) return;
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_BASE_URL}/send/notify-all`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify(formData),
+        }
+      );
+      if (res.ok) {
+        Swal.fire({
+          icon: "success",
+          title: "Success!",
+          text: "Notification sent successfully to your batch users",
+          timer: 2000,
+          showConfirmButton: false,
+          confirmButtonColor: "#3B82F6",
+        });
+        setFormData({ status: "", message: "" });
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Failed to send notification. Please try again.",
+        confirmButtonColor: "#3B82F6",
+      });
+      console.log("🚀 ~ handleSendNotificationToAll ~ error:", error);
+    }
+  };
+
   const selectedStatus = statusOptions.find(
     (option) => option.value === formData.status
   );
+
+  const fetchAssignedBatches = async () => {
+    try {
+      const res = await axios.get(
+        `${
+          import.meta.env.VITE_BASE_URL
+        }/api/batch/get-assigned-batches-with-users/${userId}`
+      );
+      setBatches(res?.data?.data);
+    } catch (error) {
+      console.log("🚀 ~ fetchAssignedBatches ~ error:", error);
+    }
+  };
+
+  //=== Fetch assigned batches of the hr ====//
+  useEffect(() => {
+    fetchAssignedBatches();
+  }, []);
+
+  const handleMultiSelect = (batchId) => {
+    setMultiSelect((prev) => {
+      const updated = prev.includes(batchId)
+        ? prev.filter((id) => id !== batchId)
+        : [...prev, batchId];
+      setFormData((prevForm) => ({
+        ...prevForm,
+        batchIds: updated,
+      }));
+
+      return updated;
+    });
+  };
 
   return (
     <>
@@ -285,6 +368,34 @@ This message will be sent to all registered users in the system. Please ensure y
                   </div>
                 )}
 
+                <hr />
+                <div className="options">
+                  <h3 className="text-lg font-semibold text-gray-700 mb-4 dark:text-gray-200">
+                    Select Multiple Batch
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    {batches.length > 0 &&
+                      batches.map((batch, i) => (
+                        <div
+                          key={batch._id}
+                          onClick={() => handleMultiSelect(batch._id)}
+                          className={`w-full max-w-xs mx-auto flex items-center justify-center
+    p-4 rounded-xl cursor-pointer
+    border transition-all duration-200 ease-in-out
+    ${
+      multiSelect.includes(batch._id)
+        ? "bg-blue-100 border-blue-500 shadow-md dark:bg-blue-900/30"
+        : "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:shadow-md"
+    }`}
+                        >
+                          <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-100 text-center">
+                            {batch.name}
+                          </h3>
+                        </div>
+                      ))}
+                  </div>
+                </div>
+
                 {/* Action Buttons */}
                 <div className="flex flex-col sm:flex-row gap-4 justify-end pt-6 border-t border-gray-200 dark:border-gray-700">
                   <button
@@ -296,6 +407,32 @@ This message will be sent to all registered users in the system. Please ensure y
                   </button>
                   <button
                     onClick={handleSendNotification}
+                    disabled={
+                      isLoading ||
+                      !formData.status ||
+                      !formData.message ||
+                      formData?.batchIds?.length === 0
+                    }
+                    className={`flex items-center justify-center space-x-2 px-8 py-3 rounded-lg font-medium transition-all duration-200 ${
+                      isLoading || !formData.status || !formData.message
+                        ? "bg-gray-300 text-gray-500 cursor-not-allowed dark:bg-gray-700 dark:text-gray-400"
+                        : "bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                    }`}
+                  >
+                    {isLoading ? (
+                      <>
+                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                        <span>Sending...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-5 h-5" />
+                        <span>Send Notification</span>
+                      </>
+                    )}
+                  </button>
+                  <button
+                    onClick={handleSendNotificationToAll}
                     disabled={
                       isLoading || !formData.status || !formData.message
                     }
@@ -313,7 +450,7 @@ This message will be sent to all registered users in the system. Please ensure y
                     ) : (
                       <>
                         <Send className="w-5 h-5" />
-                        <span>Send Notification</span>
+                        <span>Send Notification to All</span>
                       </>
                     )}
                   </button>

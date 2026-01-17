@@ -94,13 +94,13 @@ function AdminHomePage() {
   ];
 
   const navigationCards = [
-    {
-      title: "Admin Guide & Updates",
-      route: "/admin-guide",
-      icon: Repeat2,
-      description: "View admin guide and recent updates",
-      gradient: "from-indigo-500 to-red-700",
-    },
+    // {
+    //   title: "Admin Guide & Updates",
+    //   route: "/admin-guide",
+    //   icon: Repeat2,
+    //   description: "View admin guide and recent updates",
+    //   gradient: "from-indigo-500 to-red-700",
+    // },
     {
       title: "View All users",
       route: "/allusers",

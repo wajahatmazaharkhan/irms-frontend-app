@@ -62,7 +62,7 @@ setProfileInfo({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="bg-white rounded-nonetl-3xl border-2 border-gray-100 shadow-sm overflow-hidden"
+        className="bg-white rounded-tl-3xl border-2 border-gray-100 shadow-sm overflow-hidden"
       >
         <div className="relative w-full h-[200px] bg-gradient-to-r from-blue-100 to-amber-50"></div>
 
@@ -71,7 +71,7 @@ setProfileInfo({
             <div className="flex justify-between items-center -mt-10 mb-8">
               <motion.div
                 whileHover={{ scale: 1.05 }}
-                className="relative w-32 h-32 rounded-nonefull border-4 border-white bg-white shadow-lg overflow-hidden flex items-center justify-center"
+                className="relative w-32 h-32 rounded-full border-4 border-white bg-white shadow-lg overflow-hidden flex items-center justify-center"
               >
                 {profile.photo ? (
                   <img
@@ -105,7 +105,7 @@ setProfileInfo({
                 type="submit" 
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-4 py-2 bg-gray-800 text-white text-sm font-medium rounded-nonemd shadow-sm mt-16"
+                className="px-4 py-2 bg-gray-800 text-white text-sm font-medium rounded-md shadow-sm mt-16"
               >
                 Save
               </motion.button>
@@ -120,7 +120,7 @@ setProfileInfo({
                   </label>
                   <input
                     type="text"
-                    className="w-full px-4 py-2 border rounded-nonemd focus:ring-2 focus:ring-blue-500 focus:border-transparent "
+                    className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent "
                     placeholder="Name"
                     name="firstname"
                     value={profileinfo.firstname}
@@ -134,7 +134,7 @@ setProfileInfo({
                   </label>
                   <input
                     type="text"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-nonemd focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="Last name"
                     name="lastname"
                     value={profileinfo.lastname}
@@ -148,7 +148,7 @@ setProfileInfo({
                   </label>
                   <input
                     type="email"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-nonemd focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="Email"
                     name="email"
                     value={profileinfo.email}
@@ -162,7 +162,7 @@ setProfileInfo({
                   </label>
                   <textarea
                     rows={4}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-nonemd focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
                     placeholder="Add a short bio..."
                     name="bio"
                     value={profileinfo.bio}

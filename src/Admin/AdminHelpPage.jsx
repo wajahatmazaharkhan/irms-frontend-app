@@ -54,7 +54,7 @@ const cards = [
       <div className="flex-grow ">
         {/* Help Content */}
         <main className=" min-h-screen py-8 px-4">
-          <div className="text-center py-14 px-8 bg-blue-400 rounded-nonemd mb-8">
+          <div className="text-center py-14 px-8 bg-blue-400 rounded-md mb-8">
             <h2 className="text-3xl font-semibold mb-4">Hello, How can we Help?</h2>
           </div>
 
@@ -62,7 +62,7 @@ const cards = [
             {cards.map((card, index) => (
               <div
                 key={index}
-                className="bg-white shadow-md rounded-nonelg p-6 flex flex-col items-center text-center h-60"
+                className="bg-white shadow-md rounded-lg p-6 flex flex-col items-center text-center h-60"
               >
                 <div className="text-4xl mb-4">{card.icon}</div>
                 <h3 className="text-xl font-semibold mb-2">{card.title}</h3>

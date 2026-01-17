@@ -18,7 +18,7 @@ const AdminSideNav = () => {
           <li key={index} className="mb-2">
             <a
               href="#"
-              className="flex items-center space-x-3 text-gray-700 hover:bg-blue-100 rounded-nonelg p-2"
+              className="flex items-center space-x-3 text-gray-700 hover:bg-blue-100 rounded-lg p-2"
             >
               <span className="text-lg">{item.icon}</span>
               <span>{item.name}</span>

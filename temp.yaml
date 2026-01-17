@@ -227,7 +227,7 @@ function AllUsers() {
     <div className="min-h-screen bg-gray-50">
       <CustomNavbar />
       <div className="max-w-full mx-auto p-4">
-        <div className="bg-white shadow-md rounded-nonelg p-6">
+        <div className="bg-white shadow-md rounded-lg p-6">
           {/* Header Section */}
           <div className="flex flex-col md:flex-row justify-between items-center mb-6">
             <h1 className="text-2xl font-bold text-blue-600 mb-4 md:mb-0">
@@ -237,7 +237,7 @@ function AllUsers() {
               <input
                 type="text"
                 placeholder="Search users..."
-                className="w-full px-4 py-2 border rounded-nonemd focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -319,11 +319,11 @@ function AllUsers() {
                       </td>
                       <td className="px-4 py-3 text-sm text-gray-900">
                         {user.isAdmin ? (
-                          <span className="px-2 py-1 text-xs font-semibold text-green-800 bg-green-100 rounded-nonefull">
+                          <span className="px-2 py-1 text-xs font-semibold text-green-800 bg-green-100 rounded-full">
                             Yes
                           </span>
                         ) : (
-                          <span className="px-2 py-1 text-xs font-semibold text-red-800 bg-red-100 rounded-nonefull">
+                          <span className="px-2 py-1 text-xs font-semibold text-red-800 bg-red-100 rounded-full">
                             No
                           </span>
                         )}
@@ -370,7 +370,7 @@ function AllUsers() {
                           </button>
                         ) : (
                           <button
-                            className="bg-blue-900 text-white px-4 py-2 rounded-nonemd"
+                            className="bg-blue-900 text-white px-4 py-2 rounded-md"
                             onClick={() => handleassignedto(user._id)}
                           >
                             Assign To
@@ -385,7 +385,7 @@ function AllUsers() {
                             ></div>
 
                             <div className="fixed inset-0 flex items-center justify-center z-20">
-                              <div className="bg-white p-6 rounded-nonelg  border-2 max-w-md w-full">
+                              <div className="bg-white p-6 rounded-lg  border-2 max-w-md w-full">
                                 <h2 className="text-xl font-semibold text-center mb-4">
                                   HR List
                                 </h2>
@@ -408,7 +408,7 @@ function AllUsers() {
                                                 hrnames.id
                                               );
                                             }}
-                                            className="bg-blue-900 text-white px-4 py-2 rounded-nonemd"
+                                            className="bg-blue-900 text-white px-4 py-2 rounded-md"
                                           >
                                             Assign
                                           </button>
@@ -421,7 +421,7 @@ function AllUsers() {
                                 <div className="assign-btn top-2 right-2">
                                   <button
                                     onClick={togglemodal}
-                                    className="mt-4 bg-red-500 text-white px-4 py-2 rounded-nonemd "
+                                    className="mt-4 bg-red-500 text-white px-4 py-2 rounded-md "
                                   >
                                     X
                                   </button>
@@ -435,7 +435,7 @@ function AllUsers() {
                       <td className="px-4 py-3 text-sm text-gray-900">
                         <button
                           onClick={() => deleteUser(user._id, user.name)}
-                          className="text-white bg-red-500 hover:bg-red-600 px-3 py-1 rounded-nonemd transition-colors duration-200"
+                          className="text-white bg-red-500 hover:bg-red-600 px-3 py-1 rounded-md transition-colors duration-200"
                         >
                           Delete
                         </button>

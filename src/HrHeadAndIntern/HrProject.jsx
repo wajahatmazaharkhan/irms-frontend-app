@@ -128,7 +128,7 @@ const AdminProject = () => {
       <CustomNavbar />
       <div className="flex flex-col w-full h-auto md:flex-row md:h-screen bg-gray-50 dark:bg-slate-900 transition-colors duration-300">
         {/* Left Side (Form for Admin) */}
-        <div className="w-full p-6 mx-auto mt-6 bg-white dark:bg-slate-800 border-2 border-gray-200 dark:border-slate-700 rounded-nonelg shadow-lg md:w-1/2 md:ml-5 md:mr-2">
+        <div className="w-full p-6 mx-auto mt-6 bg-white dark:bg-slate-800 border-2 border-gray-200 dark:border-slate-700 rounded-lg shadow-lg md:w-1/2 md:ml-5 md:mr-2">
           <h2 className="mb-4 text-2xl font-semibold text-center text-blue-600 dark:text-blue-400">
             Create New Project
           </h2>
@@ -142,7 +142,7 @@ const AdminProject = () => {
               type="file"
               name="image"
               onChange={handleChange}
-              className="w-full p-3 border border-gray-300 dark:border-slate-600 rounded-nonemd focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-slate-900 dark:text-slate-100"
+              className="w-full p-3 border border-gray-300 dark:border-slate-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-slate-900 dark:text-slate-100"
               accept="image/*"
             />
           </div>
@@ -157,7 +157,7 @@ const AdminProject = () => {
               name="title"
               value={project.title}
               onChange={handleChange}
-              className="w-full p-3 border border-gray-300 dark:border-slate-600 rounded-nonemd focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-slate-900 dark:text-slate-100 placeholder-gray-400 dark:placeholder-slate-400"
+              className="w-full p-3 border border-gray-300 dark:border-slate-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-slate-900 dark:text-slate-100 placeholder-gray-400 dark:placeholder-slate-400"
               placeholder="Write title for project"
             />
           </div>
@@ -172,7 +172,7 @@ const AdminProject = () => {
               name="subTitle"
               value={project.subTitle}
               onChange={handleChange}
-              className="w-full p-3 border border-gray-300 dark:border-slate-600 rounded-nonemd focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-slate-900 dark:text-slate-100 placeholder-gray-400 dark:placeholder-slate-400"
+              className="w-full p-3 border border-gray-300 dark:border-slate-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-slate-900 dark:text-slate-100 placeholder-gray-400 dark:placeholder-slate-400"
               placeholder="Write a short description"
             />
           </div>
@@ -187,7 +187,7 @@ const AdminProject = () => {
               value={project.description}
               onChange={handleChange}
               rows="4"
-              className="w-full p-3 border border-gray-300 dark:border-slate-600 rounded-nonemd focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-slate-900 dark:text-slate-100 placeholder-gray-400 dark:placeholder-slate-400"
+              className="w-full p-3 border border-gray-300 dark:border-slate-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-slate-900 dark:text-slate-100 placeholder-gray-400 dark:placeholder-slate-400"
               placeholder="Write description about the project"
             />
           </div>
@@ -202,7 +202,7 @@ const AdminProject = () => {
               name="createdBy"
               value={project.createdBy}
               onChange={handleChange}
-              className="w-full p-3 border border-gray-300 dark:border-slate-600 rounded-nonemd focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-slate-900 dark:text-slate-100 placeholder-gray-400 dark:placeholder-slate-400"
+              className="w-full p-3 border border-gray-300 dark:border-slate-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-slate-900 dark:text-slate-100 placeholder-gray-400 dark:placeholder-slate-400"
               placeholder="By the team"
             />
           </div>
@@ -211,7 +211,7 @@ const AdminProject = () => {
           <div className="text-center">
             <button
               onClick={handlePostProject}
-              className="px-6 py-3 text-white transition duration-300 bg-blue-600 rounded-nonemd hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 disabled:opacity-70"
+              className="px-6 py-3 text-white transition duration-300 bg-blue-600 rounded-md hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 disabled:opacity-70"
               disabled={loading}
             >
               {loading ? "Posting..." : "Post Project"}
@@ -220,7 +220,7 @@ const AdminProject = () => {
         </div>
 
         {/* Right Side (Posted Projects) */}
-        <div className="w-full p-6 mx-auto mt-6 overflow-auto bg-white dark:bg-slate-800 border-2 border-gray-200 dark:border-slate-700 rounded-nonelg shadow-lg md:w-1/2 md:ml-2 md:mr-5">
+        <div className="w-full p-6 mx-auto mt-6 overflow-auto bg-white dark:bg-slate-800 border-2 border-gray-200 dark:border-slate-700 rounded-lg shadow-lg md:w-1/2 md:ml-2 md:mr-5">
           <h2 className="mb-4 text-2xl font-semibold text-center text-blue-600 dark:text-blue-400">
             Posted Projects
           </h2>
@@ -240,7 +240,7 @@ const AdminProject = () => {
               postedProjects.map((project) => (
                 <div
                   key={project._id}
-                  className="p-4 border border-gray-300 dark:border-slate-600 rounded-nonemd shadow-md bg-white dark:bg-slate-900"
+                  className="p-4 border border-gray-300 dark:border-slate-600 rounded-md shadow-md bg-white dark:bg-slate-900"
                 >
                   <h3 className="text-xl font-semibold text-blue-600 dark:text-blue-400">
                     {project.title}
@@ -248,7 +248,7 @@ const AdminProject = () => {
                   <div className="flex justify-start mt-2 space-x-2">
                     <button
                       onClick={() => handleDelete(project._id)}
-                      className="px-4 py-1 text-white transition duration-300 bg-red-500 rounded-nonemd hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700"
+                      className="px-4 py-1 text-white transition duration-300 bg-red-500 rounded-md hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700"
                     >
                       Delete
                     </button>

@@ -102,9 +102,9 @@ const AskHR = () => {
     <div className="min-h-screen bg-gray-50 p-4 md:p-8">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Question Form */}
-        <div className="bg-white rounded-nonelg shadow-sm p-6">
+        <div className="bg-white rounded-lg shadow-sm p-6">
           <div className="flex items-center gap-1 mb-6">
-            <div className="w-8 h-8 rounded-nonefull bg-blue-100 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
               <span className="text-blue-600 text-xl">?</span>
             </div>
             <h1 className="text-xl font-semibold">Ask HR</h1>
@@ -139,7 +139,7 @@ const AskHR = () => {
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Attachments
               </label>
-              <div className="border-2 border-dashed border-gray-300 rounded-nonemd p-8">
+              <div className="border-2 border-dashed border-gray-300 rounded-md p-8">
                 <div className="flex flex-col items-center">
                   <Upload className="h-8 w-8 text-gray-400 mb-2" />
                   <div className="text-center">
@@ -170,7 +170,7 @@ const AskHR = () => {
 
             <Button
               type="submit"
-              className="w-full sm:w-auto px-6 py-2 bg-blue-600 text-white rounded-nonemd hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+              className="w-full sm:w-auto px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
             >
               Submit Question
             </Button>
@@ -178,13 +178,13 @@ const AskHR = () => {
         </div>
 
         {/* Question History */}
-        <div className="bg-white rounded-nonelg shadow-sm p-6">
+        <div className="bg-white rounded-lg shadow-sm p-6">
           <h2 className="text-xl font-semibold mb-6">Question History</h2>
           <div className="space-y-4">
             {questions.map((question) => (
               <div
                 key={question.id}
-                className="p-4 border border-gray-100 rounded-nonelg hover:bg-gray-50 transition-colors"
+                className="p-4 border border-gray-100 rounded-lg hover:bg-gray-50 transition-colors"
               >
                 <div className="flex items-start justify-between">
                   <div className="flex items-start gap-3">
@@ -206,7 +206,7 @@ const AskHR = () => {
                           {question.date}
                         </span>
                         <span
-                          className={`text-xs px-2 py-1 rounded-nonefull ${
+                          className={`text-xs px-2 py-1 rounded-full ${
                             question.status === "Resolved"
                               ? "bg-green-100 text-green-700"
                               : "bg-yellow-100 text-yellow-700"

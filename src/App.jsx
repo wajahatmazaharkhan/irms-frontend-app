@@ -83,6 +83,7 @@ import {
   CommRanking,
 } from "./CommunicationTeam/commIndex";
 import { useEffect } from "react";
+import AdminGuidePage from "./Admin/AdminGuidePage.jsx";
 
 const AdminRoute = ({ children }) => {
   const role = localStorage.getItem("role");
@@ -107,7 +108,6 @@ const VerifyRoute = ({ children }) => {
 };
 
 const App = () => {
-  
   useEffect(() => {
     // Check for stored preference on page load
     if (
@@ -440,6 +440,14 @@ const App = () => {
             </AdminRoute>
           }
         />
+        <Route
+          path="/admin-guide"
+          element={
+            <AdminRoute>
+              <AdminGuidePage />
+            </AdminRoute>
+          }
+        ></Route>
         <Route
           path="/help-request"
           element={

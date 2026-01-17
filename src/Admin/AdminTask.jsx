@@ -263,7 +263,7 @@ export default function AdminTask() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
-            className="shadow-xl rounded-none2xl overflow-hidden bg-white/90 dark:bg-gray-900/70 backdrop-blur-sm"
+            className="shadow-xl rounded-2xl overflow-hidden bg-white/90 dark:bg-gray-900/70 backdrop-blur-sm"
           >
             <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-800 dark:to-indigo-800 p-6 relative">
               <div className="absolute inset-0 bg-noise opacity-10 dark:opacity-8"></div>
@@ -276,7 +276,7 @@ export default function AdminTask() {
                   {["technical", "social"].map((tab) => (
                     <button
                       key={tab}
-                      className={`relative py-3 px-6 font-semibold rounded-nonet-lg transition-all duration-300 ${
+                      className={`relative py-3 px-6 font-semibold rounded-t-lg transition-all duration-300 ${
                         activeTab === tab
                           ? "text-white"
                           : "text-blue-200 hover:text-white"
@@ -287,7 +287,7 @@ export default function AdminTask() {
                       {activeTab === tab && (
                         <motion.div
                           layoutId="tabUnderline"
-                          className="absolute bottom-0 left-0 right-0 h-1 bg-white rounded-nonefull"
+                          className="absolute bottom-0 left-0 right-0 h-1 bg-white rounded-full"
                           transition={{
                             type: "spring",
                             bounce: 0.2,
@@ -372,7 +372,7 @@ export default function AdminTask() {
                           placeholder="Search user by name or email..."
                           value={searchTerm}
                           onChange={(e) => setSearchTerm(e.target.value)}
-                          className="w-full mb-3 px-4 py-2 border rounded-nonexl border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500"
+                          className="w-full mb-3 px-4 py-2 border rounded-xl border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500"
                         />
 
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
@@ -383,7 +383,7 @@ export default function AdminTask() {
                           value={technicalTask.assignedTo}
                           onChange={handleTechnicalChange}
                           required
-                          className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-nonexl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 shadow-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+                          className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 shadow-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
                         >
                           <option value="">Select a user</option>
 
@@ -405,7 +405,7 @@ export default function AdminTask() {
                           value={technicalTask.title}
                           onChange={handleTechnicalChange}
                           placeholder="Enter task title"
-                          className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-nonexl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 shadow-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+                          className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 shadow-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
                           required
                         />
                       </div>
@@ -419,7 +419,7 @@ export default function AdminTask() {
                           value={technicalTask.description}
                           onChange={handleTechnicalChange}
                           placeholder="Enter task description"
-                          className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-nonexl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-h-[120px] transition-all duration-200 shadow-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+                          className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-h-[120px] transition-all duration-200 shadow-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
                           required
                         />
                       </div>
@@ -434,7 +434,7 @@ export default function AdminTask() {
                             name="startDate"
                             value={technicalTask.startDate}
                             onChange={handleTechnicalChange}
-                            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-nonexl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 shadow-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+                            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 shadow-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
                             required
                           />
                         </div>
@@ -447,7 +447,7 @@ export default function AdminTask() {
                             name="endDate"
                             value={technicalTask.endDate}
                             onChange={handleTechnicalChange}
-                            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-nonexl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 shadow-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+                            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 shadow-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
                             required
                           />
                         </div>
@@ -485,7 +485,7 @@ export default function AdminTask() {
                       <Button
                         type="submit"
                         disabled={isSubmitting}
-                        className="w-full bg-gradient-to-r from-blue-600 to-blue-500 dark:from-blue-700 dark:to-blue-600 hover:from-blue-700 hover:to-blue-600 text-white py-3.5 rounded-nonexl transition-all duration-300 transform hover:scale-[1.01] shadow-lg hover:shadow-blue-200 dark:shadow-none"
+                        className="w-full bg-gradient-to-r from-blue-600 to-blue-500 dark:from-blue-700 dark:to-blue-600 hover:from-blue-700 hover:to-blue-600 text-white py-3.5 rounded-xl transition-all duration-300 transform hover:scale-[1.01] shadow-lg hover:shadow-blue-200 dark:shadow-none"
                       >
                         {isSubmitting ? (
                           <span className="flex items-center justify-center">
@@ -565,15 +565,15 @@ export default function AdminTask() {
                           placeholder="Search interns..."
                           value={searchTerm}
                           onChange={(e) => setSearchTerm(e.target.value)}
-                          className="w-full mb-3 px-4 py-2 border rounded-nonexl border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500"
+                          className="w-full mb-3 px-4 py-2 border rounded-xl border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500"
                         />
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-60 overflow-y-auto p-3 border border-gray-200 dark:border-gray-700 rounded-nonexl bg-gray-50 dark:bg-gray-800">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-60 overflow-y-auto p-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-gray-800">
                           {filteredUsers.map((user) => (
                             <motion.div
                               key={user._id}
                               whileHover={{ scale: 1.01 }}
-                              className={`flex items-center p-2 rounded-nonelg transition-all ${
+                              className={`flex items-center p-2 rounded-lg transition-all ${
                                 socialTask.assignedTo.includes(user._id)
                                   ? "bg-blue-50 border border-blue-200 dark:bg-blue-900/40 dark:border-blue-700"
                                   : "hover:bg-gray-100 dark:hover:bg-gray-800"
@@ -634,7 +634,7 @@ export default function AdminTask() {
                             <motion.div
                               key={index}
                               whileHover={{ scale: 1.005 }}
-                              className={`border rounded-nonexl p-4 transition-all duration-200 ${
+                              className={`border rounded-xl p-4 transition-all duration-200 ${
                                 task.selected
                                   ? "border-blue-300 bg-blue-50 shadow-sm dark:border-blue-600 dark:bg-blue-900/30"
                                   : "border-gray-200 hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600"
@@ -649,7 +649,7 @@ export default function AdminTask() {
                                 />
                                 <span className="ml-3 font-medium text-gray-800 dark:text-gray-100">
                                   {task.title}
-                                  <span className="ml-2 px-2 py-1 text-xs rounded-nonefull bg-blue-100 text-blue-800 dark:bg-blue-800/30 dark:text-blue-200">
+                                  <span className="ml-2 px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800 dark:bg-blue-800/30 dark:text-blue-200">
                                     {task.title.includes("LinkedIn")
                                       ? "💼 Professional"
                                       : "🐦 Social"}
@@ -671,7 +671,7 @@ export default function AdminTask() {
                                         e.target.value
                                       )
                                     }
-                                    className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-700 rounded-nonelg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-h-[80px] transition-all mt-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+                                    className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-h-[80px] transition-all mt-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
                                   />
                                 </motion.div>
                               )}
@@ -690,7 +690,7 @@ export default function AdminTask() {
                             name="startDate"
                             value={socialTask.startDate}
                             onChange={handleSocialChange}
-                            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-nonexl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 shadow-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+                            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 shadow-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
                             required
                           />
                         </div>
@@ -703,7 +703,7 @@ export default function AdminTask() {
                             name="endDate"
                             value={socialTask.endDate}
                             onChange={handleSocialChange}
-                            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-nonexl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 shadow-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+                            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 shadow-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
                             required
                           />
                         </div>
@@ -755,7 +755,7 @@ export default function AdminTask() {
                       <Button
                         type="submit"
                         disabled={isSubmitting}
-                        className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-700 dark:to-purple-700 hover:from-indigo-700 hover:to-purple-700 text-white py-3.5 rounded-nonexl transition-all duration-300 transform hover:scale-[1.01] shadow-lg hover:shadow-purple-200 dark:shadow-none"
+                        className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-700 dark:to-purple-700 hover:from-indigo-700 hover:to-purple-700 text-white py-3.5 rounded-xl transition-all duration-300 transform hover:scale-[1.01] shadow-lg hover:shadow-purple-200 dark:shadow-none"
                       >
                         {isSubmitting ? (
                           <span className="flex items-center justify-center">

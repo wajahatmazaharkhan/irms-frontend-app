@@ -145,7 +145,7 @@ const InternRanking = () => {
     return (
       <div
         key={intern._id}
-        className={`flex justify-between items-center border p-4 rounded-nonexl shadow-md
+        className={`flex justify-between items-center border p-4 rounded-xl shadow-md
         ${
           highlight
             ? "bg-yellow-100 border-yellow-300 dark:bg-yellow-900 dark:border-yellow-500"
@@ -198,11 +198,11 @@ const InternRanking = () => {
         <div className="p-6 max-w-5xl mx-auto">
           {/* Show Active Users Only to Admin or HR */}
           {isAdminOrHr && (
-            <Card className="shadow-lg border border-gray-200 dark:border-slate-700 rounded-nonexl mb-6 bg-white dark:bg-slate-800">
+            <Card className="shadow-lg border border-gray-200 dark:border-slate-700 rounded-xl mb-6 bg-white dark:bg-slate-800">
               <CardContent className="p-4 bg-white dark:bg-slate-800">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
-                    <div className="p-2 bg-green-100 dark:bg-green-900 rounded-nonefull">
+                    <div className="p-2 bg-green-100 dark:bg-green-900 rounded-full">
                       <Users className="w-5 h-5 text-green-600 dark:text-green-400" />
                     </div>
                     <div>
@@ -234,13 +234,13 @@ const InternRanking = () => {
           )}
 
           {/* Intern Rankings */}
-          <Card className="shadow-2xl border border-gray-200 dark:border-slate-700 rounded-nonexl bg-white dark:bg-slate-900">
-            <CardHeader className="border-b bg-white dark:bg-slate-900 dark:border-slate-700 rounded-nonet-xl">
+          <Card className="shadow-2xl border border-gray-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-900">
+            <CardHeader className="border-b bg-white dark:bg-slate-900 dark:border-slate-700 rounded-t-xl">
               <CardTitle className="text-3xl font-bold text-blue-700 dark:text-blue-400">
                 🌟 Intern Rankings
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-6 bg-white dark:bg-slate-900 rounded-noneb-xl">
+            <CardContent className="p-6 bg-white dark:bg-slate-900 rounded-b-xl">
               {loading ? (
                 <div className="flex justify-center py-8">
                   <Loader2 className="animate-spin w-8 h-8 text-gray-500 dark:text-gray-400" />

@@ -53,12 +53,12 @@ const FilterSidebar = () => {
   return (
     <div className="relative w-full">
       {/* Filter Header with Toggle and Quick Actions */}
-      <div className="bg-white rounded-nonelg shadow-md p-4">
+      <div className="bg-white rounded-lg shadow-md p-4">
         <div className="flex justify-between items-center mb-4">
           <div className="flex items-center space-x-2">
             <FilterIcon className="w-6 h-6 text-blue-600" />
             <h3 className="text-xl font-semibold text-gray-800">Filters</h3>
-            <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-nonefull text-xs">
+            <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">
               {activeFilterCount} Active
             </span>
           </div>
@@ -67,14 +67,14 @@ const FilterSidebar = () => {
           <div className="flex space-x-2">
             <button
               onClick={markAllFilters}
-              className="text-green-600 hover:bg-green-50 p-2 rounded-nonefull transition"
+              className="text-green-600 hover:bg-green-50 p-2 rounded-full transition"
               title="Mark All Filters"
             >
               <CheckCircleIcon className="w-5 h-5" />
             </button>
             <button
               onClick={clearAllFilters}
-              className="text-red-600 hover:bg-red-50 p-2 rounded-nonefull transition"
+              className="text-red-600 hover:bg-red-50 p-2 rounded-full transition"
               title="Clear All Filters"
             >
               <XCircleIcon className="w-5 h-5" />

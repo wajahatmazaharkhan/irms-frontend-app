@@ -140,7 +140,7 @@ export default function CustomHrNavbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo and Title Skeleton */}
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-nonelg animate-pulse"></div>
+            <div className="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse"></div>
             <div className="hidden sm:block w-32 h-6 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
           </div>
 
@@ -156,7 +156,7 @@ export default function CustomHrNavbar() {
 
           {/* Profile Skeleton */}
           <div className="flex items-center space-x-4">
-            <div className="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-nonefull animate-pulse"></div>
+            <div className="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse"></div>
           </div>
         </div>
       </div>
@@ -194,7 +194,7 @@ export default function CustomHrNavbar() {
                 <Link
                   key={item.name}
                   to={item.path}
-                  className={`flex items-center space-x-2 px-4 py-2 rounded-nonelg text-sm font-medium transition-all duration-200 ${
+                  className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                     item.active
                       ? "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200 shadow-sm"
                       : "text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-800"
@@ -216,9 +216,9 @@ export default function CustomHrNavbar() {
                   e.stopPropagation();
                   setProfileDropdown(!profileDropdown);
                 }}
-                className="flex items-center space-x-2 p-2 rounded-nonelg text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200"
+                className="flex items-center space-x-2 p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200"
               >
-                <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-nonefull flex items-center justify-center">
+                <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
                   <span className="text-white text-sm font-semibold">
                     {userData.role[0].toUpperCase()}
                   </span>
@@ -235,7 +235,7 @@ export default function CustomHrNavbar() {
 
               {/* Profile Dropdown */}
               {profileDropdown && (
-                <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-900 rounded-nonexl shadow-lg border border-gray-200 dark:border-gray-700 py-2 z-50">
+                <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-900 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 py-2 z-50">
                   <div className="px-4 py-2 border-b border-gray-200 dark:border-gray-700">
                     <p className="text-sm font-medium text-gray-800 dark:text-gray-100">
                       {userData.role === "admin"
@@ -260,7 +260,7 @@ export default function CustomHrNavbar() {
             {/* Mobile/Tablet Logout Button */}
             <button
               onClick={handleLogout}
-              className="md:hidden flex items-center space-x-2 px-3 py-2 text-white bg-gradient-to-r from-red-500 to-red-600 rounded-nonelg hover:from-red-600 hover:to-red-700 transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+              className="md:hidden flex items-center space-x-2 px-3 py-2 text-white bg-gradient-to-r from-red-500 to-red-600 rounded-lg hover:from-red-600 hover:to-red-700 transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
             >
               <LogOut className="w-4 h-4" />
               <span className="text-sm font-medium">Logout</span>
@@ -269,7 +269,7 @@ export default function CustomHrNavbar() {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="lg:hidden p-2 rounded-nonelg text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200"
+              className="lg:hidden p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200"
             >
               {menuOpen ? (
                 <X className="w-6 h-6" />
@@ -308,7 +308,7 @@ export default function CustomHrNavbar() {
               {/* Mobile Profile Section */}
               <div className="px-4 py-3 border-t border-gray-200 dark:border-gray-700 mt-2">
                 <div className="flex items-center space-x-3 mb-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-nonefull flex items-center justify-center">
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
                     <span className="text-white font-semibold">
                       {userData.role[0].toUpperCase()}
                     </span>
@@ -326,7 +326,7 @@ export default function CustomHrNavbar() {
                 </div>
                 <button
                   onClick={handleLogout}
-                  className="flex items-center space-x-2 w-full px-3 py-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-nonelg transition-colors duration-200"
+                  className="flex items-center space-x-2 w-full px-3 py-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors duration-200"
                 >
                   <LogOut className="w-4 h-4" />
                   <span className="text-sm font-medium">Logout</span>

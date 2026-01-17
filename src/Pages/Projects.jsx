@@ -77,7 +77,7 @@ const Projects = () => {
                         <img
                           src={project.image}
                           alt="Project"
-                          className="object-cover w-full h-full rounded-nonet-lg md:rounded-nonel-lg"
+                          className="object-cover w-full h-full rounded-t-lg md:rounded-l-lg"
                         />
                       </div>
                     </div>

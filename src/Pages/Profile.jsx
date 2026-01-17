@@ -153,7 +153,7 @@ export default function AccountDetails() {
             <Card className="bg-white shadow-sm border-0 overflow-hidden dark:bg-slate-900 dark:text-gray-100 dark:shadow-black/40">
               <div className="bg-gradient-to-r from-indigo-500 to-purple-600 h-24"></div>
               <div className="px-6 pb-6 -mt-12 flex flex-col items-center">
-                <Avatar className="w-24 h-24 rounded-nonefull border-4 border-white bg-white text-indigo-600 flex items-center justify-center font-bold text-3xl overflow-hidden shadow-md dark:border-slate-900 dark:bg-slate-900 dark:text-indigo-300">
+                <Avatar className="w-24 h-24 rounded-full border-4 border-white bg-white text-indigo-600 flex items-center justify-center font-bold text-3xl overflow-hidden shadow-md dark:border-slate-900 dark:bg-slate-900 dark:text-indigo-300">
                   {profilePicture ? (
                     <img
                       src={profilePicture}
@@ -209,7 +209,7 @@ export default function AccountDetails() {
                       onChange={(e) =>
                         handleInputChange("fullName", e.target.value)
                       }
-                      className="border-gray-300 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-nonemd dark:bg-slate-950 dark:border-slate-700 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-indigo-400 dark:focus:ring-indigo-400"
+                      className="border-gray-300 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md dark:bg-slate-950 dark:border-slate-700 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-indigo-400 dark:focus:ring-indigo-400"
                     />
                   </div>
 
@@ -222,7 +222,7 @@ export default function AccountDetails() {
                       value={formDetails.currentRole}
                       placeholder="Enter your current role"
                       readOnly
-                      className="border-gray-300 capitalize focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-nonemd dark:bg-slate-950 dark:border-slate-700 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-indigo-400 dark:focus:ring-indigo-400"
+                      className="border-gray-300 capitalize focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md dark:bg-slate-950 dark:border-slate-700 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-indigo-400 dark:focus:ring-indigo-400"
                     />
                   </div>
 
@@ -241,7 +241,7 @@ export default function AccountDetails() {
                         }
                         handleInputChange("phoneNumber", value);
                       }}
-                      className="border-gray-300 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-nonemd dark:bg-slate-950 dark:border-slate-700 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-indigo-400 dark:focus:ring-indigo-400"
+                      className="border-gray-300 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md dark:bg-slate-950 dark:border-slate-700 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-indigo-400 dark:focus:ring-indigo-400"
                     />
                   </div>
                 </div>
@@ -250,7 +250,7 @@ export default function AccountDetails() {
                   <div className="mt-8 flex justify-end">
                     <Button
                       onClick={handleSave}
-                      className="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-6 rounded-nonemd transition-colors dark:bg-indigo-600 dark:hover:bg-indigo-500"
+                      className="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-6 rounded-md transition-colors dark:bg-indigo-600 dark:hover:bg-indigo-500"
                     >
                       Save Changes
                     </Button>
@@ -259,7 +259,7 @@ export default function AccountDetails() {
 
                 {saveStatus && (
                   <div
-                    className={`mt-4 p-3 rounded-nonemd ${
+                    className={`mt-4 p-3 rounded-md ${
                       saveStatus.includes("successfully")
                         ? "bg-green-50 text-green-800 border border-green-200 dark:bg-green-950 dark:text-green-200 dark:border-green-800"
                         : "bg-red-50 text-red-800 border border-red-200 dark:bg-red-950 dark:text-red-200 dark:border-red-800"

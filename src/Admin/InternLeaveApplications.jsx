@@ -128,7 +128,7 @@ const Internleaveapplication = ({ mode = "hr" }) => {
 
           {message.text && (
             <div
-              className={`mb-6 p-3 rounded-nonelg text-center ${
+              className={`mb-6 p-3 rounded-lg text-center ${
                 message.type === "success"
                   ? "bg-green-100 text-green-800"
                   : "bg-red-100 text-red-800"
@@ -143,7 +143,7 @@ const Internleaveapplication = ({ mode = "hr" }) => {
           ) : (
             <div className="space-y-6">
               {/* Pending Leaves */}
-              <div className="bg-white rounded-nonexl shadow-md overflow-hidden">
+              <div className="bg-white rounded-xl shadow-md overflow-hidden">
                 <div className="bg-yellow-100 px-6 py-3 border-b border-yellow-200">
                   <h2 className="text-lg font-semibold text-yellow-800 flex items-center">
                     <svg
@@ -174,10 +174,10 @@ const Internleaveapplication = ({ mode = "hr" }) => {
                               {leave.internid?.name || "Deleted user"}
                             </h3>
                             <div className="mt-1 flex flex-wrap gap-2">
-                              <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-nonefull">
+                              <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">
                                 {leave.leaveType}
                               </span>
-                              <span className="px-2 py-1 bg-purple-100 text-purple-800 text-xs font-medium rounded-nonefull">
+                              <span className="px-2 py-1 bg-purple-100 text-purple-800 text-xs font-medium rounded-full">
                                 {new Date(leave.startDate).toLocaleDateString()} -{" "}
                                 {new Date(leave.endDate).toLocaleDateString()}
                               </span>
@@ -188,7 +188,7 @@ const Internleaveapplication = ({ mode = "hr" }) => {
                           </div>
                           <button
                             onClick={() => setSelectedLeave(leave)}
-                            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-nonemd shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                           >
                             Review Application
                           </button>
@@ -204,7 +204,7 @@ const Internleaveapplication = ({ mode = "hr" }) => {
               </div>
 
               {/* Approved Leaves */}
-              <div className="bg-white rounded-nonexl shadow-md overflow-hidden">
+              <div className="bg-white rounded-xl shadow-md overflow-hidden">
                 <div className="bg-green-100 px-6 py-3 border-b border-green-200">
                   <h2 className="text-lg font-semibold text-green-800 flex items-center">
                     <svg
@@ -235,10 +235,10 @@ const Internleaveapplication = ({ mode = "hr" }) => {
                               {leave.internid?.name || "Deleted user"}
                             </h3>
                             <div className="mt-1 flex flex-wrap gap-2">
-                              <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-nonefull">
+                              <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">
                                 {leave.leaveType}
                               </span>
-                              <span className="px-2 py-1 bg-purple-100 text-purple-800 text-xs font-medium rounded-nonefull">
+                              <span className="px-2 py-1 bg-purple-100 text-purple-800 text-xs font-medium rounded-full">
                                 {new Date(leave.startDate).toLocaleDateString()} -{" "}
                                 {new Date(leave.endDate).toLocaleDateString()}
                               </span>
@@ -253,7 +253,7 @@ const Internleaveapplication = ({ mode = "hr" }) => {
                             )}
                           </div>
                           <div className="flex items-center">
-                            <span className="px-3 py-1 bg-green-100 text-green-800 text-sm font-medium rounded-nonefull">
+                            <span className="px-3 py-1 bg-green-100 text-green-800 text-sm font-medium rounded-full">
                               Approved
                             </span>
                           </div>
@@ -269,7 +269,7 @@ const Internleaveapplication = ({ mode = "hr" }) => {
               </div>
 
               {/* Rejected Leaves */}
-              <div className="bg-white rounded-nonexl shadow-md overflow-hidden">
+              <div className="bg-white rounded-xl shadow-md overflow-hidden">
                 <div className="bg-red-100 px-6 py-3 border-b border-red-200">
                   <h2 className="text-lg font-semibold text-red-800 flex items-center">
                     <svg
@@ -300,10 +300,10 @@ const Internleaveapplication = ({ mode = "hr" }) => {
                               {leave.internid?.name || "Deleted user"}
                             </h3>
                             <div className="mt-1 flex flex-wrap gap-2">
-                              <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-nonefull">
+                              <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">
                                 {leave.leaveType}
                               </span>
-                              <span className="px-2 py-1 bg-purple-100 text-purple-800 text-xs font-medium rounded-nonefull">
+                              <span className="px-2 py-1 bg-purple-100 text-purple-800 text-xs font-medium rounded-full">
                                 {new Date(leave.startDate).toLocaleDateString()} -{" "}
                                 {new Date(leave.endDate).toLocaleDateString()}
                               </span>
@@ -318,7 +318,7 @@ const Internleaveapplication = ({ mode = "hr" }) => {
                             )}
                           </div>
                           <div className="flex items-center">
-                            <span className="px-3 py-1 bg-red-100 text-red-800 text-sm font-medium rounded-nonefull">
+                            <span className="px-3 py-1 bg-red-100 text-red-800 text-sm font-medium rounded-full">
                               Rejected
                             </span>
                           </div>
@@ -338,7 +338,7 @@ const Internleaveapplication = ({ mode = "hr" }) => {
           {/* Status Update Modal */}
           {selectedLeave && (
             <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-              <div className="bg-white p-6 rounded-nonexl shadow-xl w-full max-w-md">
+              <div className="bg-white p-6 rounded-xl shadow-xl w-full max-w-md">
                 <h2 className="text-2xl font-bold mb-4 text-gray-800">
                   Update Leave Status
                 </h2>
@@ -364,7 +364,7 @@ const Internleaveapplication = ({ mode = "hr" }) => {
                       Status
                     </label>
                     <select
-                      className="w-full px-3 py-2 border border-gray-300 rounded-nonemd shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                       value={status}
                       onChange={(e) => setStatus(e.target.value)}
                     >
@@ -380,7 +380,7 @@ const Internleaveapplication = ({ mode = "hr" }) => {
                     </label>
                     <input
                       type="text"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-nonemd shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                       value={adminName}
                       onChange={(e) => setAdminName(e.target.value)}
                       placeholder="Enter your name"
@@ -394,13 +394,13 @@ const Internleaveapplication = ({ mode = "hr" }) => {
                         setAdminName("");
                         setStatus("");
                       }}
-                      className="px-4 py-2 border border-gray-300 rounded-nonemd shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                      className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                     >
                       Cancel
                     </button>
                     <button
                       onClick={handleUpdateStatus}
-                      className="px-4 py-2 border border-transparent rounded-nonemd shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                      className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                     >
                       Update Status
                     </button>

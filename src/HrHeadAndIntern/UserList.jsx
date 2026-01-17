@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom"
  * - Fixed: class typos fixed.
  * - Responsive: fits inside sidebar and mobile drawer.
  * - Keeps logic for filtering, search, navigation intact.
- * - All rounded corners removed (rounded-none).
+ * - All rounded corners removed (rounded-).
  */
 
 export function UserList({ users = [], selectedUser, setSelectedUser }) {
@@ -39,7 +39,7 @@ export function UserList({ users = [], selectedUser, setSelectedUser }) {
   }
 
   return (
-    <div className="flex h-full flex-col bg-white dark:bg-gray-900 rounded-none">
+    <div className="flex h-full flex-col bg-white dark:bg-gray-900 rounded-">
       {/* Header */}
       <div className="p-4 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
         <div className="space-y-3">
@@ -58,7 +58,7 @@ export function UserList({ users = [], selectedUser, setSelectedUser }) {
               placeholder="Search employees..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-900 dark:border-gray-700 dark:text-gray-100 dark:placeholder-gray-500 dark:focus:ring-blue-400 text-sm"
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded- focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-900 dark:border-gray-700 dark:text-gray-100 dark:placeholder-gray-500 dark:focus:ring-blue-400 text-sm"
             />
           </div>
 
@@ -66,7 +66,7 @@ export function UserList({ users = [], selectedUser, setSelectedUser }) {
           <select
             value={selectedDepartment}
             onChange={(e) => setSelectedDepartment(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-none text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-900 dark:border-gray-700 dark:text-gray-100 dark:focus:ring-blue-400"
+            className="w-full px-3 py-2 border border-gray-300 rounded- text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-900 dark:border-gray-700 dark:text-gray-100 dark:focus:ring-blue-400"
           >
             {departments.map((dept) => (
               <option key={dept} value={dept}>
@@ -106,7 +106,7 @@ export function UserList({ users = [], selectedUser, setSelectedUser }) {
                   <img
                     src={`https://cdn-icons-png.flaticon.com/512/3177/3177440.png`}
                     alt={user?.name}
-                    className="w-10 h-10 object-cover rounded-none"
+                    className="w-10 h-10 object-cover rounded-"
                   />
                   <div
                     className={`absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-white dark:border-gray-900 ${getStatusColor(

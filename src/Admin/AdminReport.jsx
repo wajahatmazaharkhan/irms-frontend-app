@@ -62,7 +62,7 @@ const AdminReport = () => {
                 {reports.map((report, index) => (
                   <div
                     key={index}
-                    className="border border-gray-300 rounded-nonemd p-4 sm:p-6 md:p-8 shadow-md hover:bg-gray-100 mb-4"
+                    className="border border-gray-300 rounded-md p-4 sm:p-6 md:p-8 shadow-md hover:bg-gray-100 mb-4"
                   >
                     <h3 className="text-xl sm:text-2xl font-semibold text-[#007bff]">
                       {report.employee}

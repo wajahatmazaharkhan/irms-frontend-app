@@ -19,6 +19,7 @@ import {
   TrendingDown,
   LineChartIcon,
   Settings2,
+  Repeat2,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -94,7 +95,14 @@ function AdminHomePage() {
 
   const navigationCards = [
     {
-      title: "All Users",
+      title: "Admin Guide & Updates",
+      route: "/admin-guide",
+      icon: Repeat2,
+      description: "View admin guide and recent updates",
+      gradient: "from-indigo-500 to-red-700",
+    },
+    {
+      title: "View All users",
       route: "/allusers",
       icon: Users,
       description: "Manage all system users",
@@ -215,7 +223,7 @@ function AdminHomePage() {
               return (
                 <div
                   key={index}
-                  className="bg-white dark:bg-gray-900 rounded-nonexl shadow-md dark:shadow-none p-6 border border-gray-200 dark:border-gray-700 hover:shadow-lg dark:hover:shadow-lg transition-shadow duration-300"
+                  className="bg-white dark:bg-gray-900 rounded-xl shadow-md dark:shadow-none p-6 border border-gray-200 dark:border-gray-700 hover:shadow-lg dark:hover:shadow-lg transition-shadow duration-300"
                 >
                   <div className="flex items-center justify-between">
                     <div>
@@ -240,7 +248,7 @@ function AdminHomePage() {
                         {stat.value}
                       </p>
                     </div>
-                    <div className="p-3 rounded-nonefull bg-gray-100 dark:bg-gray-800">
+                    <div className="p-3 rounded-full bg-gray-100 dark:bg-gray-800">
                       <IconComponent className={`w-6 h-6 ${stat.color}`} />
                     </div>
                   </div>
@@ -259,7 +267,7 @@ function AdminHomePage() {
               return (
                 <div
                   key={index}
-                  className="group relative"
+                  className="group relative hover:font-bold"
                   // style={{ pointerEvents: allowed ? "auto" : "none" }}
                 >
                   <Link
@@ -269,7 +277,7 @@ function AdminHomePage() {
                     <div
                       className={`bg-gradient-to-br ${
                         card.gradient
-                      } rounded-none shadow-lg p-6 text-white hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 ${
+                      } rounded-lg shadow-lg p-6 text-white hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 ${
                         !allowed ? "opacity-80 cursor-not-allowed" : ""
                       }`}
                     >
@@ -299,12 +307,12 @@ function AdminHomePage() {
           </div>
 
           {/* Quick Actions Section */}
-          <div className="mt-12 bg-white dark:bg-gray-900 rounded-nonexl shadow-md dark:shadow-none p-8 border border-gray-200 dark:border-gray-700">
+          <div className="mt-12 bg-white dark:bg-gray-900 rounded-xl shadow-md dark:shadow-none p-8 border border-gray-200 dark:border-gray-700">
             <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6">
               Quick Actions
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="text-center p-6 rounded-nonelg bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900 dark:to-blue-950 border border-blue-200 dark:border-blue-700">
+              <div className="text-center p-6 rounded-lg bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900 dark:to-blue-950 border border-blue-200 dark:border-blue-700">
                 <Users className="w-12 h-12 text-blue-600 dark:text-blue-400 mx-auto mb-3" />
                 <h3 className="font-semibold text-gray-800 dark:text-gray-100 mb-2">
                   User Management
@@ -313,7 +321,7 @@ function AdminHomePage() {
                   Efficiently manage all system users and their permissions
                 </p>
               </div>
-              <div className="text-center p-6 rounded-nonelg bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900 dark:to-green-950 border border-green-200 dark:border-green-700">
+              <div className="text-center p-6 rounded-lg bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900 dark:to-green-950 border border-green-200 dark:border-green-700">
                 <Activity className="w-12 h-12 text-green-600 dark:text-green-400 mx-auto mb-3" />
                 <h3 className="font-semibold text-gray-800 dark:text-gray-100 mb-2">
                   System Monitoring
@@ -322,7 +330,7 @@ function AdminHomePage() {
                   Monitor system performance and user activities
                 </p>
               </div>
-              <div className="text-center p-6 rounded-nonelg bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900 dark:to-purple-950 border border-purple-200 dark:border-purple-700">
+              <div className="text-center p-6 rounded-lg bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900 dark:to-purple-950 border border-purple-200 dark:border-purple-700">
                 <Bell className="w-12 h-12 text-purple-600 dark:text-purple-400 mx-auto mb-3" />
                 <h3 className="font-semibold text-gray-800 dark:text-gray-100 mb-2">
                   Communications

@@ -41,7 +41,7 @@ const CompanyMetrics = () => {
           {metrics.map((metric, index) => (
             <div
               key={index}
-              className="bg-white/10 backdrop-blur-lg rounded-nonexl p-8 text-center transform hover:-translate-y-2 transition-all duration-300 hover-glow"
+              className="bg-white/10 backdrop-blur-lg rounded-xl p-8 text-center transform hover:-translate-y-2 transition-all duration-300 hover-glow"
             >
               <div className="text-white mb-4 flex justify-center">{metric.icon}</div>
               <div className="text-4xl font-bold text-white mb-2">{metric.value}</div>

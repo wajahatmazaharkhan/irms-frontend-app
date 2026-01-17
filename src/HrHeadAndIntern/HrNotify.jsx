@@ -112,7 +112,7 @@ const AdminNotify = () => {
           {/* Header Section */}
           <div className="text-center mb-8">
             <div className="flex items-center justify-center mb-4">
-              <div className="p-3 bg-blue-100 rounded-nonefull dark:bg-[rgba(59,130,246,0.08)]">
+              <div className="p-3 bg-blue-100 rounded-full dark:bg-[rgba(59,130,246,0.08)]">
                 <Bell className="w-8 h-8 text-blue-600 dark:text-blue-300" />
               </div>
             </div>
@@ -126,7 +126,7 @@ const AdminNotify = () => {
 
           {/* Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div className="bg-white rounded-nonexl shadow-md p-6 border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+            <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600 mb-1 dark:text-gray-300">
@@ -139,7 +139,7 @@ const AdminNotify = () => {
                 <Users className="w-8 h-8 text-blue-600 dark:text-blue-300" />
               </div>
             </div>
-            <div className="bg-white rounded-nonexl shadow-md p-6 border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+            <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600 mb-1 dark:text-gray-300">
@@ -152,7 +152,7 @@ const AdminNotify = () => {
                 <CheckCircle className="w-8 h-8 text-green-600 dark:text-green-300" />
               </div>
             </div>
-            <div className="bg-white rounded-nonexl shadow-md p-6 border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+            <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600 mb-1 dark:text-gray-300">
@@ -169,7 +169,7 @@ const AdminNotify = () => {
 
           {/* Main Form */}
           <div className="max-w-4xl mx-auto">
-            <div className="bg-white rounded-nonexl shadow-xl border border-gray-200 overflow-hidden dark:bg-gray-800 dark:border-gray-700">
+            <div className="bg-white rounded-xl shadow-xl border border-gray-200 overflow-hidden dark:bg-gray-800 dark:border-gray-700">
               {/* Form Header */}
               <div className="bg-gradient-to-r from-blue-500 to-blue-600 p-6">
                 <div className="flex items-center space-x-3">
@@ -198,7 +198,7 @@ const AdminNotify = () => {
                         onClick={() =>
                           setFormData({ ...formData, status: option.value })
                         }
-                        className={`p-4 rounded-nonelg border-2 cursor-pointer transition-all duration-200 hover:shadow-md ${
+                        className={`p-4 rounded-lg border-2 cursor-pointer transition-all duration-200 hover:shadow-md ${
                           formData.status === option.value
                             ? `${option.bgColor} border-current ${option.color} shadow-md dark:shadow-none`
                             : "bg-gray-50 border-gray-200 hover:border-gray-300 dark:bg-gray-900 dark:border-gray-700 hover:dark:border-gray-600"
@@ -220,7 +220,7 @@ const AdminNotify = () => {
                   </div>
                   {selectedStatus && (
                     <div
-                      className={`mt-3 p-3 rounded-nonelg ${selectedStatus.bgColor} border dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200`}
+                      className={`mt-3 p-3 rounded-lg ${selectedStatus.bgColor} border dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200`}
                     >
                       <p
                         className={`text-sm ${
@@ -248,7 +248,7 @@ const AdminNotify = () => {
                       onChange={(e) =>
                         setFormData({ ...formData, message: e.target.value })
                       }
-                      className="w-full p-4 border-2 border-gray-200 rounded-nonelg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 resize-none bg-white text-gray-800 dark:bg-gray-900 dark:text-gray-100 dark:border-gray-700 dark:focus:ring-blue-400"
+                      className="w-full p-4 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 resize-none bg-white text-gray-800 dark:bg-gray-900 dark:text-gray-100 dark:border-gray-700 dark:focus:ring-blue-400"
                       rows="8"
                       placeholder="Type your notification message here... 
 
@@ -262,14 +262,14 @@ This message will be sent to all registered users in the system. Please ensure y
 
                 {/* Preview Section */}
                 {(formData.status || formData.message) && (
-                  <div className="bg-gray-50 rounded-nonelg p-6 border border-gray-200 dark:bg-transparent dark:border-gray-700">
+                  <div className="bg-gray-50 rounded-lg p-6 border border-gray-200 dark:bg-transparent dark:border-gray-700">
                     <h3 className="text-lg font-semibold text-gray-700 mb-4 dark:text-gray-200">
                       Preview
                     </h3>
-                    <div className="bg-white rounded-nonelg p-4 border border-gray-200 shadow-sm dark:bg-gray-800 dark:border-gray-700">
+                    <div className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm dark:bg-gray-800 dark:border-gray-700">
                       {formData.status && (
                         <div
-                          className={`inline-block px-3 py-1 rounded-nonefull text-sm font-medium mb-3 ${
+                          className={`inline-block px-3 py-1 rounded-full text-sm font-medium mb-3 ${
                             selectedStatus
                               ? `${selectedStatus.bgColor} ${selectedStatus.color} border`
                               : ""
@@ -289,7 +289,7 @@ This message will be sent to all registered users in the system. Please ensure y
                 <div className="flex flex-col sm:flex-row gap-4 justify-end pt-6 border-t border-gray-200 dark:border-gray-700">
                   <button
                     onClick={() => setFormData({ status: "", message: "" })}
-                    className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-nonelg font-medium hover:bg-gray-50 transition-colors duration-200 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-900"
+                    className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors duration-200 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-900"
                     disabled={isLoading}
                   >
                     Clear Form
@@ -299,7 +299,7 @@ This message will be sent to all registered users in the system. Please ensure y
                     disabled={
                       isLoading || !formData.status || !formData.message
                     }
-                    className={`flex items-center justify-center space-x-2 px-8 py-3 rounded-nonelg font-medium transition-all duration-200 ${
+                    className={`flex items-center justify-center space-x-2 px-8 py-3 rounded-lg font-medium transition-all duration-200 ${
                       isLoading || !formData.status || !formData.message
                         ? "bg-gray-300 text-gray-500 cursor-not-allowed dark:bg-gray-700 dark:text-gray-400"
                         : "bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
@@ -324,7 +324,7 @@ This message will be sent to all registered users in the system. Please ensure y
 
           {/* Help Section */}
           <div className="max-w-4xl mx-auto mt-8">
-            <div className="bg-blue-50 rounded-nonexl p-6 border border-blue-200 dark:bg-transparent dark:border-blue-900/40">
+            <div className="bg-blue-50 rounded-xl p-6 border border-blue-200 dark:bg-transparent dark:border-blue-900/40">
               <h3 className="text-lg font-semibold text-blue-800 mb-3 dark:text-blue-200">
                 📋 Notification Guidelines
               </h3>

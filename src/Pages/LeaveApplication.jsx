@@ -141,7 +141,7 @@ const LeaveApplication = () => {
 
     return (
       <span
-        className={`inline-flex items-center px-2.5 py-0.5 text-xs font-medium uppercase tracking-wide rounded-none ${styles[status] ||
+        className={`inline-flex items-center px-2.5 py-0.5 text-xs font-medium uppercase tracking-wide rounded- ${styles[status] ||
           styles.Pending
           }`}
       >
@@ -165,11 +165,11 @@ const LeaveApplication = () => {
         <div className="px-6 pt-6 pb-12">
           <div className="max-w-7xl mx-auto space-y-6">
             {/* PAGE HEADER */}
-            <Card className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm rounded-none">
+            <Card className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm rounded-">
               <CardHeader className="border-b border-slate-200 dark:border-slate-800 pb-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 flex items-center justify-center bg-blue-100 dark:bg-blue-900/40 rounded-none border border-blue-200 dark:border-blue-800">
+                    <div className="h-10 w-10 flex items-center justify-center bg-blue-100 dark:bg-blue-900/40 rounded- border border-blue-200 dark:border-blue-800">
                       <FileText className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                     </div>
                     <div>
@@ -211,7 +211,7 @@ const LeaveApplication = () => {
             {/* MAIN CONTENT: FORM + TABLE */}
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
               {/* FORM */}
-              <Card className="xl:col-span-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm rounded-none">
+              <Card className="xl:col-span-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm rounded-">
                 <CardHeader className="border-b border-slate-200 dark:border-slate-800 pb-3">
                   <CardTitle className="text-base font-semibold text-gray-900 dark:text-gray-100">
                     New Leave Request
@@ -230,10 +230,10 @@ const LeaveApplication = () => {
                           setFormData({ ...formData, leaveType: value })
                         }
                       >
-                        <SelectTrigger className="w-full h-10 text-sm bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-700 text-gray-900 dark:text-gray-100 rounded-none">
+                        <SelectTrigger className="w-full h-10 text-sm bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-700 text-gray-900 dark:text-gray-100 rounded-">
                           <SelectValue placeholder="Select leave type" />
                         </SelectTrigger>
-                        <SelectContent className="bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-700 rounded-none">
+                        <SelectContent className="bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-700 rounded-">
                           {leaveTypes.map((type) => (
                             <SelectItem
                               key={type.value}
@@ -268,7 +268,7 @@ const LeaveApplication = () => {
                                   startDate: e.target.value,
                                 })
                               }
-                              className="w-full h-10 pl-9 pr-3 text-sm bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-700 text-gray-900 dark:text-gray-100 rounded-none outline-none"
+                              className="w-full h-10 pl-9 pr-3 text-sm bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-700 text-gray-900 dark:text-gray-100 rounded- outline-none"
                             />
                           </div>
                         </div>
@@ -287,7 +287,7 @@ const LeaveApplication = () => {
                                   endDate: e.target.value,
                                 })
                               }
-                              className="w-full h-10 pl-9 pr-3 text-sm bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-700 text-gray-900 dark:text-gray-100 rounded-none outline-none"
+                              className="w-full h-10 pl-9 pr-3 text-sm bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-700 text-gray-900 dark:text-gray-100 rounded- outline-none"
                             />
                           </div>
                         </div>
@@ -306,7 +306,7 @@ const LeaveApplication = () => {
                           setFormData({ ...formData, reason: e.target.value })
                         }
                         placeholder="Enter a clear and concise reason for your leave request."
-                        className="w-full min-h-[110px] text-sm bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 rounded-none"
+                        className="w-full min-h-[110px] text-sm bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 rounded-"
                       />
                     </div>
 
@@ -316,7 +316,7 @@ const LeaveApplication = () => {
                         type="button"
                         variant="outline"
                         onClick={() => navigate(-1)}
-                        className="h-9 px-4 text-xs border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-800 dark:text-gray-100 rounded-none"
+                        className="h-9 px-4 text-xs border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-800 dark:text-gray-100 rounded-"
                       >
                         Back
                       </Button>
@@ -332,14 +332,14 @@ const LeaveApplication = () => {
                               reason: "",
                             })
                           }
-                          className="h-9 px-4 text-xs border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-800 dark:text-gray-100 rounded-none"
+                          className="h-9 px-4 text-xs border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-800 dark:text-gray-100 rounded-"
                         >
                           Clear
                         </Button>
                         <Button
                           type="submit"
                           disabled={loading}
-                          className="h-9 px-5 text-xs font-medium bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-none"
+                          className="h-9 px-5 text-xs font-medium bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-"
                         >
                           {loading ? (
                             <>
@@ -359,7 +359,7 @@ const LeaveApplication = () => {
               {/* TABLE + INFO */}
               <div className="xl:col-span-2 space-y-6">
                 {/* Leave History Table */}
-                <Card className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm rounded-none">
+                <Card className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm rounded-">
                   <CardHeader className="border-b border-slate-200 dark:border-slate-800 pb-3 flex flex-row items-center justify-between">
                     <CardTitle className="text-base font-semibold text-gray-900 dark:text-gray-100">
                       Leave History
@@ -437,7 +437,7 @@ const LeaveApplication = () => {
                 </Card>
 
                 {/* Info Banner */}
-                <Card className="bg-blue-50 border-blue-200 dark:bg-slate-900 dark:border-slate-700 shadow-sm rounded-none">
+                <Card className="bg-blue-50 border-blue-200 dark:bg-slate-900 dark:border-slate-700 shadow-sm rounded-">
                   <CardContent className="px-4 py-3">
                     <div className="flex gap-3 items-start">
                       <Clock className="w-5 h-5 text-blue-500 dark:text-blue-400 mt-0.5" />

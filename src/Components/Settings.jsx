@@ -143,7 +143,7 @@ export default function Settings() {
                   <div className="flex items-center justify-between p-2 rounded bg-gray-50">
                     <span className="text-gray-900">{value}</span>
                     <button
-                      className="p-1 hover:bg-gray-200 rounded-nonefull transition-colors"
+                      className="p-1 hover:bg-gray-200 rounded-full transition-colors"
                       onClick={() =>
                         handleEdit(
                           key,
@@ -172,7 +172,7 @@ export default function Settings() {
                 {roles.map((role, index) => (
                   <div
                     key={index}
-                    className="flex items-center justify-between p-2 hover:bg-gray-50 rounded-nonelg"
+                    className="flex items-center justify-between p-2 hover:bg-gray-50 rounded-lg"
                   >
                     <div className="flex items-center gap-3">
                       <input
@@ -208,7 +208,7 @@ export default function Settings() {
                 {permissions.map((permission, index) => (
                   <div
                     key={index}
-                    className="flex items-center justify-between p-2 hover:bg-gray-50 rounded-nonelg"
+                    className="flex items-center justify-between p-2 hover:bg-gray-50 rounded-lg"
                   >
                     <div className="flex items-center gap-3">
                       <input

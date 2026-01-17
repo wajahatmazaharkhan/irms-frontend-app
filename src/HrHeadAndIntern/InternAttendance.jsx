@@ -169,7 +169,7 @@ function BatchPage() {
             <p className="text-gray-500 dark:text-gray-400 mb-4">{error}</p>
             <button
               onClick={() => window.location.reload()}
-              className="bg-blue-600 dark:bg-blue-500 text-white px-6 py-2 rounded-nonelg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors"
+              className="bg-blue-600 dark:bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors"
             >
               Retry
             </button>
@@ -195,7 +195,7 @@ function BatchPage() {
           </div>
 
           {/* Filters and Search */}
-          <div className="bg-white dark:bg-gray-900 rounded-nonexl shadow-md p-6 mb-8">
+          <div className="bg-white dark:bg-gray-900 rounded-xl shadow-md p-6 mb-8">
             <div className="flex flex-col md:flex-row items-center justify-between gap-4">
               <div className="relative w-full md:w-1/3">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-400 w-5 h-5" />
@@ -204,7 +204,7 @@ function BatchPage() {
                   placeholder="Search by batch name..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border rounded-nonelg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-700"
+                  className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-700"
                 />
               </div>
               <div className="relative w-full md:w-auto">
@@ -212,7 +212,7 @@ function BatchPage() {
                 <select
                   value={filterStatus}
                   onChange={(e) => setFilterStatus(e.target.value)}
-                  className="pl-10 pr-4 py-2 border rounded-nonelg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-700"
+                  className="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-700"
                 >
                   <option value="all">All Statuses</option>
                   <option value="Active">Active</option>
@@ -224,7 +224,7 @@ function BatchPage() {
           </div>
 
           {/* Batch Table */}
-          <div className="bg-white dark:bg-gray-900 rounded-nonexl shadow-md overflow-hidden">
+          <div className="bg-white dark:bg-gray-900 rounded-xl shadow-md overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-gray-50 dark:bg-gray-800">
@@ -272,7 +272,7 @@ function BatchPage() {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span
-                            className={`inline-flex items-center px-2.5 py-0.5 rounded-nonefull text-xs font-medium border ${getStatusColor(
+                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getStatusColor(
                               batch.status
                             )}`}
                           >

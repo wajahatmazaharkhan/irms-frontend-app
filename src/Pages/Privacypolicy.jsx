@@ -14,7 +14,7 @@ function Privacypolicy() {
         </h1>
 
         {/* Section 1 */}
-        <section className="mb-6 p-6 bg-blue-50 border border-blue-200 rounded-nonelg shadow-lg hover:shadow-xl transition duration-300">
+        <section className="mb-6 p-6 bg-blue-50 border border-blue-200 rounded-lg shadow-lg hover:shadow-xl transition duration-300">
           <h2 className="text-2xl font-semibold text-blue-600 hover:text-blue-800 transition duration-300 mb-2">
             1. Introduction
           </h2>
@@ -29,7 +29,7 @@ function Privacypolicy() {
         </section>
 
         {/* Section 2 */}
-        <section className="mb-6 p-6 bg-blue-50 border border-blue-200 rounded-nonelg shadow-lg hover:shadow-xl transition duration-300">
+        <section className="mb-6 p-6 bg-blue-50 border border-blue-200 rounded-lg shadow-lg hover:shadow-xl transition duration-300">
           <h2 className="text-2xl font-semibold text-blue-600 hover:text-blue-800 transition duration-300 mb-2">
             2. Information We Collect
           </h2>
@@ -42,7 +42,7 @@ function Privacypolicy() {
         </section>
 
         {/* Section 3 */}
-        <section className="mb-6 p-6 bg-gradient-to-r from-blue-100 via-blue-200 to-blue-300 border border-blue-300 rounded-nonelg shadow-lg hover:shadow-xl transition duration-300">
+        <section className="mb-6 p-6 bg-gradient-to-r from-blue-100 via-blue-200 to-blue-300 border border-blue-300 rounded-lg shadow-lg hover:shadow-xl transition duration-300">
           <h2 className="text-2xl font-semibold text-blue-600 hover:text-blue-800 transition duration-300 mb-2">
             3. Use of Information
           </h2>
@@ -55,7 +55,7 @@ function Privacypolicy() {
         </section>
 
         {/* Section 4 */}
-        <section className="mb-6 p-6 bg-blue-50 border border-blue-200 rounded-nonelg shadow-lg hover:shadow-xl transition duration-300">
+        <section className="mb-6 p-6 bg-blue-50 border border-blue-200 rounded-lg shadow-lg hover:shadow-xl transition duration-300">
           <h2 className="text-2xl font-semibold text-blue-600 hover:text-blue-800 transition duration-300 mb-2">
             4. Sharing of Information
           </h2>
@@ -68,7 +68,7 @@ function Privacypolicy() {
         </section>
 
         {/* Section 5 */}
-        <section className="mb-6 p-6 bg-gradient-to-r from-blue-100 via-blue-200 to-blue-300 border border-blue-300 rounded-nonelg shadow-lg hover:shadow-xl transition duration-300">
+        <section className="mb-6 p-6 bg-gradient-to-r from-blue-100 via-blue-200 to-blue-300 border border-blue-300 rounded-lg shadow-lg hover:shadow-xl transition duration-300">
           <h2 className="text-2xl font-semibold text-blue-600 hover:text-blue-800 transition duration-300 mb-2">
             5. Data Security
           </h2>
@@ -80,7 +80,7 @@ function Privacypolicy() {
         </section>
 
         {/* Section 6 */}
-        <section className="mb-6 p-6 bg-blue-50 border border-blue-200 rounded-nonelg shadow-lg hover:shadow-xl transition duration-300">
+        <section className="mb-6 p-6 bg-blue-50 border border-blue-200 rounded-lg shadow-lg hover:shadow-xl transition duration-300">
           <h2 className="text-2xl font-semibold text-blue-600 hover:text-blue-800 transition duration-300 mb-2">
             6. Cookies and Tracking Technologies
           </h2>
@@ -93,7 +93,7 @@ function Privacypolicy() {
         </section>
 
         {/* Section 7 */}
-        <section className="mb-6 p-6 bg-gradient-to-r from-blue-100 via-blue-200 to-blue-300 border border-blue-300 rounded-nonelg shadow-lg hover:shadow-xl transition duration-300">
+        <section className="mb-6 p-6 bg-gradient-to-r from-blue-100 via-blue-200 to-blue-300 border border-blue-300 rounded-lg shadow-lg hover:shadow-xl transition duration-300">
           <h2 className="text-2xl font-semibold text-blue-600 hover:text-blue-800 transition duration-300 mb-2">
             7. Third-Party Links
           </h2>
@@ -105,7 +105,7 @@ function Privacypolicy() {
         </section>
 
         {/* Section 8 */}
-        <section className="mb-6 p-6 bg-blue-50 border border-blue-200 rounded-nonelg shadow-lg hover:shadow-xl transition duration-300">
+        <section className="mb-6 p-6 bg-blue-50 border border-blue-200 rounded-lg shadow-lg hover:shadow-xl transition duration-300">
           <h2 className="text-2xl font-semibold text-blue-600 hover:text-blue-800 transition duration-300 mb-2">
             8. {`Children's`} Privacy
           </h2>
@@ -117,7 +117,7 @@ function Privacypolicy() {
         </section>
 
         {/* Section 9 */}
-        <section className="mb-6 p-6 bg-gradient-to-r from-blue-100 via-blue-200 to-blue-300 border border-blue-300 rounded-nonelg shadow-lg hover:shadow-xl transition duration-300">
+        <section className="mb-6 p-6 bg-gradient-to-r from-blue-100 via-blue-200 to-blue-300 border border-blue-300 rounded-lg shadow-lg hover:shadow-xl transition duration-300">
           <h2 className="text-2xl font-semibold text-blue-600 hover:text-blue-800 transition duration-300 mb-2">
             9. Changes to This Privacy Policy
           </h2>
@@ -129,7 +129,7 @@ function Privacypolicy() {
         </section>
 
         {/* Section 10 */}
-        <section className="mb-6 p-6 bg-blue-50 border border-blue-200 rounded-nonelg shadow-lg hover:shadow-xl transition duration-300">
+        <section className="mb-6 p-6 bg-blue-50 border border-blue-200 rounded-lg shadow-lg hover:shadow-xl transition duration-300">
           <h2 className="text-2xl font-semibold text-blue-600 hover:text-blue-800 transition duration-300 mb-2">
             10. Contact Us
           </h2>

@@ -26,7 +26,7 @@ const InternNecessities = () => {
   ];
 
   return (
-    <div className="max-w-4xl mx-auto mt-10 p-6 bg-white dark:bg-slate-900 rounded-none2xl shadow-xl border border-gray-200 dark:border-slate-700 mb-20 transition-colors duration-300">
+    <div className="max-w-4xl mx-auto mt-10 p-6 bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-gray-200 dark:border-slate-700 mb-20 transition-colors duration-300">
       <h2 className="text-2xl font-semibold text-gray-800 dark:text-slate-100 text-center mb-6">
         Intern Essentials
       </h2>
@@ -37,7 +37,7 @@ const InternNecessities = () => {
             href={item.link}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-center bg-gradient-to-br from-blue-500 to-indigo-600 text-white px-4 py-3 rounded-nonexl shadow-md hover:scale-105 hover:shadow-lg transition-transform duration-300 ease-in-out dark:shadow-slate-900"
+            className="flex items-center justify-center bg-gradient-to-br from-blue-500 to-indigo-600 text-white px-4 py-3 rounded-xl shadow-md hover:scale-105 hover:shadow-lg transition-transform duration-300 ease-in-out dark:shadow-slate-900"
           >
             {item.icon}
             <span className="text-sm font-medium">{item.label}</span>

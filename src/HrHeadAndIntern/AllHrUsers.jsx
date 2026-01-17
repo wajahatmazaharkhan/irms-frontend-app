@@ -225,7 +225,7 @@ function AllUsers() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-100 dark:from-gray-900 dark:to-gray-950">
       <CustomHrNavbar />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="bg-white dark:bg-gray-900 rounded-nonexl shadow-lg dark:shadow-none overflow-hidden border border-gray-200 dark:border-gray-700">
+        <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg dark:shadow-none overflow-hidden border border-gray-200 dark:border-gray-700">
           {/* Header Section */}
           <div className="px-6 py-5 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-blue-600 to-blue-800 dark:from-blue-700 dark:to-blue-900">
             <div className="flex flex-col md:flex-row justify-between items-center">
@@ -236,7 +236,7 @@ function AllUsers() {
                 <input
                   type="text"
                   placeholder="Search interns..."
-                  className="w-full px-4 py-2 rounded-nonemd bg-blue-700 bg-opacity-20 text-white placeholder-blue-200 focus:ring-2 focus:ring-white focus:outline-none dark:bg-blue-900 dark:bg-opacity-40 dark:placeholder-blue-300"
+                  className="w-full px-4 py-2 rounded-md bg-blue-700 bg-opacity-20 text-white placeholder-blue-200 focus:ring-2 focus:ring-white focus:outline-none dark:bg-blue-900 dark:bg-opacity-40 dark:placeholder-blue-300"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
@@ -290,12 +290,12 @@ function AllUsers() {
                   {getSortedUsers().map((user) => (
                     <div
                       key={user._id}
-                      className="bg-white dark:bg-gray-900 rounded-nonelg shadow-md dark:shadow-none overflow-hidden border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow duration-300"
+                      className="bg-white dark:bg-gray-900 rounded-lg shadow-md dark:shadow-none overflow-hidden border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow duration-300"
                     >
                       <div className="p-5">
                         <div className="flex items-center space-x-4 mb-4">
                           <div className="flex-shrink-0">
-                            <div className="h-12 w-12 rounded-nonefull bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-blue-600 dark:text-blue-300 font-bold text-lg">
+                            <div className="h-12 w-12 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-blue-600 dark:text-blue-300 font-bold text-lg">
                               {user.name.charAt(0).toUpperCase()}
                             </div>
                           </div>
@@ -350,7 +350,7 @@ function AllUsers() {
                               href={user.linkedInURL}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="inline-flex items-center px-3 py-1 bg-blue-50 text-blue-600 rounded-nonefull text-xs hover:bg-blue-100 dark:bg-blue-900/40 dark:text-blue-300 dark:hover:bg-blue-900/70"
+                              className="inline-flex items-center px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-xs hover:bg-blue-100 dark:bg-blue-900/40 dark:text-blue-300 dark:hover:bg-blue-900/70"
                             >
                               <svg
                                 className="h-4 w-4 mr-1"
@@ -367,7 +367,7 @@ function AllUsers() {
                               href={user.githubURL}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="inline-flex items-center px-3 py-1 bg-gray-100 text-gray-800 rounded-nonefull text-xs hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-gray-700"
+                              className="inline-flex items-center px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-xs hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-gray-700"
                             >
                               <svg
                                 className="h-4 w-4 mr-1"
@@ -386,7 +386,7 @@ function AllUsers() {
                             onClick={() => {
                               deleteUser(user._id, user.name)
                             }}
-                            className="inline-flex items-center px-3 py-1 bg-red-50 text-red-600 rounded-nonemd text-sm hover:bg-red-100 dark:bg-red-900/30 dark:text-red-300 dark:hover:bg-red-900/60 transition-colors"
+                            className="inline-flex items-center px-3 py-1 bg-red-50 text-red-600 rounded-md text-sm hover:bg-red-100 dark:bg-red-900/30 dark:text-red-300 dark:hover:bg-red-900/60 transition-colors"
                           >
                             <svg
                               className="h-4 w-4 mr-1"

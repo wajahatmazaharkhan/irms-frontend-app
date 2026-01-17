@@ -76,7 +76,7 @@ const RaiseTicket = () => {
       <SideNav />
       <div className="p-6 max-w-4xl mx-auto">
         <h1 className="text-2xl font-bold mb-4">Ask a Question</h1>
-        <form onSubmit={handleSubmit} className="bg-white shadow rounded-nonelg p-4 mb-6 space-y-4">
+        <form onSubmit={handleSubmit} className="bg-white shadow rounded-lg p-4 mb-6 space-y-4">
           <div>
             <label className="block mb-1 font-medium">Category</label>
             <select
@@ -138,11 +138,11 @@ const RaiseTicket = () => {
           <>
             <div className="space-y-4">
               {tickets.map((ticket) => (
-                <div key={ticket._id} className="border rounded-nonelg p-4 shadow-sm bg-white">
+                <div key={ticket._id} className="border rounded-lg p-4 shadow-sm bg-white">
                   <div className="flex justify-between items-center">
                     <h3 className="text-lg font-medium">{ticket.title}</h3>
                     <span
-                      className={`px-3 py-1 rounded-nonefull text-sm ${ticket.status === "Open"
+                      className={`px-3 py-1 rounded-full text-sm ${ticket.status === "Open"
                         ? "bg-green-100 text-green-700"
                         : ticket.status === "In Progress"
                           ? "bg-yellow-100 text-yellow-700"

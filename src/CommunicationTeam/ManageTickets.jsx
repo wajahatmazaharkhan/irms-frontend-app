@@ -179,7 +179,7 @@ const ManageTickets = () => {
         setSelectedTicket(ticket);
         setMobileSidebarOpen(false);
       }}
-      className={`cursor-pointer border rounded-nonelg p-3 md:p-4 transition-all duration-200 ${selectedTicket?._id === ticket._id
+      className={`cursor-pointer border rounded-lg p-3 md:p-4 transition-all duration-200 ${selectedTicket?._id === ticket._id
         ? "bg-indigo-50 border-indigo-300 shadow-sm"
         : "border-gray-200 hover:bg-gray-50 hover:shadow-xs"
         }`}
@@ -189,7 +189,7 @@ const ManageTickets = () => {
       </h3>
       <div className="flex items-center justify-between mt-1">
         <span
-          className={`text-xs px-2 py-1 rounded-nonefull ${ticket.status === "open"
+          className={`text-xs px-2 py-1 rounded-full ${ticket.status === "open"
             ? "bg-green-100 text-green-800"
             : ticket.status === "pending"
               ? "bg-amber-100 text-amber-800"
@@ -210,9 +210,9 @@ const ManageTickets = () => {
     const isSender = (msg.sender._id || msg.sender) === userId;
     return (
       <div
-        className={`px-3 py-2 md:px-4 md:py-3 rounded-none2xl max-w-xs md:max-w-md ${isSender
-          ? "bg-gray-500 text-white rounded-nonebr-none shadow-md"
-          : "bg-blue-200 text-gray-900 rounded-nonebl-none shadow-sm border border-gray-200"
+        className={`px-3 py-2 md:px-4 md:py-3 rounded-2xl max-w-xs md:max-w-md ${isSender
+          ? "bg-gray-500 text-white rounded-br-none shadow-md"
+          : "bg-blue-200 text-gray-900 rounded-bl-none shadow-sm border border-gray-200"
           }`}
       >
         <p className="text-sm">{msg.text}</p>
@@ -234,7 +234,7 @@ const ManageTickets = () => {
     <div className="border-b border-gray-200 p-3 md:p-4 bg-indigo-600 text-white">
       <div className="flex items-center gap-2">
         <button
-          className="md:hidden p-1 rounded-nonefull hover:bg-indigo-700"
+          className="md:hidden p-1 rounded-full hover:bg-indigo-700"
           onClick={() => setMobileSidebarOpen(true)}
         >
           <Menu className="w-5 h-5" />
@@ -251,12 +251,12 @@ const ManageTickets = () => {
         <div className="relative">
           <button
             onClick={() => setShowActions((prev) => !prev)}
-            className="p-1 md:p-2 hover:bg-indigo-700 rounded-nonefull"
+            className="p-1 md:p-2 hover:bg-indigo-700 rounded-full"
           >
             <MoreVertical className="w-4 h-4 md:w-5 md:h-5" />
           </button>
           {showActions && (
-            <div className="absolute right-0 mt-2 w-32 md:w-40 bg-white rounded-nonemd shadow-lg border z-10 text-gray-900 text-xs md:text-sm">
+            <div className="absolute right-0 mt-2 w-32 md:w-40 bg-white rounded-md shadow-lg border z-10 text-gray-900 text-xs md:text-sm">
               <button
                 onClick={() => {
                   setShowActions(false);
@@ -306,12 +306,12 @@ const ManageTickets = () => {
               if (e.key === "Enter") handleSend();
             }}
             placeholder="Type your message..."
-            className="flex-1 border border-gray-300 px-3 py-2 md:px-4 md:py-3 rounded-nonefull focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm md:text-base"
+            className="flex-1 border border-gray-300 px-3 py-2 md:px-4 md:py-3 rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm md:text-base"
           />
           <button
             onClick={handleSend}
             disabled={sending || !newMessage.trim()}
-            className={`p-2 md:p-3 rounded-nonefull ${sending || !newMessage.trim()
+            className={`p-2 md:p-3 rounded-full ${sending || !newMessage.trim()
                 ? "bg-gray-300 text-gray-500"
                 : "bg-indigo-600 hover:bg-indigo-700 text-white shadow-md transform hover:scale-105 transition-all"
               }`}
@@ -339,7 +339,7 @@ const ManageTickets = () => {
           <h2 className="text-lg font-bold text-gray-800">My Assigned Tickets</h2>
           <button
             onClick={() => setMobileSidebarOpen(false)}
-            className="p-1 rounded-nonefull hover:bg-gray-100"
+            className="p-1 rounded-full hover:bg-gray-100"
           >
             <X className="w-5 h-5" />
           </button>
@@ -368,7 +368,7 @@ const ManageTickets = () => {
   // Close Ticket Modal Component
   const CloseTicketModal = () => (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-nonelg shadow-xl p-4 md:p-6 w-[90%] max-w-sm">
+      <div className="bg-white rounded-lg shadow-xl p-4 md:p-6 w-[90%] max-w-sm">
         <div className="flex justify-between items-center mb-3 md:mb-4">
           <h3 className="text-base md:text-lg font-semibold">Close Ticket</h3>
           <button
@@ -385,13 +385,13 @@ const ManageTickets = () => {
         <div className="flex justify-end gap-2 md:gap-3">
           <button
             onClick={() => setShowCloseModal(false)}
-            className="px-3 py-1 md:px-4 md:py-2 border rounded-nonemd text-xs md:text-sm"
+            className="px-3 py-1 md:px-4 md:py-2 border rounded-md text-xs md:text-sm"
           >
             Cancel
           </button>
           <button
             onClick={handleCloseTicket}
-            className="px-3 py-1 md:px-4 md:py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-nonemd text-xs md:text-sm"
+            className="px-3 py-1 md:px-4 md:py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md text-xs md:text-sm"
           >
             Yes, Close
           </button>
@@ -409,7 +409,7 @@ const ManageTickets = () => {
         <h2 className="text-lg font-bold text-gray-800">My Assigned Tickets</h2>
         <button
           onClick={() => setMobileSidebarOpen(true)}
-          className="p-1 rounded-nonefull hover:bg-gray-100"
+          className="p-1 rounded-full hover:bg-gray-100"
         >
           <Menu className="w-5 h-5" />
         </button>
@@ -487,7 +487,7 @@ const ManageTickets = () => {
           ) : (
             <div className="flex flex-col items-center justify-center h-full bg-gray-50 p-4">
               <div className="text-center p-4 md:p-6 max-w-md">
-                <div className="mx-auto w-14 h-14 md:w-16 md:h-16 bg-indigo-100 rounded-nonefull flex items-center justify-center mb-3 md:mb-4">
+                <div className="mx-auto w-14 h-14 md:w-16 md:h-16 bg-indigo-100 rounded-full flex items-center justify-center mb-3 md:mb-4">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-6 w-6 md:h-8 md:w-8 text-indigo-600"
@@ -511,7 +511,7 @@ const ManageTickets = () => {
                 </p>
                 <button
                   onClick={() => setMobileSidebarOpen(true)}
-                  className="px-4 py-2 bg-indigo-600 text-white rounded-nonemd text-sm md:text-base md:hidden"
+                  className="px-4 py-2 bg-indigo-600 text-white rounded-md text-sm md:text-base md:hidden"
                 >
                   View Tickets
                 </button>

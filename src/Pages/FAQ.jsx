@@ -13,13 +13,13 @@ const FAQ = () => {
         {/* Main Content */}
         <div
           id="mainContent"
-          className="p-4 w-full max-w-sm sm:max-w-lg lg:max-w-4xl rounded-nonelg"
+          className="p-4 w-full max-w-sm sm:max-w-lg lg:max-w-4xl rounded-lg"
         >
           <h1 className="text-4xl capitalize font-bold mb-6 text-center text-blue-600 dark:text-blue-400">
             How can we help?
           </h1>
 
-          <div className="bg-white dark:bg-slate-800 shadow-lg rounded-nonelg p-8 max-w-4xl mx-auto">
+          <div className="bg-white dark:bg-slate-800 shadow-lg rounded-lg p-8 max-w-4xl mx-auto">
             {FAQsData.map((faq, index) => (
               <div
                 key={index}

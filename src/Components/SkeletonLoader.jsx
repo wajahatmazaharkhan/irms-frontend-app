@@ -3,7 +3,7 @@ import { Skeleton } from "@/Components/ui/skeleton";
 
 const SkeletonLoader = () => {
   return (
-    <div className="p-4 border rounded-nonelg shadow-sm bg-white">
+    <div className="p-4 border rounded-lg shadow-sm bg-white">
       {/* Loading Title */}
       <div className="mb-4">
         <Skeleton className="h-6 w-1/3" />

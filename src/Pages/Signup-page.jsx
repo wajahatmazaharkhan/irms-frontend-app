@@ -142,7 +142,7 @@ const SignUp = ({ onSwitchToSignin }) => {
     <>
       {/* <TopNavbar /> */}
       <div className="flex items-center justify-center min-h-screen px-4 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-slate-900 dark:to-slate-950">
-        <div className="w-full max-w-md p-8 bg-white border shadow-lg rounded-nonexl dark:bg-slate-900 dark:border-slate-700 dark:shadow-black/40">
+        <div className="w-full max-w-md p-8 bg-white border shadow-lg rounded-xl dark:bg-slate-900 dark:border-slate-700 dark:shadow-black/40">
           <div className="text-center mb-6">
             <img src={iispprLogo} alt="Logo" className="mx-auto mb-4 w-28 h-28" />
             <h1 className="text-3xl font-bold text-blue-800 dark:text-blue-300">
@@ -169,7 +169,7 @@ const SignUp = ({ onSwitchToSignin }) => {
                       onChange={(e) => setFullName(e.target.value)}
                       type="text"
                       placeholder="Full Name"
-                      className="w-full pl-10 p-3 border rounded-nonelg focus:outline-none focus:ring-2 focus:ring-blue-300 dark:bg-slate-950 dark:border-slate-700 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:ring-blue-500"
+                      className="w-full pl-10 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 dark:bg-slate-950 dark:border-slate-700 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:ring-blue-500"
                     />
                   </div>
                 </div>
@@ -185,7 +185,7 @@ const SignUp = ({ onSwitchToSignin }) => {
                       onChange={(e) => setEmail(e.target.value)}
                       type="email"
                       placeholder="Enter Email"
-                      className="w-full pl-10 p-3 border rounded-nonelg focus:ring-blue-300 dark:bg-slate-950 dark:border-slate-700 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:ring-blue-500"
+                      className="w-full pl-10 p-3 border rounded-lg focus:ring-blue-300 dark:bg-slate-950 dark:border-slate-700 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:ring-blue-500"
                     />
                   </div>
                 </div>
@@ -194,7 +194,7 @@ const SignUp = ({ onSwitchToSignin }) => {
                   <label className="block mb-1 text-sm text-gray-600 dark:text-gray-300">
                     Phone
                   </label>
-                  <div className="space-y-2 p-3 border rounded-nonelg bg-gray-50 dark:bg-slate-950 dark:border-slate-700">
+                  <div className="space-y-2 p-3 border rounded-lg bg-gray-50 dark:bg-slate-950 dark:border-slate-700">
                     {/* Country Code Selector */}
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">
@@ -204,7 +204,7 @@ const SignUp = ({ onSwitchToSignin }) => {
                         ref={countrySelectRef}
                         value={countryCode}
                         onChange={(e) => setCountryCode(e.target.value)}
-                        className="w-full p-2 border rounded-nonemd focus:ring-blue-500 focus:border-blue-500 dark:bg-slate-950 dark:border-slate-700 dark:text-gray-100 dark:focus:ring-blue-400 dark:focus:border-blue-400"
+                        className="w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-slate-950 dark:border-slate-700 dark:text-gray-100 dark:focus:ring-blue-400 dark:focus:border-blue-400"
                       >
                         {countryCodes
                           .sort((a, b) => a.name.localeCompare(b.name))
@@ -228,7 +228,7 @@ const SignUp = ({ onSwitchToSignin }) => {
                           onChange={(e) => setPhone(e.target.value)}
                           type="tel"
                           placeholder="Enter phone number"
-                          className="w-full pl-10 p-2 border rounded-nonemd focus:ring-blue-500 focus:border-blue-500 dark:bg-slate-950 dark:border-slate-700 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:ring-blue-400 dark:focus:border-blue-400"
+                          className="w-full pl-10 p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-slate-950 dark:border-slate-700 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:ring-blue-400 dark:focus:border-blue-400"
                         />
                       </div>
                     </div>
@@ -244,7 +244,7 @@ const SignUp = ({ onSwitchToSignin }) => {
                     <select
                       value={department}
                       onChange={(e) => setDepartment(e.target.value)}
-                      className="w-full pl-10 p-3 border rounded-nonelg focus:ring-blue-300 dark:bg-slate-950 dark:border-slate-700 dark:text-gray-100 dark:focus:ring-blue-500"
+                      className="w-full pl-10 p-3 border rounded-lg focus:ring-blue-300 dark:bg-slate-950 dark:border-slate-700 dark:text-gray-100 dark:focus:ring-blue-500"
                     >
                       <option value="">Select department</option>
                       <option value="development">Development</option>
@@ -271,7 +271,7 @@ const SignUp = ({ onSwitchToSignin }) => {
                       <select
                         value={selectedBatch}
                         onChange={(e) => setSelectedBatch(e.target.value)}
-                        className="w-full pl-10 p-3 border rounded-nonelg focus:ring-blue-300 dark:bg-slate-950 dark:border-slate-700 dark:text-gray-100 dark:focus:ring-blue-500"
+                        className="w-full pl-10 p-3 border rounded-lg focus:ring-blue-300 dark:bg-slate-950 dark:border-slate-700 dark:text-gray-100 dark:focus:ring-blue-500"
                       >
                         <option value="">Select Batch</option>
                         {batches.map((batch) => (
@@ -296,7 +296,7 @@ const SignUp = ({ onSwitchToSignin }) => {
                       onChange={(e) => setEndDate(e.target.value)}
                       type="date"
                       min={new Date().toISOString().split("T")[0]}
-                      className="w-full pl-10 p-3 border rounded-nonelg focus:ring-blue-300 dark:bg-slate-950 dark:border-slate-700 dark:text-gray-100 dark:focus:ring-blue-500"
+                      className="w-full pl-10 p-3 border rounded-lg focus:ring-blue-300 dark:bg-slate-950 dark:border-slate-700 dark:text-gray-100 dark:focus:ring-blue-500"
                     />
                   </div>
                 </div>
@@ -312,7 +312,7 @@ const SignUp = ({ onSwitchToSignin }) => {
                       onChange={(e) => setPassword(e.target.value)}
                       type="password"
                       placeholder="Password"
-                      className="w-full pl-10 p-3 border rounded-nonelg focus:ring-blue-300 dark:bg-slate-950 dark:border-slate-700 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:ring-blue-500"
+                      className="w-full pl-10 p-3 border rounded-lg focus:ring-blue-300 dark:bg-slate-950 dark:border-slate-700 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:ring-blue-500"
                     />
                   </div>
                 </div>
@@ -328,7 +328,7 @@ const SignUp = ({ onSwitchToSignin }) => {
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       type="password"
                       placeholder="Confirm Password"
-                      className="w-full pl-10 p-3 border rounded-nonelg focus:ring-blue-300 dark:bg-slate-950 dark:border-slate-700 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:ring-blue-500"
+                      className="w-full pl-10 p-3 border rounded-lg focus:ring-blue-300 dark:bg-slate-950 dark:border-slate-700 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:ring-blue-500"
                     />
                   </div>
                 </div>
@@ -348,7 +348,7 @@ const SignUp = ({ onSwitchToSignin }) => {
                       onChange={(e) => setOtp(e.target.value)}
                       type="text"
                       placeholder="Enter OTP"
-                      className="w-full pl-10 p-3 border rounded-nonelg focus:ring-blue-300 dark:bg-slate-950 dark:border-slate-700 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:ring-blue-500"
+                      className="w-full pl-10 p-3 border rounded-lg focus:ring-blue-300 dark:bg-slate-950 dark:border-slate-700 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:ring-blue-500"
                     />
                   </div>
                 </div>
@@ -358,7 +358,7 @@ const SignUp = ({ onSwitchToSignin }) => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full p-3 font-semibold text-white bg-blue-600 rounded-nonelg hover:bg-blue-700 disabled:opacity-50 dark:bg-blue-600 dark:hover:bg-blue-500"
+              className="w-full p-3 font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 dark:bg-blue-600 dark:hover:bg-blue-500"
             >
               {isLoading
                 ? step === 1

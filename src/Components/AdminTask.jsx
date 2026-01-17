@@ -69,7 +69,7 @@ function Task(){
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                     {tasks.map((task) =>(
                         <div key ={task.id}
-                        className="bg-white p-4 rounded-nonelg shadow-md hover:shadow-lg transition">
+                        className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition">
                             {task.isEditing ? (<input type= "text" value={task.title} onChange={(e) => updateTask(task.id, "title", e.target.value)} 
                             className="text-lg font-semibold mb-2 border-b w-full focus:outline-none"/>
                             ):(

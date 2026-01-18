@@ -26,6 +26,7 @@ import { useAppContext } from "@/context/AppContext";
 import TaskModal from "./TaskModal";
 import { Button } from "@/Components/ui/button";
 import { Calendar as CalendarUI } from "react-calendar";
+import { useAuthContext } from "@/context/AuthContext";
 
 const BatchDashboard = () => {
   const role = localStorage.getItem("role");
@@ -43,6 +44,7 @@ const BatchDashboard = () => {
   const baseUrl = import.meta.env.VITE_BASE_URL;
   const navigate = useNavigate();
   const { modalView, setModalView } = useAppContext();
+  const { profileCompletion } = useAuthContext();
 
   useEffect(() => {
     if (role === "admin" || role === "hrHead") {

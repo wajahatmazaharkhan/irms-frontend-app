@@ -5,11 +5,12 @@ import { createContext, useState, useContext } from "react";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-
   const [token, setToken] = useState(localStorage.getItem("token"));
   const [loggedIn, setIsLoggedIn] = useState(!!token);
 
-  const [admin, setAdmin] = useState(localStorage.getItem("isAdmin") === "true");
+  const [admin, setAdmin] = useState(
+    localStorage.getItem("isAdmin") === "true"
+  );
   const [isAdmin, setIsAdmin] = useState(!!admin);
   const [permissions, setPermissions] = useState([]);
 
@@ -20,7 +21,6 @@ export const AuthProvider = ({ children }) => {
 
   const [hr, setHr] = useState(localStorage.getItem("isHr") === "true");
   const [isHr, setIsHr] = useState(!!hr);
-
 
   const storeIsAdminState = (adminState) => {
     localStorage.setItem("isAdmin", adminState);
@@ -36,6 +36,15 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem("token", serverToken);
     setToken(serverToken);
     setIsLoggedIn(!!serverToken);
+  };
+
+  const [profileCompletion, setProfileCompletion] = useState(
+    Number(localStorage.getItem("profileCompletion")) || 0
+  );
+
+  const storeProfileCompletion = (value) => {
+    localStorage.setItem("profileCompletion", value);
+    setProfileCompletion(value);
   };
 
   // Logout function
@@ -66,6 +75,8 @@ export const AuthProvider = ({ children }) => {
         LogoutUser,
         storePermissions,
         storeUserId,
+        profileCompletion,
+        storeProfileCompletion,
       }}
     >
       {children}

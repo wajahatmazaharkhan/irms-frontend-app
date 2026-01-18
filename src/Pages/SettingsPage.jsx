@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAppContext } from "@/context/AppContext";
-import toast from "react-hot-toast";
+import toast from "@/utils/toast";
 
 const SettingsPage = () => {
   useTitle("Settings");

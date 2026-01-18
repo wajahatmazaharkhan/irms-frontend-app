@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { DarkMode } from "@mui/icons-material";
 import axios from "axios";
-import toast from "react-hot-toast";
+import toast from "@/utils/toast";
 
 export default function CustomNavbar() {
   const navigate = useNavigate();

@@ -156,6 +156,7 @@ const InternManagement = () => {
       Swal.fire({
         icon: "error",
         title: "Required Fields Missing",
+        
         text: "Please fill in all required fields",
         confirmButtonColor: "#3B82F6",
       });
@@ -189,6 +190,7 @@ const InternManagement = () => {
       Swal.fire({
         icon: "success",
         title: "Success!",
+        
         text: "User added successfully",
         timer: 2000,
         showConfirmButton: false,
@@ -196,6 +198,7 @@ const InternManagement = () => {
     } catch (error) {
       Swal.fire({
         icon: "error",
+        
         title: "Error",
         text: "Failed to add user",
         confirmButtonColor: "#3B82F6",
@@ -226,6 +229,7 @@ const InternManagement = () => {
       Swal.fire({
         icon: "success",
         title: "Success!",
+        
         text: "User updated successfully",
         timer: 2000,
         showConfirmButton: false,
@@ -234,6 +238,7 @@ const InternManagement = () => {
       Swal.fire({
         icon: "error",
         title: "Error",
+        
         text: "Failed to update user",
         confirmButtonColor: "#3B82F6",
       });
@@ -247,6 +252,7 @@ const InternManagement = () => {
       title: "Are you sure?",
       text: "This action cannot be undone!",
       icon: "warning",
+      
       showCancelButton: true,
       confirmButtonColor: "#EF4444",
       cancelButtonColor: "#6B7280",
@@ -257,6 +263,7 @@ const InternManagement = () => {
       setUsers(users.filter((user) => user.id !== userId));
       Swal.fire({
         icon: "success",
+        
         title: "Deleted!",
         text: "User has been deleted",
         timer: 2000,

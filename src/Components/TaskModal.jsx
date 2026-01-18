@@ -15,7 +15,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import Swal from "sweetalert2";
-import toast from "react-hot-toast";
+import toast from "@/utils/toast";
 import axios from "axios";
 
 export default function TaskModal({ taskId }) {
@@ -45,6 +45,7 @@ export default function TaskModal({ taskId }) {
       text: "Do you want to submit the task?",
       icon: "info",
       showCancelButton: true,
+      
       confirmButtonColor: "#2A6AED",
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes, submit it!",

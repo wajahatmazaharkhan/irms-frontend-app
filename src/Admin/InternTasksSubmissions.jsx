@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import CustomNavbar from "./CustomNavbar";
 import axios from "axios";
-import toast from "react-hot-toast";
+import toast from "@/utils/toast";
 import { Alert, AlertDescription } from "@/Components/ui/alert";
 import { Loader, useTitle } from "@/Components/compIndex";
 import { Card, CardContent, CardTitle } from "@/Components/ui/card";
@@ -108,6 +108,7 @@ const InternTasksSubmissions = () => {
       title: "Confirm Approval",
       text: "Approve this task submission?",
       icon: "question",
+      
       showCancelButton: true,
       confirmButtonColor: "#10B981",
       cancelButtonColor: "#EF4444",
@@ -146,6 +147,7 @@ const InternTasksSubmissions = () => {
       title: "Confirm Rejection",
       text: "Reject this task submission?",
       icon: "warning",
+      
       showCancelButton: true,
       confirmButtonColor: "#EF4444",
       cancelButtonColor: "#6B7280",
@@ -184,6 +186,7 @@ const InternTasksSubmissions = () => {
       title: "Delete Submission?",
       text: "This will delete both the task and its submission",
       icon: "error",
+      
       showCancelButton: true,
       confirmButtonColor: "#EF4444",
       cancelButtonColor: "#6B7280",
@@ -284,6 +287,7 @@ const InternTasksSubmissions = () => {
                 </div>
               `,
               confirmButtonText: "Got it!",
+              
               confirmButtonColor: "#3B82F6",
               background: "#ffffff",
               showClass: {

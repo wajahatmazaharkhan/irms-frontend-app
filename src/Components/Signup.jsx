@@ -2,7 +2,7 @@
 /* eslint-disable react/prop-types */
 import axios from "axios";
 import { useState } from "react";
-import toast from "react-hot-toast";
+import toast from "@/utils/toast";
 import { useNavigate } from "react-router-dom";
 
 const SignUp = () => {

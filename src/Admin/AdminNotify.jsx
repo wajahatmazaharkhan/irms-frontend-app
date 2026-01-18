@@ -58,6 +58,7 @@ const AdminNotify = () => {
       Swal.fire({
         icon: "error",
         title: "Required Fields Missing",
+        
         text: "Please fill in all fields",
         confirmButtonColor: "#3B82F6",
       });
@@ -82,6 +83,7 @@ const AdminNotify = () => {
         Swal.fire({
           icon: "success",
           title: "Success!",
+          
           text: "Notification sent successfully to all users",
           timer: 2000,
           showConfirmButton: false,
@@ -94,6 +96,7 @@ const AdminNotify = () => {
     } catch (error) {
       Swal.fire({
         icon: "error",
+        
         title: "Error",
         text: "Failed to send notification. Please try again.",
         confirmButtonColor: "#3B82F6",
@@ -151,6 +154,7 @@ const AdminNotify = () => {
       text: "This will send notification to ALL users",
       showCancelButton: true,
       confirmButtonText: "Yes, Send",
+      
       cancelButtonText: "Cancel",
       confirmButtonColor: "#ef233c",
       cancelButtonColor: "#6b7280",
@@ -173,6 +177,7 @@ const AdminNotify = () => {
         Swal.fire({
           icon: "success",
           title: "Success!",
+          
           text: "Notification sent successfully to your batch users",
           timer: 2000,
           showConfirmButton: false,
@@ -184,6 +189,7 @@ const AdminNotify = () => {
       Swal.fire({
         icon: "error",
         title: "Error",
+        
         text: "Failed to send notification. Please try again.",
         confirmButtonColor: "#3B82F6",
       });

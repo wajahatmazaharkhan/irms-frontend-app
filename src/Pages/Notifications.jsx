@@ -13,7 +13,7 @@ import {
 import { Badge } from "@/Components/ui/badge";
 import { useAuthContext } from "@/context/AuthContext";
 import axios from "axios";
-import toast from "react-hot-toast";
+import toast from "@/utils/toast";
 import { useAppContext } from "@/context/AppContext";
 
 const Notifications = () => {

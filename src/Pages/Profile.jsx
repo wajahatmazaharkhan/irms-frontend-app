@@ -35,6 +35,8 @@ export default function AccountDetails() {
 
   const allowedFormats = ["jpg", "jpeg", "png"];
 
+  /* ================= FETCH PROFILE ================= */
+
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
@@ -52,7 +54,7 @@ export default function AccountDetails() {
           email: data.email || "",
           studying: "",
           currentRole: data.role || "",
-          phoneNumber: data.mnumber ? `${data.mnumber.toString()}` : "+91 ",
+          phoneNumber: data.mnumber ? String(data.mnumber) : "",
           countryCode: "+91",
           profilePicture: data.profilePicture || "",
           linkedInURL: data.linkedInURL || "",
@@ -62,7 +64,7 @@ export default function AccountDetails() {
         if (data.profilePicture) {
           setProfilePicture(data.profilePicture);
         }
-      } catch (error) {
+      } catch {
         Swal.fire("Error", "Failed to load profile", "error");
       } finally {
         setLoading(false);
@@ -74,34 +76,46 @@ export default function AccountDetails() {
 
   const navigate = useNavigate();
 
+  /* ================= HELPERS ================= */
+
   const getInitials = (name) => {
     const words = name?.trim().split(" ") || [];
-    if (words.length < 2) return words[0]?.[0]?.toUpperCase() || "";
-    return `${words[0][0]?.toUpperCase() || ""}${
-      words[1][0]?.toUpperCase() || ""
-    }`;
+    return words.length >= 2
+      ? `${words[0][0]}${words[1][0]}`.toUpperCase()
+      : words[0]?.[0]?.toUpperCase() || "";
   };
+
+  const isValidLinkedIn = (url) =>
+    /^https?:\/\/(www\.)?linkedin\.com\/.+$/i.test(url);
 
   const handleInputChange = (field, value) => {
     setFormDetails((prev) => ({ ...prev, [field]: value }));
   };
 
+  /* ================= SAVE ================= */
+
   const handleSave = async () => {
+    if (formDetails.linkedInURL && !isValidLinkedIn(formDetails.linkedInURL)) {
+      Swal.fire(
+        "Invalid LinkedIn URL",
+        "Enter a valid LinkedIn profile",
+        "warning"
+      );
+      return;
+    }
+
     setSaving(true);
 
     try {
       const formData = new FormData();
 
-      formData.append("fullName", formDetails.fullName);
-      formData.append("email", formDetails.email);
-      formData.append("studying", formDetails.studying);
-      formData.append("currentRole", formDetails.currentRole);
-      formData.append("phoneNumber", formDetails.phoneNumber);
-      formData.append("countryCode", formDetails.countryCode);
-      formData.append("bio", formDetails.bio || "");
-      formData.append("linkedInURL", formDetails.linkedInURL || "");
+      Object.entries(formDetails).forEach(([key, value]) => {
+        if (value) formData.append(key, value);
+      });
+
       formData.append("userId", localStorage.getItem("userId"));
       formData.append("profileCompletion", profileCompletion);
+
       if (profilePictureFile) {
         formData.append("profilePicture", profilePictureFile);
       }
@@ -116,24 +130,19 @@ export default function AccountDetails() {
         }
       );
 
-      Swal.fire(
-        "Success",
-        response.data?.message || "Profile updated successfully",
-        "success"
-      );
+      Swal.fire("Success", response.data?.message, "success");
     } catch (error) {
-      const message =
-        error?.response?.data?.message ||
-        error?.response?.data?.error ||
-        "Something went wrong";
-
-      Swal.fire("Error", message, "error");
+      Swal.fire(
+        "Error",
+        error?.response?.data?.message || "Something went wrong",
+        "error"
+      );
     } finally {
       setSaving(false);
     }
   };
 
-  /* ===== PROFILE COMPLETION ===== */
+  /* ================= PROFILE COMPLETION ================= */
 
   const profileCompletion = useMemo(() => {
     const fields = [
@@ -151,6 +160,7 @@ export default function AccountDetails() {
         ? Boolean(profilePicture)
         : Boolean(formDetails[field])
     );
+
     return Math.round((completed.length / fields.length) * 100);
   }, [formDetails, profilePicture]);
 
@@ -158,26 +168,25 @@ export default function AccountDetails() {
     storeProfileCompletion(profileCompletion);
   }, [profileCompletion]);
 
-  if (loading) {
-    return (
-      <>
-        <LoaderPage />
-      </>
-    );
-  }
+  if (loading) return <LoaderPage />;
+
+  /* ================= UI ================= */
 
   return (
-    <div className="bg-gray-50 min-h-screen dark:bg-slate-950 uppercase">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-900 text-gray-900 dark:text-slate-100 uppercase">
       <Navbar />
 
-      <div className="pt-20 pb-12 max-w-6xl mx-auto px-4">
-        <Card className="mb-8">
+      <div className="pt-20 pb-12 max-w-6xl mx-auto px-4 space-y-8">
+        {/* Profile Completion */}
+        <Card className="border-gray-200 dark:border-slate-800 dark:bg-slate-900">
           <CardContent className="p-6">
-            <p className="text-sm text-gray-500">Profile Completion</p>
+            <p className="text-sm text-gray-500 dark:text-slate-400">
+              Profile Completion
+            </p>
             <p className="text-2xl font-bold">{profileCompletion}%</p>
-            <div className="h-2 bg-gray-200 rounded mt-2">
+            <div className="h-2 bg-gray-200 dark:bg-slate-800 rounded mt-2">
               <div
-                className="h-full bg-indigo-600 rounded"
+                className="h-full bg-blue-600 rounded transition-all"
                 style={{ width: `${profileCompletion}%` }}
               />
             </div>
@@ -185,71 +194,91 @@ export default function AccountDetails() {
         </Card>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <Card>
-            <div className="h-24 bg-indigo-600" />
+          {/* Left Card */}
+          <Card className="border-gray-200 dark:border-slate-800 dark:bg-slate-900">
+            <div className="h-24 bg-blue-600 rounded-t-lg" />
             <div className="-mt-12 flex flex-col items-center p-6">
-              <Avatar className="w-24 h-24">
+              <Avatar className="w-24 h-24 rounded-full overflow-hidden ring-4 ring-white dark:ring-slate-900 bg-gray-100 dark:bg-slate-800">
                 {profilePicture ? (
-                  <img src={profilePicture} />
+                  <img
+                    src={profilePicture}
+                    alt="Profile"
+                    className="w-full h-full object-cover"
+                  />
                 ) : (
-                  getInitials(formDetails.fullName)
+                  <span className="text-2xl font-semibold text-gray-700 dark:text-slate-200">
+                    {getInitials(formDetails.fullName)}
+                  </span>
                 )}
               </Avatar>
 
               <Button
+                variant="outline"
+                className="mt-4 border-gray-300 dark:border-slate-700 dark:hover:bg-slate-800"
                 onClick={() => navigate("/reset-account-password")}
-                className="mt-4"
               >
                 Change Password
               </Button>
             </div>
           </Card>
 
-          <Card className="lg:col-span-2">
+          {/* Right Card */}
+          <Card className="lg:col-span-2 border-gray-200 dark:border-slate-800 dark:bg-slate-900">
             <CardHeader>
               <CardTitle>Your Information</CardTitle>
             </CardHeader>
 
-            <CardContent>
+            <CardContent className="space-y-4">
               <Input
                 value={formDetails.fullName}
                 onChange={(e) => handleInputChange("fullName", e.target.value)}
                 placeholder="Full Name"
+                className="dark:bg-slate-800 dark:border-slate-700"
               />
 
               <Input
-                className="mt-4"
                 value={formDetails.phoneNumber}
                 onChange={(e) =>
                   handleInputChange("phoneNumber", e.target.value)
                 }
                 placeholder="Phone Number"
+                className="dark:bg-slate-800 dark:border-slate-700"
+              />
+
+              <Input
+                value={formDetails.linkedInURL}
+                onChange={(e) =>
+                  handleInputChange("linkedInURL", e.target.value)
+                }
+                placeholder="LinkedIn Profile URL"
+                className="dark:bg-slate-800 dark:border-slate-700"
               />
 
               <Textarea
-                className="mt-4"
                 value={formDetails.bio}
                 onChange={(e) => handleInputChange("bio", e.target.value)}
-                placeholder="Bio"
+                placeholder="Short Bio"
+                className="dark:bg-slate-800 dark:border-slate-700"
               />
 
               <input
                 type="file"
                 accept="image/*"
-                className="mt-4"
+                className="block text-sm text-gray-600 dark:text-slate-300
+                  file:mr-4 file:rounded-md file:border-0
+                  file:bg-blue-600 file:px-4 file:py-2
+                  file:text-white hover:file:bg-blue-700"
                 onChange={(e) => {
-                  const file = e.target.files[0];
+                  const file = e.target.files?.[0];
                   if (!file) return;
 
                   const ext = file.name.split(".").pop().toLowerCase();
-
                   if (!allowedFormats.includes(ext)) {
                     Swal.fire(
-                      "Invalid file",
-                      `Allowed formats: ${allowedFormats.join(", ")}`,
+                      "Invalid File",
+                      "Only JPG, JPEG, PNG allowed",
                       "error"
                     );
-                    e.target.value = "";
                     return;
                   }
 
@@ -258,8 +287,8 @@ export default function AccountDetails() {
                 }}
               />
 
-              <div className="mt-6 flex justify-end">
-                <Button disabled={saving} onClick={handleSave}>
+              <div className="flex justify-end">
+                <Button onClick={handleSave} disabled={saving}>
                   {saving ? "Updating..." : "Save Changes"}
                 </Button>
               </div>

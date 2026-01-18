@@ -14,7 +14,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import toast from "react-hot-toast";
+import toast from "@/utils/toast";
 import CustomNavbar from "./CustomNavbar";
 import { Loader, useTitle } from "@/Components/compIndex";
 

@@ -27,7 +27,7 @@ import {
 } from "@/Components/ui/dialog";
 import { DynamicCalendar } from "./compIndex";
 import { motion, AnimatePresence } from "framer-motion";
-import toast from "react-hot-toast";
+import toast from "@/utils/toast";
 
 const CoreDashboard = () => {
   const [tasks, setTasks] = useState([]);

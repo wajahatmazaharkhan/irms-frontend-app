@@ -1,12 +1,21 @@
 import { useState, useEffect, useRef } from "react";
-import { Mail, Lock, UserPlus, Phone, Laptop, Calendar, Layers } from "lucide-react";
+import {
+  Mail,
+  Lock,
+  UserPlus,
+  Phone,
+  Laptop,
+  Calendar,
+  Layers,
+} from "lucide-react";
 import { TopNavbar, Footer, useTitle } from "@/Components/compIndex";
-import toast from "react-hot-toast";
+import toast from "@/utils/toast";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import iispprLogo from "../assets/Images/iisprlogo.png";
 
 import countryCodes from "@/Components/CountryCodes";
+import { useAuthContext } from "@/context/AuthContext";
 
 const SignUp = ({ onSwitchToSignin }) => {
   useTitle("Register");
@@ -26,6 +35,14 @@ const SignUp = ({ onSwitchToSignin }) => {
   const [batches, setBatches] = useState([]);
   const [selectedBatch, setSelectedBatch] = useState("");
   const countrySelectRef = useRef(null);
+
+  const { loggedIn } = useAuthContext();
+
+  useEffect(() => {
+    if (loggedIn) {
+      navigate(-1);
+    }
+  }, []);
 
   useEffect(() => {
     const fetchBatches = async () => {
@@ -144,7 +161,11 @@ const SignUp = ({ onSwitchToSignin }) => {
       <div className="flex items-center justify-center min-h-screen px-4 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-slate-900 dark:to-slate-950">
         <div className="w-full max-w-md p-8 bg-white border shadow-lg rounded-xl dark:bg-slate-900 dark:border-slate-700 dark:shadow-black/40">
           <div className="text-center mb-6">
-            <img src={iispprLogo} alt="Logo" className="mx-auto mb-4 w-28 h-28" />
+            <img
+              src={iispprLogo}
+              alt="Logo"
+              className="mx-auto mb-4 w-28 h-28"
+            />
             <h1 className="text-3xl font-bold text-blue-800 dark:text-blue-300">
               {step === 1 ? "Create Your Account" : "Verify Your Email"}
             </h1>

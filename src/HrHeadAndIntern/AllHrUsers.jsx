@@ -4,7 +4,7 @@ import CustomHrNavbar from "./CustomHrNavbar";
 import { Loader, useTitle } from "@/Components/compIndex";
 import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription } from "@/Components/ui/alert";
-import toast from "react-hot-toast";
+import toast from "@/utils/toast";
 import { HrAllUsersInterns } from "@/HrHeadAndIntern/HrIndex";
 
 function AllUsers() {

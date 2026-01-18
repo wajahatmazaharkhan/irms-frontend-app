@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 import axios from "axios";
 import CustomNavbar from "./CustomNavbar";
-import toast from "react-hot-toast";
+import toast from "@/utils/toast";
 
 const UserManagement = () => {
   const isAdmin = localStorage.getItem("isAdmin") === "true";

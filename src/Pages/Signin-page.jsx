@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Mail, Lock, LogIn } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
@@ -31,6 +31,12 @@ const Signin = ({ onSwitchToSignup }) => {
     storePermissions,
   } = useAuthContext();
   const { storeUsername } = useAppContext();
+
+  useEffect(() => {
+    if (loggedIn) {
+      navigate(-1);
+    }
+  }, []);
 
   const Login = async () => {
     setIsLoading(true);
@@ -86,7 +92,9 @@ const Signin = ({ onSwitchToSignup }) => {
         navigate("/");
       }
 
-      console.log(`response for checking role :- ${JSON.stringify(response.data.user)}
+      console.log(`response for checking role :- ${JSON.stringify(
+        response.data.user
+      )}
 }`);
     } catch (error) {
       console.error("Login error:", error);

@@ -18,6 +18,7 @@ import {
   LineChartIcon,
   TrendingDown,
   ComputerIcon,
+  Signature,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -43,7 +44,7 @@ function AdminHomePage() {
 
     return `${String(h).padStart(2, "0")}:${String(m).padStart(
       2,
-      "0"
+      "0",
     )}:${String(s).padStart(2, "0")}`;
   };
 
@@ -112,6 +113,13 @@ function AdminHomePage() {
       icon: Calendar,
       description: "Track intern attendance",
       gradient: "from-green-500 to-green-700",
+    },
+    {
+      title: "Letter of Appointment",
+      route: "",
+      icon: Signature,
+      description: "Approve Intern applications for LOA",
+      gradient: "from-orange-400 to-yellow-400",
     },
     {
       title: "Leave Applications",
@@ -206,7 +214,7 @@ function AdminHomePage() {
               return (
                 <div
                   key={index}
-                  className="bg-white dark:bg-gray-900 shadow-md dark:shadow-none p-6 border border-gray-200 dark:border-gray-700 hover:shadow-lg dark:hover:shadow-lg transition-shadow duration-300"
+                  className="bg-white rounded-lg dark:bg-gray-900 shadow-md dark:shadow-none p-6 border border-gray-200 dark:border-gray-700 hover:shadow-lg dark:hover:shadow-lg transition-shadow duration-300"
                 >
                   <div className="flex items-center justify-between">
                     <div>
@@ -233,7 +241,7 @@ function AdminHomePage() {
               return (
                 <Link key={index} to={card.route} className="group">
                   <div
-                    className={`bg-gradient-to-br ${card.gradient} shadow-lg p-6 text-white hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300`}
+                    className={`bg-gradient-to-br rounded-lg ${card.gradient} shadow-lg p-6 text-white hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300`}
                   >
                     <div className="flex items-center justify-between mb-4">
                       <IconComponent className="w-8 h-8" />

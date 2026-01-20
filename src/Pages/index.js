@@ -40,7 +40,6 @@ import BatchDashboard from "@/Components/BatchDashboard";
 import InternRankings from "./InternRanking";
 import InternRaiseTicket from "./InternRaiseTicket";
 import MyTickets from "./MyTickets";
-import { Import } from "lucide-react";
 import NotVerified from "./NotVerified";
 
 export {

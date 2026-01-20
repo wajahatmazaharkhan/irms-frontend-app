@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Users,
   Shield,
@@ -7,9 +7,6 @@ import {
   Edit3,
   Trash2,
   Search,
-  Filter,
-  MoreVertical,
-  Settings,
   Crown,
   Briefcase,
   Mail,
@@ -17,7 +14,6 @@ import {
   Calendar,
   CheckCircle,
   XCircle,
-  AlertTriangle,
 } from "lucide-react";
 import CustomNavbar from "./CustomNavbar";
 import useTitle from "@/Components/useTitle";

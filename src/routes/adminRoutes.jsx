@@ -11,7 +11,9 @@ import {
   UserManagement,
   AdminGuidePage,
 } from "@/Admin";
+
 import { InternTasksSubmissions } from "@/Admin";
+import HRInternsListPage from "@/HrHeadAndIntern/HRInternsListPage";
 
 import { AllUsers, Internleaveapplication } from "@/Pages";
 
@@ -34,4 +36,6 @@ export const adminRoutes = [
     path: "/Internleaveapplications",
     element: <Internleaveapplication mode="admin" />,
   },
+  {path:"/hrinterns/:id", element: <HRInternsListPage />
+    }
 ];

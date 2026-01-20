@@ -1,6 +1,8 @@
 import { Calendar, Users, UserCheck, CheckCircle, Eye, Edit3, Trash2, Loader } from "lucide-react";
 import { getStatusColor, getStatusIcon } from "@/lib/batchUtils";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
 
 export function BatchCard({
   batch,
@@ -11,6 +13,7 @@ export function BatchCard({
   viewLoading,
   editLoading,
 }) {
+  const navigate = useNavigate();
   const [hideActions, setHideActions] = useState(true);
 
   useEffect(() => {
@@ -137,18 +140,27 @@ export function BatchCard({
       </div>
 
       <div className="flex gap-2">
-        <button
-          onClick={() => handleView(batch.id, "deep")}
-          disabled={viewLoading === batch.id}
-          className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors duration-200 text-sm font-medium disabled:opacity-70"
-        >
-          {viewLoading === batch.id ? (
-            <Loader className="w-4 h-4 animate-spin mx-auto" />
-          ) : (
-            "View Details"
-          )}
-        </button>
-      </div>
+  
+  <button
+    onClick={() => navigate(`/hrinterns/${batch.id}`)}
+    className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors duration-200 text-sm font-medium"
+  >
+    View Interns
+  </button>
+
+  
+  <button
+    onClick={() => handleView(batch.id, "deep")}
+    disabled={viewLoading === batch.id}
+    className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors duration-200 text-sm font-medium disabled:opacity-70"
+  >
+    {viewLoading === batch.id ? (
+      <Loader className="w-4 h-4 animate-spin mx-auto" />
+    ) : (
+      "View Details"
+    )}
+  </button>
+</div>
     </div>
   );
 }

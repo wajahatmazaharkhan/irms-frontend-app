@@ -73,7 +73,6 @@ const RaiseTicket = () => {
   return (
     <>
       <Navbar />
-      <SideNav />
       <div className="p-6 max-w-4xl mx-auto">
         <h1 className="text-2xl font-bold mb-4">Ask a Question</h1>
         <form onSubmit={handleSubmit} className="bg-white shadow rounded-lg p-4 mb-6 space-y-4">

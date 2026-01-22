@@ -111,6 +111,7 @@ export default function CustomNavbar() {
   ];
 
   if (isLoading) return null;
+  if (!userData) return null;
 
   const navItems =
     userData.role === "admin" || userData.role === "hrHead" ? adminNav : hrNav;
@@ -127,8 +128,8 @@ export default function CustomNavbar() {
               {userData.role === "admin"
                 ? "Admin"
                 : userData.role === "hrHead"
-                ? "HR Head"
-                : "HR"}{" "}
+                  ? "HR Head"
+                  : "HR"}{" "}
               Portal
             </h1>
           </div>
@@ -166,9 +167,8 @@ export default function CustomNavbar() {
                   {userData.role[0].toUpperCase()}
                 </div>
                 <ChevronDown
-                  className={`w-4 h-4 transition ${
-                    profileOpen ? "rotate-180" : ""
-                  }`}
+                  className={`w-4 h-4 transition ${profileOpen ? "rotate-180" : ""
+                    }`}
                 />
               </button>
 

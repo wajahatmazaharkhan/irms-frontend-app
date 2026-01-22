@@ -8,16 +8,20 @@ import { Toaster } from "react-hot-toast";
 import { Analytics } from "@vercel/analytics/react";
 
 
+import ErrorBoundary from "./Components/ErrorBoundary";
+
 createRoot(document.getElementById("root")).render(
   <>
-    <AuthProvider>
-      <AppProvider>
-        <BrowserRouter>
-          <Analytics />
-          <Toaster />
-          <App />
-        </BrowserRouter>
-      </AppProvider>
-    </AuthProvider>
+    <ErrorBoundary>
+      <AuthProvider>
+        <AppProvider>
+          <BrowserRouter>
+            <Analytics />
+            <Toaster />
+            <App />
+          </BrowserRouter>
+        </AppProvider>
+      </AuthProvider>
+    </ErrorBoundary>
   </>
 );

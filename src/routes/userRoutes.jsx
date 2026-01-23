@@ -21,7 +21,7 @@ import ChatInterface from "../HrHeadAndIntern/InternChat";
 import BatchManagement from "../Admin/BatchManagement";
 
 export const userRoutes = [
-  { path: "/", element: <BatchDashboard />, verified: true },
+  { path: "/", element: <BatchDashboard />},
   { path: "/dashboard", element: <BatchDashboard /> },
   { path: "/batch-dashboard", element: <BatchDashboard />, verified: true },
   { path: "/view-all-tasks", element: <InternTasksPage />, verified: true },

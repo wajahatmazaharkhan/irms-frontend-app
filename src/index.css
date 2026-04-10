@@ -60,6 +60,7 @@
 
   * {
     @apply border-border;
+    font-family: "Google Sans", sans-serif;
   }
 
   body {
@@ -308,7 +309,7 @@ span {
 } */
 
 .stats-card::before {
-  content: '';
+  content: "";
   @apply absolute inset-0 bg-gradient-to-r from-blue-500/10 to-transparent opacity-50;
 }
 

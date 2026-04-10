@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Mail, Lock, LogIn } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
@@ -31,6 +31,12 @@ const Signin = ({ onSwitchToSignup }) => {
     storePermissions,
   } = useAuthContext();
   const { storeUsername } = useAppContext();
+
+  useEffect(() => {
+    if (loggedIn) {
+      navigate(-1);
+    }
+  }, []);
 
   const Login = async () => {
     setIsLoading(true);
@@ -86,7 +92,9 @@ const Signin = ({ onSwitchToSignup }) => {
         navigate("/");
       }
 
-      console.log(`response for checking role :- ${JSON.stringify(response.data.user)}
+      console.log(`response for checking role :- ${JSON.stringify(
+        response.data.user
+      )}
 }`);
     } catch (error) {
       console.error("Login error:", error);
@@ -94,7 +102,7 @@ const Signin = ({ onSwitchToSignup }) => {
       setIsLoading(false);
 
       if (error.response) {
-        toast.error(error.response.data.message || "Login failed");
+        toast.error(error?.response?.data?.message || "Login failed");
       } else {
         toast.error("Login failed. Please try again.");
       }
@@ -115,7 +123,7 @@ const Signin = ({ onSwitchToSignup }) => {
   return (
     <>
       <div className="flex items-center justify-center min-h-screen px-4 bg-gradient-to-br from-blue-50 to-purple-50 dark:bg-gradient-to-br dark:from-gray-900 dark:to-gray-950 dark:text-gray-100">
-        <div className="w-full max-w-md p-8 transition-all duration-300 bg-white border border-gray-100 shadow-2xl rounded-nonexl hover:shadow-3xl dark:bg-gray-900 dark:border-gray-700">
+        <div className="w-full max-w-md p-8 transition-all duration-300 bg-white border border-gray-100 shadow-2xl rounded-xl hover:shadow-3xl dark:bg-gray-900 dark:border-gray-700">
           <div className="mb-6 text-center">
             <div className="mx-auto mb-4 w-28 h-28">
               <img
@@ -152,7 +160,7 @@ const Signin = ({ onSwitchToSignup }) => {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   placeholder="Enter your email"
-                  className="w-full p-3 pl-10 text-sm transition-all duration-300 border border-gray-200 rounded-nonelg focus:outline-none focus:ring-2 focus:ring-blue-300 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100 dark:placeholder-gray-500 dark:focus:ring-blue-500"
+                  className="w-full p-3 pl-10 text-sm transition-all duration-300 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100 dark:placeholder-gray-500 dark:focus:ring-blue-500"
                 />
               </div>
             </div>
@@ -176,7 +184,7 @@ const Signin = ({ onSwitchToSignup }) => {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   placeholder="Enter your password"
-                  className="w-full p-3 pl-10 text-sm transition-all duration-300 border border-gray-200 rounded-nonelg focus:outline-none focus:ring-2 focus:ring-blue-300 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100 dark:placeholder-gray-500 dark:focus:ring-blue-500"
+                  className="w-full p-3 pl-10 text-sm transition-all duration-300 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100 dark:placeholder-gray-500 dark:focus:ring-blue-500"
                 />
                 <button
                   type="button"
@@ -195,7 +203,7 @@ const Signin = ({ onSwitchToSignup }) => {
             </div>
 
             {error && (
-              <p className="p-2 text-sm text-center text-red-500 rounded-nonemd bg-red-50 dark:bg-red-950 dark:text-red-400">
+              <p className="p-2 text-sm text-center text-red-500 rounded-md bg-red-50 dark:bg-red-950 dark:text-red-400">
                 {error}
               </p>
             )}
@@ -204,7 +212,7 @@ const Signin = ({ onSwitchToSignup }) => {
             <button
               type="submit"
               disabled={isLoading}
-              className="flex items-center justify-center w-full gap-2 p-3 text-sm font-semibold text-white transition-all duration-300 transform bg-blue-600 rounded-nonelg hover:bg-blue-700 hover:-translate-y-1 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed dark:bg-blue-500 dark:hover:bg-blue-400"
+              className="flex items-center justify-center w-full gap-2 p-3 text-sm font-semibold text-white transition-all duration-300 transform bg-blue-600 rounded-lg hover:bg-blue-700 hover:-translate-y-1 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed dark:bg-blue-500 dark:hover:bg-blue-400"
             >
               {isLoading ? (
                 <>

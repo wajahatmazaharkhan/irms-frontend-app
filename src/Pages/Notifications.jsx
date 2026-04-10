@@ -13,7 +13,7 @@ import {
 import { Badge } from "@/Components/ui/badge";
 import { useAuthContext } from "@/context/AuthContext";
 import axios from "axios";
-import toast from "react-hot-toast";
+import toast from "@/utils/toast";
 import { useAppContext } from "@/context/AppContext";
 
 const Notifications = () => {
@@ -142,10 +142,10 @@ const Notifications = () => {
       {[1, 2, 3].map((index) => (
         <div
           key={index}
-          className="p-4 border rounded-nonelg bg-white shadow-sm dark:bg-slate-900 dark:border-slate-700"
+          className="p-4 border rounded-lg bg-white shadow-sm dark:bg-slate-900 dark:border-slate-700"
         >
           <div className="flex items-start space-x-4">
-            <Skeleton className="h-10 w-10 rounded-nonefull" />
+            <Skeleton className="h-10 w-10 rounded-full" />
             <div className="space-y-3 flex-1">
               <Skeleton className="h-5 w-1/4" />
               <Skeleton className="h-4 w-3/4" />
@@ -184,9 +184,9 @@ const Notifications = () => {
         </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="bg-gray-50 p-4 rounded-nonelg dark:bg-slate-800">
+          <div className="bg-gray-50 p-4 rounded-lg dark:bg-slate-800">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-blue-100 rounded-nonelg dark:bg-blue-900">
+              <div className="p-2 bg-blue-100 rounded-lg dark:bg-blue-900">
                 <Calendar className="h-5 w-5 text-blue-600 dark:text-blue-300" />
               </div>
               <div>
@@ -199,9 +199,9 @@ const Notifications = () => {
               </div>
             </div>
           </div>
-          <div className="bg-gray-50 p-4 rounded-nonelg dark:bg-slate-800">
+          <div className="bg-gray-50 p-4 rounded-lg dark:bg-slate-800">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-red-100 rounded-nonelg dark:bg-red-900">
+              <div className="p-2 bg-red-100 rounded-lg dark:bg-red-900">
                 <Calendar className="h-5 w-5 text-red-600 dark:text-red-300" />
               </div>
               <div>
@@ -302,7 +302,7 @@ const Notifications = () => {
               <CardHeader className="border-b bg-white dark:bg-slate-900 dark:border-slate-800">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-2xl font-bold flex items-center gap-3 text-gray-900 dark:text-slate-100">
-                    <div className="p-2 bg-blue-100 rounded-nonelg dark:bg-blue-900">
+                    <div className="p-2 bg-blue-100 rounded-lg dark:bg-blue-900">
                       <Bell className="h-6 w-6 text-blue-600 dark:text-blue-300" />
                     </div>
                     Notifications Center
@@ -341,7 +341,7 @@ const Notifications = () => {
                 {!loading && !error && notifications.length === 0 && (
                   <div className="text-center py-12">
                     <div className="flex justify-center mb-4">
-                      <div className="p-3 bg-gray-100 rounded-nonefull dark:bg-slate-800">
+                      <div className="p-3 bg-gray-100 rounded-full dark:bg-slate-800">
                         <Info className="h-8 w-8 text-gray-400 dark:text-slate-400" />
                       </div>
                     </div>
@@ -359,7 +359,7 @@ const Notifications = () => {
                     {notifications.map((notification) => (
                       <div
                         key={notification._id}
-                        className="group p-4 border rounded-nonelg hover:border-blue-200 bg-white hover:bg-blue-50/50
+                        className="group p-4 border rounded-lg hover:border-blue-200 bg-white hover:bg-blue-50/50
                          transition-all duration-200 cursor-pointer transform hover:-translate-y-1 dark:bg-slate-900 dark:border-slate-800 dark:hover:border-blue-500 dark:hover:bg-slate-800"
                       >
                         <div className="flex item-center gap-4">
@@ -397,7 +397,7 @@ const Notifications = () => {
                           <button
                             onClick={(e) => deleteNoti(notification._id, e)}
                             className="opacity-0 group-hover:opacity-100 transition-opacity duration-200
-                               p-2 hover:bg-red-50 rounded-nonefull flex-shrink-0 self-center dark:hover:bg-red-950"
+                               p-2 hover:bg-red-50 rounded-full flex-shrink-0 self-center dark:hover:bg-red-950"
                             title="Delete notification"
                           >
                             <Trash className="h-5 w-5 text-red-500 dark:text-red-400" />

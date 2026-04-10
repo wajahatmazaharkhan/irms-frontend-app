@@ -141,8 +141,8 @@ const OTPVerification = () => {
   return (
     // outer container: light gradient and dark gradient for dark mode
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-blue-100 dark:from-slate-900 dark:to-slate-800 flex items-center justify-center p-4">
-      {/* card: white in light, slate-800 in dark; no rounded corners (rounded-none) */}
-      <div className="max-w-md w-full space-y-6 bg-white dark:bg-slate-800 p-8 rounded-none shadow-lg border border-transparent dark:border-slate-700">
+      {/* card: white in light, slate-800 in dark; no rounded corners (rounded-) */}
+      <div className="max-w-md w-full space-y-6 bg-white dark:bg-slate-800 p-8 rounded- shadow-lg border border-transparent dark:border-slate-700">
         <div className="text-center">
           <img
             src={iispprLogo}
@@ -172,7 +172,7 @@ const OTPVerification = () => {
                   onKeyDown={(e) => handleKeyDown(index, e)}
                   onPaste={handlePaste}
                   className={
-                    'w-12 h-12 text-center text-xl rounded-none focus:outline-none ' +
+                    'w-12 h-12 text-center text-xl rounded- focus:outline-none ' +
                     'border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-700 ' +
                     'text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 ' +
                     'focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent ' +
@@ -196,7 +196,7 @@ const OTPVerification = () => {
               type="submit"
               disabled={isLoading}
               className={
-                'w-full flex justify-center py-2 px-4 border border-transparent rounded-none shadow-sm text-sm font-medium text-white ' +
+                'w-full flex justify-center py-2 px-4 border border-transparent rounded- shadow-sm text-sm font-medium text-white ' +
                 'bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 ' +
                 'focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-slate-900 ' +
                 'disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150'

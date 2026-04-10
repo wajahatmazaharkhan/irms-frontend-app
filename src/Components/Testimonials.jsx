@@ -48,7 +48,7 @@ const Testimonials = () => {
                 <img
                   src={testimonial.logo}
                   alt={testimonial.company}
-                  className="w-12 h-12 rounded-nonefull mr-4"
+                  className="w-12 h-12 rounded-full mr-4"
                 />
                 <div>
                   <h3 className="font-semibold text-white">{testimonial.company}</h3>

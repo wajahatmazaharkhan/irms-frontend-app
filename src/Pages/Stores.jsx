@@ -29,7 +29,7 @@ const Stores = () => {
             Advanced features coming to optimize your business.
           </p>
 
-          <div className="bg-amber-50 rounded-nonelg p-6 mb-8 max-w-md w-full">
+          <div className="bg-amber-50 rounded-lg p-6 mb-8 max-w-md w-full">
             <h2 className="text-lg font-semibold text-amber-800 mb-4 flex items-center justify-center gap-2">
               <ShoppingBag className="w-5 h-5" />
               Upcoming Features
@@ -48,9 +48,9 @@ const Stores = () => {
           </div>
 
           <div className="animate-pulse flex items-center gap-2 text-sm text-gray-500">
-            <div className="w-2 h-2 bg-amber-500 rounded-nonefull"></div>
-            <div className="w-2 h-2 bg-amber-400 rounded-nonefull"></div>
-            <div className="w-2 h-2 bg-amber-300 rounded-nonefull"></div>
+            <div className="w-2 h-2 bg-amber-500 rounded-full"></div>
+            <div className="w-2 h-2 bg-amber-400 rounded-full"></div>
+            <div className="w-2 h-2 bg-amber-300 rounded-full"></div>
             <span>Coming Soon</span>
           </div>
         </div>

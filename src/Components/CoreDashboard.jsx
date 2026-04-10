@@ -27,7 +27,7 @@ import {
 } from "@/Components/ui/dialog";
 import { DynamicCalendar } from "./compIndex";
 import { motion, AnimatePresence } from "framer-motion";
-import toast from "react-hot-toast";
+import toast from "@/utils/toast";
 
 const CoreDashboard = () => {
   const [tasks, setTasks] = useState([]);
@@ -80,7 +80,7 @@ const CoreDashboard = () => {
 
     return (
       <div
-        className={`flex items-center gap-1 px-3 py-1 rounded-nonefull text-sm font-medium capitalize ${config.className}`}
+        className={`flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium capitalize ${config.className}`}
       >
         <Icon className="w-4 h-4" />
         <span>{status}</span>
@@ -129,7 +129,7 @@ const CoreDashboard = () => {
                       <div className="flex items-center gap-2">
                         <TaskStatusBadge status={task.status} />
                         {showTaskType && (
-                          <span className="text-xs px-2 py-1 rounded-nonefull bg-gray-100 text-gray-600">
+                          <span className="text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-600">
                             {task.taskType || task.type}
                           </span>
                         )}
@@ -139,13 +139,13 @@ const CoreDashboard = () => {
                       {task.description}
                     </p>
                     <div className="flex flex-wrap gap-4 text-xs text-gray-500">
-                      <div className="flex items-center gap-1.5 bg-gray-50 px-2.5 py-1 rounded-nonefull">
+                      <div className="flex items-center gap-1.5 bg-gray-50 px-2.5 py-1 rounded-full">
                         <Calendar className="w-3.5 h-3.5" />
                         <span>
                           Start: {new Date(task.startDate).toLocaleDateString()}
                         </span>
                       </div>
-                      <div className="flex items-center gap-1.5 bg-gray-50 px-2.5 py-1 rounded-nonefull">
+                      <div className="flex items-center gap-1.5 bg-gray-50 px-2.5 py-1 rounded-full">
                         <Calendar className="w-3.5 h-3.5" />
                         <span>
                           End: {new Date(task.endDate).toLocaleDateString()}
@@ -188,19 +188,19 @@ const CoreDashboard = () => {
           <CardContent className="p-5">
             <div className="flex flex-col space-y-4 animate-pulse">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-                <div className="h-6 bg-gray-200 rounded-nonemd w-2/3 sm:w-1/3"></div>
-                <div className="h-6 bg-gray-200 rounded-nonefull w-24"></div>
+                <div className="h-6 bg-gray-200 rounded-md w-2/3 sm:w-1/3"></div>
+                <div className="h-6 bg-gray-200 rounded-full w-24"></div>
               </div>
               <div className="space-y-2">
-                <div className="h-4 bg-gray-200 rounded-nonemd w-full"></div>
-                <div className="h-4 bg-gray-200 rounded-nonemd w-5/6"></div>
+                <div className="h-4 bg-gray-200 rounded-md w-full"></div>
+                <div className="h-4 bg-gray-200 rounded-md w-5/6"></div>
               </div>
               <div className="flex flex-wrap gap-3">
-                <div className="h-6 bg-gray-200 rounded-nonefull w-32"></div>
-                <div className="h-6 bg-gray-200 rounded-nonefull w-32"></div>
+                <div className="h-6 bg-gray-200 rounded-full w-32"></div>
+                <div className="h-6 bg-gray-200 rounded-full w-32"></div>
               </div>
               <div className="flex justify-start sm:justify-end mt-2">
-                <div className="h-9 bg-gray-200 rounded-nonemd w-full sm:w-28"></div>
+                <div className="h-9 bg-gray-200 rounded-md w-full sm:w-28"></div>
               </div>
             </div>
           </CardContent>
@@ -246,7 +246,7 @@ const CoreDashboard = () => {
               <DialogTitle className="text-2xl font-semibold">
                 All Tasks ({tasks.length})
               </DialogTitle>
-              <DialogClose className="rounded-nonefull hover:bg-gray-100 p-2" />
+              <DialogClose className="rounded-full hover:bg-gray-100 p-2" />
             </div>
           </DialogHeader>
           <div className="mt-6 max-h-[70vh] overflow-y-auto pr-2">
@@ -264,13 +264,13 @@ const CoreDashboard = () => {
 
       <div className="p-4 md:p-6 max-w-7xl mx-auto space-y-6 sm:pl-8 md:pl-10 lg:pl-[10rem]">
         {/* Header */}
-        <div className="bg-gradient-to-r from-blue-600 to-blue-800 rounded-nonexl p-6 md:p-8 text-white shadow-lg">
+        <div className="bg-gradient-to-r from-blue-600 to-blue-800 rounded-xl p-6 md:p-8 text-white shadow-lg">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div className="space-y-2">
               <h1 className="text-2xl md:text-3xl font-bold flex items-center gap-3">
                 <span>Welcome, {username}</span>
                 {username !== "Login to Continue" && (
-                  <span className="inline-flex items-center justify-center rounded-nonefull bg-blue-500/30 px-2 py-1 text-xs">
+                  <span className="inline-flex items-center justify-center rounded-full bg-blue-500/30 px-2 py-1 text-xs">
                     Dashboard
                   </span>
                 )}
@@ -294,23 +294,23 @@ const CoreDashboard = () => {
 
           {/* Quick Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-8">
-            <div className="bg-white/10 rounded-nonelg p-3 backdrop-blur-sm">
+            <div className="bg-white/10 rounded-lg p-3 backdrop-blur-sm">
               <div className="text-xs text-blue-100">Total Tasks</div>
               <div className="text-xl font-semibold">{tasks.length}</div>
             </div>
-            <div className="bg-white/10 rounded-nonelg p-3 backdrop-blur-sm">
+            <div className="bg-white/10 rounded-lg p-3 backdrop-blur-sm">
               <div className="text-xs text-blue-100">Completed</div>
               <div className="text-xl font-semibold">
                 {tasks.filter((t) => t.status === "completed").length}
               </div>
             </div>
-            <div className="bg-white/10 rounded-nonelg p-3 backdrop-blur-sm">
+            <div className="bg-white/10 rounded-lg p-3 backdrop-blur-sm">
               <div className="text-xs text-blue-100">Pending</div>
               <div className="text-xl font-semibold">
                 {tasks.filter((t) => t.status === "pending").length}
               </div>
             </div>
-            <div className="bg-white/10 rounded-nonelg p-3 backdrop-blur-sm">
+            <div className="bg-white/10 rounded-lg p-3 backdrop-blur-sm">
               <div className="text-xs text-blue-100">Overdue</div>
               <div className="text-xl font-semibold">
                 {tasks.filter((t) => t.status === "overdue").length}
@@ -326,7 +326,7 @@ const CoreDashboard = () => {
             <div className="flex justify-between items-center">
               <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
                 {isAdmin ? "Assigned Tasks" : "My Tasks"}
-                <span className="bg-blue-100 text-blue-700 px-2.5 py-0.5 rounded-nonefull text-xs font-medium">
+                <span className="bg-blue-100 text-blue-700 px-2.5 py-0.5 rounded-full text-xs font-medium">
                   {tasks.length} active
                 </span>
               </h2>
@@ -460,7 +460,7 @@ const CoreDashboard = () => {
                 >
                   <CardContent className="p-5 bg-gradient-to-br from-blue-500 to-blue-700 text-white h-full">
                     <div className="flex flex-row items-center space-x-4">
-                      <div className="w-12 h-12 rounded-nonefull bg-white/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center group-hover:scale-110 transition-transform">
                         <HelpCircle className="h-6 w-6" />
                       </div>
                       <div>
@@ -479,7 +479,7 @@ const CoreDashboard = () => {
                 >
                   <CardContent className="p-5 bg-gradient-to-br from-blue-600 to-blue-800 text-white h-full">
                     <div className="flex flex-row items-center space-x-4">
-                      <div className="w-12 h-12 rounded-nonefull bg-white/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center group-hover:scale-110 transition-transform">
                         <Headset className="h-6 w-6" />
                       </div>
                       <div>

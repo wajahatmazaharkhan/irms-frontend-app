@@ -59,7 +59,7 @@ const IntroPage = () => {
             className="flex flex-wrap justify-center gap-4"
           >
             <button
-              className="bg-white text-[#2463EB] px-8 py-3 rounded-nonelg hover:bg-[#F8F9FD] transition-colors flex items-center gap-2 shadow-md font-semibold dark:bg-slate-900 dark:text-white dark:hover:bg-slate-800"
+              className="bg-white text-[#2463EB] px-8 py-3 rounded-lg hover:bg-[#F8F9FD] transition-colors flex items-center gap-2 shadow-md font-semibold dark:bg-slate-900 dark:text-white dark:hover:bg-slate-800"
               onClick={() => (window.location.href = "/login")}
             >
               <GraduationCap className="w-5 h-5" />
@@ -134,7 +134,7 @@ const IntroPage = () => {
           
           <div className="flex justify-center mt-8">
             <button
-              className="bg-[#2463EB] text-white px-8 py-3 rounded-nonelg hover:bg-[#1E4DB7] transition-colors flex items-center gap-2 shadow-lg font-semibold dark:bg-blue-500 dark:hover:bg-blue-400"
+              className="bg-[#2463EB] text-white px-8 py-3 rounded-lg hover:bg-[#1E4DB7] transition-colors flex items-center gap-2 shadow-lg font-semibold dark:bg-blue-500 dark:hover:bg-blue-400"
               onClick={() => (window.location.href = "/aboutus")}
             >
               <span>Read More</span>
@@ -148,7 +148,7 @@ const IntroPage = () => {
       <section className="bg-[#F8F9FD] py-16 dark:bg-slate-950">
         <div className="container mx-auto px-6">
           <div className="text-center mb-12">
-            <span className="bg-[#EEF2FF] text-[#2463EB] px-4 py-1.5 rounded-nonefull text-sm font-medium dark:bg-slate-800 dark:text-blue-400">
+            <span className="bg-[#EEF2FF] text-[#2463EB] px-4 py-1.5 rounded-full text-sm font-medium dark:bg-slate-800 dark:text-blue-400">
               Our Achievements
             </span>
             <h2 className="text-4xl font-bold mt-4 mb-6 text-[#1E293B] dark:text-slate-100">
@@ -169,7 +169,7 @@ const IntroPage = () => {
               <motion.div
                 key={index}
                 whileHover={{ scale: 1.05 }}
-                className="bg-[#F8F9FD] p-8 rounded-nonexl shadow-sm text-center dark:bg-slate-900 dark:shadow-none"
+                className="bg-[#F8F9FD] p-8 rounded-xl shadow-sm text-center dark:bg-slate-900 dark:shadow-none"
               >
                 <h2 className="text-5xl font-bold text-[#2463EB] mb-3 dark:text-blue-400">
                   {stat.number}
@@ -185,8 +185,8 @@ const IntroPage = () => {
       <section className="py-20 bg-white dark:bg-slate-900">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 bg-[#EEF2FF] p-2 rounded-nonefull mb-4 dark:bg-slate-800">
-              <span className="bg-[#2463EB] p-2 rounded-nonefull dark:bg-blue-500">
+            <div className="inline-flex items-center gap-2 bg-[#EEF2FF] p-2 rounded-full mb-4 dark:bg-slate-800">
+              <span className="bg-[#2463EB] p-2 rounded-full dark:bg-blue-500">
                 <Award className="w-5 h-5 text-white" />
               </span>
               <span className="text-[#2463EB] pr-2 font-medium dark:text-blue-400">
@@ -207,9 +207,9 @@ const IntroPage = () => {
               <motion.div
                 key={index}
                 whileHover={{ scale: 1.03 }}
-                className="bg-[#F8F9FD] p-6 rounded-nonexl shadow-sm hover:shadow-md transition-shadow dark:bg-slate-900 dark:shadow-none dark:hover:shadow-md"
+                className="bg-[#F8F9FD] p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow dark:bg-slate-900 dark:shadow-none dark:hover:shadow-md"
               >
-                <div className="bg-[#EEF2FF] w-12 h-12 rounded-nonelg flex items-center justify-center mb-4 dark:bg-slate-800">
+                <div className="bg-[#EEF2FF] w-12 h-12 rounded-lg flex items-center justify-center mb-4 dark:bg-slate-800">
                   {React.cloneElement(feature.icon, {
                     className: "w-6 h-6 text-[#2463EB] dark:text-blue-400",
                   })}
@@ -235,7 +235,7 @@ const IntroPage = () => {
               <motion.div
                 key={index}
                 whileHover={{ scale: 1.02 }}
-                className="bg-white p-8 rounded-nonexl shadow-sm dark:bg-slate-900"
+                className="bg-white p-8 rounded-xl shadow-sm dark:bg-slate-900"
               >
                 <h3 className="text-2xl font-bold mb-4 text-[#1E293B] dark:text-slate-100">
                   {reason.title}

@@ -1,4 +1,4 @@
-import React, { useState } from "react"; 
+import React, { useState } from "react";
 import { Mail, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
@@ -34,20 +34,22 @@ const PasswordResetPage = () => {
 
     try {
       // Simulate API call to send OTP
-      await axios.post(`${import.meta.env.VITE_BASE_URL}/user/sendresetotp`, { email });
+      await axios.post(`${import.meta.env.VITE_BASE_URL}/user/sendresetotp`, {
+        email,
+      });
 
       // Store email in session storage for OTP verification
-      sessionStorage.setItem('resetEmail', email);
+      sessionStorage.setItem("resetEmail", email);
 
       // Show success message
       toast.success("OTP sent to your email!");
 
       // Redirect to OTP verification
-      navigate('/verify-otp');
+      navigate("/verify-otp");
     } catch (error) {
       console.error("Error sending OTP:", error);
-      setError("Failed to send OTP. Please try again later.");
-      toast.error("Failed to send OTP. Please try again later.");
+      setError(error?.response?.data?.message);
+      toast.error(error?.response?.data?.message);
     } finally {
       setIsLoading(false);
     }
@@ -55,7 +57,7 @@ const PasswordResetPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-blue-100 dark:from-slate-900 dark:to-slate-950 flex items-center justify-center p-4">
-      <div className="max-w-md w-full space-y-6 bg-white dark:bg-slate-900 p-8 rounded-nonexl shadow-lg">
+      <div className="max-w-md w-full space-y-6 bg-white dark:bg-slate-900 p-8 rounded-xl shadow-lg">
         {/* Logo and Header */}
         <div className="text-center">
           <img
@@ -80,7 +82,7 @@ const PasswordResetPage = () => {
               >
                 Email address
               </label>
-              <div className="mt-1 relative rounded-nonemd shadow-sm">
+              <div className="mt-1 relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Mail className="h-5 w-5 text-gray-400 dark:text-gray-500" />
                 </div>
@@ -92,7 +94,7 @@ const PasswordResetPage = () => {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="appearance-none block w-full pl-10 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-nonemd shadow-sm placeholder-gray-400 dark:placeholder-gray-500 bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 sm:text-sm"
+                  className="appearance-none block w-full pl-10 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 dark:placeholder-gray-500 bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 sm:text-sm"
                   placeholder="you@example.com"
                 />
               </div>
@@ -107,7 +109,7 @@ const PasswordResetPage = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-nonemd shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-blue-400 dark:focus:ring-offset-slate-900 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-blue-400 dark:focus:ring-offset-slate-900 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? (
                 <span className="flex items-center">

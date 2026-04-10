@@ -344,7 +344,7 @@ const TopNavbar = () => {
         {/* 📱 Mobile Header */}
         <div className="md:hidden flex items-center justify-between w-full">
           <button
-            className="text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50 rounded-nonemd p-1 transition-colors dark:text-gray-300 dark:hover:text-white"
+            className="text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50 rounded-md p-1 transition-colors dark:text-gray-300 dark:hover:text-white"
             onClick={() => setIsSidebarOpen((prev) => !prev)}
           >
             <Menu className="w-6 h-6" />
@@ -363,7 +363,7 @@ const TopNavbar = () => {
             <Button
               variant="ghost"
               size="icon"
-              className="text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50 rounded-nonemd p-1 transition-colors dark:text-gray-300 dark:hover:text-white"
+              className="text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50 rounded-md p-1 transition-colors dark:text-gray-300 dark:hover:text-white"
               onClick={() => setIsSearchVisible(!isSearchVisible)}
             >
               {!isSearchVisible ? (
@@ -398,7 +398,7 @@ const TopNavbar = () => {
                       if (setDashboard) setDashboard(item.label);
                       navigate(item.path);
                     }}
-                    className={`flex items-center px-3 py-2 rounded-nonelg text-sm font-medium transition-colors ${
+                    className={`flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                       isActive
                         ? "bg-blue-50 text-blue-600 dark:bg-slate-800 dark:text-blue-400"
                         : "text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-slate-100"
@@ -421,12 +421,12 @@ const TopNavbar = () => {
                 value={searchQuery}
                 onChange={(e) => handleSearch(e.target.value)}
                 placeholder="Search pages..."
-                className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-nonefull focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all bg-white text-gray-900 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-400"
+                className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all bg-white text-gray-900 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-400"
               />
             </div>
 
             {searchResults.length > 0 && (
-              <div className="absolute w-full mt-1 bg-white border rounded-nonelg shadow-lg z-50 max-h-80 overflow-y-auto dark:bg-slate-800 dark:border-slate-700">
+              <div className="absolute w-full mt-1 bg-white border rounded-lg shadow-lg z-50 max-h-80 overflow-y-auto dark:bg-slate-800 dark:border-slate-700">
                 {searchResults.map((result) => (
                   <div
                     key={result.path}
@@ -437,7 +437,7 @@ const TopNavbar = () => {
                     }}
                     className="px-4 py-3 hover:bg-blue-50 cursor-pointer transition-colors flex items-center dark:hover:bg-slate-700 dark:text-slate-100"
                   >
-                    <div className="w-1 h-6 bg-blue-500 rounded-nonefull mr-3 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div className="w-1 h-6 bg-blue-500 rounded-full mr-3 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     {result.label}
                   </div>
                 ))}
@@ -481,10 +481,10 @@ const TopNavbar = () => {
             {loggedIn ? (
               <div className="relative user-dropdown">
                 <div
-                  className="flex items-center space-x-2 cursor-pointer p-1 rounded-nonefull hover:bg-gray-100 transition-colors dark:hover:bg-slate-800"
+                  className="flex items-center space-x-2 cursor-pointer p-1 rounded-full hover:bg-gray-100 transition-colors dark:hover:bg-slate-800"
                   onClick={() => setIsDropdownOpen((prev) => !prev)}
                 >
-                  <div className="w-8 h-8 rounded-nonefull bg-blue-100 flex items-center justify-center dark:bg-blue-900">
+                  <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center dark:bg-blue-900">
                     <UserRound className="w-5 h-5 text-blue-600 dark:text-blue-300" />
                   </div>
                   <ChevronDown
@@ -495,7 +495,7 @@ const TopNavbar = () => {
                 </div>
 
                 {isDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-56 bg-white border rounded-nonelg shadow-lg z-10 overflow-hidden dark:bg-slate-800 dark:border-slate-700">
+                  <div className="absolute right-0 mt-2 w-56 bg-white border rounded-lg shadow-lg z-10 overflow-hidden dark:bg-slate-800 dark:border-slate-700">
                     <div className="p-3 border-b border-gray-100 dark:border-slate-700">
                       <p className="text-sm font-medium text-gray-900 dark:text-slate-100">
                         User Menu
@@ -532,14 +532,14 @@ const TopNavbar = () => {
               <div className="flex items-center space-x-3">
                 <Button
                   variant="outline"
-                  className="px-4 py-2 text-blue-600 border border-blue-600 hover:bg-blue-50 rounded-nonelg focus:outline-none focus:ring-2 focus:ring-blue-400 transition-colors dark:text-blue-300 dark:border-blue-400 dark:hover:bg-slate-800"
+                  className="px-4 py-2 text-blue-600 border border-blue-600 hover:bg-blue-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition-colors dark:text-blue-300 dark:border-blue-400 dark:hover:bg-slate-800"
                   onClick={() => navigate("/signup")}
                 >
                   Sign Up
                 </Button>
                 <Button
                   variant="primary"
-                  className="px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-nonelg focus:outline-none focus:ring-2 focus:ring-blue-400 transition-colors dark:bg-blue-500 dark:hover:bg-blue-400"
+                  className="px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition-colors dark:bg-blue-500 dark:hover:bg-blue-400"
                   onClick={() => navigate("/login")}
                 >
                   Login
@@ -559,12 +559,12 @@ const TopNavbar = () => {
                 value={searchQuery}
                 onChange={(e) => handleSearch(e.target.value)}
                 placeholder="Search pages..."
-                className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-nonelg focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-400"
+                className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-400"
                 autoFocus
               />
 
               {searchResults.length > 0 && (
-                <div className="absolute w-full mt-1 bg-white border rounded-nonelg shadow-lg max-h-60 overflow-y-auto dark:bg-slate-800 dark:border-slate-700">
+                <div className="absolute w-full mt-1 bg-white border rounded-lg shadow-lg max-h-60 overflow-y-auto dark:bg-slate-800 dark:border-slate-700">
                   {searchResults.map((result) => (
                     <div
                       key={result.path}
@@ -606,7 +606,7 @@ const TopNavbar = () => {
               {loggedIn && (
                 <div className="p-4 border-b border-gray-200 dark:border-slate-800">
                   <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 rounded-nonefull bg-blue-100 flex items-center justify-center dark:bg-blue-900">
+                    <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center dark:bg-blue-900">
                       <UserRound className="w-6 h-6 text-blue-600 dark:text-blue-300" />
                     </div>
                     <div>
@@ -637,7 +637,7 @@ const TopNavbar = () => {
                           navigate(item.path);
                           setIsSidebarOpen(false);
                         }}
-                        className={`w-full flex items-center px-4 py-3 rounded-nonelg text-left transition-colors ${
+                        className={`w-full flex items-center px-4 py-3 rounded-lg text-left transition-colors ${
                           isActive
                             ? "bg-blue-50 text-blue-600 font-medium dark:bg-slate-800 dark:text-blue-400"
                             : "text-gray-700 dark:text-slate-100 hover:bg-blue-50 dark:hover:bg-slate-800"
@@ -658,7 +658,7 @@ const TopNavbar = () => {
                       key={route.path}
                       to={route.path}
                       onClick={() => setIsSidebarOpen(false)}
-                      className={`flex items-center px-4 py-3 hover:bg-blue-50 rounded-nonelg transition-colors ${
+                      className={`flex items-center px-4 py-3 hover:bg-blue-50 rounded-lg transition-colors ${
                         location.pathname === route.path
                           ? "bg-blue-50 text-blue-600 font-medium dark:bg-slate-800 dark:text-blue-400"
                           : "text-gray-700 dark:text-slate-100 dark:hover:bg-slate-800"
@@ -675,7 +675,7 @@ const TopNavbar = () => {
                   <Link
                     to="/logout"
                     onClick={() => setIsSidebarOpen(false)}
-                    className="flex items-center text-red-500 px-4 py-2 hover:bg-red-50 rounded-nonelg transition-colors dark:hover:bg-red-950"
+                    className="flex items-center text-red-500 px-4 py-2 hover:bg-red-50 rounded-lg transition-colors dark:hover:bg-red-950"
                   >
                     <svg
                       className="w-5 h-5 mr-3"

@@ -15,7 +15,7 @@ import Profile from "./Profile";
 import LeaveApplication from "./LeaveApplication";
 import FAQ from "./FAQ";
 import Aboutus from "./Aboutus";
-import PrivacyPolicy from "./Privacypolicy";
+import Privacypolicy from "./Privacypolicy";
 import AdminHomePage from "@/Admin/AdminHomePage";
 import AdminProject from "@/Admin/AdminProject";
 import AdminTask from "@/Admin/AdminTask";
@@ -43,18 +43,47 @@ import MyTickets from "./MyTickets";
 import { Import } from "lucide-react";
 import NotVerified from "./NotVerified";
 
-
-
-
-export { Home, NewPasswordForm, Notifications,BatchDashboard, OTPVerification, 
-HarassmentEmailForm, Settings, AdminNotify, IntroPage, 
-ResetPassword, Reports, UserAttendance, NotAuthorized, 
-Projects, FAQ, SettingsPage, Categories, Dashboard, 
-Stores, Signin, SignUp, Logout, 
-Profile, Aboutus, CustomNavbar, AdminHomePage,
- AdminProject, AdminTask, AdminReport, PrivacyPolicy, 
- Help, AllUsers, AdminHelpPage, InternAttendance,
- AdminHelp, InternTasksSubmissions, LeaveApplication, Internleaveapplication,
-InternRankings,InternRaiseTicket,MyTickets,NotVerified }
-
-
+export {
+  Home,
+  NewPasswordForm,
+  Notifications,
+  BatchDashboard,
+  OTPVerification,
+  HarassmentEmailForm,
+  Settings,
+  AdminNotify,
+  IntroPage,
+  ResetPassword,
+  Reports,
+  UserAttendance,
+  NotAuthorized,
+  Projects,
+  FAQ,
+  SettingsPage,
+  Categories,
+  Dashboard,
+  Stores,
+  Signin,
+  SignUp,
+  Logout,
+  Profile,
+  Aboutus,
+  CustomNavbar,
+  AdminHomePage,
+  AdminProject,
+  AdminTask,
+  AdminReport,
+  Privacypolicy,
+  Help,
+  AllUsers,
+  AdminHelpPage,
+  InternAttendance,
+  AdminHelp,
+  InternTasksSubmissions,
+  LeaveApplication,
+  Internleaveapplication,
+  InternRankings,
+  InternRaiseTicket,
+  MyTickets,
+  NotVerified,
+};

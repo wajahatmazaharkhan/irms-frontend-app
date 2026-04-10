@@ -33,7 +33,7 @@ const SuccessStories = () => {
           {stories.map((story, index) => (
             <div
               key={index}
-              className="stats-card group relative overflow-hidden rounded-none2xl shadow-lg hover:shadow-2xl transition-shadow"
+              className="stats-card group relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-shadow"
             >
               {/* Story Image */}
               <img

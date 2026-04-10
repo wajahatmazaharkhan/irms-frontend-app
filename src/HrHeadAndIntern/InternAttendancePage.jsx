@@ -26,7 +26,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/Components/ui/alert-dialog";
-import toast from "react-hot-toast";
+import toast from "@/utils/toast";
 import { useNavigate } from "react-router-dom";
 import useTitle from "@/Components/useTitle";
 
@@ -244,7 +244,7 @@ const deleteAttendance = async (userId) => {
                     <input
                       type="text"
                       placeholder="Search users..."
-                      className="w-full px-4 py-2 rounded-nonemd border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-100 dark:border-gray-600"
+                      className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-100 dark:border-gray-600"
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                     />

@@ -97,7 +97,7 @@ const SideNav = () => {
                     handleMenuClick(item.name);
                     navigate(`/${redirectURLs[item.id]}`);
                   }}
-                  className={`flex items-center py-3 px-3 cursor-pointer rounded-nonelg transition-all duration-200 ${
+                  className={`flex items-center py-3 px-3 cursor-pointer rounded-lg transition-all duration-200 ${
                     isActive
                       ? "bg-white/10 text-white shadow-sm backdrop-blur-sm border border-white/20 dark:border-slate-600"
                       : "text-blue-100 hover:bg-white/5 hover:text-white dark:text-slate-300 dark:hover:bg-slate-800/60 dark:hover:text-slate-100"
@@ -105,7 +105,7 @@ const SideNav = () => {
                 >
                   <div className="relative flex items-center">
                     {isActive && (
-                      <div className="absolute -left-3 w-1 h-6 bg-white dark:bg-blue-400 rounded-nonefull"></div>
+                      <div className="absolute -left-3 w-1 h-6 bg-white dark:bg-blue-400 rounded-full"></div>
                     )}
                     <i
                       className={`bi ${item.icon} text-lg ${
@@ -148,7 +148,7 @@ const SideNav = () => {
                     ? handleLogOut
                     : () => handleMenuClick(item.name)
                 }
-                className="flex items-center py-3 px-3 hover:bg-white/5 dark:hover:bg-slate-800/60 cursor-pointer rounded-nonelg transition-all duration-200 text-blue-100 hover:text-white dark:text-slate-300 dark:hover:text-slate-100"
+                className="flex items-center py-3 px-3 hover:bg-white/5 dark:hover:bg-slate-800/60 cursor-pointer rounded-lg transition-all duration-200 text-blue-100 hover:text-white dark:text-slate-300 dark:hover:text-slate-100"
               >
                 <i
                   className={`bi ${item.icon} text-lg text-blue-100 dark:text-slate-300`}
@@ -170,7 +170,7 @@ const SideNav = () => {
 
       {/* Mobile Menu Button - Visible only on small screens */}
       <button
-        className="fixed bottom-6 right-6 lg:hidden z-50 p-3 bg-blue-600 text-white rounded-nonefull shadow-lg hover:bg-blue-700 dark:bg-slate-800 dark:hover:bg-slate-700 dark:border dark:border-slate-600 transition-all duration-200"
+        className="fixed bottom-6 right-6 lg:hidden z-50 p-3 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 dark:bg-slate-800 dark:hover:bg-slate-700 dark:border dark:border-slate-600 transition-all duration-200"
         onClick={() => setIsExpanded(!isExpanded)}
       >
         <i className={`bi ${isExpanded ? "bi-x" : "bi-list"} text-xl`}></i>

@@ -303,7 +303,7 @@ span {
 }
 
 /* .stats-card {
-  @apply relative overflow-hidden rounded-none2xl bg-gradient-to-br from-gray-900 to-gray-800;
+  @apply relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900 to-gray-800;
   border: 1px solid rgba(59, 130, 246, 0.2);
 } */
 

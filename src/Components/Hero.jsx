@@ -23,7 +23,7 @@ const Hero = () => {
           <div className="flex flex-wrap justify-center gap-4">
             <button
               onClick={handleGetConnected} // Attach the click handler
-              className="bg-blue-600 text-white px-8 py-3 rounded-nonemd hover:bg-blue-700 transition-colors glow-effect">
+              className="bg-blue-600 text-white px-8 py-3 rounded-md hover:bg-blue-700 transition-colors glow-effect">
               Get Connected
             </button>
           </div>

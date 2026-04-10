@@ -29,7 +29,7 @@ const Categories = () => {
             classification system. Enhanced features coming soon.
           </p>
 
-          <div className="bg-green-50 rounded-nonelg p-6 mb-8 max-w-md w-full">
+          <div className="bg-green-50 rounded-lg p-6 mb-8 max-w-md w-full">
             <h2 className="text-lg font-semibold text-green-800 mb-4 flex items-center justify-center gap-2">
               <ListFilter className="w-5 h-5" />
               Planned Features
@@ -48,9 +48,9 @@ const Categories = () => {
           </div>
 
           <div className="animate-pulse flex items-center gap-2 text-sm text-gray-500">
-            <div className="w-2 h-2 bg-green-500 rounded-nonefull"></div>
-            <div className="w-2 h-2 bg-green-400 rounded-nonefull"></div>
-            <div className="w-2 h-2 bg-green-300 rounded-nonefull"></div>
+            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+            <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+            <div className="w-2 h-2 bg-green-300 rounded-full"></div>
             <span>In Progress</span>
           </div>
         </div>

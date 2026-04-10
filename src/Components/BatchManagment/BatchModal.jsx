@@ -32,7 +32,7 @@ export function BatchModal({ isOpen, onClose, batch, type, loading }) {
   if (loading) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-        <div className="bg-white rounded-none2xl p-8 max-w-md w-full text-center">
+        <div className="bg-white rounded-2xl p-8 max-w-md w-full text-center">
           <Loader className="w-8 h-8 text-blue-600 animate-spin mx-auto mb-4" />
           <p className="text-gray-600">Loading batch details...</p>
         </div>
@@ -42,7 +42,7 @@ export function BatchModal({ isOpen, onClose, batch, type, loading }) {
 
   return type === "simple" ? (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-      <div className="bg-white rounded-none2xl p-6 max-w-xl w-full shadow-2xl border border-blue-200 relative transition-all">
+      <div className="bg-white rounded-2xl p-6 max-w-xl w-full shadow-2xl border border-blue-200 relative transition-all">
         <button
           onClick={onClose}
           className="absolute top-3 right-3 text-blue-400 hover:text-blue-600 text-lg font-bold transition"
@@ -78,7 +78,7 @@ export function BatchModal({ isOpen, onClose, batch, type, loading }) {
                 batch.interns.map((intern) => (
                   <span
                     key={intern._id}
-                    className="bg-blue-50 text-blue-700 border border-blue-200 px-3 py-1 rounded-nonefull text-sm font-medium"
+                    className="bg-blue-50 text-blue-700 border border-blue-200 px-3 py-1 rounded-full text-sm font-medium"
                   >
                     {intern.name}
                   </span>
@@ -96,7 +96,7 @@ export function BatchModal({ isOpen, onClose, batch, type, loading }) {
                 batch.hr.map((entry) => (
                   <span
                     key={entry._id}
-                    className="bg-blue-100 text-blue-800 border border-blue-300 px-3 py-1 rounded-nonefull text-sm font-medium"
+                    className="bg-blue-100 text-blue-800 border border-blue-300 px-3 py-1 rounded-full text-sm font-medium"
                   >
                     {entry.hrId?.name || "Unknown"}
                   </span>
@@ -111,7 +111,7 @@ export function BatchModal({ isOpen, onClose, batch, type, loading }) {
     </div>
   ) : (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm transition-opacity duration-300 animate-fadeIn">
-      <div className="bg-gradient-to-br from-white via-indigo-50 to-purple-100 rounded-none2xl p-6 max-w-4xl w-full shadow-2xl border border-indigo-200 relative overflow-y-auto max-h-[90vh] transform scale-95 animate-zoomIn transition-transform duration-300">
+      <div className="bg-gradient-to-br from-white via-indigo-50 to-purple-100 rounded-2xl p-6 max-w-4xl w-full shadow-2xl border border-indigo-200 relative overflow-y-auto max-h-[90vh] transform scale-95 animate-zoomIn transition-transform duration-300">
         <button
           onClick={onClose}
           className="absolute top-3 right-3 text-gray-400 hover:text-rose-500 text-xl transition-colors"
@@ -124,7 +124,7 @@ export function BatchModal({ isOpen, onClose, batch, type, loading }) {
         </h2>
 
         <div className="text-gray-900 space-y-6 text-sm">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-indigo-50 p-4 rounded-nonelg shadow-inner">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-indigo-50 p-4 rounded-lg shadow-inner">
             <p>
               <span className="font-semibold text-indigo-700">Status:</span>{" "}
               <span className="text-indigo-900">
@@ -195,12 +195,12 @@ export function BatchModal({ isOpen, onClose, batch, type, loading }) {
                   ) || { name: 'Unassigned', email: '' };
 
                   return (
-                    <div key={task._id} className="border border-emerald-200 rounded-nonelg p-4 bg-white">
+                    <div key={task._id} className="border border-emerald-200 rounded-lg p-4 bg-white">
                       <div className="flex justify-between items-start mb-2">
                         <h4 className="text-lg font-semibold text-gray-800">
                           {taskDetails.title || `Task ${task._id}`}
                         </h4>
-                        <span className={`px-2 py-1 text-xs rounded-nonefull ${
+                        <span className={`px-2 py-1 text-xs rounded-full ${
                           taskDetails.status === 'completed' ? 'bg-green-100 text-green-800' :
                           taskDetails.status === 'in-progress' ? 'bg-yellow-100 text-yellow-800' :
                           'bg-gray-100 text-gray-800'
@@ -257,9 +257,9 @@ export function BatchModal({ isOpen, onClose, batch, type, loading }) {
                 <p className="mb-1 text-sm text-gray-700">
                   {batch.completedTasks} / {batch.allTasks} Tasks Completed
                 </p>
-                <div className="w-full bg-indigo-100 rounded-nonefull h-3">
+                <div className="w-full bg-indigo-100 rounded-full h-3">
                   <div
-                    className="bg-gradient-to-r from-emerald-400 via-blue-500 to-purple-500 h-3 rounded-nonefull transition-all duration-300"
+                    className="bg-gradient-to-r from-emerald-400 via-blue-500 to-purple-500 h-3 rounded-full transition-all duration-300"
                     style={{
                       width: `${Math.round(
                         (batch.completedTasks / batch.allTasks) * 100

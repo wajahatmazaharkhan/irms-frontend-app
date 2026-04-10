@@ -26,10 +26,11 @@ import { useAppContext } from "@/context/AppContext";
 import TaskModal from "./TaskModal";
 import { Button } from "@/Components/ui/button";
 import { Calendar as CalendarUI } from "react-calendar";
+import { useAuthContext } from "@/context/AuthContext";
 
 const BatchDashboard = () => {
   const role = localStorage.getItem("role");
-  useTitle("IRMS | Intern Dashboard");
+  useTitle("Intern Dashboard");
   const [batch, setBatch] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -43,6 +44,7 @@ const BatchDashboard = () => {
   const baseUrl = import.meta.env.VITE_BASE_URL;
   const navigate = useNavigate();
   const { modalView, setModalView } = useAppContext();
+  const { profileCompletion } = useAuthContext();
 
   useEffect(() => {
     if (role === "admin" || role === "hrHead") {
@@ -80,7 +82,9 @@ const BatchDashboard = () => {
           return;
         }
 
-        const batchResponse = await fetch(`${baseUrl}/batches/${batchId}`);
+        console.log(batchId);
+
+        const batchResponse = await fetch(`${baseUrl}/batches/${batchId?._id}`);
         if (!batchResponse.ok) {
           throw new Error("Failed to fetch batch data");
         }
@@ -142,6 +146,16 @@ const BatchDashboard = () => {
     fetchBatchData();
   }, [baseUrl]);
 
+  //==== DISABLE SCROLLING WHEN MODAL IS OPEN ====//
+
+  useEffect(() => {
+    if (modalView) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+  }, [modalView]);
+
   // Task Status Badge Component
   const TaskStatusBadge = ({ status }) => {
     const statusConfig = {
@@ -167,7 +181,7 @@ const BatchDashboard = () => {
 
     return (
       <div
-        className={`flex items-center gap-1 px-3 py-1 rounded-nonefull text-sm font-medium capitalize ${config.className}`}
+        className={`flex items-center gap-1 px-3 py-1  text-sm font-medium capitalize ${config.className}`}
       >
         <Icon className="w-4 h-4" />
         <span>{status || "pending"}</span>
@@ -210,8 +224,10 @@ const BatchDashboard = () => {
                 <img
                   className="w-10 h-10 mx-auto mb-4"
                   src="https://cdn.pixabay.com/animation/2023/08/11/21/18/21-18-05-265_512.gif"
-                  alt=""
+                  alt="Loading dashboard data"
+                  aria-busy="true"
                 />
+                <p className="sr-only">Loading your dashboard</p>
               </motion.div>
             </div>
           </Wrapper>
@@ -230,7 +246,7 @@ const BatchDashboard = () => {
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="bg-white dark:bg-slate-900 dark:border dark:border-slate-700 dark:text-slate-100 rounded-nonexl shadow-lg p-8 max-w-md text-center"
+                className="bg-white dark:bg-slate-900 dark:border dark:border-slate-700 dark:text-slate-100 rounded-xl shadow-lg p-8 max-w-md text-center"
               >
                 <div className="text-blue-500 mb-4">
                   <svg
@@ -260,7 +276,7 @@ const BatchDashboard = () => {
                 <div className="mt-6">
                   <button
                     onClick={() => window.location.reload()}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-nonelg hover:bg-blue-700 transition-colors text-sm"
+                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
                   >
                     Refresh Status
                   </button>
@@ -283,7 +299,7 @@ const BatchDashboard = () => {
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="bg-white dark:bg-slate-900 dark:border dark:border-slate-700 dark:text-slate-100 rounded-nonexl shadow-lg p-8 max-w-md text-center"
+                className="bg-white dark:bg-slate-900 dark:border dark:border-slate-700 dark:text-slate-100 rounded-xl shadow-lg p-8 max-w-md text-center"
               >
                 <div className="text-red-500 mb-4">
                   <svg
@@ -301,15 +317,17 @@ const BatchDashboard = () => {
                     />
                   </svg>
                 </div>
-                <h3 className="text-lg font-medium text-gray-900 dark:text-slate-100 mb-2">
-                  Error loading batch data
-                </h3>
                 <p className="text-gray-600 dark:text-slate-300 mb-6">
                   {error}
                 </p>
+                <p className="text-xs text-gray-500 dark:text-slate-400 mb-4">
+                  This may be due to a temporary network issue or missing
+                  permissions.
+                </p>
+
                 <button
                   onClick={() => window.location.reload()}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-nonelg hover:bg-blue-700 transition-colors"
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                 >
                   Try Again
                 </button>
@@ -341,8 +359,8 @@ const BatchDashboard = () => {
             >
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20">
                 <div className="text-center">
-                  <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-nowrap">
-                    IRMS | Dashboard
+                  <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
+                    Dashboard
                   </h1>
                   <p className="text-blue-100 text-lg md:text-xl max-w-2xl mx-auto">
                     Track your internship progress and stay updated with your
@@ -357,9 +375,9 @@ const BatchDashboard = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 -mt-12 relative z-10">
                 <motion.div
                   whileHover={{ y: -5 }}
-                  className="bg-white dark:bg-slate-900 rounded-nonexl p-6 text-center shadow-lg border border-gray-100 dark:border-slate-700 hover:shadow-xl transition-shadow"
+                  className="bg-white dark:bg-slate-900 rounded-xl p-6 text-center shadow-lg border border-gray-100 dark:border-slate-700 hover:shadow-xl transition-shadow"
                 >
-                  <div className="w-12 h-12 bg-blue-500 rounded-nonelg flex items-center justify-center mx-auto mb-3 shadow-md">
+                  <div className="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center mx-auto mb-3 shadow-md">
                     <Check className="w-6 h-6 text-white" />
                   </div>
                   <p className="text-sm text-gray-600 dark:text-slate-300 mb-1">
@@ -369,15 +387,15 @@ const BatchDashboard = () => {
                     Completed
                   </p>
                   <p className="text-xs text-gray-500 dark:text-slate-400">
-                    Current program phase
+                    Status provided by HR
                   </p>
                 </motion.div>
 
                 <motion.div
                   whileHover={{ y: -5 }}
-                  className="bg-white dark:bg-slate-900 rounded-nonexl p-6 text-center shadow-lg border border-gray-100 dark:border-slate-700 hover:shadow-xl transition-shadow"
+                  className="bg-white dark:bg-slate-900 rounded-xl p-6 text-center shadow-lg border border-gray-100 dark:border-slate-700 hover:shadow-xl transition-shadow"
                 >
-                  <div className="w-12 h-12 bg-green-500 rounded-nonelg flex items-center justify-center mx-auto mb-3 shadow-md">
+                  <div className="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center mx-auto mb-3 shadow-md">
                     <Users className="w-6 h-6 text-white" />
                   </div>
                   <p className="text-sm text-gray-600 dark:text-slate-300 mb-1">
@@ -393,9 +411,9 @@ const BatchDashboard = () => {
 
                 <motion.div
                   whileHover={{ y: -5 }}
-                  className="bg-white dark:bg-slate-900 rounded-nonexl p-6 text-center shadow-lg border border-gray-100 dark:border-slate-700 hover:shadow-xl transition-shadow"
+                  className="bg-white dark:bg-slate-900 rounded-xl p-6 text-center shadow-lg border border-gray-100 dark:border-slate-700 hover:shadow-xl transition-shadow"
                 >
-                  <div className="w-12 h-12 bg-purple-500 rounded-nonelg flex items-center justify-center mx-auto mb-3 shadow-md">
+                  <div className="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center mx-auto mb-3 shadow-md">
                     <FileText className="w-6 h-6 text-white" />
                   </div>
                   <p className="text-sm text-gray-600 dark:text-slate-300 mb-1">
@@ -411,9 +429,9 @@ const BatchDashboard = () => {
 
                 <motion.div
                   whileHover={{ y: -5 }}
-                  className="bg-white dark:bg-slate-900 rounded-nonexl p-6 text-center shadow-lg border border-gray-100 dark:border-slate-700 hover:shadow-xl transition-shadow"
+                  className="bg-white dark:bg-slate-900 rounded-xl p-6 text-center shadow-lg border border-gray-100 dark:border-slate-700 hover:shadow-xl transition-shadow"
                 >
-                  <div className="w-12 h-12 bg-orange-500 rounded-nonelg flex items-center justify-center mx-auto mb-3 shadow-md">
+                  <div className="w-12 h-12 bg-orange-500 rounded-lg flex items-center justify-center mx-auto mb-3 shadow-md">
                     <Zap className="w-6 h-6 text-white" />
                   </div>
                   <p className="text-sm text-gray-600 dark:text-slate-300 mb-1">
@@ -437,21 +455,21 @@ const BatchDashboard = () => {
                   <motion.div
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
-                    className="bg-white dark:bg-slate-900 rounded-nonexl shadow-sm border border-gray-200 dark:border-slate-700 hover:shadow-md transition-shadow"
+                    className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 hover:shadow-md transition-shadow"
                   >
                     <div className="p-6">
                       <div className="flex justify-between items-center mb-6">
                         <h2 className="text-lg font-semibold text-gray-900 dark:text-slate-100">
                           Assigned Tasks
                           <span className="ml-2 text-sm font-normal text-blue-600 dark:text-blue-400">
-                            {tasksWithDetails.length} active
+                            {tasksWithDetails.length} assigned
                           </span>
                         </h2>
                         <button
                           onClick={() => navigate("/view-all-tasks")}
                           className="text-blue-600 dark:text-blue-400 text-sm hover:text-blue-800 dark:hover:text-blue-300 font-medium transition-colors"
                         >
-                          View all →
+                          View all tasks →
                         </button>
                       </div>
 
@@ -460,6 +478,7 @@ const BatchDashboard = () => {
                         <nav className="-mb-px flex space-x-8">
                           <button
                             onClick={() => setActiveTab("technical")}
+                            aria-selected={activeTab === "technical"}
                             className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
                               activeTab === "technical"
                                 ? "border-blue-500 text-blue-600 dark:text-blue-400"
@@ -470,6 +489,7 @@ const BatchDashboard = () => {
                           </button>
                           <button
                             onClick={() => setActiveTab("social")}
+                            aria-selected={activeTab === "social"}
                             className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
                               activeTab === "social"
                                 ? "border-blue-500 text-blue-600 dark:text-blue-400"
@@ -484,7 +504,7 @@ const BatchDashboard = () => {
                       {/* Task Content */}
                       {tasksLoading ? (
                         <div className="flex justify-center py-16">
-                          <div className="animate-spin rounded-nonefull h-10 w-10 border-t-2 border-b-2 border-blue-500"></div>
+                          <div className="animate-spin  h-10 w-10 border-t-2 border-b-2 border-blue-500"></div>
                         </div>
                       ) : filteredTasks.length > 0 ? (
                         <div className="space-y-4">
@@ -500,11 +520,13 @@ const BatchDashboard = () => {
 
                               return (
                                 <motion.div
-                                  key={index}
+                                  key={
+                                    task?.taskId || task.details?._id || index
+                                  }
                                   initial={{ opacity: 0, y: 10 }}
                                   animate={{ opacity: 1, y: 0 }}
                                   transition={{ delay: index * 0.05 }}
-                                  className="p-4 border border-gray-200 dark:border-slate-700 rounded-nonelg hover:border-blue-300 dark:hover:border-blue-500 transition-colors bg-gray-50 dark:bg-slate-800 hover:bg-white dark:hover:bg-slate-700"
+                                  className="p-4 border border-gray-200 dark:border-slate-700 rounded-lg hover:border-blue-300 dark:hover:border-blue-500 transition-colors bg-gray-50 dark:bg-slate-800 hover:bg-white dark:hover:bg-slate-700"
                                   whileHover={{ scale: 1.01 }}
                                 >
                                   <div className="flex flex-col lg:flex-row items-start lg:items-center gap-4">
@@ -526,7 +548,7 @@ const BatchDashboard = () => {
                                       )}
 
                                       <div className="flex flex-wrap gap-4 text-xs text-gray-500 dark:text-slate-400">
-                                        <div className="flex items-center gap-1.5 bg-gray-50 dark:bg-slate-800 px-2.5 py-1 rounded-nonefull">
+                                        <div className="flex items-center gap-1.5 bg-gray-50 dark:bg-slate-800 px-2.5 py-1 ">
                                           <Calendar className="w-3.5 h-3.5" />
                                           <span>
                                             Start:{" "}
@@ -537,7 +559,7 @@ const BatchDashboard = () => {
                                               : "Not set"}
                                           </span>
                                         </div>
-                                        <div className="flex items-center gap-1.5 bg-gray-50 dark:bg-slate-800 px-2.5 py-1 rounded-nonefull">
+                                        <div className="flex items-center gap-1.5 bg-gray-50 dark:bg-slate-800 px-2.5 py-1 ">
                                           <Calendar className="w-3.5 h-3.5" />
                                           <span>
                                             End:{" "}
@@ -567,9 +589,14 @@ const BatchDashboard = () => {
                                             : "default"
                                         }
                                         disabled={!task.details?._id}
+                                        title={
+                                          !task.details?._id
+                                            ? "Task details are still loading"
+                                            : undefined
+                                        }
                                       >
                                         {task.details?.status === "completed"
-                                          ? "Resubmit"
+                                          ? "Resubmit task"
                                           : "Submit"}
                                       </Button>
                                     </div>
@@ -585,7 +612,7 @@ const BatchDashboard = () => {
                           animate={{ opacity: 1 }}
                           className="text-center py-20"
                         >
-                          <div className="w-16 h-16 bg-gray-100 dark:bg-slate-800 rounded-nonefull flex items-center justify-center mx-auto mb-4">
+                          <div className="w-16 h-16 bg-gray-100 dark:bg-slate-800  flex items-center justify-center mx-auto mb-4">
                             <Info className="h-8 w-8 text-gray-400 dark:text-slate-400" />
                           </div>
                           <h3 className="text-lg font-medium text-gray-900 dark:text-slate-100 mb-2">
@@ -603,7 +630,7 @@ const BatchDashboard = () => {
 
                 {/* Calendar Section - Right side */}
                 <div className="lg:col-span-4 calendar-wrapper">
-                  <div className="text-black rounded-none shadow-sm border  p-4">
+                  <div className="text-black rounded- shadow-sm border  p-4">
                     <CalendarUI />
                   </div>
                 </div>
@@ -614,7 +641,7 @@ const BatchDashboard = () => {
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="mt-8 bg-white dark:bg-slate-900 rounded-nonexl shadow-sm border border-gray-200 dark:border-slate-700 hover:shadow-md transition-shadow"
+                  className="mt-8 bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 hover:shadow-md transition-shadow"
                 >
                   <div className="p-6">
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-slate-100 mb-6">
@@ -626,7 +653,7 @@ const BatchDashboard = () => {
                         <div>
                           <h4 className="font-medium text-gray-800 dark:text-slate-100 mb-4 flex items-center">
                             Mentor Contacts
-                            <span className="ml-2 text-xs bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100 px-2 py-1 rounded-nonefull">
+                            <span className="ml-2 text-xs bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100 px-2 py-1 ">
                               {batch.hr.length}
                             </span>
                           </h4>
@@ -635,7 +662,7 @@ const BatchDashboard = () => {
                               <motion.div
                                 key={index}
                                 whileHover={{ x: 5 }}
-                                className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-slate-800 rounded-nonelg border border-gray-200 dark:border-slate-700 hover:bg-white dark:hover:bg-slate-700 transition-colors"
+                                className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-slate-800 rounded-lg border border-gray-200 dark:border-slate-700 hover:bg-white dark:hover:bg-slate-700 transition-colors"
                               >
                                 <div className="w-10 h-10 rounded-full bg-purple-500 flex items-center justify-center text-white font-medium shadow-md">
                                   {hrContact.hrId?.name?.charAt(0) || "H"}
@@ -655,7 +682,7 @@ const BatchDashboard = () => {
                                       `/internchat/${hrContact.hrId?._id}`
                                     )
                                   }
-                                  className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 p-2 rounded-nonefull hover:bg-blue-50 dark:hover:bg-slate-800 transition-colors"
+                                  className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 p-2  hover:bg-blue-50 dark:hover:bg-slate-800 transition-colors"
                                 >
                                   <svg
                                     className="w-4 h-4"
@@ -682,16 +709,16 @@ const BatchDashboard = () => {
                         <div>
                           <h4 className="font-medium text-gray-800 dark:text-slate-100 mb-4 flex items-center">
                             Fellow Interns
-                            <span className="ml-2 text-xs bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100 px-2 py-1 rounded-nonefull">
+                            <span className="ml-2 text-xs bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100 px-2 py-1 ">
                               {batch.interns.length}
                             </span>
                           </h4>
-                          <div className="space-y-3 max-h-64 overflow-y-auto pr-2">
+                          <div className="space-y-3 max-h-64 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-slate-600">
                             {batch.interns.map((intern, index) => (
                               <motion.div
                                 key={index}
                                 whileHover={{ x: 5 }}
-                                className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-slate-800 rounded-nonelg border border-gray-200 dark:border-slate-700 hover:bg-white dark:hover:bg-slate-700 transition-colors"
+                                className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-slate-800 rounded-lg border border-gray-200 dark:border-slate-700 hover:bg-white dark:hover:bg-slate-700 transition-colors"
                               >
                                 <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-medium shadow-md">
                                   {intern.name.charAt(0)}

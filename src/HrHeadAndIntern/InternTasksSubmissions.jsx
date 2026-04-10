@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import CustomNavbar from "./CustomHrNavbar";
 import axios from "axios";
-import toast from "react-hot-toast";
+import toast from "@/utils/toast";
 import { Alert, AlertDescription } from "@/Components/ui/alert";
 import { Loader, useTitle } from "@/Components/compIndex";
 import { Card, CardContent, CardHeader, CardTitle } from "@/Components/ui/card";
@@ -175,6 +175,7 @@ const InternTasksSubmissions = () => {
       title: "Confirm Approval",
       text: "Approve this task submission?",
       icon: "question",
+      
       showCancelButton: true,
       confirmButtonColor: "#10B981",
       cancelButtonColor: "#EF4444",
@@ -237,6 +238,7 @@ const InternTasksSubmissions = () => {
       title: "Confirm Rejection",
       text: "Reject this task submission?",
       icon: "warning",
+      
       showCancelButton: true,
       confirmButtonColor: "#EF4444",
       cancelButtonColor: "#6B7280",
@@ -299,6 +301,7 @@ const InternTasksSubmissions = () => {
       text: "This will delete both the task and its submission",
       icon: "error",
       showCancelButton: true,
+      
       confirmButtonColor: "#EF4444",
       cancelButtonColor: "#6B7280",
       confirmButtonText: "Delete",
@@ -394,6 +397,7 @@ const InternTasksSubmissions = () => {
                 </div>
               `,
               confirmButtonText: "Got it!",
+              
               confirmButtonColor: "#3B82F6",
               background: "#ffffff",
               showClass: {
@@ -429,12 +433,12 @@ const InternTasksSubmissions = () => {
         {/* Tabs */}
         <div className="mb-8">
           <div className="flex justify-center">
-            <div className="inline-flex bg-gray-100 dark:bg-gray-800 p-1 rounded-nonexl shadow-inner">
+            <div className="inline-flex bg-gray-100 dark:bg-gray-800 p-1 rounded-xl shadow-inner">
               {["all", "technical", "social"].map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`relative px-6 py-2 rounded-nonelg font-medium text-sm transition-all duration-300 ${
+                  className={`relative px-6 py-2 rounded-lg font-medium text-sm transition-all duration-300 ${
                     activeTab === tab
                       ? "text-white"
                       : "text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100"
@@ -443,7 +447,7 @@ const InternTasksSubmissions = () => {
                   {activeTab === tab && (
                     <motion.span
                       layoutId="tabIndicator"
-                      className="absolute inset-0 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-nonelg shadow-md"
+                      className="absolute inset-0 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg shadow-md"
                       initial={false}
                       transition={{
                         type: "spring",
@@ -498,7 +502,7 @@ const InternTasksSubmissions = () => {
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.5 }}
                 >
-                  <Alert className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-slate-800 dark:to-slate-900 border border-blue-100 dark:border-slate-700 rounded-nonexl shadow-sm">
+                  <Alert className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-slate-800 dark:to-slate-900 border border-blue-100 dark:border-slate-700 rounded-xl shadow-sm">
                     <div className="flex items-center gap-3">
                       <InfoIcon className="text-blue-500 dark:text-blue-400 flex-shrink-0" />
                       <AlertDescription className="text-gray-700 dark:text-gray-200">
@@ -591,7 +595,7 @@ const TaskCard = ({
       onHoverEnd={() => setIsHovering(false)}
     >
       <Card
-        className={`border ${statusStyles.border} rounded-nonexl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 h-full flex flex-col ${statusStyles.hoverBg} bg-white dark:bg-gray-900`}
+        className={`border ${statusStyles.border} rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 h-full flex flex-col ${statusStyles.hoverBg} bg-white dark:bg-gray-900`}
       >
         {/* Card Header */}
         <div className={`p-4 border-b ${statusStyles.border}`}>
@@ -617,7 +621,7 @@ const TaskCard = ({
               </p>
             </div>
             <span
-              className={`px-2 py-1 text-xs font-medium rounded-nonefull flex items-center gap-1 ${statusStyles.bg} ${statusStyles.text}`}
+              className={`px-2 py-1 text-xs font-medium rounded-full flex items-center gap-1 ${statusStyles.bg} ${statusStyles.text}`}
             >
               {statusStyles.icon}
               {statusStyles.label}
@@ -702,7 +706,7 @@ const TaskCard = ({
                     <img
                       src={submission.image}
                       alt="Task Submission"
-                      className="rounded-nonelg w-full h-32 object-cover border border-gray-200 dark:border-gray-700 shadow-sm transition-all duration-300 hover:shadow-md"
+                      className="rounded-lg w-full h-32 object-cover border border-gray-200 dark:border-gray-700 shadow-sm transition-all duration-300 hover:shadow-md"
                     />
                   </motion.div>
                 ) : (
@@ -725,7 +729,7 @@ const TaskCard = ({
                   }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => markAsComplete(submissionId, userId)}
-                  className="bg-gradient-to-r from-green-500 to-green-600 text-white px-4 py-2 rounded-nonelg text-sm flex items-center gap-1.5 transition-all shadow-md flex-1 min-w-[100px]"
+                  className="bg-gradient-to-r from-green-500 to-green-600 text-white px-4 py-2 rounded-lg text-sm flex items-center gap-1.5 transition-all shadow-md flex-1 min-w-[100px]"
                 >
                   <Check size={16} /> Approve
                 </motion.button>
@@ -736,7 +740,7 @@ const TaskCard = ({
                   }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => markAsIncomplete(submissionId, userId)}
-                  className="bg-gradient-to-r from-red-500 to-red-600 text-white px-4 py-2 rounded-nonelg text-sm flex items-center gap-1.5 transition-all shadow-md flex-1 min-w-[100px]"
+                  className="bg-gradient-to-r from-red-500 to-red-600 text-white px-4 py-2 rounded-lg text-sm flex items-center gap-1.5 transition-all shadow-md flex-1 min-w-[100px]"
                 >
                   <XIcon size={16} /> Reject
                 </motion.button>
@@ -747,7 +751,7 @@ const TaskCard = ({
                   disabled
                   whileHover={{}}
                   whileTap={{}}
-                  className="bg-gradient-to-r from-green-500 to-green-600 text-white px-4 py-2 rounded-nonelg text-sm flex items-center gap-1.5 transition-all shadow-md flex-1 min-w-[100px] opacity-60 cursor-not-allowed"
+                  className="bg-gradient-to-r from-green-500 to-green-600 text-white px-4 py-2 rounded-lg text-sm flex items-center gap-1.5 transition-all shadow-md flex-1 min-w-[100px] opacity-60 cursor-not-allowed"
                 >
                   <Check size={16} /> Approve
                 </motion.button>
@@ -755,7 +759,7 @@ const TaskCard = ({
                   disabled
                   whileHover={{}}
                   whileTap={{}}
-                  className="bg-gradient-to-r from-red-500 to-red-600 text-white px-4 py-2 rounded-nonelg text-sm flex items-center gap-1.5 transition-all shadow-md flex-1 min-w-[100px] opacity-60 cursor-not-allowed"
+                  className="bg-gradient-to-r from-red-500 to-red-600 text-white px-4 py-2 rounded-lg text-sm flex items-center gap-1.5 transition-all shadow-md flex-1 min-w-[100px] opacity-60 cursor-not-allowed"
                 >
                   <XIcon size={16} /> Reject
                 </motion.button>
@@ -767,7 +771,7 @@ const TaskCard = ({
               </>
             ) : (
               <motion.div
-                className="w-full text-center py-2 px-4 rounded-nonelg text-sm font-medium"
+                className="w-full text-center py-2 px-4 rounded-lg text-sm font-medium"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
               >
@@ -790,7 +794,7 @@ const TaskCard = ({
               }}
               whileTap={{ scale: 0.98 }}
               onClick={() => deleteTask(submissionId)}
-              className="bg-gradient-to-r from-gray-500 to-gray-600 text-white px-4 py-2 rounded-nonelg text-sm flex items-center gap-1.5 transition-all shadow-md flex-1 min-w-[100px]"
+              className="bg-gradient-to-r from-gray-500 to-gray-600 text-white px-4 py-2 rounded-lg text-sm flex items-center gap-1.5 transition-all shadow-md flex-1 min-w-[100px]"
             >
               <Trash2 size={16} /> Delete
             </motion.button>

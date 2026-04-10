@@ -19,7 +19,7 @@ import TaskModal from "./TaskModal";
 import { Button } from "@/Components/ui/button";
 
 const InternTasksPage = () => {
-  useTitle("IRMS | Tasks");
+  useTitle("Tasks");
   const navigate = useNavigate();
   const { modalView, setModalView } = useAppContext();
 
@@ -75,7 +75,7 @@ const InternTasksPage = () => {
           return;
         }
 
-        const batchResponse = await fetch(`${baseUrl}/batches/${batchId}`);
+        const batchResponse = await fetch(`${baseUrl}/batches/${batchId?._id}`);
         if (!batchResponse.ok) throw new Error("Failed to fetch batch data");
         const batchData = await batchResponse.json();
 
@@ -236,7 +236,7 @@ const InternTasksPage = () => {
 
     return (
       <div
-        className={`inline-flex items-center gap-1 px-2 py-1 text-xs font-medium uppercase tracking-wide ${classes} rounded-none`}
+        className={`inline-flex items-center gap-1 px-2 py-1 text-xs font-medium uppercase tracking-wide ${classes} rounded-lg`}
       >
         {normalized === "completed" && <CheckCircle className="w-3 h-3" />}
         {normalized === "overdue" && <AlertCircle className="w-3 h-3" />}
@@ -342,7 +342,7 @@ const InternTasksPage = () => {
         <div id="mainContent">
           <Wrapper>
             <div className="min-h-screen bg-gray-50 dark:bg-slate-900 flex items-center justify-center">
-              <div className="bg-white dark:bg-slate-900 dark:border dark:border-slate-700 dark:text-slate-100 px-8 py-8 max-w-md text-center border border-gray-200 rounded-none">
+              <div className="bg-white dark:bg-slate-900 dark:border dark:border-slate-700 dark:text-slate-100 px-8 py-8 max-w-md text-center border border-gray-200 rounded-lg">
                 <div className="text-blue-500 mb-4">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -371,7 +371,7 @@ const InternTasksPage = () => {
                 <div className="mt-6">
                   <button
                     onClick={() => window.location.reload()}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-none hover:bg-blue-700 transition-colors text-sm"
+                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
                   >
                     Refresh Status
                   </button>
@@ -392,7 +392,7 @@ const InternTasksPage = () => {
         <div id="mainContent">
           <Wrapper>
             <div className="min-h-screen bg-gray-50 dark:bg-slate-900 flex items-center justify-center">
-              <div className="bg-white dark:bg-slate-900 dark:border dark:border-slate-700 dark:text-slate-100 px-8 py-8 max-w-md text-center border border-gray-200 rounded-none">
+              <div className="bg-white dark:bg-slate-900 dark:border dark:border-slate-700 dark:text-slate-100 px-8 py-8 max-w-md text-center border border-gray-200 rounded-lg">
                 <div className="text-red-500 mb-4">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -417,7 +417,7 @@ const InternTasksPage = () => {
                 </p>
                 <button
                   onClick={() => window.location.reload()}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-none hover:bg-blue-700 transition-colors"
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                 >
                   Try Again
                 </button>
@@ -481,13 +481,13 @@ const InternTasksPage = () => {
             {/* Content */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
               {/* Filters + search */}
-              <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 px-4 py-4 rounded-none">
+              <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 px-4 py-4 rounded-lg">
                 <div className="flex flex-col gap-4">
                   {/* Top row: search + filter-toggle button */}
                   <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
                     {/* Search */}
                     <div className="flex-1 max-w-xl">
-                      <div className="flex items-center gap-2 border border-gray-300 dark:border-slate-700 px-3 py-2 rounded-none bg-gray-50 dark:bg-slate-900">
+                      <div className="flex items-center gap-2 border border-gray-300 dark:border-slate-700 px-3 py-2 rounded-lg bg-gray-50 dark:bg-slate-900">
                         <Search className="w-4 h-4 text-gray-500 dark:text-slate-400" />
                         <input
                           type="text"
@@ -504,7 +504,7 @@ const InternTasksPage = () => {
                       <button
                         type="button"
                         onClick={() => setShowFilterPanel((prev) => !prev)}
-                        className="inline-flex items-center gap-2 px-3 py-2 text-xs font-medium uppercase tracking-wide border border-gray-300 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 text-gray-700 dark:text-slate-200 rounded-none lg:hidden"
+                        className="inline-flex items-center gap-2 px-3 py-2 text-xs font-medium uppercase tracking-wide border border-gray-300 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 text-gray-700 dark:text-slate-200 rounded-lg lg:hidden"
                       >
                         <Filter className="w-4 h-4" />
                         {showFilterPanel ? "Hide Filters" : "Show Filters"}
@@ -536,7 +536,7 @@ const InternTasksPage = () => {
                               categoryFilter === "all"
                                 ? "bg-blue-600 text-white"
                                 : "bg-white dark:bg-slate-900 text-gray-700 dark:text-slate-200"
-                            } rounded-none`}
+                            } rounded-lg`}
                           >
                             All
                           </button>
@@ -546,7 +546,7 @@ const InternTasksPage = () => {
                               categoryFilter === "technical"
                                 ? "bg-blue-600 text-white"
                                 : "bg-white dark:bg-slate-900 text-gray-700 dark:text-slate-200"
-                            } rounded-none`}
+                            } rounded-lg`}
                           >
                             Technical
                           </button>
@@ -556,7 +556,7 @@ const InternTasksPage = () => {
                               categoryFilter === "social"
                                 ? "bg-blue-600 text-white"
                                 : "bg-white dark:bg-slate-900 text-gray-700 dark:text-slate-200"
-                            } rounded-none`}
+                            } rounded-lg`}
                           >
                             Social
                           </button>
@@ -575,7 +575,7 @@ const InternTasksPage = () => {
                               statusFilter === "all"
                                 ? "bg-blue-600 text-white"
                                 : "bg-white dark:bg-slate-900 text-gray-700 dark:text-slate-200"
-                            } rounded-none`}
+                            } rounded-lg`}
                           >
                             All
                           </button>
@@ -585,7 +585,7 @@ const InternTasksPage = () => {
                               statusFilter === "pending"
                                 ? "bg-blue-600 text-white"
                                 : "bg-white dark:bg-slate-900 text-gray-700 dark:text-slate-200"
-                            } rounded-none`}
+                            } rounded-lg`}
                           >
                             Pending
                           </button>
@@ -595,7 +595,7 @@ const InternTasksPage = () => {
                               statusFilter === "in_review"
                                 ? "bg-blue-600 text-white"
                                 : "bg-white dark:bg-slate-900 text-gray-700 dark:text-slate-200"
-                            } rounded-none`}
+                            } rounded-lg`}
                           >
                             In Review
                           </button>
@@ -605,7 +605,7 @@ const InternTasksPage = () => {
                               statusFilter === "completed"
                                 ? "bg-blue-600 text-white"
                                 : "bg-white dark:bg-slate-900 text-gray-700 dark:text-slate-200"
-                            } rounded-none`}
+                            } rounded-lg`}
                           >
                             Completed
                           </button>
@@ -615,7 +615,7 @@ const InternTasksPage = () => {
                               statusFilter === "overdue"
                                 ? "bg-blue-600 text-white"
                                 : "bg-white dark:bg-slate-900 text-gray-700 dark:text-slate-200"
-                            } rounded-none`}
+                            } rounded-lg`}
                           >
                             Overdue
                           </button>
@@ -634,7 +634,7 @@ const InternTasksPage = () => {
                               sortMode === "deadline"
                                 ? "bg-blue-600 text-white"
                                 : "bg-white dark:bg-slate-900 text-gray-700 dark:text-slate-200"
-                            } rounded-none`}
+                            } rounded-lg`}
                           >
                             Sort by Deadline
                           </button>
@@ -644,7 +644,7 @@ const InternTasksPage = () => {
                               sortMode === "recent"
                                 ? "bg-blue-600 text-white"
                                 : "bg-white dark:bg-slate-900 text-gray-700 dark:text-slate-200"
-                            } rounded-none`}
+                            } rounded-lg`}
                           >
                             Newest First
                           </button>
@@ -656,7 +656,7 @@ const InternTasksPage = () => {
               </div>
 
               {/* Tasks list */}
-              <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 px-4 py-4 rounded-none">
+              <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 px-4 py-4 rounded-lg">
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-lg font-semibold text-gray-900 dark:text-slate-100">
                     Assigned Tasks
@@ -669,7 +669,7 @@ const InternTasksPage = () => {
 
                 {tasksLoading ? (
                   <div className="flex justify-center py-12">
-                    <div className="animate-spin h-10 w-10 border-t-2 border-b-2 border-blue-500 rounded-full" />
+                    <div className="animate-spin h-10 w-10 border-t-2 border-b-2 border-blue-500 rounded-lgfull" />
                   </div>
                 ) : visibleTasks.length === 0 ? (
                   <div className="py-12 text-center">
@@ -697,7 +697,7 @@ const InternTasksPage = () => {
                           initial={{ opacity: 0, y: 8 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: index * 0.02 }}
-                          className="border border-gray-200 dark:border-slate-700 px-4 py-4 bg-gray-50 dark:bg-slate-950 hover:bg-white dark:hover:bg-slate-800 transition-colors rounded-none"
+                          className="border border-gray-200 dark:border-slate-700 px-4 py-4 bg-gray-50 dark:bg-slate-950 hover:bg-white dark:hover:bg-slate-800 transition-colors rounded-lg"
                         >
                           <div className="flex flex-col lg:flex-row gap-4 lg:items-center lg:justify-between">
                             <div className="flex-1 space-y-2">
@@ -773,7 +773,7 @@ const InternTasksPage = () => {
                                 onClick={() =>
                                   handleSubmitTask(task.details?._id)
                                 }
-                                className={`w-full text-sm font-medium rounded-none ${
+                                className={`w-full text-sm font-medium rounded-lg ${
                                   isCompleted
                                     ? "bg-green-50 text-green-700 hover:bg-green-100 border border-green-200 dark:bg-green-900 dark:text-green-100 dark:border-green-700 dark:hover:bg-green-800"
                                     : "bg-blue-600 text-white hover:bg-blue-500 dark:bg-blue-600 dark:hover:bg-blue-500"

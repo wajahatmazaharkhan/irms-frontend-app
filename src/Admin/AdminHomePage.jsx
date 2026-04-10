@@ -19,46 +19,70 @@ import {
   TrendingDown,
   LineChartIcon,
   Settings2,
+  Repeat2,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
 function AdminHomePage() {
-  useTitle("IRMS | Admin Dashboard");
+  useTitle("Admin Dashboard");
   const permissions = JSON.parse(localStorage.getItem("permissions") || "[]");
-  const [uptime, setUptime] = useState("");
+  const [uptimeSeconds, setUptimeSeconds] = useState(0);
 
+  const hhmmssToSeconds = (time) => {
+    if (!time) return 0;
+    const [h, m, s] = time.split(":").map(Number);
+    return h * 3600 + m * 60 + s;
+  };
+  const secondsToHHMMSS = (seconds) => {
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = seconds % 60;
+
+    return `${String(h).padStart(2, "0")}:${String(m).padStart(
+      2,
+      "0"
+    )}:${String(s).padStart(2, "0")}`;
+  };
   const getProcessUptime = async () => {
     try {
       const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/uptime`);
-      console.log("🚀 ~ getProcessUptime ~ res:", res);
-      setUptime(res.data.upTime);
+      const serverTime = res.data.upTime; // "04:47:08"
+      setUptimeSeconds(hhmmssToSeconds(serverTime));
     } catch (error) {
-      console.log("🚀 ~ getProcessUptime ~ error:", error);
+      console.log("Uptime error:", error);
     }
   };
 
   useEffect(() => {
     getProcessUptime();
+
+    const interval = setInterval(() => {
+      setUptimeSeconds((prev) => prev + 1);
+    }, 1000);
+
+    return () => clearInterval(interval);
   }, []);
 
   const dashboardStats = [
     {
-      icon: uptime ? LineChartIcon : TrendingDown,
+      icon: uptimeSeconds ? LineChartIcon : TrendingDown,
       label: "Performance",
-      value: uptime ? "Excellent" : "Normal",
+      value: uptimeSeconds ? "Excellent" : "Normal",
       color: "text-green-600 dark:text-green-400",
     },
     {
       icon: ComputerIcon,
       label: "Server Status",
-      value: uptime ? "Active" : "Inactive",
-      color: uptime ? "text-blue-600 dark:text-blue-400" : "text-red-600 dark:text-red-400",
+      value: uptimeSeconds ? "Active" : "Inactive",
+      color: uptimeSeconds
+        ? "text-blue-600 dark:text-blue-400"
+        : "text-red-600 dark:text-red-400",
     },
     {
       icon: Clock,
       label: "Uptime",
-      value: uptime,
+      value: secondsToHHMMSS(uptimeSeconds),
       color: "text-purple-600 dark:text-purple-400",
     },
     {
@@ -70,8 +94,15 @@ function AdminHomePage() {
   ];
 
   const navigationCards = [
+    // {
+    //   title: "Admin Guide & Updates",
+    //   route: "/admin-guide",
+    //   icon: Repeat2,
+    //   description: "View admin guide and recent updates",
+    //   gradient: "from-indigo-500 to-red-700",
+    // },
     {
-      title: "All Users",
+      title: "View All users",
       route: "/allusers",
       icon: Users,
       description: "Manage all system users",
@@ -157,7 +188,7 @@ function AdminHomePage() {
       description: "View intern rankings and performance",
       gradient: "from-cyan-500 to-cyan-700",
     },
-     {
+    {
       title: "Settings",
       route: "/settings",
       icon: Settings,
@@ -179,6 +210,10 @@ function AdminHomePage() {
             <p className="text-gray-600 dark:text-gray-300 text-lg">
               Manage your system efficiently with our comprehensive dashboard
             </p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              Access Level:{" "}
+              {permissions.length > 3 ? "Super Admin" : "Limited Admin"}
+            </p>
           </div>
 
           {/* Stats Cards */}
@@ -188,10 +223,24 @@ function AdminHomePage() {
               return (
                 <div
                   key={index}
-                  className="bg-white dark:bg-gray-900 rounded-nonexl shadow-md dark:shadow-none p-6 border border-gray-200 dark:border-gray-700 hover:shadow-lg dark:hover:shadow-lg transition-shadow duration-300"
+                  className="bg-white dark:bg-gray-900 rounded-xl shadow-md dark:shadow-none p-6 border border-gray-200 dark:border-gray-700 hover:shadow-lg dark:hover:shadow-lg transition-shadow duration-300"
                 >
                   <div className="flex items-center justify-between">
                     <div>
+                      <div className="flex">
+                        <span className="inline-flex mb-1 items-center px-2 py-0.5 text-xs rounded-full bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
+                          Live
+                        </span>
+                        {stat.label === "Uptime" && (
+                          <div
+                            className={`w-2 h-2 rounded-full mt-1 ${
+                              uptimeSeconds
+                                ? "bg-green-500 animate-pulse"
+                                : "bg-red-500"
+                            }`}
+                          ></div>
+                        )}
+                      </div>
                       <p className="text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">
                         {stat.label}
                       </p>
@@ -199,7 +248,7 @@ function AdminHomePage() {
                         {stat.value}
                       </p>
                     </div>
-                    <div className="p-3 rounded-nonefull bg-gray-100 dark:bg-gray-800">
+                    <div className="p-3 rounded-full bg-gray-100 dark:bg-gray-800">
                       <IconComponent className={`w-6 h-6 ${stat.color}`} />
                     </div>
                   </div>
@@ -218,7 +267,7 @@ function AdminHomePage() {
               return (
                 <div
                   key={index}
-                  className="group relative"
+                  className="group relative hover:font-bold"
                   // style={{ pointerEvents: allowed ? "auto" : "none" }}
                 >
                   <Link
@@ -228,7 +277,7 @@ function AdminHomePage() {
                     <div
                       className={`bg-gradient-to-br ${
                         card.gradient
-                      } rounded-none shadow-lg p-6 text-white hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 ${
+                      } rounded-lg shadow-lg p-6 text-white hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 ${
                         !allowed ? "opacity-80 cursor-not-allowed" : ""
                       }`}
                     >
@@ -240,20 +289,30 @@ function AdminHomePage() {
                         {card.title}
                       </h3>
                       <p className="text-sm opacity-90">{card.description}</p>
+                      <div className="mt-4 text-sm font-medium opacity-0 group-hover:opacity-100 transition">
+                        Open →
+                      </div>
                     </div>
                   </Link>
+                  {!allowed && (
+                    <div className="absolute inset-0 bg-black/40 rounded-lg flex items-center justify-center text-white text-sm font-medium pointer-events-none">
+                      <span className="bg-black/60 px-3 py-1 rounded-full">
+                        No Access
+                      </span>
+                    </div>
+                  )}
                 </div>
               );
             })}
           </div>
 
           {/* Quick Actions Section */}
-          <div className="mt-12 bg-white dark:bg-gray-900 rounded-nonexl shadow-md dark:shadow-none p-8 border border-gray-200 dark:border-gray-700">
+          <div className="mt-12 bg-white dark:bg-gray-900 rounded-xl shadow-md dark:shadow-none p-8 border border-gray-200 dark:border-gray-700">
             <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6">
               Quick Actions
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="text-center p-6 rounded-nonelg bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900 dark:to-blue-950 border border-blue-200 dark:border-blue-700">
+              <div className="text-center p-6 rounded-lg bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900 dark:to-blue-950 border border-blue-200 dark:border-blue-700">
                 <Users className="w-12 h-12 text-blue-600 dark:text-blue-400 mx-auto mb-3" />
                 <h3 className="font-semibold text-gray-800 dark:text-gray-100 mb-2">
                   User Management
@@ -262,7 +321,7 @@ function AdminHomePage() {
                   Efficiently manage all system users and their permissions
                 </p>
               </div>
-              <div className="text-center p-6 rounded-nonelg bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900 dark:to-green-950 border border-green-200 dark:border-green-700">
+              <div className="text-center p-6 rounded-lg bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900 dark:to-green-950 border border-green-200 dark:border-green-700">
                 <Activity className="w-12 h-12 text-green-600 dark:text-green-400 mx-auto mb-3" />
                 <h3 className="font-semibold text-gray-800 dark:text-gray-100 mb-2">
                   System Monitoring
@@ -271,7 +330,7 @@ function AdminHomePage() {
                   Monitor system performance and user activities
                 </p>
               </div>
-              <div className="text-center p-6 rounded-nonelg bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900 dark:to-purple-950 border border-purple-200 dark:border-purple-700">
+              <div className="text-center p-6 rounded-lg bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900 dark:to-purple-950 border border-purple-200 dark:border-purple-700">
                 <Bell className="w-12 h-12 text-purple-600 dark:text-purple-400 mx-auto mb-3" />
                 <h3 className="font-semibold text-gray-800 dark:text-gray-100 mb-2">
                   Communications

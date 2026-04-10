@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAppContext } from "@/context/AppContext";
-import toast from "react-hot-toast";
+import toast from "@/utils/toast";
 
 const SettingsPage = () => {
   useTitle("Settings");
@@ -49,6 +49,11 @@ const SettingsPage = () => {
     navigate(path);
   };
 
+  const handleDisplayToggleDarkMode = () => {
+    let current = localStorage.getItem("theme");
+    setCurrentMode(current);
+  };
+
   const toggleDarkMode = () => {
     document.documentElement.classList.toggle("dark");
     // Optionally, save the user's preference in localStorage
@@ -59,7 +64,7 @@ const SettingsPage = () => {
       localStorage.setItem("theme", "light");
       toast("Light Mode ☀️");
     }
-    window.location.reload();
+    handleDisplayToggleDarkMode();
   };
 
   useEffect(() => {
@@ -87,7 +92,7 @@ const SettingsPage = () => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
-                  <div className="p-3 rounded-nonelg bg-blue-50 text-blue-600 dark:bg-slate-800 dark:text-blue-400">
+                  <div className="p-3 rounded-lg bg-blue-50 text-blue-600 dark:bg-slate-800 dark:text-blue-400">
                     <Bell size={24} />
                   </div>
                   <div className="ml-4">
@@ -122,7 +127,7 @@ const SettingsPage = () => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
-                  <div className="p-3 rounded-nonelg bg-blue-50 text-blue-600 dark:bg-slate-800 dark:text-blue-400">
+                  <div className="p-3 rounded-lg bg-blue-50 text-blue-600 dark:bg-slate-800 dark:text-blue-400">
                     {currentMode === "dark" ? (
                       <Sun size={24} />
                     ) : (
@@ -159,7 +164,7 @@ const SettingsPage = () => {
             >
               <CardContent className="p-6">
                 <div className="flex items-center mb-4">
-                  <div className="p-3 rounded-nonelg bg-blue-50 text-blue-600 dark:bg-slate-800 dark:text-blue-400">
+                  <div className="p-3 rounded-lg bg-blue-50 text-blue-600 dark:bg-slate-800 dark:text-blue-400">
                     {item.icon}
                   </div>
                   <div className="ml-4 flex-1">

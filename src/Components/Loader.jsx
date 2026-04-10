@@ -53,7 +53,7 @@ const Loader = ({
                 ? "w-4 h-4"
                 : "w-3 h-3"
             }
-            rounded-nonefull
+            rounded-full
             bg-current
             animate-pulse
           `}
@@ -64,7 +64,7 @@ const Loader = ({
 
   // Progress bar component
   const ProgressBar = () => (
-    <div className="w-full max-w-md h-2 bg-gray-200 rounded-nonefull overflow-hidden">
+    <div className="w-full max-w-md h-2 bg-gray-200 rounded-full overflow-hidden">
       <div className={`h-full ${colorMap[color]} animate-loading-bar`} />
     </div>
   );

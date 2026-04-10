@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "start": "vite",
+    "start": "serve -s dist -l 5173",
     "build": "vite build",
     "dev": "npm run start",
     "lint": "eslint .",
@@ -56,6 +56,7 @@
     "react-modal": "^3.16.3",
     "react-router-dom": "^7.1.1",
     "react-toastify": "^11.0.2",
+    "serve": "^14.2.6",
     "socket.io-client": "^4.8.1",
     "sweetalert2": "^11.15.3",
     "tailwind-merge": "^2.5.5",

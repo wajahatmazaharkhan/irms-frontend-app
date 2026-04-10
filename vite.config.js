@@ -9,7 +9,7 @@ export default defineConfig(({ mode }) => {
     plugins: [react()],
     server: {
       host: true, // Expose to all networks
-      port: parseInt(env.PORT) || 3000, // Use Railway's PORT or default to 3000
+      port: parseInt(env.PORT) || 5173, // Use Railway's PORT or default to 3000
       allowedHosts: [
         "www.iisppr.com",
         "iisppr.com",

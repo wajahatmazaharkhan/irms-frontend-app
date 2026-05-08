@@ -16,6 +16,7 @@ import iispprLogo from "../assets/Images/iisprlogo.png";
 
 import countryCodes from "@/Components/CountryCodes";
 import { useAuthContext } from "@/context/AuthContext";
+import { signupUser } from "@/api/auth.service";
 
 const SignUp = ({ onSwitchToSignin }) => {
   useTitle("Register");
@@ -48,7 +49,7 @@ const SignUp = ({ onSwitchToSignin }) => {
     const fetchBatches = async () => {
       try {
         const res = await axios.get(
-          `${import.meta.env.VITE_BASE_URL}/api/batch/get-summary`
+          `${import.meta.env.VITE_BASE_URL}/api/batch/get-summary`,
         );
         setBatches(res.data);
       } catch (err) {
@@ -58,28 +59,32 @@ const SignUp = ({ onSwitchToSignin }) => {
     fetchBatches();
   }, []);
 
-  const sendSignupOtp = async () => {
-    setIsLoading(true);
-    try {
-      await axios.post(`${import.meta.env.VITE_BASE_URL}/user/signuprequest`, {
-        name: fullName,
-        email,
-        password,
-        rpassword: confirmPassword,
-        mnumber: `${countryCode}${phone}`,
-        department,
-        startDate: new Date().toISOString().split("T")[0],
-        EndDate: endDate,
-        batchId: selectedBatch.length > 0 ? selectedBatch : null,
-      });
-      toast.success("OTP sent to your email");
-      setStep(2);
-    } catch (err) {
-      toast.error(err?.response?.data?.message || "Failed to send OTP");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  //===============================================================//
+  //========== REMOVE TWO STEP VERIFICATION TEMPORARILY ===========//
+  //===============================================================//
+
+  // const sendSignupOtp = async () => {
+  //   setIsLoading(true);
+  //   try {
+  //     await axios.post(`${import.meta.env.VITE_BASE_URL}/user/signuprequest`, {
+  //       name: fullName,
+  //       email,
+  //       password,
+  //       rpassword: confirmPassword,
+  //       mnumber: `${countryCode}${phone}`,
+  //       department,
+  //       startDate: new Date().toISOString().split("T")[0],
+  //       EndDate: endDate,
+  //       batchId: selectedBatch.length > 0 ? selectedBatch : null,
+  //     });
+  //     toast.success("OTP sent to your email");
+  //     setStep(2);
+  //   } catch (err) {
+  //     toast.error(err?.response?.data?.message || "Failed to send OTP");
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
   const useKeyboardSelect = (selectRef) => {
     useEffect(() => {
@@ -114,23 +119,52 @@ const SignUp = ({ onSwitchToSignin }) => {
   };
   useKeyboardSelect(countrySelectRef);
 
-  const verifySignupOtp = async () => {
-    setIsLoading(true);
+  //===============================================================//
+  //========== REMOVE TWO STEP VERIFICATION TEMPORARILY ===========//
+  //===============================================================//
+
+  // const verifySignupOtp = async () => {
+  //   setIsLoading(true);
+  //   try {
+  //     await axios.post(`${import.meta.env.VITE_BASE_URL}/user/signupvalidate`, {
+  //       email,
+  //       otp,
+  //     });
+  //     toast.success("Signup successful!");
+  //     navigate("/login");
+  //   } catch (err) {
+  //     toast.error(err?.response?.data?.message || "OTP verification failed");
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
+  const registerUser = async () => {
+    console.log('country code',countryCode)
     try {
-      await axios.post(`${import.meta.env.VITE_BASE_URL}/user/signupvalidate`, {
+      const res = await signupUser({
+        name: fullName,
         email,
-        otp,
+        password,
+        rpassword: confirmPassword,
+        mnumber: `${countryCode}${phone}`,
+        startDate: new Date().toISOString().split("T")[0],
+        EndDate: endDate,
+        department,
       });
-      toast.success("Signup successful!");
+
+      console.log("Response", res);
+      if (res.status === 201) {
+        toast.success("Account created!");
+      }
       navigate("/login");
-    } catch (err) {
-      toast.error(err?.response?.data?.message || "OTP verification failed");
-    } finally {
-      setIsLoading(false);
+    } catch (error) {
+      toast.error('Something went wrong!');
+      console.error("API Error", error);
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (step === 1) {
       if (
@@ -148,11 +182,14 @@ const SignUp = ({ onSwitchToSignin }) => {
       if (password !== confirmPassword)
         return toast.error("Passwords don't match");
       if (phone.length < 6) return toast.error("Enter a valid phone number");
-      sendSignupOtp();
-    } else {
-      if (!otp) return toast.error("Please enter OTP");
-      verifySignupOtp();
     }
+    await registerUser();
+    // == REMOVE OTP VERIFICATION TEMPORARILY == //
+    //   sendSignupOtp();
+    // } else {
+    //   if (!otp) return toast.error("Please enter OTP");
+    //   verifySignupOtp();
+    // }
   };
 
   return (
@@ -229,8 +266,8 @@ const SignUp = ({ onSwitchToSignin }) => {
                       >
                         {countryCodes
                           .sort((a, b) => a.name.localeCompare(b.name))
-                          .map((c) => (
-                            <option key={c.code} value={c.code}>
+                          .map((c, index) => (
+                            <option key={index} value={c.code}>
                               {c.name} ({c.code})
                             </option>
                           ))}
@@ -295,8 +332,8 @@ const SignUp = ({ onSwitchToSignin }) => {
                         className="w-full pl-10 p-3 border rounded-lg focus:ring-blue-300 dark:bg-slate-950 dark:border-slate-700 dark:text-gray-100 dark:focus:ring-blue-500"
                       >
                         <option value="">Select Batch</option>
-                        {batches.map((batch) => (
-                          <option key={batch._id} value={batch._id}>
+                        {batches.map((batch, index) => (
+                          <option key={index} value={batch._id}>
                             {batch.name} (
                             {new Date(batch.startDate).toLocaleDateString()} -{" "}
                             {new Date(batch.endDate).toLocaleDateString()})
@@ -381,14 +418,22 @@ const SignUp = ({ onSwitchToSignin }) => {
               disabled={isLoading}
               className="w-full p-3 font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 dark:bg-blue-600 dark:hover:bg-blue-500"
             >
+              Create Account
+            </button>
+
+            {/* <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full p-3 font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 dark:bg-blue-600 dark:hover:bg-blue-500"
+            >
               {isLoading
                 ? step === 1
                   ? "Sending OTP..."
                   : "Verifying..."
                 : step === 1
-                ? "Send OTP"
-                : "Verify OTP"}
-            </button>
+                  ? "Send OTP"
+                  : "Verify OTP"}
+            </button> */}
           </form>
 
           <div className="mt-4 text-center">

@@ -62,11 +62,11 @@ export const getMatchingBatchedByUserId = async ({ userId }) => {
 
     // Filter data where HR is assigned
     const userBatches = batchIds.data.filter((item) =>
-      item.hr.some((hrMember) => hrMember._id === userId)
+      item.hr.some((hrMember) => String(hrMember._id) === String(userId)),
     );
 
     // Extract batch IDs - returns empty array if no matches
-    return userBatches.map((item) => item._id);
+    return userBatches.map((item) => String(item._id));
   } catch (error) {
     console.error(`Error filtering data: ${error}`);
     return []; // Return empty array instead of undefined

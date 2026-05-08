@@ -348,7 +348,6 @@ const SignUp = ({ onSwitchToSignin }) => {
                     End Date
                   </label>
                   <div className="relative">
-                    <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-300" />
                     <input
                       value={endDate}
                       onChange={(e) => setEndDate(e.target.value)}

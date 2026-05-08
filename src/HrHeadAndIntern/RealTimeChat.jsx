@@ -116,8 +116,8 @@ export default function RealtimeChat({ ReceiverId }) {
               m.sender === msg.sender &&
               Math.abs(
                 new Date(m.createdAt || m.timestamp || 0).getTime() -
-                  new Date(msg.createdAt || msg.timestamp || 0).getTime()
-              ) < 1000)
+                  new Date(msg.createdAt || msg.timestamp || 0).getTime(),
+              ) < 1000),
         );
 
         if (exists) {
@@ -149,7 +149,6 @@ export default function RealtimeChat({ ReceiverId }) {
     socket.on("typing", ({ senderId: typerId }) => {
       if (typerId === receiverId) {
         setIsReceiverTyping(true);
-        scrollToBottom();
       }
     });
 
@@ -163,9 +162,9 @@ export default function RealtimeChat({ ReceiverId }) {
       setMessages((prev) =>
         sortMessagesAsc(
           prev.map((msg) =>
-            msg._id === messageId ? { ...msg, delivered: true } : msg
-          )
-        )
+            msg._id === messageId ? { ...msg, delivered: true } : msg,
+          ),
+        ),
       );
     });
 
@@ -173,9 +172,9 @@ export default function RealtimeChat({ ReceiverId }) {
       setMessages((prev) =>
         sortMessagesAsc(
           prev.map((msg) =>
-            msg._id === messageId ? { ...msg, seen: true } : msg
-          )
-        )
+            msg._id === messageId ? { ...msg, seen: true } : msg,
+          ),
+        ),
       );
     });
 
@@ -191,7 +190,7 @@ export default function RealtimeChat({ ReceiverId }) {
       const res = await axios.get(
         `${
           import.meta.env.VITE_BASE_URL
-        }/chat/history/${senderId}/${receiverId}`
+        }/chat/history/${senderId}/${receiverId}`,
       );
 
       // If backend returns data, even empty array, set it normally
@@ -256,7 +255,7 @@ export default function RealtimeChat({ ReceiverId }) {
           receiver: receiverId,
           content: messageContent,
           tempId, // include so server can echo if supported
-        }
+        },
       );
 
       const serverMsg = res.data.data;
@@ -270,8 +269,8 @@ export default function RealtimeChat({ ReceiverId }) {
               return { ...serverMsg };
             }
             return m;
-          })
-        )
+          }),
+        ),
       );
 
       // Emit via socket (server message object)
@@ -361,16 +360,29 @@ export default function RealtimeChat({ ReceiverId }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [senderId, receiverId, initializeSocket]);
 
+  const chatContainerRef = useRef(null);
+
+  const isNearBottom = () => {
+    const container = chatContainerRef.current;
+    if (!container) return false;
+    return (
+      container.scrollHeight - container.scrollTop - container.clientHeight <
+      120
+    );
+  };
+
   // Auto-scroll when messages length changes
   useEffect(() => {
-    scrollToBottom();
+    if (isNearBottom()) {
+      scrollToBottom();
+    }
   }, [messages.length, scrollToBottom]);
 
   useEffect(() => {
     const fetchReceiverData = async () => {
       try {
         const response = await axios.get(
-          `${import.meta.env.VITE_BASE_URL}/api/auth/user/${receiverId}`
+          `${import.meta.env.VITE_BASE_URL}/api/auth/user/${receiverId}`,
         );
         setReciver(response.data);
       } catch (err) {
@@ -490,7 +502,10 @@ export default function RealtimeChat({ ReceiverId }) {
       {/* Main area: messages (scrollable) + input (fixed) */}
       <div className="flex-1 min-h-0 flex flex-col">
         {/* Chat Body (only this scrolls) */}
-        <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4">
+        <div
+          ref={chatContainerRef}
+          className="flex-1 overflow-y-auto px-4 sm:px-6 py-4"
+        >
           {isLoading ? (
             <div className="flex items-center justify-center h-full">
               <div className="text-center">

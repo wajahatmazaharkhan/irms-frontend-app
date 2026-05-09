@@ -6,6 +6,10 @@ import { AppProvider } from "./context/AppContext";
 import { AuthProvider } from "./context/AuthContext";
 import { Toaster } from "react-hot-toast";
 
+const savedTheme = localStorage.getItem("theme");
+if (savedTheme === "dark") {
+  document.documentElement.classList.add("dark");
+}
 
 createRoot(document.getElementById("root")).render(
   <>
@@ -17,5 +21,5 @@ createRoot(document.getElementById("root")).render(
         </BrowserRouter>
       </AppProvider>
     </AuthProvider>
-  </>
+  </>,
 );

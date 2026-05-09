@@ -14,14 +14,18 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAppContext } from "@/context/AppContext";
-import toast from "@/utils/toast";
+import toast from "react-hot-toast";
 
 const SettingsPage = () => {
   useTitle("Settings");
   const navigate = useNavigate();
   const { setDashboard } = useAppContext();
   const [notifications] = useState(true);
-  const [currentMode, setCurrentMode] = useState("");
+  const [currentMode, setCurrentMode] = useState(
+    () =>
+      localStorage.getItem("theme") ||
+      (document.documentElement.classList.contains("dark") ? "dark" : "light"),
+  );
 
   const menuItems = [
     {
@@ -49,28 +53,19 @@ const SettingsPage = () => {
     navigate(path);
   };
 
-  const handleDisplayToggleDarkMode = () => {
-    let current = localStorage.getItem("theme");
-    setCurrentMode(current);
-  };
-
-  const toggleDarkMode = () => {
-    document.documentElement.classList.toggle("dark");
-    // Optionally, save the user's preference in localStorage
-    if (document.documentElement.classList.contains("dark")) {
+  const toggleDarkMode = (checked) => {
+    if (checked) {
+      document.documentElement.classList.add("dark");
       localStorage.setItem("theme", "dark");
+      setCurrentMode("dark");
       toast("Dark Mode 🌙");
     } else {
+      document.documentElement.classList.remove("dark");
       localStorage.setItem("theme", "light");
+      setCurrentMode("light");
       toast("Light Mode ☀️");
     }
-    handleDisplayToggleDarkMode();
   };
-
-  useEffect(() => {
-    let current = localStorage.getItem("theme");
-    setCurrentMode(current);
-  }, []);
 
   return (
     <>
@@ -145,12 +140,11 @@ const SettingsPage = () => {
                     </p>
                   </div>
                 </div>
-                <div onClick={toggleDarkMode}>
-                  <Switch
-                    checked={currentMode === "dark"}
-                    className="data-[state=checked]:bg-blue-600"
-                  />
-                </div>
+                <Switch
+                  checked={currentMode === "dark"}
+                  onCheckedChange={toggleDarkMode}
+                  className="data-[state=checked]:!bg-blue-600 data-[state=unchecked]:!bg-gray-300"
+                />
               </div>
             </CardContent>
           </Card>

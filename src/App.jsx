@@ -16,6 +16,7 @@ import { NotFound } from "./Components/Notfound";
 
 import "./App.css";
 import "react-calendar/dist/Calendar.css";
+import VersionBadge from "./Components/VersionBadge";
 
 const App = () => {
   // Theme handling
@@ -30,6 +31,7 @@ const App = () => {
 
   return (
     <HrProvider>
+    <VersionBadge />
       <Routes>
         {/* ================= PUBLIC ROUTES ================= */}
         {publicRoutes.map(({ path, element }) => (

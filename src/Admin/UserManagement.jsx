@@ -68,7 +68,7 @@ const UserManagement = () => {
   // Separate users into verified and unverified
   const verifiedUsers = users.filter((user) => user.isVerified === true);
   const unverifiedUsers = users.filter(
-    (user) => user.isVerified === false || user.isVerified === undefined
+    (user) => user.isVerified === false || user.isVerified === undefined,
   );
 
   const availablePermissions = {
@@ -246,8 +246,8 @@ const UserManagement = () => {
               .map(
                 (permId) =>
                   availablePermissions[selectedUser.role].find(
-                    (p) => p.id === permId
-                  )?.id
+                    (p) => p.id === permId,
+                  )?.id,
               )
               .filter(Boolean);
 
@@ -266,25 +266,25 @@ const UserManagement = () => {
           "isAdmin",
           selectedUser.role === "admin" || selectedUser.role === "hrHead"
             ? "true"
-            : "false"
+            : "false",
         );
       }
 
       Object.keys(payload).forEach(
-        (key) => payload[key] == null && delete payload[key]
+        (key) => payload[key] == null && delete payload[key],
       );
 
       await axios.put(
         `${import.meta.env.VITE_BASE_URL}/update/${selectedUser._id}`,
-        payload
+        payload,
       );
 
       setUsers(
         users.map((user) =>
           user._id === selectedUser._id
             ? { ...selectedUser, permissions }
-            : user
-        )
+            : user,
+        ),
       );
 
       setShowEditModal(false);
@@ -334,7 +334,7 @@ const UserManagement = () => {
         localStorage.setItem("permissions", JSON.stringify(newPermissions));
         localStorage.setItem(
           "isAdmin",
-          newRole === "admin" || newRole === "hrHead" ? "true" : "false"
+          newRole === "admin" || newRole === "hrHead" ? "true" : "false",
         );
       }
 
@@ -486,7 +486,7 @@ const UserManagement = () => {
                       <div className="space-y-2 justify-center place-content-center grid">
                         <div
                           className={`inline-flex items-center space-x-2 px-3 py-1 rounded-nonefull text-xs font-medium ${getRoleColor(
-                            user.role
+                            user.role,
                           )}`}
                         >
                           <RoleIcon className="w-4 h-4" />
@@ -500,35 +500,38 @@ const UserManagement = () => {
                               Promote ▾
                             </button>
 
-                            <div className="absolute z-20 hidden group-hover:block bg-white shadow-xl border rounded-lg mt-1 w-40">
-                              <button
-                                onClick={() => promoteUser(user._id, "hr")}
-                                className="w-full text-left px-4 py-2 text-xs hover:bg-blue-50"
-                              >
-                                Promote to HR
-                              </button>
+                            {/* Add pt-1 so hover area bridges the gap */}
+                            <div className="absolute z-20 hidden group-hover:block pt-1 w-40">
+                              <div className="bg-white shadow-xl border rounded-lg">
+                                <button
+                                  onClick={() => promoteUser(user._id, "hr")}
+                                  className="w-full text-left px-4 py-2 text-xs hover:bg-blue-50"
+                                >
+                                  Promote to HR
+                                </button>
 
-                              {isAdmin && (
-                                <>
-                                  <button
-                                    onClick={() =>
-                                      promoteUser(user._id, "hrHead")
-                                    }
-                                    className="w-full text-left px-4 py-2 text-xs hover:bg-indigo-50"
-                                  >
-                                    Promote to HR Head
-                                  </button>
+                                {isAdmin && (
+                                  <>
+                                    <button
+                                      onClick={() =>
+                                        promoteUser(user._id, "hrHead")
+                                      }
+                                      className="w-full text-left px-4 py-2 text-xs hover:bg-indigo-50"
+                                    >
+                                      Promote to HR Head
+                                    </button>
 
-                                  <button
-                                    onClick={() =>
-                                      promoteUser(user._id, "admin")
-                                    }
-                                    className="w-full text-left px-4 py-2 text-xs hover:bg-purple-50 text-purple-700"
-                                  >
-                                    Promote to Admin
-                                  </button>
-                                </>
-                              )}
+                                    <button
+                                      onClick={() =>
+                                        promoteUser(user._id, "admin")
+                                      }
+                                      className="w-full text-left px-4 py-2 text-xs hover:bg-purple-50 text-purple-700"
+                                    >
+                                      Promote to Admin
+                                    </button>
+                                  </>
+                                )}
+                              </div>
                             </div>
                           </div>
                         )}
@@ -540,7 +543,7 @@ const UserManagement = () => {
                       <div className="space-y-2">
                         <div
                           className={`inline-flex items-center space-x-2 px-3 py-1 rounded-nonefull text-xs font-medium ${getRoleColor(
-                            user.role
+                            user.role,
                           )}`}
                         >
                           <RoleIcon className="w-4 h-4" />
@@ -563,7 +566,7 @@ const UserManagement = () => {
                         return (
                           <div
                             className={`inline-flex items-center space-x-2 px-3 py-1 rounded-nonefull text-xs font-medium ${getStatusColor(
-                              status
+                              status,
                             )}`}
                           >
                             {isActive ? (
@@ -679,7 +682,7 @@ const UserManagement = () => {
             <button
               onClick={() =>
                 setCurrentPage((p) =>
-                  p < Math.ceil(totalCount / rowsPerPage) ? p + 1 : p
+                  p < Math.ceil(totalCount / rowsPerPage) ? p + 1 : p,
                 )
               }
               disabled={currentPage >= Math.ceil(totalCount / rowsPerPage)}
@@ -1021,7 +1024,7 @@ const UserManagement = () => {
                               type="checkbox"
                               id={`edit-${permission.id}`}
                               checked={selectedUser?.permissions.includes(
-                                permission.id
+                                permission.id,
                               )}
                               onChange={(e) => {
                                 if (e.target.checked) {
@@ -1037,7 +1040,7 @@ const UserManagement = () => {
                                     ...selectedUser,
                                     permissions:
                                       selectedUser.permissions.filter(
-                                        (p) => p !== permission.id
+                                        (p) => p !== permission.id,
                                       ),
                                   });
                                 }
@@ -1056,7 +1059,7 @@ const UserManagement = () => {
                               </p>
                             </div>
                           </div>
-                        )
+                        ),
                       )}
                     </div>
                   </div>
@@ -1067,7 +1070,7 @@ const UserManagement = () => {
                     setSelectedUser({
                       ...selectedUser,
                       permissions: availablePermissions[selectedUser.role].map(
-                        (p) => p.id
+                        (p) => p.id,
                       ),
                     })
                   }

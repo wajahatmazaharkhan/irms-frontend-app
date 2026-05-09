@@ -168,7 +168,7 @@ const deleteAttendance = async (userId) => {
       delete updated[userId];
       return updated;
     });
-    toast.success("Attendance deleted");
+    // toast.success("Attendance deleted");
   } catch (error) {
     toast.error("Error deleting attendance");
     console.error(error);

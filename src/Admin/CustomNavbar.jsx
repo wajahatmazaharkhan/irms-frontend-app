@@ -99,7 +99,7 @@ export default function CustomNavbar() {
     },
     { name: "Weekly Report", path: "/Weeklyreport", icon: FileText },
     { name: "Task Assignment", path: "/Taskassignment", icon: CheckSquare },
-    themeToggleItem,
+    // themeToggleItem,
   ];
 
   const hrNav = [
@@ -107,7 +107,7 @@ export default function CustomNavbar() {
     { name: "Project Management", path: "/hrprojects", icon: FolderOpen },
     { name: "Weekly Report", path: "/hrreports", icon: FileText },
     { name: "Task Assignment", path: "/hrtaskassignment", icon: CheckSquare },
-    themeToggleItem,
+    // themeToggleItem,
   ];
 
   if (isLoading) return null;

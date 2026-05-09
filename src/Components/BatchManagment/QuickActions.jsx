@@ -1,6 +1,16 @@
-import { Plus, Calendar as CalendarIcon, Download, Settings, Users } from "lucide-react";
+import {
+  Plus,
+  Calendar as CalendarIcon,
+  Download,
+  Settings,
+  Users,
+} from "lucide-react";
 
-export function QuickActions({ setShowCreateForm, onViewRequests }) {
+export function QuickActions({
+  setShowCreateForm,
+  onViewRequests,
+  onExportReports,
+}) {
   const actions = [
     {
       title: "Create New Batch",
@@ -32,7 +42,7 @@ export function QuickActions({ setShowCreateForm, onViewRequests }) {
       icon: Download,
       color: "from-orange-500 to-orange-700",
       action: "export",
-      onClick: () => console.log("Export reports clicked"),
+      onClick: onExportReports,
     },
   ];
 

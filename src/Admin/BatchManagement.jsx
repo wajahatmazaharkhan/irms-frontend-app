@@ -1,4 +1,4 @@
-import CustomNavbar from "./CustomNavbar"; 
+import CustomNavbar from "./CustomNavbar";
 import useTitle from "@/Components/useTitle";
 import { useState, useEffect } from "react";
 import axios from "axios";
@@ -15,6 +15,8 @@ import {
 
 import { Loader, AlertCircle } from "lucide-react";
 import { formatDate, formatMonth, getStatusFromDates } from "@/lib/batchUtils";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 function BatchManagement() {
   useTitle("Batch Management");
@@ -99,8 +101,9 @@ function BatchManagement() {
             endDate: safeDate(batch.endDate),
             totalInterns: batch.totalInterns,
             activeInterns: batch.totalInterns,
-            completedInterns: `${batchProgress?.completedTasks ?? 0}/${batchProgress?.allTasks ?? 0
-              }`,
+            completedInterns: `${batchProgress?.completedTasks ?? 0}/${
+              batchProgress?.allTasks ?? 0
+            }`,
             totalHR: batch.totalHR,
             status: getStatusFromDates(batch.startDate, batch.endDate),
             coordinator: "TBD",
@@ -122,6 +125,74 @@ function BatchManagement() {
     fetchBatchData();
   }, []);
 
+  const handleExportReports = () => {
+    if (batchData.length === 0) {
+      alert("No batch data to export.");
+      return;
+    }
+
+    const doc = new jsPDF();
+
+    // Title
+    doc.setFontSize(18);
+    doc.setTextColor(40, 40, 40);
+    doc.text("Batch Management Report", 14, 20);
+
+    // Subtitle with date
+    doc.setFontSize(10);
+    doc.setTextColor(120, 120, 120);
+    doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 28);
+
+    // Table
+    autoTable(doc, {
+      startY: 35,
+      head: [
+        [
+          "Batch Name",
+          "Month",
+          "Start Date",
+          "End Date",
+          "Interns",
+          "HR",
+          "Status",
+          "Progress",
+        ],
+      ],
+      body: batchData.map((batch) => [
+        batch.batchName,
+        batch.month,
+        batch.startDate,
+        batch.endDate,
+        batch.totalInterns,
+        batch.totalHR,
+        batch.status,
+        `${batch.progress}%`,
+      ]),
+      headStyles: {
+        fillColor: [37, 99, 235], // blue-600
+        textColor: 255,
+        fontStyle: "bold",
+        fontSize: 9,
+      },
+      bodyStyles: {
+        fontSize: 8,
+        textColor: [40, 40, 40],
+      },
+      alternateRowStyles: {
+        fillColor: [239, 246, 255], // light blue tint
+      },
+      styles: {
+        cellPadding: 4,
+        overflow: "linebreak",
+      },
+      columnStyles: {
+        7: { halign: "center" }, // Progress column centered
+      },
+    });
+
+    doc.save(`batch-report-${new Date().toISOString().split("T")[0]}.pdf`);
+  };
+
   // Fetch available interns and HR when form opens
   useEffect(() => {
     if (showCreateForm) {
@@ -140,22 +211,27 @@ function BatchManagement() {
 
       const [allUsersResponse, availUsersResponse] = await Promise.all([
         axios.get(`${baseUrl}/allusers`),
-        axios.get(`${baseUrl}/available-interns`)
+        axios.get(`${baseUrl}/available-interns`),
       ]);
 
-      const allUsers = allUsersResponse.data?.data ?? allUsersResponse.data ?? [];
-      console.log("🚀 ~ fetchAvailableUsers ~ allUsers:", allUsers)
-      const availableInternsFromAPI = availUsersResponse.data?.data ?? availUsersResponse.data ?? []
-      console.log("🚀 ~ fetchAvailableUsers ~ availableInternsFromAPI:", availableInternsFromAPI)
+      const allUsers =
+        allUsersResponse.data?.data ?? allUsersResponse.data ?? [];
+      console.log("🚀 ~ fetchAvailableUsers ~ allUsers:", allUsers);
+      const availableInternsFromAPI =
+        availUsersResponse.data?.data ?? availUsersResponse.data ?? [];
+      console.log(
+        "🚀 ~ fetchAvailableUsers ~ availableInternsFromAPI:",
+        availableInternsFromAPI,
+      );
 
       // Process current batch interns if provided
       let currentBatchInterns = [];
       if (batchInterns) {
-        currentBatchInterns = batchInterns.map(intern => ({
+        currentBatchInterns = batchInterns.map((intern) => ({
           id: intern._id || intern.id,
           name: intern.name,
           email: intern.email,
-          role: intern.role || 'intern'
+          role: intern.role || "intern",
         }));
       }
 
@@ -163,13 +239,14 @@ function BatchManagement() {
       const finalAvailableInterns = [
         ...currentBatchInterns,
         ...availableInternsFromAPI.filter(
-          availIntern => !currentBatchInterns.some(bi => bi.id === availIntern.id)
-        )
+          (availIntern) =>
+            !currentBatchInterns.some((bi) => bi.id === availIntern.id),
+        ),
       ];
 
       const availableHR = allUsers
-        .filter(user => user.role === "hr")
-        .map(user => {
+        .filter((user) => user.role === "hr")
+        .map((user) => {
           const firstName = user.firstName || "";
           const lastName = user.lastName || "";
           const fullName = `${firstName} ${lastName}`.trim();
@@ -178,7 +255,7 @@ function BatchManagement() {
             id: user._id,
             name: user.name || fullName || user.email || "Unknown HR",
             email: user.email || "",
-            role: user.role
+            role: user.role,
           };
         });
 
@@ -200,7 +277,9 @@ function BatchManagement() {
       setIsModalOpen(true);
       setModalType(type);
 
-      const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/batches/${batchId}`);
+      const response = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/batches/${batchId}`,
+      );
       const batchData = response.data;
 
       if (type === "deep" && batchData.tasks?.length > 0) {
@@ -210,17 +289,17 @@ function BatchManagement() {
               if (!task.taskId) return task;
               const taskResponse = await axios.get(
                 `${import.meta.env.VITE_BASE_URL}/task/get-task/${task.taskId}`,
-                { timeout: 3000 }
+                { timeout: 3000 },
               );
               return {
                 ...task,
-                details: taskResponse.data?.taskDetails || null
+                details: taskResponse.data?.taskDetails || null,
               };
             } catch (error) {
               console.error(`Error fetching task ${task.taskId}:`, error);
               return task;
             }
-          })
+          }),
         );
         batchData.tasks = tasksWithDetails;
       }
@@ -240,7 +319,7 @@ function BatchManagement() {
 
   const handleDeleteBatch = async (batchId, batchName) => {
     const confirmed = window.confirm(
-      `Are you sure you want to delete the batch "${batchName}"? This action cannot be undone.`
+      `Are you sure you want to delete the batch "${batchName}"? This action cannot be undone.`,
     );
 
     if (!confirmed) return;
@@ -251,7 +330,7 @@ function BatchManagement() {
       const baseUrl = import.meta.env.VITE_BASE_URL;
       await axios.delete(`${baseUrl}/batches/${batchId}`);
       setBatchData((prevBatches) =>
-        prevBatches.filter((batch) => batch.id !== batchId)
+        prevBatches.filter((batch) => batch.id !== batchId),
       );
       alert("Batch deleted successfully!");
     } catch (err) {
@@ -276,8 +355,8 @@ function BatchManagement() {
         name: fullBatch.name || "",
         startDate: fullBatch.startDate?.split("T")[0] || "",
         endDate: fullBatch.endDate?.split("T")[0] || "",
-        interns: fullBatch.interns?.map(i => i._id || i) || [],
-        hr: fullBatch.hr?.map(h => h.hrId?._id || h.hrId || h._id || h) || [],
+        interns: fullBatch.interns?.map((i) => i._id || i) || [],
+        hr: fullBatch.hr?.map((h) => h.hrId?._id || h.hrId || h._id || h) || [],
       });
 
       // Fetch users with current batch interns
@@ -344,7 +423,7 @@ function BatchManagement() {
       };
 
       // Update state with the new batch
-      setBatchData(prev => [transformedBatch, ...prev]);
+      setBatchData((prev) => [transformedBatch, ...prev]);
       setFormData({
         name: "",
         startDate: "",
@@ -357,7 +436,9 @@ function BatchManagement() {
       alert("Batch created successfully!");
     } catch (err) {
       console.error("Error creating batch:", err);
-      alert(`Failed to create batch: ${err.response?.data?.message || err.message}`);
+      alert(
+        `Failed to create batch: ${err.response?.data?.message || err.message}`,
+      );
     } finally {
       setFormLoading(false);
       window.location.reload();
@@ -372,7 +453,7 @@ function BatchManagement() {
       const baseUrl = import.meta.env.VITE_BASE_URL;
       const res = await axios.put(
         `${baseUrl}/batches/${editBatchId}`,
-        formData
+        formData,
       );
       const updatedBatch = res.data;
 
@@ -387,17 +468,20 @@ function BatchManagement() {
         activeInterns: updatedBatch.interns?.length || 0,
         completedInterns: "0/0",
         totalHR: updatedBatch.hr?.length || 0,
-        status: getStatusFromDates(updatedBatch.startDate, updatedBatch.endDate),
+        status: getStatusFromDates(
+          updatedBatch.startDate,
+          updatedBatch.endDate,
+        ),
         coordinator: "TBD",
         technologies: [],
         progress: 0,
       };
 
       // Update state with the updated batch
-      setBatchData(prev =>
-        prev.map(batch =>
-          batch.id === editBatchId ? transformedBatch : batch
-        )
+      setBatchData((prev) =>
+        prev.map((batch) =>
+          batch.id === editBatchId ? transformedBatch : batch,
+        ),
       );
 
       alert("Batch updated successfully!");
@@ -435,21 +519,26 @@ function BatchManagement() {
   };
 
   // Get unique months for filter dropdown
-  const uniqueMonths = [...new Set(batchData.map((batch) => batch.month || ''))];
+  const uniqueMonths = [
+    ...new Set(batchData.map((batch) => batch.month || "")),
+  ];
 
   // Filter batches with proper null checks
   const filteredBatches = batchData.filter((batch) => {
     const matchesSearch =
-      (batch.batchName?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
-      (batch.coordinator?.toLowerCase() || '').includes(searchTerm.toLowerCase());
+      (batch.batchName?.toLowerCase() || "").includes(
+        searchTerm.toLowerCase(),
+      ) ||
+      (batch.coordinator?.toLowerCase() || "").includes(
+        searchTerm.toLowerCase(),
+      );
 
     const matchesStatus =
       filterStatus === "all" ||
-      (batch.status?.toLowerCase() || '') === filterStatus.toLowerCase();
+      (batch.status?.toLowerCase() || "") === filterStatus.toLowerCase();
 
     const matchesMonth =
-      selectedMonth === "" ||
-      (batch.month?.includes(selectedMonth) || false);
+      selectedMonth === "" || batch.month?.includes(selectedMonth) || false;
 
     return matchesSearch && matchesStatus && matchesMonth;
   });
@@ -464,7 +553,9 @@ function BatchManagement() {
             <h3 className="text-lg font-medium text-gray-700 dark:text-gray-200 mb-2">
               Loading batches...
             </h3>
-            <p className="text-gray-500 dark:text-gray-400">Please wait while we fetch the data</p>
+            <p className="text-gray-500 dark:text-gray-400">
+              Please wait while we fetch the data
+            </p>
           </div>
         </div>
       </>
@@ -516,7 +607,10 @@ function BatchManagement() {
           </div>
 
           <div className="mb-6">
-            <QuickActions setShowCreateForm={setShowCreateForm} />
+            <QuickActions
+              setShowCreateForm={setShowCreateForm}
+              onExportReports={handleExportReports}
+            />
           </div>
 
           <div className="mb-6">
@@ -534,7 +628,10 @@ function BatchManagement() {
           {/* Batch Cards */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {filteredBatches.map((batch) => (
-              <div key={batch.id} className="rounded-2xl shadow-sm dark:shadow-none">
+              <div
+                key={batch.id}
+                className="rounded-2xl shadow-sm dark:shadow-none"
+              >
                 <BatchCard
                   batch={batch}
                   handleView={handleView}

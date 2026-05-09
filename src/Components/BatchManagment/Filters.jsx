@@ -30,7 +30,7 @@ export function Filters({
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value)}
           >
-            <option value="all">All Statuses</option>
+            <option value="all">All status</option>
             <option value="active">Active</option>
             <option value="completed">Completed</option>
             <option value="upcoming">Upcoming</option>
@@ -52,11 +52,6 @@ export function Filters({
             ))}
           </select>
         </div>
-
-        <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center gap-2">
-          <Download className="w-4 h-4" />
-          Export Data
-        </button>
       </div>
     </div>
   );

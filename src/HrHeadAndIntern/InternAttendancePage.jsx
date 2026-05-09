@@ -26,7 +26,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/Components/ui/alert-dialog";
-import toast from "@/utils/toast";
+import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import useTitle from "@/Components/useTitle";
 

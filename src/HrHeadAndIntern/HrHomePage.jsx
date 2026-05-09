@@ -114,13 +114,13 @@ function AdminHomePage() {
       description: "Track intern attendance",
       gradient: "from-green-500 to-green-700",
     },
-    {
-      title: "Letter of Appointment",
-      route: "",
-      icon: Signature,
-      description: "Approve Intern applications for LOA",
-      gradient: "from-orange-400 to-yellow-400",
-    },
+    // {
+    //   title: "Letter of Appointment",
+    //   route: "",
+    //   icon: Signature,
+    //   description: "Approve Intern applications for LOA",
+    //   gradient: "from-orange-400 to-yellow-400",
+    // },
     {
       title: "Leave Applications",
       route: "/internshrleaveapplications",
